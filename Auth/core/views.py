@@ -80,3 +80,43 @@ def register_user(request):
 
 def logout_user(request):
     return redirect('login')
+
+## PROFILES 
+def view_profile(request, pk):
+    return redirect('dashboard')
+
+def create_profile(request):
+    return redirect('dashboard')
+
+def delete_profile(request, pk):
+    return redirect('dashboard')
+
+def modify_profile(request, pk):
+    return redirect('dashboard')
+
+## NOTIFICATIONS
+def view_notification(request, pk):
+    return redirect('dashboard')
+
+def create_notification(request):
+    return redirect('dashboard')
+
+def delete_notification(request, pk):
+    return redirect('dashboard')
+
+def modify_notification(request, pk):
+    return redirect('dashboard')
+
+## GAMES
+def view_game(request, pk):
+    return redirect('dashboard')
+
+def create_game(request):
+    return redirect('dashboard')
+
+def delete_game(request, pk):
+    return redirect('dashboard')
+
+def modify_game(request, pk):
+    return redirect('dashboard')
+

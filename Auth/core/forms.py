@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
+from core.models import Profile, Notification, Game
 
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=32)
@@ -36,3 +37,14 @@ class RegisterForm(forms.Form):
                 self.add_error('password', 'Password must be 8 characters or more.')
 
         return input
+
+class ProfileForm(forms.Form):
+    games = forms.ModelChoiceField(queryset=Game.objects.all(), empty_label="None")
+
+class NotificationForm(forms.Form):
+    title = forms.CharField(max_length=24)
+    text = forms.CharField(max_length=500)
+    game = forms.ModelChoiceField(queryset=Game.objects.all(), empty_label="None")
+
+class GameForm(forms.Form):
+    title = forms.CharField(max_length=24)
