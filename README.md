@@ -9,7 +9,7 @@ Over the years of playing video games, Krypted Gaming has used many tools to int
 
 - Beautiful (looking good on the web is important to us)
 
-- Intuitive (no complicated UIs with no help text)
+- Intuitive (no complicated UIs with poor help text)
 
 # Technologies
 - Python
