@@ -22,8 +22,19 @@ urlpatterns += [
     url(r'^profile/delete/(?P<pk>\d+)/$', views.delete_profile, name='delete-profile'),
     url(r'^profile/modify/(?P<pk>\d+)/$', views.modify_profile, name='modify-profile'),
     # HELPERS
-    url(r'^profile/(?P<pk>\d+)/add-game/name=(?P<game>\d+)/$',views.profile_add_game, name='profile-add-game'),
-    url(r'^profile/(?P<pk>\d+)/remove-game/name=(?P<game>\d+)/$', views.profile_remove_game, name='profile-remove-game'),
+    url(r'^profile/(?P<pk>\d+)/add-game/name=(?P<game>\d+)/$',
+        views.profile_add_game, name='profile-add-game'),
+    url(r'^profile/(?P<pk>\d+)/remove-game/name=(?P<game>\d+)/$',
+        views.profile_remove_game, name='profile-remove-game'),
+]
+
+## EVENTS 
+urlpatterns += [
+    url(r'^events/view/all/$', views.all_events, name='all-events'),
+    #url(r'^events/view/(?P<pk>\d+)/$', views.view_event, name='view-event'),
+    #url(r'^events/modify/(?P<pk>\d+)/$', views.modify_event, name='modify-event'),
+    #url(r'^events/delete/(?P<pk>\d+)/$', views.delete_event, name='delete-event'),
+    #url(r'^events/create/$', views.create_event, name='create-event'),
 ]
 
 ## NOTIFICATIONS

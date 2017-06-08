@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 from core.forms import LoginForm, RegisterForm, ProfileForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
-from core.models import Profile, Notification, Game
+from core.models import Profile, Notification, Game, Event
 
 ## BASE
 def dashboard(request):
@@ -243,6 +243,32 @@ def profile_remove_game(request, pk, game):
         profile.games.remove(Game.objects.get(id=game))
         profile.save()
         return redirect('modify-profile', pk=pk)
+
+## EVENTS
+def all_events(request):
+    if request.user.is_authenticated():
+        user = request.user
+        user_profile = Profile.objects.get(user=user)
+        notifications = Notification.objects.filter(user=user)
+
+        valid_event_categories = []
+        groups = user.groups.all()
+        events = Event.objects.filter(game__in=groups)
+
+        return render(
+                request,
+                'models/events/all_events.html',
+                context={
+                    'user': user,
+                    'profile': user_profile,
+                    'notifications': notifications,
+                    'events': events
+                    }
+                )
+    else:
+        return redirect('login')
+
+
 
 ## NOTIFICATIONS
 def all_notifications(request, username):

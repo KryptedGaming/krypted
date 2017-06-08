@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 
 class Game(models.Model):
     title = models.CharField(max_length=24, unique=True)
@@ -42,5 +42,6 @@ class Event(models.Model):
     date_posted = models.DateField(auto_now=True)
     date_occuring = models.DateTimeField(auto_now=False)
     title = models.CharField(max_length=32)
-    description = models.CharField(max_length=128)
-    notes = models.CharField(max_length=32)
+    description = models.CharField(max_length=128, blank=True, null=True)
+    notes = models.CharField(max_length=32, blank=True, null=True)
+    game = models.ForeignKey(Group, on_delete=models.CASCADE, blank=True, null=True)

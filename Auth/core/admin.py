@@ -1,5 +1,5 @@
 from django.contrib import admin
-from core.models import Notification, Profile, Game
+from core.models import Notification, Profile, Game, Event
 
 # Register your models here.
 @admin.register(Notification)
@@ -31,3 +31,7 @@ class GameAdmin(admin.ModelAdmin):
         for leader in game.leadership.all():
             leader_list.append(leader.username)
         return leader_list
+
+@admin.register(Event)
+class EventAdmin(admin.ModelAdmin):
+    list_display = ('title', 'game')
