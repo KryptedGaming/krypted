@@ -36,3 +36,11 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.user.username
+
+class Event(models.Model):
+    creator = models.ForeignKey(User, on_delete=models.CASCADE)
+    date_posted = models.DateField(auto_now=True)
+    date_occuring = models.DateTimeField(auto_now=False)
+    title = models.CharField(max_length=32)
+    description = models.CharField(max_length=128)
+    notes = models.CharField(max_length=32)

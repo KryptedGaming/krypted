@@ -91,7 +91,7 @@ def all_profiles(request):
         if user.groups.filter(name__in=['Officer', 'Leadership', 'Admin']).exists():
             return render(
                     request,
-                    'models/all_profiles.html',
+                    'models/profiles/all_profiles.html',
                     context={
                         'profiles': Profile.objects.all(),
                         'profile': profile,
@@ -110,7 +110,7 @@ def view_profile(request, pk):
         notifications = Notification.objects.filter(user=user)
         return render(
                 request,
-                'models/view_profile.html',
+                'models/profiles/view_profile.html',
                 context={
                     'user_profile': user_profile,
                     'notifications': notifications,
@@ -151,7 +151,7 @@ def create_profile(request):
             form = ProfileForm()
         return render(
                 request,
-                'models/create_profile.html',
+                'models/profiles/create_profile.html',
                 context={
                     'form': form,
                     }
@@ -199,7 +199,7 @@ def modify_profile(request, pk):
 
         return render(
                 request,
-                'models/modify_profile.html',
+                'models/profiles/modify_profile.html',
                 context={
                     'form': form,
                     'biography': user_profile.biography,
@@ -250,7 +250,7 @@ def all_notifications(request, username):
         user = request.user
         user_profile = Profile.objects.get(user=user)
         notifications = Notification.objects.filter(user=user)
-        return render(request, 'models/all_notitifications.html', context={})
+        return render(request, 'models/notifications/all_notitifications.html', context={})
     else:
         return redirect('login')
 
@@ -259,7 +259,7 @@ def view_notification(request, pk):
         user = request.user
         user_profile = Profile.objects.get(user=user)
         notifications = Notification.objects.filter(user=user)
-        return render(request, 'models/view_notification.html', context={})
+        return render(request, 'models/notifications/view_notification.html', context={})
     else:
         return redirect('login')
 
@@ -268,7 +268,7 @@ def create_notification(request):
         user = request.user
         user_profile = Profile.objects.get(user=user)
         notifications = Notification.objects.filter(user=user)
-        return render(request, 'models/create_notification.html', context={})
+        return render(request, 'models/notifications/create_notification.html', context={})
     else:
         return redirect('login')
 
@@ -286,56 +286,56 @@ def modify_notification(request, pk):
         user = request.user
         user_profile = Profile.objects.get(user=user)
         notifications = Notification.objects.filter(user=user)
-        return render(request, 'models/modify_notification.html', context={})
+        return render(request, 'models/notifications/modify_notification.html', context={})
     else:
         return redirect('login')
 
 ## GAMES
-def all_games(request):
-    if request.user.is_authenticated():
-        user = request.user
-        user_profile = Profile.objects.get(user=user)
-        notifications = Notification.objects.filter(user=user)
-        return render(request, 'models/all_games.html', context={})
-    else:
-        return redirect('login')
-
-def view_game(request, pk):
-    if request.user.is_authenticated():
-        user = request.user
-        user_profile = Profile.objects.get(user=user)
-        notifications = Notification.objects.filter(user=user)
-        return render(request, 'models/view_game.html', context={})
-    else:
-        return redirect('login')
-
-def create_game(request):
-    if request.user.is_authenticated():
-        user = request.user
-        user_profile = Profile.objects.get(user=user)
-        notifications = Notification.objects.filter(user=user)
-        return render(request, 'models/create_game.html', context={})
-    else:
-        return redirect('login')
-
-def delete_game(request, pk):
-    if request.user.is_authenticated():
-        user = request.user
-        user_profile = Profile.objects.get(user=user)
-        notifications = Notification.objects.filter(user=user)
-        return redirect('dashboard')
-    else:
-        return redirect('login')
-
-def modify_game(request, pk):
-    if request.user.is_authenticated():
-        user = request.user
-        user_profile = Profile.objects.get(user=user)
-        notifications = Notification.objects.filter(user=user)
-        return render(request, 'models/modify_game.html', context={})
-
-    else:
-        return redirect('login')
+#def all_games(request):
+#    if request.user.is_authenticated():
+#        user = request.user
+#        user_profile = Profile.objects.get(user=user)
+#        notifications = Notification.objects.filter(user=user)
+#        return render(request, 'models/games/all_games.html', context={})
+#    else:
+#        return redirect('login')
+#
+#def view_game(request, pk):
+#    if request.user.is_authenticated():
+#        user = request.user
+#        user_profile = Profile.objects.get(user=user)
+#        notifications = Notification.objects.filter(user=user)
+#        return render(request, 'models/games/view_game.html', context={})
+#    else:
+#        return redirect('login')
+#
+#def create_game(request):
+#    if request.user.is_authenticated():
+#        user = request.user
+#        user_profile = Profile.objects.get(user=user)
+#        notifications = Notification.objects.filter(user=user)
+#        return render(request, 'models/games/create_game.html', context={})
+#    else:
+#        return redirect('login')
+#
+#def delete_game(request, pk):
+#    if request.user.is_authenticated():
+#        user = request.user
+#        user_profile = Profile.objects.get(user=user)
+#        notifications = Notification.objects.filter(user=user)
+#        return redirect('dashboard')
+#    else:
+#        return redirect('login')
+#
+#def modify_game(request, pk):
+#    if request.user.is_authenticated():
+#        user = request.user
+#        user_profile = Profile.objects.get(user=user)
+#        notifications = Notification.objects.filter(user=user)
+#        return render(request, 'models/games/modify_game.html', context={})
+#
+#    else:
+#        return redirect('login')
 ## MISC
 def no_permissions(request):
     return render(request, 'misc/no_permissions.html', context={})

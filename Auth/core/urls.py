@@ -35,14 +35,14 @@ urlpatterns += [
     url(r'^notification/modify/(?P<pk>\d+)/$', views.modify_notification, name='modify-notification'),
 ]
 
-## GAMES
-urlpatterns += [
-    url(r'^games/all/$', views.all_games, name='all-games'),
-    url(r'^game/view/(?P<pk>\d+)/$', views.view_game, name='view-game'),
-    url(r'^game/create/', views.create_game, name='create-game'),
-    url(r'^game/delete/(?P<pk>\d+)/$', views.delete_game, name='delete-game'),
-    url(r'^game/modify/(?P<pk>\d+)/$', views.modify_game, name='modify-game'),
-]
+### GAMES
+#urlpatterns += [
+#    url(r'^games/all/$', views.all_games, name='all-games'),
+#    url(r'^game/view/(?P<pk>\d+)/$', views.view_game, name='view-game'),
+#    url(r'^game/create/', views.create_game, name='create-game'),
+#    url(r'^game/delete/(?P<pk>\d+)/$', views.delete_game, name='delete-game'),
+#    url(r'^game/modify/(?P<pk>\d+)/$', views.modify_game, name='modify-game'),
+#]
 
 # MISC
 urlpatterns += [
