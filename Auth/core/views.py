@@ -82,41 +82,49 @@ def logout_user(request):
     return redirect('login')
 
 ## PROFILES 
+def all_profiles(request):
+    return render(request, 'models/all_profiles.html', context={})
+
 def view_profile(request, pk):
-    return redirect('dashboard')
+    return render(request, 'models/view_profile.html', context={})
 
 def create_profile(request):
-    return redirect('dashboard')
+    return render(request, 'models/create_profile.html', context={})
 
 def delete_profile(request, pk):
     return redirect('dashboard')
 
 def modify_profile(request, pk):
-    return redirect('dashboard')
+    return render(request, 'models/modify_profile.html', context={})
 
 ## NOTIFICATIONS
+def all_notifications(request, username):
+    return render(request, 'models/all_notitifications.html', context={})
 def view_notification(request, pk):
-    return redirect('dashboard')
+    return render(request, 'models/view_notification.html', context={})
 
 def create_notification(request):
-    return redirect('dashboard')
+    return render(request, 'models/create_notification.html', context={})
 
 def delete_notification(request, pk):
     return redirect('dashboard')
 
 def modify_notification(request, pk):
-    return redirect('dashboard')
+    return render(request, 'models/modify_notification.html', context={})
 
 ## GAMES
+def all_games(request):
+    return render(request, 'models/all_games.html', context={})
+
 def view_game(request, pk):
-    return redirect('dashboard')
+    return render(request, 'models/view_game.html', context={})
 
 def create_game(request):
-    return redirect('dashboard')
+    return render(request, 'models/create_game.html', context={})
 
 def delete_game(request, pk):
     return redirect('dashboard')
 
 def modify_game(request, pk):
-    return redirect('dashboard')
+    return render(request, 'models/modify_game.html', context={})
 

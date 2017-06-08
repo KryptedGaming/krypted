@@ -22,6 +22,7 @@ class Profile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     games = models.ManyToManyField('Game')
     active = models.BooleanField(default=True)
+    pinned_games = models.ManyToManyField('Game', related_name="pinned")
 
     def __str__(self):
         return self.user.username
