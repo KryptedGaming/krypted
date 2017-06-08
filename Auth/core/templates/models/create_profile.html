@@ -1,0 +1,90 @@
+{% load staticfiles %}
+<head>
+    <!-- Bootstrap Core CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-1.12.4.js" integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU=" crossorigin="anonymous"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <link href="{% static "accounts/css/accounts.css" %}" rel="stylesheet">
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="{% static "accounts/js/accounts.js" %}"></script>
+
+    <!-- FONT AWESOME -->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+    <style>
+      textarea {
+        resize: none;
+        width: 100%;
+      }
+    </style>
+</head>
+
+
+<body>
+
+  <div class="container login">
+        <div id="loginbox" class="mainbox col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3">
+            <div class="panel panel-default" >
+                <div class="panel-heading">
+                    <div class="panel-title text-center">Profile creation.</div>
+                </div>
+
+                <div class="panel-body" >
+                    <form name="form" id="form" class="form-horizontal" enctype="multipart/form-data" method="POST">
+                        {% csrf_token %}
+                        <p style="color: white">Note: For some applications (i.e EVE Online), if you don't have a lot of gameplay experience, other sources such as Twitter and Reddit will be used to verify you.</p>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-book"></i></span>
+                            <textarea rows="5" maxlength="500" name="biography" form="form" placeholder="  Biography"></textarea>
+                        </div>
+                        
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-twitter"></i></span>
+                            <input id="text" type="text" class="form-control" name="twitter" placeholder="Twitter" disabled>
+                        </div>
+
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-reddit"></i></span>
+                            <input id="password" type="password" class="form-control" name="password" placeholder="Reddit" disabled>
+                        </div>
+                        
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
+                            <input id="password" type="password" class="form-control" name="password" placeholder="Discord" disabled>
+                        </div>
+                        
+                        <p style="color: white">Choose a game:</p> {{form.games}}</p>
+                        <hr>
+                        
+                        <div class="form-group">
+                            <!-- Button -->
+                            <div class="col-sm-12 controls login-btn">
+                                <button type="submit" href="#" class="btn btn-success btn-log"><i class="glyphicon glyphicon-plus"></i> Create</button>
+                            </div>
+                        </div>
+
+
+                            <div class="errors">
+                                {% for field in form %}
+                                {{field.errors}}
+                                {% endfor %}
+                            </div>
+
+
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="particles"></div>
+
+</body>

@@ -13,6 +13,7 @@ class Notification(models.Model):
     text = models.CharField(max_length=500)
     game = models.ForeignKey('Game', on_delete=models.CASCADE,
             blank=True, null=True)
+    read = models.BooleanField(default=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -20,9 +21,18 @@ class Notification(models.Model):
 
 class Profile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    biography = models.CharField(max_length=1500, blank=True, null=True)
     games = models.ManyToManyField('Game')
     active = models.BooleanField(default=True)
-    pinned_games = models.ManyToManyField('Game', related_name="pinned")
+    pinned_games = models.ManyToManyField('Game', related_name="pinned", blank=True, null=True)
+
+    # Social
+    twitter = models.URLField(max_length=32, blank=True, null=True)
+    steam = models.URLField(max_length=256, blank=True, null=True)
+    blizzard = models.CharField(max_length=32, blank=True, null=True)
+    discord = models.CharField(max_length=32, blank=True, null=True)
+
+    # Gaming
 
     def __str__(self):
         return self.user.username

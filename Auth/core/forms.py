@@ -39,7 +39,8 @@ class RegisterForm(forms.Form):
         return input
 
 class ProfileForm(forms.Form):
-    games = forms.ModelChoiceField(queryset=Game.objects.all(), empty_label="None")
+    biography = forms.CharField(max_length=1500, required=False)
+    games = forms.ModelChoiceField(queryset=Game.objects.all(), empty_label="None", required=False)
 
 class NotificationForm(forms.Form):
     title = forms.CharField(max_length=24)
