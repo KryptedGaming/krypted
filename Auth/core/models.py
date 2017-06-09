@@ -44,4 +44,4 @@ class Event(models.Model):
     title = models.CharField(max_length=32)
     description = models.CharField(max_length=128, blank=True, null=True)
     notes = models.CharField(max_length=32, blank=True, null=True)
-    game = models.ForeignKey(Group, on_delete=models.CASCADE, blank=True, null=True)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, blank=True, null=True)

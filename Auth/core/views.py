@@ -251,10 +251,17 @@ def all_events(request):
         user_profile = Profile.objects.get(user=user)
         notifications = Notification.objects.filter(user=user)
 
-        valid_event_categories = []
+        group_tabs = []
         groups = user.groups.all()
-        events = Event.objects.filter(game__in=groups)
+        events = Event.objects.filter(group__in=groups)
+        # Populate list of groups for pills
+        for event in events:
+            if event.group.name in group_tabs:
+                pass
+            else:
+                group_tabs.append(event.group.name)
 
+        print(group_tabs)
         return render(
                 request,
                 'models/events/all_events.html',
@@ -262,7 +269,8 @@ def all_events(request):
                     'user': user,
                     'profile': user_profile,
                     'notifications': notifications,
-                    'events': events
+                    'events': events,
+                    'groups': group_tabs
                     }
                 )
     else:

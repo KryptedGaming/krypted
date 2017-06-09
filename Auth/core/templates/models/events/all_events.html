@@ -18,31 +18,125 @@ body {
 
 </style>
 
-
 <div class="row">
   <!-- HEADER -->
-  <div><h1>Bootstrap  tab panel example (using nav-pills)  </h1></div>
+  <div><h1>Events</h1><hr></div>
     <div id="events-tab"> 
-      <ul  class="nav nav-pills">
-              <li class="active">
-                <a  href="#1a" data-toggle="tab">Overview</a>
-              </li>
-              
-              <li><a href="#2a" data-toggle="tab">Using nav-pills</a>
-              </li>
-             
-              <li><a href="#3a" data-toggle="tab">Applying clearfix</a>
-              </li>
-                                                                
-              <li><a href="#4a" data-toggle="tab">Background color</a>
-              </li>                                                          
+      
+      <!-- START EVENTS -->
+      <ul class="nav nav-pills">
+        <!-- TAB FOR ALL EVENTS -->
+                <li class="active">
+                  <a href="#all" data-toggle="tab">All</a>
+                </li>
+        <!-- TABS FOR SPECIFIC GROUPS -->
+        {% for group in groups %}
+                <li>
+                  <a  href="#{{group}}" data-toggle="tab">{{group}}</a>
+                </li>
+        {% endfor %}
       </ul>
-    </div> 
+      
+    </div>  
   </div>
 </div>
+<!-- ENDTABS -->
+<div class="tab-content clearfix">
+  <div class="tab-pane active" id="all">
+      <table class="table" style="width: 100%">
+        <tr>
+          <th class="tablehead">Event</th>
+          <th class="tablehead">Group</th>
+          <th class="tablehead">Description</th>
+          <th class="tablehead">Notes</th>
+          <th class="tablehead">Organizer</th>
+        </tr>
+        {% for event in events %}
+        <tr>
+          <td>
+            {{event.title}}
+          </td>
+          <td>
+            <span class="label label-default">{{event.group}}</span>
+          </td>
+          <td>
+            {{event.description}}
+          </td>
+          <td>
+            {{event.notes}}
+          </td>
+          <td>
+            {{event.creator}}
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+  </div>
+  {% for group in groups %}
+    <div class="tab-pane" id="{{group}}">                              
+      <table class="table" style="width: 100%">
+        <tr>
+          <th class="tablehead">Event</th>
+          <th class="tablehead">Description</th>
+          <th class="tablehead">Notes</th>
+          <th class="tablehead">Organizer</th>
+        </tr>
+        {% for event in events %}
+        {% if event.group.name == group %}      
+        <tr>
+           <td>
+            {{event.title}}
+          </td>
+          <td>
+            {{event.description}}
+          </td>
+          <td>
+            {{event.notes}}
+          </td>
+          <td>
+            {{event.creator}}
+          </td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+      </table>
+    </div>
+  {% endfor %}
+</div>
+
+
 
 {% comment %}
-  <div class="container"><h1>Bootstrap  tab panel example (using nav-pills)  </h1></div>
+      <div class="tab-content clearfix">
+        <div class="tab-pane" id="{{group}}">                              
+          <table class="table" style="width: 100%">
+            <tr>
+              <th class="tablehead">User</th>
+              <th class="tablehead">Actions</th>
+            </tr>
+      {% for event in events %}
+      {% if event.group.name == group %}      
+            <tr>
+              <td>
+                {{event.title}}
+              </td>
+              <td>
+                <button class="btn btn-primary btn-xs">edit</button>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      {% endif %}
+      {% endfor %}
+
+
+
+
+
+
+
+<div class="container"><h1>Bootstrap  tab panel example (using nav-pills)  </h1></div>
   <div id="exTab1" class="container"> 
     <ul  class="nav nav-pills">
             <li class="active">
