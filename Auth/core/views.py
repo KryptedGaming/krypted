@@ -261,7 +261,6 @@ def all_events(request):
             else:
                 group_tabs.append(event.group.name)
 
-        print(group_tabs)
         return render(
                 request,
                 'models/events/all_events.html',
