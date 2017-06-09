@@ -82,32 +82,42 @@
                 </li>
 -->
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bell"></i> <b class="caret"></b></a>
-                    <ul class="dropdown-menu alert-dropdown">
-                        <li>
-                            <a href="#">Alert Name <span class="label label-default">Alert Badge</span></a>
-                        </li>
-                        <li>
-                            <a href="#">Alert Name <span class="label label-primary">Alert Badge</span></a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">View All</a>
-                        </li>
-                    </ul>
-                </li>
+                  {% if notifications.count = 0 or notifications == None %}  
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i style="" class="fa fa-bell"></i> <b class="caret"></b></a>
+                    
+                  {% else %}
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i style="color: red;" class="fa fa-bell"></i> <b class="caret"></b></a>
+
+                  <ul class="dropdown-menu alert-dropdown">
+                    {% for notification in notifications %}
+                    <li>
+                      <a href="#">{{notification.title}} <span class="label label-default">{% if notification.game == None %} Global {% else %} {{notification.game}} {% endif %}</span>
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></a>
+                    </li>
+                    {% endfor %}
+                       
+                    <li class="divider"></li>
+                      <li>
+                        <a href="#">View All</a>
+                      </li>   
+                  </ul>
+ 
+                  {% endif %}
+               </li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> {{user.username }}<b class="caret"></b></a>
                     <ul class="dropdown-menu">
+                        {% if profile %}
                         <li>
-                            <a href=""><i class="fa fa-fw fa-user"></i> Profile</a>
+                          <a href="{% url 'view-profile' profile.id %}"><i class="fa fa-fw fa-user"></i> Profile</a>
                         </li>
+                        {% endif %}
                         <li>
                             <a href=""><i class="fa fa-fw fa-gear"></i> Settings</a>
                         </li>
                         <li class="divider"></li>
                         <li>
-                            <a href=""><i class="fa fa-fw fa-power-off"></i> Log Out</a>
+                            <a href="/logout/"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
                         </li>
                     </ul>
                 </li>
@@ -115,78 +125,40 @@
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav side-nav">
-                    <li class="active">
-                        <a href="#"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
+                    <li class="">
+                      <a href="{% url 'dashboard' %}"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
                     </li>
 
-
-
+                    {% if profile != None %}
                     <li>
-                        <a href="javascript:;" data-toggle="collapse" data-target="#account_choices"><i class="fa fa-fw fa-user"></i> Account <i class="fa fa-fw fa-caret-down"></i></a>
-                        <ul id="account_choices" class="collapse">
+                        <a href="javascript:;" data-toggle="collapse" data-target="#profile_menu"><i class="fa fa-fw fa-user"></i> Profile <i class="fa fa-fw fa-caret-down"></i></a>
+                        <ul id="profile_menu" class="collapse">
                             <li>
-                                <a href="">Add tokens</a>
-                                <a href="">Apply to Corporation</a>
-                                <a href="">Quickstart Tutorial</a>
+                              <a href="{% url 'modify-profile' profile.id %}">Add game</a>
                             </li>
                         </ul>
                     </li>
-
-
+ 
                     <li>
-                        <a href="javascript:;" data-toggle="collapse" data-target="#corp_choices"><i class="fa fa-fw fa-users"></i> Corporation <i class="fa fa-fw fa-caret-down"></i></a>
-                        <ul id="corp_choices" class="collapse">
+                      <a href="{% url 'all-events' %}"><i class="fa fa-fw fa-calendar"></i> Events</a>
+                    </li>
+                
+                    <li>
+                        <a href="javascript:;" data-toggle="collapse" data-target="#admin_menu"><i class="fa fa-fw fa-user"></i> Admin <i class="fa fa-fw fa-caret-down"></i></a>
+                        <ul id="admin_menu" class="collapse">
                             <li>
-                                <a href="">Statistics</a>
-                            </li>
-                            <li>
-                                <a href="">Assets</a>
+                                <a href="">Create notification</a>
+                                <a href="">Send message</a>
+                                <a href="">Disable user</a>
                             </li>
                         </ul>
                     </li>
-
+                    {% else %}
                     <li>
-                        <a href="javascript:;" data-toggle="collapse" data-target="#event_choices"><i class="fa fa-fw fa-calendar"></i> Events <i class="fa fa-fw fa-caret-down"></i></a>
-                        <ul id="event_choices" class="collapse">
-                            <li>
-                                <a href="">Create</a>
-                            </li>
-                            <li>
-                                <a href="">View</a>
-                            </li>
-                        </ul>
+                      <a href="{% url 'create-profile' %}"><i class="fa fa-fw fa-plus"></i> Create Profile</a>
                     </li>
 
-
-                    <li>
-                        <a href="javascript:;" data-toggle="collapse" data-target="#tools"><i class="fa fa-fw fa-wrench"></i> Tools <i class="fa fa-fw fa-caret-down"></i></a>
-                        <ul id="tools" class="collapse">
-                            <li>
-                                <a href="#">Buyback</a>
-                            </li>
-                            <li>
-                                <a href="#">Helltrain</a>
-                            </li>
-                            <li>
-                                <a href="#">Blueprints</a>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <li>
-                        <a href="javascript:;" data-toggle="collapse" data-target="#admin"><i class="fa fa-fw fa-gavel"></i> Admin <i class="fa fa-fw fa-caret-down"></i></a>
-                        <ul id="admin" class="collapse">
-                            <li>
-                                <a href="#">Applications</a>
-                            </li>
-                            <li>
-                                <a href="#">Audit</a>
-                            </li>
-                            <li>
-                                <a href="#">Stats</a>
-                            </li>
-                        </ul>
-                    </li>
+                    {% endif %}
 
                 </ul>
             </div>

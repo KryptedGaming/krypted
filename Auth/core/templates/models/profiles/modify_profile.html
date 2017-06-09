@@ -1,0 +1,104 @@
+{% load staticfiles %}
+<head>
+    <!-- Bootstrap Core CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-1.12.4.js" integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU=" crossorigin="anonymous"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <link href="{% static "accounts/css/accounts.css" %}" rel="stylesheet">
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="{% static "accounts/js/accounts.js" %}"></script>
+
+    <!-- FONT AWESOME -->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+    <style>
+      textarea {
+        resize: none;
+        width: 100%;
+      }
+    </style>
+</head>
+
+
+<body>
+
+  <div class="container login">
+        <div id="loginbox" class="mainbox col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3">
+            <div class="panel panel-default" >
+                <div class="panel-heading">
+                    <div class="panel-title text-center">Profile</div>
+                </div>
+
+                <div class="panel-body" >
+                    <form name="form" id="form" class="form-horizontal" enctype="multipart/form-data" method="POST">
+                        {% csrf_token %}
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-book"></i></span>
+                            <textarea rows="5" maxlength="1500" name="biography" form="form" placeholder="  Biography">{{biography}}</textarea>
+                        </div>
+
+                        <div class="input-group">
+                          <h3 style="color: white">Games</h3>
+                          {% for game in games %}
+                          <div class="input-group">
+                            <span class="input-group-addon">
+                              {% if game not in profile.games.all %}
+                              <button onclick="location.href='/profile/{{profile.id}}/add-game/name={{game.id}}'" type="button" class="btn btn-success btn-xs">
+                                <i class="fa fa-plus"></i>
+                              </button>
+                              {% else %}
+                              <button onclick="location.href='/profile/{{profile.id}}/remove-game/name={{game.id}}'" type="button" class="btn btn-danger btn-xs">
+                                <i class="fa fa-times"></i>
+                              </button>
+                              {% endif %}
+                            </span>
+                            <input id="text" type="text" class="form-control" name="remove-game" value="{{game.title}}" disabled>
+                          </div>
+                          {% endfor %}
+
+                        </div>
+                        
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-twitter"></i></span>
+                            <input id="text" type="text" class="form-control" name="twitter" placeholder="Twitter" disabled>
+                        </div>
+
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-reddit"></i></span>
+                            <input id="password" type="password" class="form-control" name="password" placeholder="Reddit" disabled>
+                        </div>
+                        
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
+                            <input id="password" type="password" class="form-control" name="password" placeholder="Discord" disabled>
+                        </div> 
+                        
+                        <div class="form-group">
+                            <!-- Button -->
+                            <div class="col-sm-12 controls login-btn">
+                                <button type="submit" href="#" class="btn btn-warning btn-log"><i class="glyphicon glyphicon-pencil"></i> Update</button>
+                            </div>
+                        </div>
+
+
+                            <div class="errors">
+                                {% for field in form %}
+                                {{field.errors}}
+                                {% endfor %}
+                            </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="particles"></div>
+
+</body>
