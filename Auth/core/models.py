@@ -4,6 +4,8 @@ from django.contrib.auth.models import User, Group
 class Game(models.Model):
     title = models.CharField(max_length=24, unique=True)
     leadership = models.ManyToManyField(User)
+    source = models.URLField(max_length=256, blank=True, null=True)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.title
@@ -11,8 +13,6 @@ class Game(models.Model):
 class Notification(models.Model):
     title = models.CharField(max_length=24)
     text = models.CharField(max_length=500)
-    game = models.ForeignKey('Game', on_delete=models.CASCADE,
-            blank=True, null=True)
     read = models.BooleanField(default=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
@@ -22,9 +22,9 @@ class Notification(models.Model):
 class Profile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     biography = models.CharField(max_length=1500, blank=True, null=True)
+    points = models.IntegerField(default=0)
     games = models.ManyToManyField('Game')
     active = models.BooleanField(default=True)
-    pinned_games = models.ManyToManyField('Game', related_name="pinned", blank=True, null=True)
 
     # Social
     twitter = models.URLField(max_length=32, blank=True, null=True)
