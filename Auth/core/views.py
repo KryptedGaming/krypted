@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.core.urlresolvers import reverse
 from core.forms import LoginForm, RegisterForm, ProfileForm
 from django.contrib.auth.models import User
@@ -275,8 +275,26 @@ def all_events(request):
     else:
         return redirect('login')
 
+def view_event(request, pk):
+    if request.user.is_authenticated():
+        user = request.user
+        user_profile = Profile.objects.get(user=user)
+        notifications = Notification.objects.filter(user=user)
 
-
+        event = get_object_or_404(Event, pk=pk)
+        if event.group in user.groups.all():
+            return render(
+                    request,
+                    'models/events/view_event.html',
+                    context={
+                        'user': user,
+                        'profile': user_profile,
+                        'notifications': notifications,
+                        'event': event
+                        }
+                    )
+        else:
+            return redirect('no_permissions')
 ## NOTIFICATIONS
 def all_notifications(request, username):
     if request.user.is_authenticated():
