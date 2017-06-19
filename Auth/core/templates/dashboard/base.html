@@ -131,11 +131,13 @@
 
                     {% if profile != None %}
                     <li>
-                        <a href="javascript:;" data-toggle="collapse" data-target="#profile_menu"><i class="fa fa-fw fa-user"></i> Profile <i class="fa fa-fw fa-caret-down"></i></a>
-                        <ul id="profile_menu" class="collapse">
-                            <li>
-                              <a href="{% url 'modify-profile' profile.id %}">Add game</a>
-                            </li>
+                        <a href="javascript:;" data-toggle="collapse" data-target="#game_menu"><i class="fa fa-fw fa-user"></i> Games <i class="fa fa-fw fa-caret-down"></i></a>
+                        <ul id="game_menu" class="collapse">
+                          {% for game in profile.games.all %}
+                          <li>
+                            <a href="/{{game.slug}}/">{{game.title}}</a>
+                          </li>
+                          {% endfor %}
                         </ul>
                     </li>
  

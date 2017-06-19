@@ -6,6 +6,7 @@ class Game(models.Model):
     leadership = models.ManyToManyField(User)
     source = models.URLField(max_length=256, blank=True, null=True)
     group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True, blank=True)
+    slug = models.CharField(max_length=24, blank=True, null=True)
 
     def __str__(self):
         return self.title
