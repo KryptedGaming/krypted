@@ -34,7 +34,7 @@ urlpatterns += [
     url(r'^events/view/(?P<pk>\d+)/$', events.view_event, name='view-event'),
     #url(r'^events/modify/(?P<pk>\d+)/$', views.modify_event, name='modify-event'),
     #url(r'^events/delete/(?P<pk>\d+)/$', views.delete_event, name='delete-event'),
-    #url(r'^events/create/$', views.create_event, name='create-event'),
+    url(r'^events/create/$', events.create_event, name='create-event'),
 ]
 
 ## NOTIFICATIONS

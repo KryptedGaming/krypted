@@ -34,4 +34,4 @@ class GameAdmin(admin.ModelAdmin):
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
-    list_display = ('title', 'group')
+    list_display = ('id','title', 'group')

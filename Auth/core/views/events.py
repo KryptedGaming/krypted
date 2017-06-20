@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from core.models import Profile, Notification, Game, Event
 from . import base
+from datetime import datetime
 ## EVENTS
 def all_events(request):
     if request.user.is_authenticated():
@@ -14,7 +15,7 @@ def all_events(request):
 
         group_tabs = []
         groups = user.groups.all()
-        events = Event.objects.filter(group__in=groups)
+        events = Event.objects.filter(group__in=groups).exclude(date_occuring__lte=datetime.now()).order_by('date_occuring')
         # Populate list of groups for pills
         for event in events:
             if event.group.name in group_tabs:
@@ -57,3 +58,9 @@ def view_event(request, pk):
         else:
             return redirect('no_permissions')
 
+def create_event(request):
+    pass
+def modify_event(request, pk):
+    pass
+def delete_event(request, pk):
+    pass

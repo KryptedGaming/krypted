@@ -16,6 +16,7 @@ class Notification(models.Model):
     text = models.CharField(max_length=500)
     read = models.BooleanField(default=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date_created = models.DateField(auto_now=True)
 
     def __str__(self):
         return self.title
@@ -39,6 +40,11 @@ class Profile(models.Model):
         return self.user.username
 
 class Event(models.Model):
+    importance_choices = (
+            ("1", "Low"),
+            ("2", "Medium"),
+            ("3", "High")
+            )
     creator = models.ForeignKey(User, on_delete=models.CASCADE)
     date_posted = models.DateField(auto_now=True)
     date_occuring = models.DateTimeField(auto_now=False)
@@ -46,3 +52,4 @@ class Event(models.Model):
     description = models.CharField(max_length=128, blank=True, null=True)
     notes = models.CharField(max_length=32, blank=True, null=True)
     group = models.ForeignKey(Group, on_delete=models.CASCADE, blank=True, null=True)
+    importance = models.CharField(choices=importance_choices, max_length=12, blank=True, null=True)

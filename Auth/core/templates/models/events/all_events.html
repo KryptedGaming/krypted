@@ -1,5 +1,5 @@
 {% extends 'dashboard/base.html' %}
-
+{% load event_filters %}
 {% block content %}
 <style>
 body {
@@ -13,168 +13,167 @@ body {
           padding : 5px 15px;
           width: 50%;
 }
-
-
-
 </style>
 
-<div class="row">
-  <!-- HEADER -->
-  <div><h1>Events</h1><hr></div>
-    <div id="events-tab"> 
-      
-      <!-- START EVENTS -->
-      <ul class="nav nav-pills">
-        <!-- TAB FOR ALL EVENTS -->
-                <li class="active">
-                  <a href="#all" data-toggle="tab">All</a>
-                </li>
-        <!-- TABS FOR SPECIFIC GROUPS -->
-        {% for group in groups %}
-                <li>
-                  <a  href="#{{group}}" data-toggle="tab">{{group}}</a>
-                </li>
-        {% endfor %}
-      </ul>
-      
-    </div>  
-  </div>
-</div>
-<!-- ENDTABS -->
-<div class="tab-content clearfix">
-  <div class="tab-pane active" id="all">
-      <table class="table" style="width: 100%">
-        <tr>
-          <th class="tablehead">Event</th>
-          <th class="tablehead">Group</th>
-          <th class="tablehead">Description</th>
-          <th class="tablehead">Notes</th>
-          <th class="tablehead">Organizer</th>
-        </tr>
-        {% for event in events %}
-        <tr>
-          <td>
-            {{event.title}}
-          </td>
-          <td>
-            <span class="label label-default">{{event.group}}</span>
-          </td>
-          <td>
-            {{event.description}}
-          </td>
-          <td>
-            {{event.notes}}
-          </td>
-          <td>
-            {{event.creator}}
-          </td>
-        </tr>
-        {% endfor %}
-      </table>
-  </div>
-  {% for group in groups %}
-    <div class="tab-pane" id="{{group}}">                              
-      <table class="table" style="width: 100%">
-        <tr>
-          <th class="tablehead">Event</th>
-          <th class="tablehead">Description</th>
-          <th class="tablehead">Notes</th>
-          <th class="tablehead">Organizer</th>
-        </tr>
-        {% for event in events %}
-        {% if event.group.name == group %}      
-        <tr>
-           <td>
-            {{event.title}}
-          </td>
-          <td>
-            {{event.description}}
-          </td>
-          <td>
-            {{event.notes}}
-          </td>
-          <td>
-            {{event.creator}}
-          </td>
-        </tr>
-        {% endif %}
-        {% endfor %}
-      </table>
-    </div>
-  {% endfor %}
-</div>
+<div class="col-lg-12">
+  <div class="row">
+    <!-- HEADER -->
+      <h1 class="page-header">
+        Events <small>All</small>
+      </h1>
+ <div class="row text-center">
+          <button class="btn btn-info col-md-2 col-md-offset-1">
+            EST : {% load tz %}{% timezone "America/New_York" %}{% now "H:i | M d" %}{%endtimezone%}
+          </button>
+          <button class="btn btn-info col-md-2 col-md-offset-2">
+            <div>CET : {% load tz %}{% timezone "CET" %}{% now "H:i | M d" %}{%endtimezone%}</div>
+          </button>
+          <button class="btn btn-info col-md-2 col-md-offset-2">
+            <div>UTC : {% load tz %}{% timezone "UTC" %}{% now "H:i | M d" %}{%endtimezone%}</div>
+          </button>
 
-
-
-{% comment %}
-      <div class="tab-content clearfix">
-        <div class="tab-pane" id="{{group}}">                              
-          <table class="table" style="width: 100%">
-            <tr>
-              <th class="tablehead">User</th>
-              <th class="tablehead">Actions</th>
-            </tr>
-      {% for event in events %}
-      {% if event.group.name == group %}      
-            <tr>
-              <td>
-                {{event.title}}
-              </td>
-              <td>
-                <button class="btn btn-primary btn-xs">edit</button>
-              </td>
-            </tr>
-          </table>
         </div>
-      </div>
-      {% endif %}
-      {% endfor %}
-
-
-
-
-
-
-
-<div class="container"><h1>Bootstrap  tab panel example (using nav-pills)  </h1></div>
-  <div id="exTab1" class="container"> 
-    <ul  class="nav nav-pills">
-            <li class="active">
-              <a  href="#1a" data-toggle="tab">Overview</a>
-            </li>
-            
-            <li><a href="#2a" data-toggle="tab">Using nav-pills</a>
-            </li>
-           
-            <li><a href="#3a" data-toggle="tab">Applying clearfix</a>
-            </li>
-                                                              
-            <li><a href="#4a" data-toggle="tab">Background color</a>
-            </li>                                                          
-    </ul>
-    
-    <div class="row">
-      <div class="tab-content clearfix">
-        <div class="tab-pane active" id="1a">                              
-          <h3>Content's background color is the same for the tab</h3>                                     
-        </div>
-                                                                     
-        <div class="tab-pane" id="2a">
-          <h3>We use the class nav-pills instead of nav-tabs which automatically creates a background color for the tab</h3>                                                                                                      
-        </div>
-              
-        <div class="tab-pane" id="3a">
-          <h3>We applied clearfix to the tab-content to rid of the gap between the tab and the content</h3>
-        </div>
+        <hr>
+  {% load tz %}
+  {% timezone "Europe/Paris" %}
+  {{event.date_occuring}}
+  {% endtimezone %}
+ 
+      <div id="events-tab"> 
         
-        <div class="tab-pane" id="4a">
-          <h3>We use css to change the background color of the content to be equal to the tab</h3>
-        </div>
-      </div>
+        <!-- START EVENTS -->
+        <ul class="nav nav-pills">
+          <!-- TAB FOR ALL EVENTS -->
+                  <li class="active">
+                    <a href="#all" data-toggle="tab">All</a>
+                  </li>
+          <!-- TABS FOR SPECIFIC GROUPS -->
+          {% for group in groups %}
+                  <li>
+                    <a  href="#{{group}}" data-toggle="tab">{{group}}</a>
+                  </li>
+          {% endfor %}
+          
+          {% if user|c_create %}
+          <button style="float: right;" class="btn btn-success"><i class="fa fa-plus"></i> Create Event</button>
+          {% else %}
+          <button style="float: right;" class="btn btn-success" disabled><i class="fa fa-plus"></i> Create Event</button>
+          {% endif %}
+        </ul>
+        
+      </div>  
     </div>
   </div>
+  <!-- ENDTABS -->
+    <div class="tab-content clearfix">
+    <div class="tab-pane active" id="all">
+        <table class="table" style="width: 100%">
+          <tr>
+            <th class="tablehead"></th>
+            <th class="tablehead">Event</th>
+            <th class="tablehead">Group</th>
+            <th class="tablehead">Time</th>
+            <th class="tablehead">Organizer</th>
+          </tr>
+          {% for event in events %}
+          <tr>
+            <td>
+              <div style="font-size: 20px;" class="text-center">
+              {% if event.importance == "3" %}
+                <i class="fa fa-exclamation-circle text-danger"></i>
+              {% elif event.importance == "2" %}
+                <i class="fa fa-circle text-warning"></i>
+              {% else %}
+                <i class="fa fa-circle text-success" hidden></i>
+              {% endif %} 
+              </div>
+            </td>
+            <td>
+              <a href="/events/view/{{event.id}}/">{{event.title}}</a>
+            </td>
+            <td>
+              <span class="label label-default">{{event.group}}</span>
+            </td>
+            <td>
+              {{event.date_occuring}} <span class="label label-default"> UTC</span> 
+            </td>
+            <td>
+              {{event.creator}}
+            </td>
+          </tr>
+          {% endfor %}
+          <!-- Forced bottom table border -->
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <!-- End bottom table border -->
+
+        </table>
+     </div>
+    {% for group in groups %}
+      <div class="tab-pane" id="{{group}}">                              
+        <table class="table" style="width: 100%">
+          <tr>
+            <th class="tablehead">Event</th>
+            <th class="tablehead">Description</th>
+            <th class="tablehead">Notes</th>
+            <th class="tablehead">Organizer</th>
+          </tr>
+          {% for event in events %}
+          {% if event.group.name == group %}      
+          <tr>
+             <td>
+              {{event.title}}
+            </td>
+            <td>
+              {% if event.description|length < 24 %}
+              {{event.description}}
+              {% else %}
+              {{event.description|slice:":24"}}...
+              {% endif %}
+            </td>
+            <td>
+              {% if event.notes|length < 24 %}
+              {{event.notes}}
+              {% else %}
+              {{event.notes|slice:":24"}}...
+              {% endif %}
+            </td>
+            <td>
+              {{event.creator}}
+            </td>
+          </tr>
+          {% endif %}
+          {% endfor %}
+
+          <!-- Forced bottom table border -->
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <!-- End bottom table border -->
+        </table>
+      </div>
+    {% endfor %}
+  </div>
 </div>
-</div>
-{% endcomment %}
+       <div class="row text-center">
+          <div class="col-md-2 col-md-offset-1">
+          <i class="fa fa-exclamation-circle text-danger"></i> <p>High importance event. Rarely called, be there.</p>
+          </div>
+          <div class="col-md-2 col-md-offset-2">
+          <i class="fa fa-circle text-warning"></i><p>Medium importance event. Do your best to be there.</p>
+          </div>
+          <div class="col-md-2 col-md-offset-2">
+          <i class="fa fa-circle text-success" hidden></i><p>Low importance event. If you can't be there, don't sweat.</p>
+          </div>
+        </div>
+        <hr>
 
 {% endblock %}
