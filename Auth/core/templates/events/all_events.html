@@ -55,7 +55,7 @@ body {
           {% endfor %}
           
           {% if user|c_create %}
-          <button style="float: right;" class="btn btn-success"><i class="fa fa-plus"></i> Create Event</button>
+          <button onclick="location.href='/events/create/'" style="float: right;" class="btn btn-success"><i class="fa fa-plus"></i> Create Event</button>
           {% else %}
           <button style="float: right;" class="btn btn-success" disabled><i class="fa fa-plus"></i> Create Event</button>
           {% endif %}

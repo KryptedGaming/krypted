@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.urlresolvers import reverse
-from core.forms import LoginForm, RegisterForm, ProfileForm
+from core.forms import EventForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from core.models import Profile, Notification, Game, Event
@@ -59,7 +59,33 @@ def view_event(request, pk):
             return redirect('no_permissions')
 
 def create_event(request):
-    return render(request, 'events/create_event.html', context={})
+    if request.user.is_authenticated():
+        user = request.user
+
+        if request.method == 'POST':
+            date_occuring = request.POST.get('date_occuring')
+            title = request.POST.get('title')
+            description = request.POST.get('description')
+            notes = request.POST.get('notes')
+            game = request.POST.get('game') 
+            group = Game.objects.get(pk=game).group
+            event = Event(creator=request.user, date_occuring=date_occuring,
+                    title=title, description=description, notes=notes, group=group)
+            event.save()
+
+            return redirect('all-events')
+        else:
+            form = EventForm()
+        return render(
+                request,
+                'events/create_event.html',
+                context={
+                    'form': form,
+                    }
+                )
+    else:
+        return redirect('login')
+
 def modify_event(request, pk):
     pass
 def delete_event(request, pk):
