@@ -14,7 +14,7 @@ def all_profiles(request):
         if user.groups.filter(name__in=['Officer', 'Leadership', 'Admin']).exists():
             return render(
                     request,
-                    'models/profiles/all_profiles.html',
+                    'profiles/all_profiles.html',
                     context={
                         'profiles': Profile.objects.all(),
                         'profile': profile,
@@ -33,7 +33,7 @@ def view_profile(request, pk):
         notifications = Notification.objects.filter(user=user)
         return render(
                 request,
-                'models/profiles/view_profile.html',
+                'profiles/view_profile.html',
                 context={
                     'user_profile': user_profile,
                     'notifications': notifications,
@@ -74,7 +74,7 @@ def create_profile(request):
             form = ProfileForm()
         return render(
                 request,
-                'models/profiles/create_profile.html',
+                'profiles/create_profile.html',
                 context={
                     'form': form,
                     }
@@ -122,7 +122,7 @@ def modify_profile(request, pk):
 
         return render(
                 request,
-                'models/profiles/modify_profile.html',
+                'profiles/modify_profile.html',
                 context={
                     'form': form,
                     'biography': user_profile.biography,

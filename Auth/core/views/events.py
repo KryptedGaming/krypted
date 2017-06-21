@@ -25,7 +25,7 @@ def all_events(request):
 
         return render(
                 request,
-                'models/events/all_events.html',
+                'events/all_events.html',
                 context={
                     'user': user,
                     'profile': user_profile,
@@ -47,7 +47,7 @@ def view_event(request, pk):
         if event.group in user.groups.all():
             return render(
                     request,
-                    'models/events/view_event.html',
+                    'events/view_event.html',
                     context={
                         'user': user,
                         'profile': user_profile,
@@ -59,7 +59,7 @@ def view_event(request, pk):
             return redirect('no_permissions')
 
 def create_event(request):
-    pass
+    return render(request, 'events/create_event.html', context={})
 def modify_event(request, pk):
     pass
 def delete_event(request, pk):
