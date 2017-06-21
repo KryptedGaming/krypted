@@ -28,12 +28,12 @@ urlpatterns += [
         profile.profile_remove_game, name='profile-remove-game'),
 ]
 
-## EVENTS 
+## EVENTS
 urlpatterns += [
     url(r'^events/view/all/$', events.all_events, name='all-events'),
     url(r'^events/view/(?P<pk>\d+)/$', events.view_event, name='view-event'),
     url(r'^events/modify/(?P<pk>\d+)/$', events.modify_event, name='modify-event'),
-    #url(r'^events/delete/(?P<pk>\d+)/$', views.delete_event, name='delete-event'),
+    url(r'^events/delete/(?P<pk>\d+)/$', events.delete_event, name='delete-event'),
     url(r'^events/create/$', events.create_event, name='create-event'),
 ]
 

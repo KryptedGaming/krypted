@@ -25,19 +25,19 @@
         {% if event.notes %}
         {{event.notes}}
         {% else %}
-        No notes set. {{user|c_delete}}
+        No notes set.
         {% endif %}
         <hr>
       </div>
       <div class="panel-body text-center">
         <button class="btn btn-primary col-xs-2 col-xs-offset-1">RSVP</button>
         {% if user|c_modify %}
-        <button class="btn btn-warning col-xs-2 col-xs-offset-2">Modify</button>
+        <button onclick="location.href='/events/modify/{{event.id}}/'" class="btn btn-warning col-xs-2 col-xs-offset-2">Modify</button>
         {% else %}
         <button class="btn btn-warning col-xs-2 col-xs-offset-2" disabled>Modify</button>
         {% endif %}
         {% if user|c_delete %}
-        <button class="btn btn-danger col-xs-2 col-xs-offset-2">Delete</button>
+        <button onclick="location.href='/events/delete/{{event.id}}/'" class="btn btn-danger col-xs-2 col-xs-offset-2">Delete</button>
         {% else %}
         <button class="btn btn-danger col-xs-2 col-xs-offset-2" disabled>Delete</button>
         {% endif %}

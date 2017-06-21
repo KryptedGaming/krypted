@@ -115,4 +115,14 @@ def modify_event(request, pk):
         return redirect('login')
 
 def delete_event(request, pk):
-    pass
+    if request.user.is_authenticated():
+        user = request.user
+
+        if user.has_perm('core.delete_event'):
+            event = Event.objects.get(pk=pk)
+            event.delete()
+            return redirect('all-events')
+        else:
+            return redirect('no_permissions')
+    else:
+        return redirect('login')

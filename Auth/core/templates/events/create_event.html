@@ -20,6 +20,23 @@
                </div>
 
                <div class="panel-body" >
+
+                   <div style="color: white;" class="text-center">
+                      <script>
+                      var localTime = new Date();
+                      offset = localTime.getTimezoneOffset()
+
+                      if (offset > 0) {
+                          document.write("You are " + offset / 60 + " hours behind server time.")
+                      }
+
+                      if (offset < 0) {
+                          document.write("You are " + offset / 60 + " ahead server time.")
+                      }
+                     </script>
+                     <hr>
+                   </div>
+                   
                    <form name="form" id="form" class="form-horizontal" enctype="multipart/form-data" method="POST">
                        {% csrf_token %}
 
@@ -74,16 +91,4 @@
          });
 
        });
-
-       var localTime = new Date();
-       offset = localTime.getTimezoneOffset()
-
-       if (offset > 0) {
-           alert("You are " + offset / 60 + " hours behind server time. \n\nPlease account for your local time for time selection, as the community is not based off it.")
-       }
-
-       if (offset < 0) {
-           alert("You are " + offset / 60 + " ahead server time. \n\nPlease account for your local time for time selection, as the community is not based off it.")
-       }
-
    </script>
