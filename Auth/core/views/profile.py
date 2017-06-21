@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from core.models import Profile, Notification, Game, Event
 from . import base
-## PROFILES 
+## PROFILES
 def all_profiles(request):
     if request.user.is_authenticated():
         user = request.user
@@ -166,5 +166,3 @@ def profile_remove_game(request, pk, game):
         profile.games.remove(Game.objects.get(id=game))
         profile.save()
         return redirect('modify-profile', pk=pk)
-
-

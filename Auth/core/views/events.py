@@ -67,10 +67,12 @@ def create_event(request):
             title = request.POST.get('title')
             description = request.POST.get('description')
             notes = request.POST.get('notes')
-            game = request.POST.get('game') 
+            game = request.POST.get('game')
+            importance = request.POST.get('importance')
             group = Game.objects.get(pk=game).group
             event = Event(creator=request.user, date_occuring=date_occuring,
-                    title=title, description=description, notes=notes, group=group)
+                    title=title, description=description, importance=importance,
+                    notes=notes, group=group)
             event.save()
 
             return redirect('all-events')
@@ -87,6 +89,30 @@ def create_event(request):
         return redirect('login')
 
 def modify_event(request, pk):
-    pass
+    if request.user.is_authenticated():
+        user = request.user
+        event = get_object_or_404(Event, pk=pk)
+
+        if request.method == 'POST':
+            event.date_occuring = request.POST.get('date_occuring')
+            event.title = request.POST.get('title')
+            event.description = request.POST.get('description')
+            event.notes = request.POST.get('notes')
+            event.importance = request.POST.get('importance')
+            event.save()
+            return redirect('all-events')
+        else:
+            form = EventForm()
+        return render(
+                request,
+                'events/modify_event.html',
+                context={
+                    'form': form,
+                    'event': event,
+                    }
+                )
+    else:
+        return redirect('login')
+
 def delete_event(request, pk):
     pass
