@@ -19,5 +19,5 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^', include('core.urls')),
-    url(r'^eve-online/', include('eveonline.urls')),
+    url(r'^eve/', include('eveonline.urls')),
 ]
