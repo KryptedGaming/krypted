@@ -87,9 +87,17 @@
                 </li>
 -->
                 <li class="dropdown">
-                  {% if notifications.count == 0 or notifications == None %}  
+                  {% if notifications.count == 0 or notifications == None %}
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i style="" class="fa fa-bell"></i> <b class="caret"></b></a>
-                    
+
+                  <ul class="dropdown-menu alert-dropdown">
+                    <li><a href="">No unread notifications.</a></li>
+
+                    <li class="divider"></li>
+                      <li>
+                        <a href="#">View All</a>
+                      </li>
+                  </ul>
                   {% else %}
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i style="color: red;" class="fa fa-bell"></i> <b class="caret"></b></a>
 
@@ -100,13 +108,13 @@
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></a>
                     </li>
                     {% endfor %}
-                       
+
                     <li class="divider"></li>
                       <li>
                         <a href="#">View All</a>
-                      </li>   
+                      </li>
                   </ul>
- 
+
                   {% endif %}
                </li>
                 <li class="dropdown">
@@ -134,11 +142,11 @@
                       <a href="{% url 'dashboard' %}"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
                     </li>
 
-                    {% if profile != None %}       
+                    {% if profile != None %}
                     <li>
                       <a href="{% url 'all-events' %}"><i class="fa fa-fw fa-calendar"></i> Events</a>
                     </li>
-                                  
+
                     <li>
                         <a href="javascript:;" data-toggle="collapse" data-target="#game_menu"><i class="fa fa-fw fa-user"></i> Games <i class="fa fa-fw fa-caret-down"></i></a>
                         <ul id="game_menu" class="collapse">

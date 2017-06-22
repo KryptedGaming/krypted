@@ -21,6 +21,13 @@ class Notification(models.Model):
     def __str__(self):
         return self.title
 
+    def mark_read(self):
+        try:
+            read = True
+            return True
+        except:
+            pass
+            
 class Profile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     biography = models.CharField(max_length=1500, blank=True, null=True)
