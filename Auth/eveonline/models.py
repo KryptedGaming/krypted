@@ -30,6 +30,30 @@ class Token(models.Model):
 
         return data
 
+    def refresh(self):
+
+        try:
+            esi_app = App.create('https://esi.tech.ccp.is/latest/swagger.json?datasource=tranquility')
+
+            esi_security = EsiSecurity(
+                app=esi_app,
+                redirect_uri=settings.ESI_CALLBACK_URL,
+                client_id=settings.ESI_CLIENT_ID,
+                secret_key=settings.ESI_SECRET_KEY,
+            )
+
+            esi_client = EsiClient(esi_security)
+
+            esi_security.update_token(self.populate())
+
+            new_token = esi_security.refresh()
+            self.access_token = new_token['access_token']
+            self.refresh_token = new_token['refresh_token']
+            return True
+
+        except:
+            self.delete()
+            return False
 
 class EveCharacter(models.Model):
     character_name = models.CharField(max_length=256, primary_key=True)
@@ -46,3 +70,27 @@ class EveCharacter(models.Model):
 
     def __str__(self):
         return self.character_name
+
+    def update_portrait(self):
+        try:
+            esi_app = App.create('https://esi.tech.ccp.is/latest/swagger.json?datasource=tranquility')
+
+            esi_security = EsiSecurity(
+                app=esi_app,
+                redirect_uri=settings.ESI_CALLBACK_URL,
+                client_id=settings.ESI_CLIENT_ID,
+                secret_key=settings.ESI_SECRET_KEY,
+            )
+
+            esi_client = EsiClient(esi_security)
+
+            esi_security.update_token(self.populate())
+
+            new_token = esi_security.refresh()
+            self.access_token = new_token['access_token']
+            self.refresh_token = new_token['refresh_token']
+            return True
+
+        except:
+            self.delete()
+            return False
