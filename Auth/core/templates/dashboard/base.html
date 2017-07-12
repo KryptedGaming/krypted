@@ -148,22 +148,26 @@
                     </li>
 
                     <li>
-                        <a href="javascript:;" data-toggle="collapse" data-target="#game_menu"><i class="fa fa-fw fa-user"></i> Games <i class="fa fa-fw fa-caret-down"></i></a>
-                        <ul id="game_menu" class="collapse">
-                          {% for game in profile.games.all %}
+                        <a href="javascript:;" data-toggle="collapse" data-target="#guild_menu"><i class="fa fa-fw fa-user"></i> Guilds <i class="fa fa-fw fa-caret-down"></i></a>
+                        <ul id="guild_menu" class="collapse">
+                          {% if profile.guilds.all.count > 0 %}
+                          {% for guild in profile.guilds.all %}
                           <li>
-                            <a href="/{{game.slug}}/">{{game.title}}</a>
+                            <a href="/{{guild.slug}}/">{{guild.title}}</a>
                           </li>
                           {% endfor %}
+                          {% else %}
+                          <li><a href="#">No guilds found.</a></li>
+                          {% endif %}
                         </ul>
                     </li>
 
-                    {% else %}
+                  {% else %}
                     <li>
                       <a href="{% url 'create-profile' %}"><i class="fa fa-fw fa-plus"></i> Create Profile</a>
                     </li>
 
-                    {% endif %}
+                  {% endif %}
 
                 </ul>
             </div>

@@ -1,10 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import User, Group
 
+
 class Game(models.Model):
     title = models.CharField(max_length=24, unique=True)
     leadership = models.ManyToManyField(User)
-    source = models.URLField(max_length=256, blank=True, null=True)
+    def __str__(self):
+        return self.title
+
+class Guild(Game):
+    image = models.URLField(max_length=256, blank=True, null=True)
     group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True, blank=True)
     slug = models.CharField(max_length=24, blank=True, null=True)
 
@@ -27,7 +32,7 @@ class Notification(models.Model):
             return True
         except:
             pass
-            
+
 class Profile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     biography = models.CharField(max_length=1500, blank=True, null=True)
