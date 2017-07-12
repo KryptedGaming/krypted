@@ -63,7 +63,7 @@ class EveCharacter(models.Model):
     token = models.OneToOneField("Token", on_delete=models.CASCADE)
 
     ## CORE
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     ## ALTERNATE CHARACTER
     main = models.ManyToManyField("EveCharacter", blank=True, null=True)
