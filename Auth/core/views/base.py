@@ -9,9 +9,17 @@ from core.models import Profile, Notification, Game, Event
 ## BASE
 @login_required
 def dashboard(request):
+    context = get_global_context(request)
+    return render(request, 'dashboard/dashboard.html', context)
+
+## MISC
+def no_permissions(request):
+    return render(request, 'misc/no_permissions.html', context={})
+
+def get_global_context(request):
     user = request.user
 
-    # Get User Profile
+    # Get Profile
     if Profile.objects.filter(user=user).count() > 0:
         profile = Profile.objects.get(user=user)
     else:
@@ -23,16 +31,10 @@ def dashboard(request):
     else:
         notifications = None
 
-    return render(
-            request,
-            'dashboard/dashboard.html',
-            context={
-                'user': user,
-                'notifications': notifications,
-                'profile' : profile
-                }
-            )
+    context = {
+        'user': user,
+        'notifications': notifications,
+        'profile': profile,
+    }
 
-## MISC
-def no_permissions(request):
-    return render(request, 'misc/no_permissions.html', context={})
+    return context
