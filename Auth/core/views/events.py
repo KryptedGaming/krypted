@@ -3,126 +3,120 @@ from django.core.urlresolvers import reverse
 from core.forms import EventForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
+from core.decorators import login_required
 from core.models import Profile, Notification, Game, Event
 from . import base
 from datetime import datetime
 ## EVENTS
+@login_required
 def all_events(request):
-    if request.user.is_authenticated():
-        user = request.user
-        user_profile = Profile.objects.get(user=user)
-        notifications = Notification.objects.filter(user=user)
+    user = request.user
+    user_profile = Profile.objects.get(user=user)
+    notifications = Notification.objects.filter(user=user)
 
-        group_tabs = []
-        groups = user.groups.all()
-        events = Event.objects.filter(group__in=groups).exclude(date_occuring__lte=datetime.now()).order_by('date_occuring')
-        # Populate list of groups for pills
-        for event in events:
-            if event.group.name in group_tabs:
-                pass
-            else:
-                group_tabs.append(event.group.name)
+    group_tabs = []
+    groups = user.groups.all()
+    events = Event.objects.filter(group__in=groups).exclude(date_occuring__lte=datetime.now()).order_by('date_occuring')
+    # Populate list of groups for pills
+    for event in events:
+        if event.group.name in group_tabs:
+            pass
+        else:
+            group_tabs.append(event.group.name)
 
+    return render(
+            request,
+            'events/all_events.html',
+            context={
+                'user': user,
+                'profile': user_profile,
+                'notifications': notifications,
+                'events': events,
+                'groups': group_tabs
+                }
+            )
+
+@login_required
+def view_event(request, pk):
+    user = request.user
+    user_profile = Profile.objects.get(user=user)
+    notifications = Notification.objects.filter(user=user)
+
+    event = get_object_or_404(Event, pk=pk)
+    if event.group in user.groups.all():
         return render(
                 request,
-                'events/all_events.html',
+                'events/view_event.html',
                 context={
                     'user': user,
                     'profile': user_profile,
                     'notifications': notifications,
-                    'events': events,
-                    'groups': group_tabs
+                    'event': event
                     }
                 )
     else:
-        return redirect('login')
+        return redirect('no_permissions')
 
-def view_event(request, pk):
-    if request.user.is_authenticated():
-        user = request.user
-        user_profile = Profile.objects.get(user=user)
-        notifications = Notification.objects.filter(user=user)
-
-        event = get_object_or_404(Event, pk=pk)
-        if event.group in user.groups.all():
-            return render(
-                    request,
-                    'events/view_event.html',
-                    context={
-                        'user': user,
-                        'profile': user_profile,
-                        'notifications': notifications,
-                        'event': event
-                        }
-                    )
-        else:
-            return redirect('no_permissions')
-
+@login_required
 def create_event(request):
-    if request.user.is_authenticated():
-        user = request.user
+    user = request.user
 
-        if request.method == 'POST':
-            date_occuring = request.POST.get('date_occuring')
-            title = request.POST.get('title')
-            description = request.POST.get('description')
-            notes = request.POST.get('notes')
-            game = request.POST.get('game')
-            importance = request.POST.get('importance')
-            group = Game.objects.get(pk=game).group
-            event = Event(creator=request.user, date_occuring=date_occuring,
-                    title=title, description=description, importance=importance,
-                    notes=notes, group=group)
-            event.save()
+    if request.method == 'POST':
+        date_occuring = request.POST.get('date_occuring')
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        notes = request.POST.get('notes')
+        game = request.POST.get('game')
+        importance = request.POST.get('importance')
+        group = Game.objects.get(pk=game).group
+        event = Event(creator=request.user, date_occuring=date_occuring,
+                title=title, description=description, importance=importance,
+                notes=notes, group=group)
+        event.save()
 
-            return redirect('all-events')
-        else:
-            form = EventForm()
-        return render(
-                request,
-                'events/create_event.html',
-                context={
-                    'form': form,
-                    }
-                )
+        return redirect('all-events')
     else:
-        return redirect('login')
+        form = EventForm()
+    return render(
+            request,
+            'events/create_event.html',
+            context={
+                'form': form,
+                }
+            )
 
+@login_required
 def modify_event(request, pk):
-    if request.user.is_authenticated():
-        user = request.user
-        event = get_object_or_404(Event, pk=pk)
+    user = request.user
+    event = get_object_or_404(Event, pk=pk)
 
-        if request.method == 'POST':
-            event.date_occuring = request.POST.get('date_occuring')
-            event.title = request.POST.get('title')
-            event.description = request.POST.get('description')
-            event.notes = request.POST.get('notes')
-            event.importance = request.POST.get('importance')
-            event.save()
-            return redirect('all-events')
-        else:
-            form = EventForm()
-        return render(
-                request,
-                'events/modify_event.html',
-                context={
-                    'form': form,
-                    'event': event,
-                    }
-                )
+    if request.method == 'POST':
+        event.date_occuring = request.POST.get('date_occuring')
+        event.title = request.POST.get('title')
+        event.description = request.POST.get('description')
+        event.notes = request.POST.get('notes')
+        event.importance = request.POST.get('importance')
+        event.save()
+        return redirect('all-events')
     else:
-        return redirect('login')
+        form = EventForm()
+    return render(
+            request,
+            'events/modify_event.html',
+            context={
+                'form': form,
+                'event': event,
+                }
+            )
 
+@login_required
 def delete_event(request, pk):
-    if request.user.is_authenticated():
-        user = request.user
+    user = request.user
 
-        if user.has_perm('core.delete_event'):
-            event = Event.objects.get(pk=pk)
-            event.delete()
-            return redirect('all-events')
-        else:
-            return redirect('no_permissions')
+    if user.has_perm('core.delete_event'):
+        event = Event.objects.get(pk=pk)
+        event.delete()
+        return redirect('all-events')
     else:
-        return redirect('login')
+        return redirect('no_permissions')
+

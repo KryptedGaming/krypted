@@ -37,7 +37,8 @@ class Profile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     biography = models.CharField(max_length=1500, blank=True, null=True)
     points = models.IntegerField(default=0)
-    games = models.ManyToManyField('Game')
+    games = models.ManyToManyField('Game', related_name='games')
+    guilds = models.ManyToManyField('Guild', related_name='guilds')
     active = models.BooleanField(default=True)
 
     # Social
