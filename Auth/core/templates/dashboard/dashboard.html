@@ -5,13 +5,12 @@ Dashboard
 {% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="container">
-        <div class="col-md-10">
-            <div style="padding: 10px 10px 10px 10px" class="card text-center">
-                    <h4 class="text-center">Account Setup</h4>
-                <div id="chart" class="ct-chart ct-golden-section ct-negative-labels"></div>
-            </div>
+
+<div class="col-md-10 col-md-offset-1">
+    <div class="card">
+        <div style="padding: 10px 10px 10px 10px" class="card text-center">
+                <h4 class="text-center">Account Setup</h4>
+            <div id="chart" class="ct-chart ct-golden-section ct-negative-labels"></div>
         </div>
     </div>
 </div>
@@ -31,14 +30,14 @@ Dashboard
     progress_label = progress + "%" + " Complete"
     progress_remaining_label = 100 - progress + "% Remaining"
     new Chartist.Pie('.ct-chart', {
-        labels: [progress_label, progress_remaining_label],
-        series: [progress, 100 - progress]
+    series: [progress, 100-progress],
+    labels: [progress_label, " "]
     }, {
-        donut: true,
-        donutWidth: 100,
-        startAngle: 270,
-        total: 100,
-        showLabel: true
+      donut: true,
+      donutWidth: 80,
+      startAngle: 270,
+      total: 200,
+      showLabel: true
     });
 </script>
 {% endblock %}

@@ -158,13 +158,13 @@
                 </div>
             </div>
         </nav>
-		
+
 		<!--   Core JS Files   -->
 		<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 		<!--  Checkbox, Radio & Switch Plugins -->
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/js/bootstrap-switch.min.js"></script>
+		<script src="{% static "dashboard/js/bootstrap-checkbox-radio-switch.min.js" %}"></script>
 
 		<!--  Charts Plugin -->
 		<script src="{% static "dashboard/js/chartist.min.js" %}"></script>
@@ -191,10 +191,10 @@
 
 
         <div class="content">
-            <div class="container-fluid">
+
 				{% block content %}
 				{% endblock %}
-            </div>
+
         </div>
 
 
