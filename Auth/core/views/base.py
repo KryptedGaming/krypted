@@ -27,7 +27,7 @@ def get_global_context(request):
 
     # Get Notifications
     if Notification.objects.filter(user=user).count() > 0:
-        notifications = Notification.objects.filter(user=user)
+        notifications = Notification.objects.filter(user=user, read=False)
     else:
         notifications = None
 
