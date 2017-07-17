@@ -50,11 +50,11 @@
                           <div class="input-group">
                             <span class="input-group-addon">
                               {% if game not in profile.games.all %}
-                              <button onclick="location.href='/profile/{{profile.id}}/add-game/name={{game.id}}'" type="button" class="btn btn-success btn-xs">
+                              <button onclick="location.href='/profile/add-game/name={{game.id}}'" type="button" class="btn btn-success btn-xs">
                                 <i class="fa fa-plus"></i>
                               </button>
                               {% else %}
-                              <button onclick="location.href='/profile/{{profile.id}}/remove-game/name={{game.id}}'" type="button" class="btn btn-danger btn-xs">
+                              <button onclick="location.href='/profile/remove-game/name={{game.id}}'" type="button" class="btn btn-danger btn-xs">
                                 <i class="fa fa-times"></i>
                               </button>
                               {% endif %}
@@ -62,9 +62,28 @@
                             <input id="text" type="text" class="form-control" name="remove-game" value="{{game.title}}" disabled>
                           </div>
                           {% endfor %}
-
                         </div>
-                        
+
+                        <div class="input-group">
+                          <h3 style="color: white">Guilds</h3>
+                          {% for guild in guilds %}
+                          <div class="input-group">
+                            <span class="input-group-addon">
+                              {% if guild not in profile.guilds.all %}
+                              <button onclick="location.href='/{{guild.slug}}/'" type="button" class="btn btn-success btn-xs">
+                                <i class="fa fa-plus"></i>
+                              </button>
+                              {% else %}
+                              <button onclick="location.href='/profile/remove-guild/name={{guild.id}}'" type="button" class="btn btn-danger btn-xs">
+                                <i class="fa fa-times"></i>
+                              </button>
+                              {% endif %}
+                            </span>
+                            <input id="text" type="text" class="form-control" name="remove-guild" value="{{guild.title}}" disabled>
+                          </div>
+                          {% endfor %}
+                        </div>
+
                         <div class="input-group">
                             <span class="input-group-addon"><i class="fa fa-twitter"></i></span>
                             <input id="text" type="text" class="form-control" name="twitter" placeholder="Twitter" disabled>
@@ -74,12 +93,12 @@
                             <span class="input-group-addon"><i class="fa fa-reddit"></i></span>
                             <input id="password" type="password" class="form-control" name="password" placeholder="Reddit" disabled>
                         </div>
-                        
+
                         <div class="input-group">
                             <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
                             <input id="password" type="password" class="form-control" name="password" placeholder="Discord" disabled>
-                        </div> 
-                        
+                        </div>
+
                         <div class="form-group">
                             <!-- Button -->
                             <div class="col-sm-12 controls login-btn">

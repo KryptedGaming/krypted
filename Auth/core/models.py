@@ -7,6 +7,11 @@ class Game(models.Model):
     leadership = models.ManyToManyField(User)
     def __str__(self):
         return self.title
+    def is_guild(self):
+        if Guild.objects.filter(pk=self.pk).count() > 0:
+            return True
+        else:
+            return False
 
 class Guild(Game):
     image = models.URLField(max_length=256, blank=True, null=True)

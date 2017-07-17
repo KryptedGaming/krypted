@@ -3,43 +3,25 @@ from django.core.urlresolvers import reverse
 from core.forms import LoginForm, RegisterForm, ProfileForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
-from core.models import Profile, Notification, Game, Event
+from core.models import Profile, Notification, Game, Event, Guild
 from . import base
 from core.decorators import login_required
+from core.views.base import get_global_context
 
 ## PROFILES
 @login_required
 def all_profiles(request):
+    context = get_global_context(request)
     user = request.user
-    profile = Profile.objects.get(user=user)
-    notifications = Notification.objects.filter(user=user)
     if user.groups.filter(name__in=['Officer', 'Leadership', 'Admin']).exists():
-        return render(
-                request,
-                'profiles/all_profiles.html',
-                context={
-                    'profiles': Profile.objects.all(),
-                    'profile': profile,
-                    'notifications': notifications,
-                    }
-                )
+        return render(request, 'profiles/all_profiles.html',context)
     else:
         return redirect('no_permissions')
 
 @login_required
 def view_profile(request, pk):
-    user = request.user
-    user_profile = Profile.objects.get(user=user)
-    notifications = Notification.objects.filter(user=user)
-    return render(
-            request,
-            'profiles/view_profile.html',
-            context={
-                'user_profile': user_profile,
-                'notifications': notifications,
-                'profile': Profile.objects.get(pk=pk),
-                }
-            )
+    context = get_global_context(request)
+    return render(request, 'profiles/view_profile.html', context)
 
 @login_required
 def create_profile(request):
@@ -80,9 +62,7 @@ def create_profile(request):
 
 @login_required
 def delete_profile(request, pk):
-    user = request.user
-    user_profile = Profile.objects.get(user=user)
-    notifications = Notification.objects.filter(user=user)
+    user_profile = Profile.objects.get(user=request.user)
 
     if user_profile == Profile.objects.get(pk=pk):
         user_profile.delete()
@@ -92,69 +72,60 @@ def delete_profile(request, pk):
 
 @login_required
 def modify_profile(request, pk):
-    user = request.user
-    user_profile = Profile.objects.get(user=user)
-    notifications = Notification.objects.filter(user=user)
+    context = get_global_context(request)
 
-    # Build list of currently added
-    game_list = []
-    for game in user_profile.games.all():
-        game_list.append(game.title)
-    games = Game.objects.exclude(title__in=game_list)
+    # Build list of guilds
+    guild_list = []
+    for game in context['profile'].games.all():
+        if game.is_guild():
+            print("Adding " + game.title + " to exclude list.")
+            guild_list.append(game.title)
+    games = Game.objects.exclude(title__in=guild_list)
 
     if request.method == 'POST':
         form = ProfileForm(request.POST)
         if form.is_valid():
-            user_profile.biography = request.POST.get('biography')
-            user_profile.twitter = request.POST.get('twitter')
-            user_profile.steam = request.POST.get('steam')
-            user_profile.blizzard = request.POST.get('blizzard')
-            user_profile.save()
+            context['profile'].biography = request.POST.get('biography')
+            context['profile'].twitter = request.POST.get('twitter')
+            context['profile'].steam = request.POST.get('steam')
+            context['profile'].blizzard = request.POST.get('blizzard')
+            context['profile'].save()
             return redirect('view-profile', pk=user_profile.id)
     else:
         form = ProfileForm()
 
+    context['form'] = form
+    context['games'] = games
+    context['guilds'] = Guild.objects.all()
     return render(
             request,
             'profiles/modify_profile.html',
-            context={
-                'form': form,
-                'biography': user_profile.biography,
-                'twitter': user_profile.twitter,
-                'steam': user_profile.steam,
-                'blizzard': user_profile.blizzard,
-                'games': Game.objects.all(),
-                'profile': user_profile,
-                'user': user
-                }
+            context
             )
 
 @login_required
-def profile_add_game(request, pk, game):
-    user = request.user
-    passed_profile = Profile.objects.get(pk=pk)
-    user_profile = Profile.objects.get(user=user)
-    if passed_profile.id != user_profile.id:
-        print(passed_profile.id)
-        print(user_profile.id)
-        return redirect('no_permissions')
-
-    profile = Profile.objects.get(pk=pk)
+def profile_add_game(request, game):
+    profile = Profile.objects.get(user=request.user)
     profile.games.add(Game.objects.get(id=game))
     profile.save()
-    return redirect('modify-profile', pk=pk)
+    return redirect('modify-profile', pk=profile.pk)
 
 @login_required
-def profile_remove_game(request, pk, game):
-    user = request.user
-    passed_profile = Profile.objects.get(pk=pk)
-    user_profile = Profile.objects.get(user=user)
-    if passed_profile.id != user_profile.id:
-        print(passed_profile.id)
-        print(user_profile.id)
-        return redirect('no_permissions')
-
-    profile = Profile.objects.get(pk=pk)
+def profile_remove_game(request, game):
+    profile = Profile.objects.get(user=request.user)
     profile.games.remove(Game.objects.get(id=game))
     profile.save()
-    return redirect('modify-profile', pk=pk)
+    return redirect('modify-profile', pk=profile.pk)
+
+@login_required
+def profile_add_guild(request, guild):
+    profile = Profile.objects.get(user=request.user)
+    profile.guilds.add(Guild.objects.get(id=guild))
+    profile.save()
+    return redirect('modify-profile', pk=profile.pk)
+@login_required
+def profile_remove_guild(request, guild):
+    profile = Profile.objects.get(user=request.user)
+    profile.guilds.remove(Guild.objects.get(id=guild))
+    profile.save()
+    return redirect('modify-profile', pk=profile.pk)

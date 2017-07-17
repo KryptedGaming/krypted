@@ -1,14 +1,14 @@
 from django.shortcuts import render
 from eveonline.models import Token, EveCharacter
 from django.contrib.auth.models import User, Group
-from core.models import Game
+from core.models import Guild
 
 # Create your views here.
 def dashboard(request):
     if request.user.is_authenticated():
         user = request.user
-        game = Game.objects.get(title="EVE Online")
-        if game.group in user.groups.all():
+        guild = Guild.objects.get(title="EVE Online")
+        if guild.group in user.groups.all():
             member = True
             print("True")
         else:

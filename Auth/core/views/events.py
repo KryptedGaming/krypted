@@ -39,7 +39,7 @@ def view_event(request, pk):
     context = get_global_context(request)
     event = get_object_or_404(Event, pk=pk)
     context['event'] = event
-    if event.group in user.groups.all():
+    if event.group in request.user.groups.all():
         return render(
                 request,
                 'events/view_event.html',

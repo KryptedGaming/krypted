@@ -22,10 +22,14 @@ urlpatterns += [
     url(r'^profile/delete/(?P<pk>\d+)/$', profile.delete_profile, name='delete-profile'),
     url(r'^profile/modify/(?P<pk>\d+)/$', profile.modify_profile, name='modify-profile'),
     # HELPERS
-    url(r'^profile/(?P<pk>\d+)/add-game/name=(?P<game>\d+)/$',
+    url(r'^profile/add-game/name=(?P<game>\d+)/$',
         profile.profile_add_game, name='profile-add-game'),
-    url(r'^profile/(?P<pk>\d+)/remove-game/name=(?P<game>\d+)/$',
+    url(r'^profile/remove-game/name=(?P<game>\d+)/$',
         profile.profile_remove_game, name='profile-remove-game'),
+    url(r'^profile/add-guild/name=(?P<guild>\d+)/$',
+        profile.profile_add_guild, name='profile-add-guild'),
+    url(r'^profile/remove-guild/name=(?P<guild>\d+)/$',
+        profile.profile_remove_guild, name='profile-remove-guild'),
 ]
 
 ## EVENTS
@@ -39,11 +43,13 @@ urlpatterns += [
 
 ## NOTIFICATIONS
 urlpatterns += [
-    url(r'^notifications/user/(?P<username>\w+)/$', notifications.all_notifications, name='all-notifications'),
-    url(r'^notification/view/(?P<pk>\d+)/$', notifications.view_notification, name='view-notification'),
-    url(r'^notification/create/$', notifications.create_notification, name='create-notification'),
-    url(r'^notification/delete/(?P<pk>\d+)/$', notifications.delete_notification, name='delete-notification'),
-    url(r'^notification/modify/(?P<pk>\d+)/$', notifications.modify_notification, name='modify-notification'),
+
+    url(r'^notifications/read/redirect=(?P<path>\w+)/$', notifications.read_notifications, name='read-notifications'),
+#     url(r'^notifications/user/(?P<username>\w+)/$', notifications.all_notifications, name='all-notifications'),
+#     url(r'^notifications/view/(?P<pk>\d+)/$', notifications.view_notification, name='view-notification'),
+#     url(r'^notifications/create/$', notifications.create_notification, name='create-notification'),
+#     url(r'^notifications/delete/(?P<pk>\d+)/$', notifications.delete_notification, name='delete-notification'),
+#     url(r'^notifications/modify/(?P<pk>\d+)/$', notifications.modify_notification, name='modify-notification'),
 ]
 
 ### GAMES
