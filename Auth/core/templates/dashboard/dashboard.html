@@ -1,36 +1,44 @@
 {% extends "dashboard/base.html" %}
+{% load staticfiles %}
+{% block brand %}
+Dashboard
+{% endblock %}
 
 {% block content %}
-    <!-- Page Heading -->
-    <div class="row">
-        <div class="col-lg-12">
-            <h1 class="page-header">
-                Dashboard <small>Overview</small>
-            </h1>
-        </div>
-    </div>
-    <!-- /.row -->
-
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="alert alert-info alert-dismissable">
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                <i class="fa fa-info-circle"></i>  <strong>Blah blah?</strong> Blah blah <a href="kryptedgaming.com" class="alert-link">BLAH</a> blah blahblah blah!
+<div class="row">
+    <div class="container">
+        <div class="col-md-10">
+            <div style="padding: 10px 10px 10px 10px" class="card text-center">
+                    <h4 class="text-center">Account Setup</h4>
+                <div id="chart" class="ct-chart ct-golden-section ct-negative-labels"></div>
             </div>
         </div>
     </div>
-    <!-- /.row -->
+</div>
 
+<script>
+    var progress = 0;
+    {% if profile %}
+    progress += 25;
+    {% endif %}
+    {% if profile.games.count > 0 %}
+    progress += 25;
+    {% endif %}
+    {% if profile.guilds.count > 0 %}
+    progress += 25;
+    {% endif %}
 
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="panel panel-default">
-              <h1 style="text-align: center;">Hello {{user.username}}</h1>
-
-              <h3 style="text-align: center;">Some cool stuff will show up here shortly.</h3>
-            </div>
-        </div>
-    </div>
-    <!-- /.row -->
-
+    progress_label = progress + "%" + " Complete"
+    progress_remaining_label = 100 - progress + "% Remaining"
+    new Chartist.Pie('.ct-chart', {
+        labels: [progress_label, progress_remaining_label],
+        series: [progress, 100 - progress]
+    }, {
+        donut: true,
+        donutWidth: 100,
+        startAngle: 270,
+        total: 100,
+        showLabel: true
+    });
+</script>
 {% endblock %}

@@ -3,10 +3,10 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
-	<link rel="icon" type="image/png" href="static/img/favicon.ico">
+	<link rel="icon" type="image/png" href="{% static "dashboard/img/favicon.ico" %}">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-	<title>Krypted Auth</title>
+	<title>Krypted Gaming - Auth</title>
 
 	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <meta name="viewport" content="width=device-width" />
@@ -39,7 +39,7 @@
             </div>
 
             <ul class="nav">
-                <li class="active">
+                <li {% if request.path == '/' %} class="active" {% endif %}>
                     <a href="dashboard.html">
                         <i class="pe-7s-graph"></i>
                         <p>Dashboard</p>
@@ -72,7 +72,11 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#">Dashboard</a>
+                    <a class="navbar-brand" href="#">
+						{% block brand %}
+
+						{% endblock %}
+					</a>
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-left">
@@ -82,17 +86,23 @@
                               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     <i class="fa fa-globe"></i>
                                     <b class="caret hidden-sm hidden-xs"></b>
-                                    <span class="notification hidden-sm hidden-xs">5</span>
+									{% if notifications.count > 0 %}
+                                    <span class="notification hidden-sm hidden-xs">{{notifications.count}}</span>{%endif%}
 									<p class="hidden-lg hidden-md">
-										5 Notifications
+										Notifications
 										<b class="caret"></b>
 									</p>
                               </a>
                               <ul class="dropdown-menu">
-                                <li><a href="#">Notification 1</a></li>
-                                <li><a href="#">Notification 2</a></li>
-                                <li><a href="#">Notification 3</a></li>
-                                <li><a href="#">Notification 4</a></li>
+								<br>
+								{% if notifications %}
+								{% for notification in notifications %}
+                                <li><a href="#"><span class="label label-default">{{notification.title}}</span> {{notification.text}}</a></li>
+                                {% endfor %}
+								{% else %}
+								<br>
+								<li><a href="#">No unread notifications.</a></li>
+								{% endif %}
 								<li class="divider"></li>
                                 <li><a href="#">View All</a></li>
 								<br>
@@ -104,17 +114,23 @@
                               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     <i class="fa fa-envelope"></i>
                                     <b class="caret hidden-sm hidden-xs"></b>
-                                    <span class="notification hidden-sm hidden-xs">5</span>
+									{% if notifications.count > 0 %}
+                                    <span class="notification hidden-sm hidden-xs">{{notifications.count}}</span>{%endif%}
 									<p class="hidden-lg hidden-md">
-										5 Notifications
+										Notifications
 										<b class="caret"></b>
 									</p>
                               </a>
                               <ul class="dropdown-menu">
-                                <li><a href="#">Notification 1</a></li>
-                                <li><a href="#">Notification 2</a></li>
-                                <li><a href="#">Notification 3</a></li>
-                                <li><a href="#">Notification 4</a></li>
+								<br>
+								{% if notifications %}
+								{% for notification in notifications %}
+                                <li><a href="#"><span class="label label-default">{{notification.title}}</span> {{notification.text}}</a></li>
+                                {% endfor %}
+								{% else %}
+								<br>
+								<li><a href="#">No unread notifications.</a></li>
+								{% endif %}
 								<li class="divider"></li>
                                 <li><a href="#">View All</a></li>
 								<br>
@@ -142,10 +158,42 @@
                 </div>
             </div>
         </nav>
+		
+		<!--   Core JS Files   -->
+		<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+		<!--  Checkbox, Radio & Switch Plugins -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/js/bootstrap-switch.min.js"></script>
+
+		<!--  Charts Plugin -->
+		<script src="{% static "dashboard/js/chartist.min.js" %}"></script>
+
+		<!--  Notifications Plugin    -->
+		<script src="{% static "dashboard/js/bootstrap-notify.min.js" %}"></script>
+
+		<!-- JS-->
+		<script src="{% static "dashboard/js/base.js" %}"></script>
+
+		<script type="text/javascript">
+			$(document).ready(function(){
+
+				$.notify({
+					message: "Welcome to <b>Light Bootstrap Dashboard</b> - a beautiful freebie for every web developer."
+
+				},{
+					type: 'info',
+					timer: 4000
+				});
+
+			});
+		</script>
 
 
         <div class="content">
             <div class="container-fluid">
+				{% block content %}
+				{% endblock %}
             </div>
         </div>
 
@@ -188,34 +236,5 @@
 
 </body>
 
-    <!--   Core JS Files   -->
-	<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
-	<!--  Checkbox, Radio & Switch Plugins -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/js/bootstrap-switch.min.js"></script>
-
-	<!--  Charts Plugin -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/chartist/0.11.0/chartist.js"></script>
-
-    <!--  Notifications Plugin    -->
-    <script src="{% static "dashboard/js/bootstrap-notify.min.js" %}"></script>
-
-    <!-- JS-->
-	<script src="{% static "dashboard/js/base.js" %}"></script>
-
-	<script type="text/javascript">
-    	$(document).ready(function(){
-
-        	$.notify({
-            	message: "Welcome to <b>Light Bootstrap Dashboard</b> - a beautiful freebie for every web developer."
-
-            },{
-                type: 'info',
-                timer: 4000
-            });
-
-    	});
-	</script>
 
 </html>
