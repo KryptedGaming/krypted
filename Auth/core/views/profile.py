@@ -25,12 +25,14 @@ def profile(request):
     if request.method == 'POST':
         form = ProfileForm(request.POST)
         if form.is_valid():
+            print("valid")
             context['profile'].biography = request.POST.get('biography')
-            context['profile'].twitter = request.POST.get('twitter')
-            context['profile'].steam = request.POST.get('steam')
-            context['profile'].blizzard = request.POST.get('blizzard')
+            context['profile'].timezone = request.POST.get('timezone')
+            context['profile'].user.first_name = request.POST.get('first_name')
+            context['profile'].user.email = request.POST.get('email')
             context['profile'].save()
-            return redirect('view-profile')
+            context['profile'].user.save()
+            return redirect('profile')
     else:
         form = ProfileForm()
 

@@ -15,7 +15,8 @@
 
                             <div class="content">
                                 <br>
-                                <form>
+                                <form name="form" enctype="multipart/form-data" method="POST">
+                                    {% csrf_token %}
                                     <div class="row">
                                         <div class="col-md-3">
                                             <div class="form-group">
@@ -25,8 +26,8 @@
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label for="exampleInputEmail1">Email address</label>
-                                                <input type="email" class="form-control" value="{{user.email}}">
+                                                <label>Email address</label>
+                                                <input type="email" name="email" class="form-control" value="{{user.email}}">
                                             </div>
                                         </div>
                                     </div>
@@ -34,13 +35,16 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>First Name</label>
-                                                <input type="text" class="form-control" placeholder="First Name" value="{{user.first_name}}">
+                                                <input type="text" class="form-control" name="first_name" placeholder="First Name" value="{{user.first_name}}">
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>Timezone</label>
-                                                <input type="text" class="form-control" placeholder="When you play" value="{{profile.timezone}}">
+                                                <select class="form-control" name="timezone">
+                                                    <option value="EU">EU</option>
+                                                    <option value="US">US</option>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
@@ -48,7 +52,7 @@
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label>About Me</label>
-                                                <textarea rows="5" class="form-control" placeholder="A bit about you.">{{profile.biography}}</textarea>
+                                                <textarea rows="5" class="form-control" name="biography" placeholder="A bit about you.">{{profile.biography}}</textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -75,7 +79,7 @@
                                       </h4>
                                     </a>
                                 </div>
-                                <p class="description text-center"> {{profile.biography}}
+                                <p style="word-wrap: break-word;" class="description text-center"> {{profile.biography}}
                                 </p>
                             </div>
                             <hr>
