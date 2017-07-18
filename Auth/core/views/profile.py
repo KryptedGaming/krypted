@@ -19,9 +19,23 @@ def all_profiles(request):
         return redirect('no_permissions')
 
 @login_required
-def view_profile(request, pk):
+def profile(request):
     context = get_global_context(request)
-    return render(request, 'profiles/view_profile.html', context)
+
+    if request.method == 'POST':
+        form = ProfileForm(request.POST)
+        if form.is_valid():
+            context['profile'].biography = request.POST.get('biography')
+            context['profile'].twitter = request.POST.get('twitter')
+            context['profile'].steam = request.POST.get('steam')
+            context['profile'].blizzard = request.POST.get('blizzard')
+            context['profile'].save()
+            return redirect('view-profile')
+    else:
+        form = ProfileForm()
+
+    context['form'] = form
+    return render(request, 'profiles/profile.html', context)
 
 @login_required
 def create_profile(request):

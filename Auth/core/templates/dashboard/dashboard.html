@@ -6,11 +6,46 @@ Dashboard
 
 {% block content %}
 
-<div class="col-md-10 col-md-offset-1">
+<div id="account_setup" class="col-md-10 col-md-offset-1">
     <div class="card">
         <div style="padding: 10px 10px 10px 10px" class="card text-center">
                 <h4 class="text-center">Account Setup</h4>
             <div id="chart" class="ct-chart ct-golden-section ct-negative-labels"></div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-4 ">
+    <div class="card">
+        <div style="padding: 5px 5px 5px 5px" class="card text-center">
+                <h4 class="text-center">Guilds</h4>
+                <hr>
+                {% for guild in profile.guilds.all %}
+                <button onclick="location.href='/{{guild.slug}}/'" style="min-width: 75%;" class="btn btn-info btn-fill"><img style="float: left; width: 25px;" src="{{guild.image}}"/> {{guild.title}}</button>
+                <hr>
+                {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="col-md-4 ">
+    <div class="card">
+        <div style="padding: 5px 5px 5px 5px" class="card text-center">
+                <h4 class="text-center">Recent activity</h4>
+                <hr>
+                Under construction.
+                <hr>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-4 ">
+    <div class="card">
+        <div style="padding: 5px 5px 5px 5px" class="card text-center">
+                <h4 class="text-center">Stats</h4>
+                <hr>
+                Under construction.
+                <hr>
         </div>
     </div>
 </div>
@@ -27,17 +62,23 @@ Dashboard
     progress += 25;
     {% endif %}
 
-    progress_label = progress + "%" + " Complete"
-    progress_remaining_label = 100 - progress + "% Remaining"
-    new Chartist.Pie('.ct-chart', {
-    series: [progress, 100-progress],
-    labels: [progress_label, " "]
-    }, {
-      donut: true,
-      donutWidth: 80,
-      startAngle: 270,
-      total: 200,
-      showLabel: true
-    });
+    if (progress == 75) {
+        $('#account_setup').hide();
+    } else {
+        progress_label = progress + "%" + " Complete"
+        progress_remaining_label = 100 - progress + "% Remaining"
+        new Chartist.Pie('.ct-chart', {
+        series: [progress, 100-progress],
+        labels: [progress_label, " "]
+        }, {
+          donut: true,
+          donutWidth: 80,
+          startAngle: 270,
+          total: 200,
+          showLabel: true
+        });
+    }
+
+
 </script>
 {% endblock %}

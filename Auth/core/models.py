@@ -39,8 +39,13 @@ class Notification(models.Model):
             pass
 
 class Profile(models.Model):
+    timezone_choices = (
+        ("EU", "EU"),
+        ("US", "US")
+    )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     biography = models.CharField(max_length=1500, blank=True, null=True)
+    timezone = models.CharField(choices=timezone_choices, max_length=2, blank=True, null=True)
     points = models.IntegerField(default=0)
     games = models.ManyToManyField('Game', related_name='games')
     guilds = models.ManyToManyField('Guild', related_name='guilds')

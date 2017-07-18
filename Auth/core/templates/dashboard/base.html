@@ -40,7 +40,7 @@
 
             <ul class="nav">
                 <li {% if request.path == '/' %} class="active" {% endif %}>
-                    <a href="dashboard.html">
+                    <a href="{% url 'dashboard' %}">
                         <i class="pe-7s-graph"></i>
                         <p>Dashboard</p>
                     </a>
@@ -52,12 +52,6 @@
                     </a>
                 </li>
 				<li class="divider"></li>
-				<li class="">
-					<a href="#">
-						<i class="pe-7s-culture"></i>
-						<p>Guilds</p>
-					</a>
-				</li>
             </ul>
     	</div>
     </div>
@@ -142,15 +136,14 @@
                         <li class="dropdown">
                               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     <p>
-										Account
+										{{user.username|title}}
 										<b class="caret"></b>
 									</p>
                               </a>
                               <ul class="dropdown-menu">
-                                <li><a href="#">Profile</a></li>
-                                <li><a href="#">Settings</a></li>
+                                <li><a href="{% url 'profile' %}">Profile</a></li>
                                 <li class="divider"></li>
-                                <li><a href="#">Log out</a></li>
+                                <li><a href="{% url 'logout' %}">Log out</a></li>
                               </ul>
                         </li>
 						<li class="separator hidden-lg hidden-md"></li>
@@ -175,12 +168,13 @@
 		<!-- JS-->
 		<script src="{% static "dashboard/js/base.js" %}"></script>
 
+		{% if profile == None %}
 		<script type="text/javascript">
 			$(document).ready(function(){
 
 				$.notify({
-					message: "Welcome to <b>Light Bootstrap Dashboard</b> - a beautiful freebie for every web developer."
-
+					message: "You don't have a profile yet! Please <b>create one.</b>",
+					url : "{% url 'create-profile' %}"
 				},{
 					type: 'info',
 					timer: 4000
@@ -188,6 +182,7 @@
 
 			});
 		</script>
+		{% endif %}
 
 
         <div class="content">
