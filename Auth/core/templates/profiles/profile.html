@@ -1,6 +1,10 @@
 {% extends "dashboard/base.html" %}
 {% load staticfiles %}
 
+{% block brand %}
+My Profile
+{% endblock %}
+
 <div class="wrapper">
     {% block content %}
         <div class="content">
@@ -74,7 +78,7 @@
                                      <a href="#">
                                     <img class="avatar border-gray" src="{% static 'dashboard/img/default-avatar.png'%}"/>
 
-                                      <h4 class="title">{{user.username}}<br />
+                                      <h4 class="title">{{user.first_name}}<br />
                                          <small>{{user.username}}</small>
                                       </h4>
                                     </a>

@@ -45,24 +45,9 @@ def create_profile(request):
 
     if request.method == 'POST':
         biography = request.POST.get('biography')
-        game = request.POST.get('games')
-        twitter = request.POST.get('twitter')
-        steam = request.POST.get('steam')
-        blizzard = request.POST.get('blizzard')
+        timezone = request.POST.get('timezone')
 
-        profile = Profile(user=user)
-        profile.save()
-        if biography:
-            profile.biography = biography
-        if game:
-            profile.games.add(game)
-        if twitter:
-            profile.twitter = twitter
-        if steam:
-            profile.steam = steam
-        if blizzard:
-            profile.blizzard = blizzard
-
+        profile = Profile(user=user, biography=biography, timezone=timezone)
         profile.save()
 
         return redirect('dashboard')
@@ -85,39 +70,6 @@ def delete_profile(request, pk):
         return redirect('dashboard')
     else:
         return redirect('no_permissions')
-
-@login_required
-def modify_profile(request, pk):
-    context = get_global_context(request)
-
-    # Build list of guilds
-    guild_list = []
-    for game in context['profile'].games.all():
-        if game.is_guild():
-            print("Adding " + game.title + " to exclude list.")
-            guild_list.append(game.title)
-    games = Game.objects.exclude(title__in=guild_list)
-
-    if request.method == 'POST':
-        form = ProfileForm(request.POST)
-        if form.is_valid():
-            context['profile'].biography = request.POST.get('biography')
-            context['profile'].twitter = request.POST.get('twitter')
-            context['profile'].steam = request.POST.get('steam')
-            context['profile'].blizzard = request.POST.get('blizzard')
-            context['profile'].save()
-            return redirect('view-profile', pk=user_profile.id)
-    else:
-        form = ProfileForm()
-
-    context['form'] = form
-    context['games'] = games
-    context['guilds'] = Guild.objects.all()
-    return render(
-            request,
-            'profiles/modify_profile.html',
-            context
-            )
 
 @login_required
 def profile_add_game(request, game):
