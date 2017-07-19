@@ -37,6 +37,12 @@ class Notification(models.Model):
             return True
         except:
             pass
+    def notify_user(self, username):
+        try:
+            notification.user = User.objects.get(username=username)
+            notification.save()
+        except:
+            pass
 
 class Profile(models.Model):
     timezone_choices = (
