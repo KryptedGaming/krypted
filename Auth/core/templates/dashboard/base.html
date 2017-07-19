@@ -26,6 +26,12 @@
     <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
     <link href="{% static "dashboard/css/pe-icon-7-stroke.css" %}" rel="stylesheet" />
 
+		<style>
+			.dropdown-menu {
+				padding-top: 10px;
+				padding-bottom: 10px;
+			}
+		</style>
 </head>
 <body>
 
@@ -88,13 +94,11 @@
 									</p>
                               </a>
                               <ul class="dropdown-menu">
-								<br>
 								{% if notifications %}
 								{% for notification in notifications %}
                                 <li><a href="#"><span class="label label-default">{{notification.title}}</span> {{notification.text}}</a></li>
                                 {% endfor %}
 								{% else %}
-								<br>
 								<li><a href="#">No unread notifications.</a></li>
 								{% endif %}
 								<li class="divider"></li>
@@ -116,13 +120,13 @@
 									</p>
                               </a>
                               <ul class="dropdown-menu">
-								<br>
+
 								{% if notifications %}
 								{% for notification in notifications %}
                                 <li><a href="#"><span class="label label-default">{{notification.title}}</span> {{notification.text}}</a></li>
                                 {% endfor %}
 								{% else %}
-								<br>
+
 								<li><a href="#">No unread notifications.</a></li>
 								{% endif %}
 								<li class="divider"></li>
@@ -169,13 +173,29 @@
 		<script src="{% static "dashboard/js/base.js" %}"></script>
 
 		{% if profile == None %}
+			<script type="text/javascript">
+				$(document).ready(function(){
+
+					$.notify({
+						message: "You don't have a profile yet! <br> <b>Please click here to make one.</b>",
+						url : "{% url 'create-profile' %}"
+					},{
+						type: 'danger',
+						timer: 4000
+					});
+
+				});
+			</script>
+		{% else %}
+		{% if profile.games == None %}
 		<script type="text/javascript">
 			$(document).ready(function(){
 
 				$.notify({
-					message: "You don't have a profile yet! Please <b>create one.</b>You don't have a profile yet! Please <b>create one.</b>You don't have a profile yet! Please <b>create one.</b>",
-					url : "{% url 'create-profile' %}"
+					message: "You have no games added to your profile! <br> <b>Let's add some.</b>",
+
 				},{
+					url : "{% url 'create-profile' %}",
 					type: 'info',
 					timer: 4000
 				});
@@ -183,6 +203,26 @@
 			});
 		</script>
 		{% endif %}
+
+		{% if profile.guilds == None %}
+		<script type="text/javascript">
+			$(document).ready(function(){
+
+				$.notify({
+					message: "You have no guild! <br> <b>Let's join one.</b>",
+
+				},{
+					url : "{% url 'create-profile' %}",
+					type: 'primary',
+					timer: 4000
+				});
+
+			});
+		</script>
+		{% endif %}
+		{% endif %}
+
+
 
 
         <div class="content">

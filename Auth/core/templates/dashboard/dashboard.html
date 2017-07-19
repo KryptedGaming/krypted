@@ -5,7 +5,6 @@ Dashboard
 {% endblock %}
 
 {% block content %}
-
 <div id="account_setup" class="col-md-10 col-md-offset-1">
     <div class="card">
         <div style="padding: 10px 10px 10px 10px" class="card text-center">
@@ -15,45 +14,46 @@ Dashboard
     </div>
 </div>
 
-<div class="col-md-4 ">
-    <div class="card">
-        <div style="padding: 5px 5px 5px 5px" class="card text-center">
-                <h4 class="text-center">Guilds</h4>
-                <hr>
-                {% for guild in profile.guilds.all %}
-                <button onclick="location.href='/{{guild.slug}}/'" style="min-width: 75%;" class="btn btn-info btn-fill"><img style="float: left; width: 25px;" src="{{guild.image}}"/> {{guild.title}}</button>
-                <hr>
-                {% endfor %}
-        </div>
-    </div>
-</div>
+<div id="main">
+  <div class="col-md-4 ">
+      <div class="card">
+          <div style="padding: 5px 5px 5px 5px" class="card text-center">
+                  <h4 class="text-center">Guilds</h4>
+                  <hr>
+                  {% for guild in profile.guilds.all %}
+                  <button onclick="location.href='/{{guild.slug}}/'" style="min-width: 75%;" class="btn btn-info btn-fill"><img style="float: left; width: 25px;" src="{{guild.image}}"/> {{guild.title}}</button>
+                  <hr>
+                  {% endfor %}
+          </div>
+      </div>
+  </div>
 
-<div class="col-md-4 ">
-    <div class="card">
-        <div style="padding: 5px 5px 5px 5px" class="card text-center">
-                <h4 class="text-center">Recent activity</h4>
-                <hr>
-                Under construction.
-                <hr>
-        </div>
-    </div>
-</div>
+  <div class="col-md-4 ">
+      <div class="card">
+          <div style="padding: 5px 5px 5px 5px" class="card text-center">
+                  <h4 class="text-center">Recent activity</h4>
+                  <hr>
+                  Under construction.
+                  <hr>
+          </div>
+      </div>
+  </div>
 
-<div class="col-md-4 ">
-    <div class="card">
-        <div style="padding: 5px 5px 5px 5px" class="card text-center">
-                <h4 class="text-center">Stats</h4>
-                <hr>
-                Under construction.
-                <hr>
-        </div>
-    </div>
+  <div class="col-md-4 ">
+      <div class="card">
+          <div style="padding: 5px 5px 5px 5px" class="card text-center">
+                  <h4 class="text-center">Stats</h4>
+                  <hr>
+                  Under construction.
+                  <hr>
+          </div>
+      </div>
+  </div>
 </div>
-
 <script>
-    var progress = 0;
+    var progress = 10;
     {% if profile %}
-    progress += 25;
+    progress += 15;
     {% endif %}
     {% if profile.games.count > 0 %}
     progress += 25;
@@ -65,6 +65,7 @@ Dashboard
     if (progress == 75) {
         $('#account_setup').hide();
     } else {
+        $('#main').hide();
         progress_label = progress + "%" + " Complete"
         progress_remaining_label = 100 - progress + "% Remaining"
         new Chartist.Pie('.ct-chart', {
