@@ -9,34 +9,13 @@ from core.views.base import get_global_context
 
 ## NOTIFICATIONS
 @login_required
-def all_notifications(request, username):
+def notifications(request):
     context = get_global_context(request)
-    return render(request, 'notifications/all_notitifications.html', context)
+    context['all_notifications'] = Notification.objects.filter(user=request.user)
 
-@login_required
-def view_notification(request, pk):
-    context = get_global_context(request)
-    return render(request, 'notifications/view_notification.html', context)
-
-@login_required
-def create_notification(request):
-    context = get_global_context(request)
-    return render(request, 'notifications/create_notification.html', context)
-
-@login_required
-def delete_notification(request, pk):
-    context = get_global_context(request)
-    return redirect('dashboard')
-
-@login_required
-def modify_notification(request, pk):
-    context = get_global_context(request)
-    return render(request, 'notifications/modify_notification.html', context)
-
-@login_required
-def read_notifications(request, path):
     notifications = Notification.objects.filter(user=request.user, read=False)
     for notification in notifications:
         notification.read = True
         notification.save()
-    return redirect('dashboard')
+
+    return render(request, 'notifications/all_notifications.html', context)

@@ -31,33 +31,19 @@ urlpatterns += [
 ]
 
 ## EVENTS
-urlpatterns += [
-    url(r'^events/view/all/$', events.all_events, name='all-events'),
-    url(r'^events/view/(?P<pk>\d+)/$', events.view_event, name='view-event'),
-    url(r'^events/modify/(?P<pk>\d+)/$', events.modify_event, name='modify-event'),
-    url(r'^events/delete/(?P<pk>\d+)/$', events.delete_event, name='delete-event'),
-    url(r'^events/create/$', events.create_event, name='create-event'),
-]
+## THESE WILL BE IMPLEMENTED ON A PROJECT LEVEL FOR NOW
+# urlpatterns += [
+#     url(r'^events/view/all/$', events.all_events, name='all-events'),
+#     url(r'^events/view/(?P<pk>\d+)/$', events.view_event, name='view-event'),
+#     url(r'^events/modify/(?P<pk>\d+)/$', events.modify_event, name='modify-event'),
+#     url(r'^events/delete/(?P<pk>\d+)/$', events.delete_event, name='delete-event'),
+#     url(r'^events/create/$', events.create_event, name='create-event'),
+# ]
 
 ## NOTIFICATIONS
 urlpatterns += [
-
-    url(r'^notifications/read/redirect=(?P<path>\w+)/$', notifications.read_notifications, name='read-notifications'),
-#     url(r'^notifications/user/(?P<username>\w+)/$', notifications.all_notifications, name='all-notifications'),
-#     url(r'^notifications/view/(?P<pk>\d+)/$', notifications.view_notification, name='view-notification'),
-#     url(r'^notifications/create/$', notifications.create_notification, name='create-notification'),
-#     url(r'^notifications/delete/(?P<pk>\d+)/$', notifications.delete_notification, name='delete-notification'),
-#     url(r'^notifications/modify/(?P<pk>\d+)/$', notifications.modify_notification, name='modify-notification'),
+    url(r'^notifications/$', notifications.notifications, name='notifications'),
 ]
-
-### GAMES
-#urlpatterns += [
-#    url(r'^games/all/$', views.all_games, name='all-games'),
-#    url(r'^game/view/(?P<pk>\d+)/$', views.view_game, name='view-game'),
-#    url(r'^game/create/', views.create_game, name='create-game'),
-#    url(r'^game/delete/(?P<pk>\d+)/$', views.delete_game, name='delete-game'),
-#    url(r'^game/modify/(?P<pk>\d+)/$', views.modify_game, name='modify-game'),
-#]
 
 # MISC
 urlpatterns += [

@@ -66,7 +66,7 @@ Dashboard
         $('#account_setup').hide();
     } else {
         $('#main').hide();
-        progress_label = progress + "%" + " Complete"
+        progress_label = progress + "%"
         progress_remaining_label = 100 - progress + "% Remaining"
         new Chartist.Pie('.ct-chart', {
         series: [progress, 100-progress],
