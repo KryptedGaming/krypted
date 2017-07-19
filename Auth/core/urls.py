@@ -5,6 +5,8 @@ from core.views import base, user, profile, events, notifications
 ## BASE
 urlpatterns = [
     url(r'^$', base.dashboard, name='dashboard'),
+    url(r'^guilds/$', base.guilds, name='guilds'),
+    url(r'^games/$', base.games, name='games'),
 ]
 
 ## USER AUTHENTICATION
@@ -20,7 +22,7 @@ urlpatterns += [
     url(r'^profile/create/$', profile.create_profile, name='create-profile'),
     url(r'^profile/delete/(?P<pk>\d+)/$', profile.delete_profile, name='delete-profile'),
     # HELPERS
-    url(r'^profile/add-game/name=(?P<game>\d+)/$',
+    url(r'^profile/add-game/name=(?P<game_to_add>\d+)/$',
         profile.profile_add_game, name='profile-add-game'),
     url(r'^profile/remove-game/name=(?P<game>\d+)/$',
         profile.profile_remove_game, name='profile-remove-game'),

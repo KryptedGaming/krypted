@@ -27,7 +27,7 @@ def profile(request):
         form = ProfileForm()
 
     context['form'] = form
-    return render(request, 'profiles/profile.html', context)
+    return render(request, 'accounts/profile.html', context)
 
 @login_required
 def create_profile(request):
@@ -45,7 +45,7 @@ def create_profile(request):
         form = ProfileForm()
     return render(
             request,
-            'profiles/create_profile.html',
+            'accounts/create_profile.html',
             context={
                 'form': form,
                 }
@@ -62,18 +62,18 @@ def delete_profile(request, pk):
         return redirect('no_permissions')
 
 @login_required
-def profile_add_game(request, game):
+def profile_add_game(request, game_to_add):
     profile = Profile.objects.get(user=request.user)
-    profile.games.add(Game.objects.get(id=game))
+    profile.games.add(Game.objects.get(id=game_to_add))
     profile.save()
-    return redirect('modify-profile', pk=profile.pk)
+    return redirect('games')
 
 @login_required
 def profile_remove_game(request, game):
     profile = Profile.objects.get(user=request.user)
     profile.games.remove(Game.objects.get(id=game))
     profile.save()
-    return redirect('modify-profile', pk=profile.pk)
+    return redirect('games')
 
 @login_required
 def profile_add_guild(request, guild):

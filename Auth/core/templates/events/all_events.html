@@ -1,10 +1,10 @@
-{% extends 'dashboard/base.html' %}
+{% extends 'base/base.html' %}
 {% load event_filters %}
 {% block content %}
 <style>
 body {
     padding : 10px ;
-      
+
 }
 
 #exTab1 .tab-content {
@@ -38,9 +38,9 @@ body {
   {% timezone "Europe/Paris" %}
   {{event.date_occuring}}
   {% endtimezone %}
- 
-      <div id="events-tab"> 
-        
+
+      <div id="events-tab">
+
         <!-- START EVENTS -->
         <ul class="nav nav-pills">
           <!-- TAB FOR ALL EVENTS -->
@@ -53,15 +53,15 @@ body {
                     <a  href="#{{group}}" data-toggle="tab">{{group}}</a>
                   </li>
           {% endfor %}
-          
+
           {% if user|c_create %}
           <button onclick="location.href='/events/create/'" style="float: right;" class="btn btn-success"><i class="fa fa-plus"></i> Create Event</button>
           {% else %}
           <button style="float: right;" class="btn btn-success" disabled><i class="fa fa-plus"></i> Create Event</button>
           {% endif %}
         </ul>
-        
-      </div>  
+
+      </div>
     </div>
   </div>
   <!-- ENDTABS -->
@@ -85,7 +85,7 @@ body {
                 <i class="fa fa-circle text-warning"></i>
               {% else %}
                 <i class="fa fa-circle text-success" hidden></i>
-              {% endif %} 
+              {% endif %}
               </div>
             </td>
             <td>
@@ -95,7 +95,7 @@ body {
               <span class="label label-default">{{event.group}}</span>
             </td>
             <td>
-              {{event.date_occuring}} <span class="label label-default"> UTC</span> 
+              {{event.date_occuring}} <span class="label label-default"> UTC</span>
             </td>
             <td>
               {{event.creator}}
@@ -115,7 +115,7 @@ body {
         </table>
      </div>
     {% for group in groups %}
-      <div class="tab-pane" id="{{group}}">                              
+      <div class="tab-pane" id="{{group}}">
         <table class="table" style="width: 100%">
           <tr>
             <th class="tablehead">Event</th>
@@ -124,7 +124,7 @@ body {
             <th class="tablehead">Organizer</th>
           </tr>
           {% for event in events %}
-          {% if event.group.name == group %}      
+          {% if event.group.name == group %}
           <tr>
              <td>
               {{event.title}}

@@ -18,4 +18,4 @@ def notifications(request):
         notification.read = True
         notification.save()
 
-    return render(request, 'notifications/all_notifications.html', context)
+    return render(request, 'base/all_notifications.html', context)
