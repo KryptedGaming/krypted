@@ -8,16 +8,6 @@ from . import base
 from core.decorators import login_required
 from core.views.base import get_global_context
 
-## PROFILES
-@login_required
-def all_profiles(request):
-    context = get_global_context(request)
-    user = request.user
-    if user.groups.filter(name__in=['Officer', 'Leadership', 'Admin']).exists():
-        return render(request, 'profiles/all_profiles.html',context)
-    else:
-        return redirect('no_permissions')
-
 @login_required
 def profile(request):
     context = get_global_context(request)

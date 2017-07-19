@@ -16,7 +16,6 @@ urlpatterns += [
 
 ## PROFILES
 urlpatterns += [
-    url(r'^profile/view/all/$', profile.all_profiles, name='all_profiles'),
     url(r'^profile/$', profile.profile, name='profile'),
     url(r'^profile/create/$', profile.create_profile, name='create-profile'),
     url(r'^profile/delete/(?P<pk>\d+)/$', profile.delete_profile, name='delete-profile'),
