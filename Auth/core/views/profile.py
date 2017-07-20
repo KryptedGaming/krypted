@@ -9,27 +9,6 @@ from core.decorators import login_required
 from core.views.base import get_global_context
 
 @login_required
-def profile(request):
-    context = get_global_context(request)
-
-    if request.method == 'POST':
-        form = ProfileForm(request.POST)
-        if form.is_valid():
-            print("valid")
-            context['profile'].biography = request.POST.get('biography')
-            context['profile'].timezone = request.POST.get('timezone')
-            context['profile'].user.first_name = request.POST.get('first_name')
-            context['profile'].user.email = request.POST.get('email')
-            context['profile'].save()
-            context['profile'].user.save()
-            return redirect('profile')
-    else:
-        form = ProfileForm()
-
-    context['form'] = form
-    return render(request, 'accounts/profile.html', context)
-
-@login_required
 def create_profile(request):
     user = request.user
 

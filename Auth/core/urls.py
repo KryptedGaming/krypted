@@ -1,12 +1,14 @@
 from django.conf.urls import include, url
 from django.contrib import admin
-from core.views import base, user, profile, events, notifications
+from core.views import base, user, profile, events
 
 ## BASE
 urlpatterns = [
     url(r'^$', base.dashboard, name='dashboard'),
     url(r'^guilds/$', base.guilds, name='guilds'),
     url(r'^games/$', base.games, name='games'),
+    url(r'^profile/$', base.profile, name='profile'),
+    url(r'^notifications/$', base.notifications, name='notifications'),
 ]
 
 ## USER AUTHENTICATION
@@ -18,7 +20,6 @@ urlpatterns += [
 
 ## PROFILES
 urlpatterns += [
-    url(r'^profile/$', profile.profile, name='profile'),
     url(r'^profile/create/$', profile.create_profile, name='create-profile'),
     url(r'^profile/delete/(?P<pk>\d+)/$', profile.delete_profile, name='delete-profile'),
     # HELPERS
@@ -41,11 +42,6 @@ urlpatterns += [
 #     url(r'^events/delete/(?P<pk>\d+)/$', events.delete_event, name='delete-event'),
 #     url(r'^events/create/$', events.create_event, name='create-event'),
 # ]
-
-## NOTIFICATIONS
-urlpatterns += [
-    url(r'^notifications/$', notifications.notifications, name='notifications'),
-]
 
 # MISC
 urlpatterns += [
