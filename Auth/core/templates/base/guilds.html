@@ -7,7 +7,6 @@ Guilds
 {% block content %}
 <div class="container">
   <table class="table table-striped">
-      <h3>Guilds</h3>
     <thead>
       <tr>
         <th>Icon</th>
@@ -16,12 +15,15 @@ Guilds
       </tr>
     </thead>
     <tbody>
-    {% for guild in guilds%}
+    {% for guild in guilds %}
       <tr>
         <td><img style="width: 50px;" src="{{guild.image}}"/></td>
         <td>{{guild.title}}</td>
         <td>
-            <button class="btn btn-success btn-fill">Join</button>
+            {% if guild in profile.guilds.all %} <button class="btn btn-info btn-fill">View</button>
+            {% else %} <button class="btn btn-success btn-fill">Join</button>
+            {% endif %}
+
         </td>
       </tr>
     {% endfor %}

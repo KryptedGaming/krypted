@@ -51,12 +51,19 @@
                         <p>Dashboard</p>
                     </a>
                 </li>
-				<li class="">
-                    <a href="#">
-                        <i class="pe-7s-tools"></i>
-                        <p>Services</p>
-                    </a>
-                </li>
+								<li>
+										<a href="/games/">
+												<i class="pe-7s-joy"></i>
+												<p>Games</p>
+										</a>
+								</li>
+								<li>
+										<a href="/guilds/">
+												<i class="pe-7s-star"></i>
+												<p>Guilds</p>
+										</a>
+								</li>
+
 				<li class="divider"></li>
             </ul>
     	</div>
@@ -185,15 +192,14 @@
 				});
 			</script>
 		{% else %}
-		{% if profile.games == None %}
+		{% if profile.guilds.count < 1 %}
 		<script type="text/javascript">
 			$(document).ready(function(){
 
 				$.notify({
-					message: "You have no games added to your profile! <br> <b>Let's add some.</b>",
-
+					message: "You don't have a guild yet! <br> <b>Please click here to join one.</b>",
+					url : "{% url 'guilds' %}"
 				},{
-					url : "{% url 'create-profile' %}",
 					type: 'info',
 					timer: 4000
 				});
@@ -202,22 +208,6 @@
 		</script>
 		{% endif %}
 
-		{% if profile.guilds == None %}
-		<script type="text/javascript">
-			$(document).ready(function(){
-
-				$.notify({
-					message: "You have no guild! <br> <b>Let's join one.</b>",
-
-				},{
-					url : "{% url 'create-profile' %}",
-					type: 'primary',
-					timer: 4000
-				});
-
-			});
-		</script>
-		{% endif %}
 		{% endif %}
 
 
