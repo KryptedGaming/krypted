@@ -23,7 +23,7 @@ class Guild(Game):
 
 class Notification(models.Model):
     title = models.CharField(max_length=24)
-    text = models.CharField(max_length=500)
+    message = models.CharField(max_length=500)
     read = models.BooleanField(default=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     date_created = models.DateField(auto_now=True)
@@ -37,10 +37,11 @@ class Notification(models.Model):
             return True
         except:
             pass
-    def notify_user(self, username):
+    def notify_user(self, user):
         try:
-            notification.user = User.objects.get(username=username)
-            notification.save()
+            self.title = "System"
+            self.user = user
+            self.save()
         except:
             pass
 

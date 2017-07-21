@@ -103,7 +103,7 @@
                               <ul class="dropdown-menu">
 								{% if notifications %}
 								{% for notification in notifications %}
-                                <li><a href="#"><span class="label label-default">{{notification.title}}</span> {{notification.text}}</a></li>
+                                <li><a href="#"><span class="label label-default">{{notification.title}}</span> {{notification.message}}</a></li>
                                 {% endfor %}
 								{% else %}
 								<li><a href="#">No unread notifications.</a></li>
@@ -114,7 +114,7 @@
                         </li>
 
 						<!-- MESSAGES -->
-						<li class="dropdown">
+						{% comment %}<li class="dropdown">
                               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     <i class="fa fa-envelope"></i>
                                     <b class="caret hidden-sm hidden-xs"></b>
@@ -129,7 +129,7 @@
 
 								{% if notifications %}
 								{% for notification in notifications %}
-                                <li><a href="#"><span class="label label-default">{{notification.title}}</span> {{notification.text}}</a></li>
+                                <li><a href="#"><span class="label label-default">{{notification.title}}</span> {{notification.message}}</a></li>
                                 {% endfor %}
 								{% else %}
 
@@ -138,7 +138,7 @@
 								<li class="divider"></li>
                                 <li><a href="#">View All</a></li>
                               </ul>
-                        </li>
+                        </li> {%endcomment%}
                     </ul>
 
                     <ul class="nav navbar-nav navbar-right">

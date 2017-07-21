@@ -39,6 +39,7 @@ def register_user(request):
                     request.POST['password'],
                     )
             user.save()
+            print("Saved notification for user: " + user.username)
             return redirect('login')
     else:
         form = RegisterForm()
@@ -51,5 +52,3 @@ def register_user(request):
 
 def logout_user(request):
     return redirect('login')
-
-

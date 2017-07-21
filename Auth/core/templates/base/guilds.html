@@ -5,7 +5,13 @@ Guilds
 {% endblock %}
 
 {% block content %}
+<style>
+.guildbtn {
+    min-width: 50%;
+}
+</style>
 <div class="container">
+
   <table class="table table-striped">
     <thead>
       <tr>
@@ -20,15 +26,19 @@ Guilds
         <td><img style="width: 50px;" src="{{guild.image}}"/></td>
         <td>{{guild.title}}</td>
         <td>
-            {% if guild in profile.guilds.all %} <button class="btn btn-info btn-fill">View</button>
-            {% else %} <button class="btn btn-success btn-fill">Join</button>
+            {% if guild in profile.guilds.all %} <button onclick="location.href='/{{guild.slug}}/'" class="guildbtn btn btn-info btn-fill">View</button>
+            {% else %} <button onclick="location.href='/{{guild.slug}}/apply/'" class="guildbtn btn btn-success btn-fill">Apply</button>
             {% endif %}
 
         </td>
-      </tr>
+      </tr
     {% endfor %}
+    <!-- Bottom Divider -->
+    <tr><td></td><td></td><td></td></tr>
     </tbody>
   </table>
+  <button class="col-md-4 col-md-offset-4 btn btn-primary btn-fill">My Applications</button>
 </div>
+
 
 {% endblock %}

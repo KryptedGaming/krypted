@@ -18,6 +18,7 @@ def create_profile(request):
 
         profile = Profile(user=user, biography=biography, timezone=timezone)
         profile.save()
+        Notification(message="You have created a profile.").notify_user(user)
 
         return redirect('dashboard')
     else:
@@ -31,27 +32,37 @@ def create_profile(request):
             )
 
 @login_required
-def delete_profile(request, pk):
-    user_profile = Profile.objects.get(user=request.user)
-
-    if user_profile == Profile.objects.get(pk=pk):
-        user_profile.delete()
-        return redirect('dashboard')
-    else:
-        return redirect('no_permissions')
-
-@login_required
 def profile_add_game(request, game_to_add):
-    profile = Profile.objects.get(user=request.user)
-    profile.games.add(Game.objects.get(id=game_to_add))
-    profile.save()
+    user = request.user
+    try:
+        profile = Profile.objects.get(user=user)
+        if profile:
+            profile.games.add(Game.objects.get(id=game_to_add))
+            profile.save()
+            Notification(message="You added game " +
+             game_to_add + " to your account.").notify_user(user)
+        else:
+            return redirect('create-profile')
+    except:
+        Notification(message="You failed to add game " +
+         game_to_add + " to your account.").notify_user(user)
     return redirect('games')
 
 @login_required
 def profile_remove_game(request, game):
-    profile = Profile.objects.get(user=request.user)
-    profile.games.remove(Game.objects.get(id=game))
-    profile.save()
+    user = request.user
+    try:
+        profile = Profile.objects.get(user=user)
+        if profile:
+            profile.games.remove(Game.objects.get(id=game))
+            profile.save()
+            Notification(message="You removed game " +
+             game + " to your account.").notify_user(user)
+        else:
+            return redirect('create-profile')
+    except:
+        Notification(message="You failed to removed game " +
+         game + " to your account.").notify_user(user)
     return redirect('games')
 
 @login_required

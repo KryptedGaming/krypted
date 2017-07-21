@@ -15,14 +15,16 @@ def dashboard(request):
 @login_required
 def guilds(request):
     context = get_global_context(request)
-    print(context['profile'])
+    if not context['profile']:
+        return redirect('create-profile')
     context['guilds'] = Guild.objects.all()
     return render(request, 'base/guilds.html', context)
 
 @login_required
 def games(request):
     context = get_global_context(request)
-    print(context['profile'].games)
+    if not context['profile']:
+        return redirect('create-profile')
     context['games'] = Game.objects.all()
     return render(request, 'base/games.html', context)
 
@@ -30,7 +32,6 @@ def games(request):
 def notifications(request):
     context = get_global_context(request)
     context['all_notifications'] = Notification.objects.filter(user=request.user)
-
     notifications = Notification.objects.filter(user=request.user, read=False)
     for notification in notifications:
         notification.read = True
@@ -58,7 +59,6 @@ def profile(request):
 
     context['form'] = form
     return render(request, 'accounts/profile.html', context)
-
 
 ## MISC
 def no_permissions(request):

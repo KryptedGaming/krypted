@@ -21,7 +21,6 @@ urlpatterns += [
 ## PROFILES
 urlpatterns += [
     url(r'^profile/create/$', profile.create_profile, name='create-profile'),
-    url(r'^profile/delete/(?P<pk>\d+)/$', profile.delete_profile, name='delete-profile'),
     # HELPERS
     url(r'^profile/add-game/name=(?P<game_to_add>\d+)/$',
         profile.profile_add_game, name='profile-add-game'),
