@@ -45,9 +45,9 @@ My Profile
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>Timezone</label>
-                                                <select class="form-control" name="timezone">
+                                                <select class="form-control" name="timezone" selected={{profile.timezone}}>
                                                     <option value="EU">EU</option>
-                                                    <option value="US">US</option>
+                                                    <option {% if profile.timezone == 'US' %}selected{% endif %}>US</option>
                                                 </select>
                                             </div>
                                         </div>
