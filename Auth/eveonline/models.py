@@ -66,7 +66,7 @@ class EveCharacter(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     ## ALTERNATE CHARACTER
-    main = models.ManyToManyField("EveCharacter", blank=True, null=True)
+    main = models.ForeignKey("EveCharacter", blank=True, null=True)
 
     def __str__(self):
         return self.character_name
