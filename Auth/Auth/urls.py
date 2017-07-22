@@ -20,4 +20,5 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^', include('core.urls')),
     url(r'^eve/', include('eveonline.urls')),
+    url(r'^applications/', include ('hrapplications.urls')),
 ]
