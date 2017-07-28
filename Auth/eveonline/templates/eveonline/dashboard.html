@@ -1,4 +1,4 @@
-{% extends 'eve/base.html' %}
+{% extends 'eveonline/base.html' %}
 
 {% block brand %}
 Dashboard
@@ -27,7 +27,7 @@ Dashboard
             <img style="width: 50px;" src="{{character.character_portrait}}"/>
         </td>
         <td>
-            {{character.character_name}}
+            <a href="/eve/character/{{character.token.character_id}}/">{{character.character_name}}</a>
         </td>
         <td>
             <button class="btn btn-danger btn-fill"><i class="fa fa-times"></i></button>

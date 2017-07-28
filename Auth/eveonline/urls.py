@@ -4,6 +4,7 @@ from eveonline.views import eve, sso
 ## BASE
 urlpatterns = [
     url(r'^$', eve.dashboard, name='eve-dashboard'),
+    url(r'^character/(?P<character>\w+)/$', eve.view_character, name='eve-view-character')
 ]
 
 ## SSO
