@@ -2,6 +2,9 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.contrib.auth.models import User, Group
+from django.conf import settings
+import datetime
+from django.utils import timezone
 
 # Create your models here.
 class Token(models.Model):
@@ -15,6 +18,7 @@ class Token(models.Model):
     access_token = models.CharField(max_length=128)
     refresh_token = models.CharField(max_length=128)
     expires_in = models.IntegerField(default=0)
+    expiry = models.DateTimeField(blank=True, null=False, auto_now_add=True)
 
     ## User
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
@@ -31,29 +35,21 @@ class Token(models.Model):
         return data
 
     def refresh(self):
-
-        try:
-            esi_app = App.create('https://esi.tech.ccp.is/latest/swagger.json?datasource=tranquility')
-
-            esi_security = EsiSecurity(
-                app=esi_app,
-                redirect_uri=settings.ESI_CALLBACK_URL,
-                client_id=settings.ESI_CLIENT_ID,
-                secret_key=settings.ESI_SECRET_KEY,
-            )
-
-            esi_client = EsiClient(esi_security)
-
-            esi_security.update_token(self.populate())
-
-            new_token = esi_security.refresh()
-            self.access_token = new_token['access_token']
-            self.refresh_token = new_token['refresh_token']
+        if timezone.now() > self.expiry:
+            try:
+                settings.ESI_SECURITY.update_token(self.populate())
+                new_token = settings.ESI_SECURITY.refresh()
+                self.access_token = new_token['access_token']
+                self.refresh_token = new_token['refresh_token']
+                self.expiry = timezone.now() + datetime.timedelta(0, new_token['expires_in'])
+                self.save()
+                return True
+            except:
+                self.delete()
+                return False
+        else:
+            print("Token refresh not needed.")
             return True
-
-        except:
-            self.delete()
-            return False
 
 class EveCharacter(models.Model):
     character_name = models.CharField(max_length=256, primary_key=True)

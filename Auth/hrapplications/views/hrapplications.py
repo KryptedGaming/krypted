@@ -10,4 +10,29 @@ from core.views.base import get_global_context
 @login_required
 def dashboard(request):
     context = get_global_context(request)
-    return render(request, 'base/dashboard.html', context)
+    return render(request, 'hrapplications/dashboard.html', context)
+
+@login_required
+def view_applications(request):
+    context = get_global_context(request)
+    return render(request, 'hrapplications/dashboard.html', context)
+
+@login_required
+def process_applications(request):
+    context = get_global_context(request)
+    return render(request, 'hrapplications/dashboard.html', context)
+
+@login_required
+def create_application(request, slug):
+    context = get_global_context(request)
+    return render(request, 'hrapplications/dashboard.html', context)
+
+@login_required
+def modify_application(request, slug):
+    context = get_global_context(request)
+    return render(request, 'hrapplications/dashboard.html', context)
+
+@login_required
+def delete_application(request, slug):
+    context = get_global_context(request)
+    return render(request, 'hrapplications/dashboard.html', context)
