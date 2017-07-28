@@ -42,40 +42,41 @@ def get_character_wallet(token):
         wallet = settings.ESI_CLIENT.request(op)
     except:
         print("WALLET FAILED")
-
-    query = []
-    transaction = {}
-    for data in wallet.data:
-        try:
-            query.append(data.first_party_id)
-            query.append(data.second_party_id)
-        except:
-            print("OK")
-
-    try:
-        op = settings.ESI_APP.op['post_universe_names'](ids=query)
-        resolved = settings.ESI_CLIENT.request(op)
-    except:
-        pass
     else:
-        counter1 = 0
-        counter2 = 0
-        for value in resolved.data:
-            counter1 += 1
+        query = []
+        if wallet.data:
             for data in wallet.data:
-                counter2 += 2
                 try:
-                    if data.first_party_id == value.id:
-                        print("Setting data player1 to id:: " + str(data.first_party_id) + " - " + value.name)
-                        data.first_party_id = value.name
-                        print(data)
-                    elif data.second_party_id == value.id:
-                        print("Setting data player2 to id")
-                        data.second_party_id = value.name
+                    query.append(data.first_party_id)
+                    query.append(data.second_party_id)
                 except:
-                    data['first_party_id'] = None
-                    data['second_party_id'] = None
-        print(counter1)
-        print(counter2)
+                    print("OK")
 
-        return wallet.data
+            try:
+                op = settings.ESI_APP.op['post_universe_names'](ids=query)
+                resolved = settings.ESI_CLIENT.request(op)
+            except:
+                pass
+            else:
+                counter1 = 0
+                counter2 = 0
+                for value in resolved.data:
+                    counter1 += 1
+                    for data in wallet.data:
+                        counter2 += 2
+                        try:
+                            if data.first_party_id == value.id:
+                                print("Setting data player1 to id:: " + str(data.first_party_id) + " - " + value.name)
+                                data.first_party_id = value.name
+                                print(data)
+                            elif data.second_party_id == value.id:
+                                print("Setting data player2 to id")
+                                data.second_party_id = value.name
+                        except:
+                            data['first_party_id'] = None
+                            data['second_party_id'] = None
+                print(counter1)
+                print(counter2)
+        else:
+            print("Wallet returned a value of none. ESI issue?")
+    return wallet.data
