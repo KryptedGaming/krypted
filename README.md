@@ -19,3 +19,10 @@ Over the years of playing video games, Krypted Gaming has used many tools to int
 - ESI (EVE Swagger Interface), Pyswagger, EsiPy
 
 - Discord.py
+
+# Screenshots
+![Login](https://github.com/porowns/krypted-auth/blob/master/screenshots/login.png)
+
+![Dashboard](https://github.com/porowns/krypted-auth/blob/master/screenshots/dashboard.png)
+
+![EVE Online Integration](https://github.com/porowns/krypted-auth/blob/master/screenshots/game_integration.png)
