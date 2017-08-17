@@ -1,0 +1,35 @@
+{% extends "base/base.html" %}
+
+{% block brand %}
+My Notifications
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>From</th>
+        <th>Message</th>
+        <th>When</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for notification in all_notifications %}
+      <tr>
+        <td>{{notification.title}}</td>
+        <td>{{notification.message}}</td>
+        <td>{{notification.date_created}}</td>
+        <td>None.</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+
+
+
+{% endblock %}

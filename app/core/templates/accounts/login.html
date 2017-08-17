@@ -1,0 +1,76 @@
+{% load staticfiles %}
+<head>
+    <!-- Bootstrap Core CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-1.12.4.js" integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU=" crossorigin="anonymous"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <link href="{% static "accounts/css/accounts.css" %}" rel="stylesheet">
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="{% static "accounts/js/accounts.js" %}"></script>
+
+</head>
+
+
+<body>
+
+    <div class="container login">
+
+        <div class="text-center">
+            <img style="margin: 0 auto; width: 20%;" src="http://kryptedgaming.com/wp-content/uploads/2017/03/Core.png">
+        </div>
+
+        <div id="loginbox" class="mainbox col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3">
+            <div class="panel panel-default" >
+                <div class="panel-heading">
+                    <div class="panel-title text-center">Please log in.</div>
+                </div>
+
+                <div class="panel-body" >
+                    <form name="form" id="form" class="form-horizontal" enctype="multipart/form-data" method="POST">
+                        {% csrf_token %}
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                            <input id="username" type="text" class="form-control" name="username" value="" placeholder="Username">
+                        </div>
+
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                            <input id="password" type="password" class="form-control" name="password" placeholder="Password">
+                        </div>
+
+                        <div class="form-group">
+                            <!-- Button -->
+                            <div class="col-sm-12 controls login-btn">
+                                <button type="submit" href="#" class="btn btn-primary btn-log"><i class="glyphicon glyphicon-log-in"></i> Login</button>
+                            </div>
+                        </div>
+
+
+                            <div class="errors">
+                                {% for field in form %}
+                                {{field.errors}}
+                                {% endfor %}
+                            </div>
+
+
+
+                    </form>
+
+                    <div class="register-help">
+                        <a href="{% url 'register' %}">Don't have an account?</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="particles"></div>
+
+</body>

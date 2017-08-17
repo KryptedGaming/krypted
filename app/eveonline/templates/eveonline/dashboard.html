@@ -1,0 +1,81 @@
+{% extends 'eveonline/base.html' %}
+
+{% block brand %}
+Dashboard
+{% endblock %}
+
+{% block content %}
+<style>
+.guildbtn {
+    min-width: 50%;
+}
+</style>
+<div class="container">
+  <h4>Characters</h4>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Portrait</th>
+        <th>Character Name</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for character in characters %}
+      <tr>
+        <td>
+            <img style="width: 50px;" src="{{character.character_portrait}}"/>
+        </td>
+        <td>
+            <a href="/eve/character/{{character.token.character_id}}/">{{character.character_name}}</a>
+        </td>
+        <td>
+            <button class="btn btn-danger btn-fill"><i class="fa fa-times"></i></button>
+        </td>
+      </tr
+    {% endfor %}
+    <!-- Bottom Divider -->
+    <tr><td></td><td></td><td></td></tr>
+    </tbody>
+  </table>
+  <div class="container">
+      <button onclick="location.href='{% url 'add-sso-token' %}'" class="col-md-4 col-md-offset-4 btn btn-success btn-fill">Add Character</button>
+  </div>
+  <br>
+  <div class="container">
+      <button onclick="location.href='#'" class="col-md-4 col-md-offset-4 btn btn-primary btn-fill">Choose Main Character</button>
+  </div>
+</div>
+
+<div class="container">
+  <h4>Services</h4>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Icon</th>
+        <th>Service</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for character in characters %}
+      <tr>
+        <td>
+            <img style="width: 50px;" src="{{character.character_portrait}}"/>
+        </td>
+        <td>
+            Discord
+        </td>
+        <td>
+            <i class="fa fa-ban fa-2x"></i>
+        </td>
+      </tr
+    {% endfor %}
+    <!-- Bottom Divider -->
+    <tr><td></td><td></td><td></td></tr>
+    </tbody>
+  </table>
+</div>
+
+
+{% endblock %}

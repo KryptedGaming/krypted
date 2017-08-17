@@ -1,0 +1,43 @@
+{% extends "hrapplications/base.html" %}
+{% load staticfiles %}
+
+{% block brand %}
+Applications
+{% endblock %}
+
+{% block content %}
+<style>
+.guildbtn {
+    min-width: 50%;
+}
+</style>
+<div class="container">
+ <h1>Applications</h1>
+  <hr>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Guild</th>
+        <th>Status</th>
+        <th>Reviewer</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for application in applications %}
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr
+    {% endfor %}
+    <!-- Bottom Divider -->
+    <tr><td></td><td></td><td></td></tr>
+    </tbody>
+  </table>
+  {% if applications.count == 0 or applications == None%}
+  <h3>You have no applications.</h3>
+  {% endif %}
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends 'global/global_base.html' %}
+
+{% block sidebar %}
+	<div class="sidebar-wrapper">
+        <div class="logo">
+            <a href="http://www.kryptedgaming.com" class="simple-text">
+                Krypted Gaming
+            </a>
+        </div>
+
+        <ul class="nav">
+            <li {% if request.path == '/' %} class="active" {% endif %}>
+                <a href="{% url 'dashboard' %}">
+                    <i class="pe-7s-graph"></i>
+                    <p>Dashboard</p>
+                </a>
+            </li>
+						<li>
+								<a href="/games/">
+										<i class="pe-7s-joy"></i>
+										<p>Games</p>
+								</a>
+						</li>
+						<li>
+								<a href="/guilds/">
+										<i class="pe-7s-star"></i>
+										<p>Guilds</p>
+								</a>
+						</li>
+
+		<li class="divider"></li>
+        </ul>
+	</div>
+{% endblock %}
