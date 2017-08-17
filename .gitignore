@@ -108,3 +108,4 @@ db.sqlite3
 
 # hide collectstatic
 *static/admin*
+app/static/admin
