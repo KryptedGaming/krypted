@@ -107,4 +107,4 @@ db.sqlite3
 .DS_Store
 
 # hide collectstatic
-./app/static/admin/*
+*static/admin*
