@@ -25,7 +25,11 @@ def process_applications(request):
 @login_required
 def create_application(request, slug):
     context = get_global_context(request)
-    return render(request, 'hrapplications/dashboard.html', context)
+    if slug == 'eve':
+        pass
+    else:
+        pass
+    return render(request, 'hrapplications/create_application.html', context)
 
 @login_required
 def modify_application(request, slug):
