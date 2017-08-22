@@ -25,7 +25,7 @@ Over the years of playing video games, Krypted Gaming has used many tools to int
 
 - ESI (EVE Swagger Interface), Pyswagger, EsiPy
 
-- Discord.py
+- websocket-client (for sending messages to discord bot)
 
 # Screenshots
 ![Login](https://github.com/porowns/krypted-auth/blob/master/screenshots/login.png)
