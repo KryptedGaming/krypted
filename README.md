@@ -19,9 +19,7 @@ Over the years of playing video games, Krypted Gaming has used many tools to int
 - Intuitive (no complicated UIs with poor help text)
 
 # Technologies
-- Python
-
-- Django
+- particles.js
 
 - ESI (EVE Swagger Interface), Pyswagger, EsiPy
 
