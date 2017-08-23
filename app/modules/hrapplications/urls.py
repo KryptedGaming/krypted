@@ -1,6 +1,6 @@
 from django.conf.urls import include, url
 from django.contrib import admin
-from hrapplications.views import hrapplications
+from modules.hrapplications.views import hrapplications
 
 # Create your views here.
 ## BASE

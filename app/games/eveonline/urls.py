@@ -1,5 +1,5 @@
 from django.conf.urls import include, url
-from eveonline.views import eve, sso
+from games.eveonline.views import eve, sso
 
 ## BASE
 urlpatterns = [

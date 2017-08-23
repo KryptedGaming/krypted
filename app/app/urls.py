@@ -19,6 +19,7 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^', include('core.urls')),
-    url(r'^eve/', include('eveonline.urls')),
-    url(r'^applications/', include('hrapplications.urls')),
+    url(r'^eve/', include('games.eveonline.urls')),
+    url(r'^applications/', include('modules.hrapplications.urls')),
+    url(r'^discord/', include('modules.discord.urls')),
 ]

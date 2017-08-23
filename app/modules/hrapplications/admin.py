@@ -1,5 +1,5 @@
 from django.contrib import admin
-from hrapplications.models import ApplicationTemplate, Application, Question, Comment, EveApplication, Response
+from modules.hrapplications.models import ApplicationTemplate, Application, Question, Comment, EveApplication, Response
 
 # Register your models here.
 @admin.register(ApplicationTemplate)

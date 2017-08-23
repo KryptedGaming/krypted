@@ -1,5 +1,5 @@
 from django.contrib import admin
-from eveonline.models import Token, EveCharacter
+from games.eveonline.models import Token, EveCharacter
 
 # Register your models here.
 @admin.register(Token)

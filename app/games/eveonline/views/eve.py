@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from eveonline.models import Token, EveCharacter
+from games.eveonline.models import Token, EveCharacter
 from django.contrib.auth.models import User, Group
 from core.models import Guild
 from core.decorators import login_required

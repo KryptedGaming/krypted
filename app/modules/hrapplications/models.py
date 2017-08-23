@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from core.models import Guild
-from eveonline.models import EveCharacter
+from games.eveonline.models import EveCharacter
 
 # Create your models here.
 class ApplicationTemplate(models.Model):
