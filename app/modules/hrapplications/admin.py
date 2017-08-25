@@ -1,5 +1,5 @@
 from django.contrib import admin
-from modules.hrapplications.models import ApplicationTemplate, Application, Question, Comment, EveApplication, Response
+from modules.hrapplications.models import ApplicationTemplate, Application, Question, Comment, Response
 
 # Register your models here.
 @admin.register(ApplicationTemplate)
@@ -16,8 +16,8 @@ class ApplicationAdmin(admin.ModelAdmin):
     def user(self, application):
         return application.user
 
-    def guild(self, applicationtemplate):
-        return application.template.guild.name
+    def guild(self, application):
+        return application.template.guild.title
 
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
@@ -28,7 +28,7 @@ class ResponseAdmin(admin.ModelAdmin):
     list_display = ('user', 'question', 'response')
 
     def user(self, response):
-        return response.user
+        return response.application.user
 
     def question(self, response):
         return response.question

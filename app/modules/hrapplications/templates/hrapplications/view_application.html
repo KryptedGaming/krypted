@@ -1,0 +1,19 @@
+{% extends "hrapplications/base.html" %}
+{% block content %}
+<h3>{{application.user|title}}'s application to {{application.template.guild}}</h3>
+<hr>
+{% for response in responses %}
+<div class="panel panel-default">
+  <div class="panel-heading">{{response.question.title}}</div>
+  <div class="panel-body">{{response.response}}</div>
+</div>
+{% endfor %}
+<hr>
+{% if admin %}
+<div class="container text-center">
+  <button onclick="location.href='#'" class="col-xs-2 col-xs-offset-2 btn btn-success btn-fill">Approve</button>
+  <button onclick="location.href='#'" class="col-xs-2 col-xs-offset-1 btn btn-info btn-fill">Comment</button>
+  <button onclick="location.href='#'" class="col-xs-2 col-xs-offset-1 btn btn-danger btn-fill">Deny</button>
+</div>
+{% endif %}
+{% endblock %}

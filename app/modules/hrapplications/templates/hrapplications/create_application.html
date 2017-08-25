@@ -1,0 +1,18 @@
+{% extends "hrapplications/base.html" %}
+{% block content %}
+  <form class="form" method="POST">
+    {% csrf_token %}
+    {% for question in template.questions.all %}
+      <div class="form-group">
+        <label class="control-label" for="id_{{question.pk}}">{{question.title}}</label>
+        <div>
+          {% if question.help_text %}
+          <i>{{question.help_text}}</i>
+          {% endif %}
+        </div>
+        <textarea class="form-control" cols="40" id="id_{{question.pk}}" name='{{question.pk}}' rows="5" required></textarea>
+      </div>
+    {% endfor %}
+    <button class="btn btn-lg btn-info btn-block btn-fill" type="submit">Submit</button>
+  </form>
+{% endblock %}

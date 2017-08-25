@@ -6,8 +6,6 @@ from modules.hrapplications.views import hrapplications
 ## BASE
 urlpatterns = [
     url(r'^$', hrapplications.dashboard, name='hr-dashboard'),
-    url(r'^view/$', hrapplications.view_applications, name='hr-view-applications'),
-    url(r'^process/$', hrapplications.process_applications, name='hr-view-applications'),
 ]
 
 ## APPLICATIONS
@@ -15,4 +13,5 @@ urlpatterns += [
     url(r'^create/(?P<slug>\w+)/$', hrapplications.create_application, name='hr-create-application'),
     url(r'^modify/(?P<slug>\w+)/$', hrapplications.modify_application, name='hr-modify-application'),
     url(r'^delete/(?P<slug>\w+)/$', hrapplications.delete_application, name='hr-delete-application'),
+    url(r'^view/(?P<pk>\w+)/$', hrapplications.view_application, name='hr-view-application'),
 ]
