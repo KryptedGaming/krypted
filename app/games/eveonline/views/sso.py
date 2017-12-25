@@ -4,6 +4,8 @@ from django.conf import settings
 from games.eveonline.models import Token, EveCharacter
 from django.contrib.auth.models import User
 
+import logging
+logger = logging.getLogger(__name__)
 
 # Create your views here.
 def add_token(request):
@@ -43,6 +45,9 @@ def receive_token(request):
 
 
         ## CREATE TOKEN
+        logger.info(
+                "Creating token...\n" + 
+                "Lengths: " + "R: " + str(len(str(esi_token['refresh_token']))))
         print("CREATING TOKEN")
         token = Token(
                 character_id=esi_verified['CharacterID'],

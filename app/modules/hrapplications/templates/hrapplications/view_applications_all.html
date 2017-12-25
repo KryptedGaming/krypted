@@ -1,0 +1,83 @@
+{% extends "hrapplications/base.html" %}
+{% block content %}
+<ul class="nav nav-tabs">
+  <li active><a data-toggle="tab" href="#pending">Pending</a></li>
+  <li><a data-toggle="tab" href="#processing">Processing</a></li>
+  <li><a data-toggle="tab" href="#complete">Complete</a></li>
+</ul>
+
+<div class="tab-content">
+  <div id="pending" class="tab-pane fade in active">
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">Created</th>
+					<th scope="col">User</th>
+					<th scope="col">Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+        {% for application in applications %}
+        {% if application.status == "Pending" %}
+				<tr>
+          <th scope="row">TBD</th>
+          <td>{{application.user.username}}</td>
+          <td><button class="btn btn-warning" disabled><i class="fa fa-pencil"></i></button></td>
+				</tr>
+        {% endif %}
+        {% endfor %}
+			</tbody>
+		</table>
+  </div>
+  <div id="processing" class="tab-pane fade in">
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">Created</th>
+					<th scope="col">User</th>
+					<th scope="col">Reviewer</th>
+					<th scope="col">Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+        {% for application in applications %}
+        {% if application.status == "Processing" or application.status == "On Hold" %}
+				<tr>
+          <th scope="row">TBD</th>
+          <td>{{application.user.username}}</td>
+          <td>{{application.reviewer.username}}</td>
+          <td><button class="btn btn-warning" disabled><i class="fa fa-pencil"></i></button></td>
+				</tr>
+        {% endif %}
+        {% endfor %}
+			</tbody>
+		</table>
+  </div>
+  <div id="complete" class="tab-pane fade">
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">Date Completed</th>
+					<th scope="col">User</th>
+					<th scope="col">Reviewer</th>
+					<th scope="col">Status</th>
+					<th scope="col">Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+        {% for application in applications %}
+        {% if application.status == "Approved" or application.status == "Rejected" %}
+				<tr>
+          <th scope="row">TBD</th>
+          <td>{{application.user.username}}</td>
+          <td>{{application.reviewer.username}}</td>
+          <td>{{application.status}}</td>
+          <td><button class="btn btn-warning" disabled><i class="fa fa-pencil"></i></button></td>
+				</tr>
+        {% endif %}
+        {% endfor %}
+			</tbody>
+		</table>
+  </div>
+</div>
+{% endblock %}

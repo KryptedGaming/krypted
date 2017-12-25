@@ -14,4 +14,5 @@ urlpatterns += [
     url(r'^modify/(?P<slug>\w+)/$', hrapplications.modify_application, name='hr-modify-application'),
     url(r'^delete/(?P<slug>\w+)/$', hrapplications.delete_application, name='hr-delete-application'),
     url(r'^view/(?P<pk>\w+)/$', hrapplications.view_application, name='hr-view-application'),
+    url(r'^view/$', hrapplications.view_applications_all, name='hr-view-applications-all'),
 ]

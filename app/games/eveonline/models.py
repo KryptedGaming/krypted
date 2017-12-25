@@ -16,7 +16,7 @@ class Token(models.Model):
 
     ## SSO
     access_token = models.CharField(max_length=255)
-    refresh_token = models.CharField(max_length=255)
+    refresh_token = models.TextField(blank=True, null=True)
     expires_in = models.IntegerField(default=0)
     expiry = models.DateTimeField(blank=True, null=False, auto_now_add=True)
 

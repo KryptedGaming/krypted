@@ -1,16 +1,25 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from games.eveonline.models import Token, EveCharacter
 from django.contrib.auth.models import User, Group
 from core.models import Guild
 from core.decorators import login_required
 from core.views.base import get_global_context
 from django.conf import settings
+from django.contrib import messages
 
 # Create your views here.
 @login_required
 def dashboard(request):
     context = get_eve_context(request)
     return render(request, 'eveonline/dashboard.html', context)
+
+@login_required
+def apply(request):
+    if EveCharacter.objects.filter(user=request.user).exists():
+        return redirect('hr-create-application', slug='eve')
+    else:
+        messages.error(request, "You must add EVE characters before applying to this guild.")
+        return redirect('eve-dashboard')
 
 @login_required
 def view_character(request, character):
@@ -31,6 +40,11 @@ def view_character(request, character):
 def get_eve_context(request):
     context = get_global_context(request)
     user = request.user
+    group = Group.objects.get_or_create(name='EVE')
+    if group in user.groups.all():
+        context['in_guild'] = True
+    else:
+        context['in_guild'] = False
     context['characters'] = EveCharacter.objects.filter(user=user)
     return context
 

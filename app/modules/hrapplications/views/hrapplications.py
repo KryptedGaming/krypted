@@ -34,6 +34,12 @@ def view_application(request, pk):
     return render(request, 'hrapplications/view_application.html', context)
 
 @login_required
+def view_applications_all(request):
+    context = get_global_context(request)
+    context['applications'] = Application.objects.all()
+    return render(request, 'hrapplications/view_applications_all.html', context)
+
+@login_required
 def create_application(request, slug):
     logger.info(str(request.user) + " has requested to create an application for: " + str(slug))
     context = get_global_context(request)

@@ -7,32 +7,41 @@
 					</a>
 			</div>
 
-			<ul class="nav">
-					<li {% if request.path == '/' %} class="active" {% endif %}>
-							<a href="{% url 'eve-dashboard' %}">
-									<i class="fa fa-dashboard"></i>
-									<p>Dashboard</p>
-							</a>
-					</li>
-	<li>
-			<a href="#">
-					<i class="pe-7s-clock"></i>
-					<p>Operations</p>
-			</a>
-	</li>
-	<li>
-			<a href="#">
-					<i class="pe-7s-tools"></i>
-					<p>Tools</p>
-			</a>
-	</li>
-	<li>
-			<a href="{% url 'dashboard' %}">
-					<i class="pe-7s-back"></i>
-					<p>Core</p>
-			</a>
-	</li>
-	<li class="divider"></li>
-			</ul>
+    <ul class="nav">
+      <li {% if request.path == '/' %} class="active" {% endif %}>
+          <a href="{% url 'eve-dashboard' %}">
+              <i class="fa fa-dashboard"></i>
+              <p>Dashboard</p>
+          </a>
+      </li>
+      {% if in_guild %}
+      <li>
+          <a href="#">
+              <i class="pe-7s-clock"></i>
+              <p>Operations</p>
+          </a>
+      </li>
+      <li>
+          <a href="#">
+              <i class="pe-7s-tools"></i>
+              <p>Tools</p>
+          </a>
+      </li>
+      <li>
+          <a href="{% url 'dashboard' %}">
+              <i class="pe-7s-back"></i>
+              <p>Core</p>
+          </a>
+      </li>
+      {% else %}
+      <li>
+          <a href="{% url 'eve-apply' %}">
+              <i class="pe-7s-paperclip"></i>
+              <p>Apply</p>
+          </a>
+      </li>
+      {% endif %}
+      <li class="divider"></li>
+    </ul>
 </div>
 {% endblock %}

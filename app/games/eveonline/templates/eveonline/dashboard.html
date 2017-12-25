@@ -10,6 +10,13 @@ Dashboard
     min-width: 50%;
 }
 </style>
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-danger">
+  {{message}}
+</div>
+{% endfor %}
+{% endif %}
 <div class="container">
   <h4>Characters</h4>
   <table class="table table-striped">
@@ -46,36 +53,4 @@ Dashboard
       <button onclick="location.href='#'" class="col-md-4 col-md-offset-4 btn btn-primary btn-fill">Choose Main Character</button>
   </div>
 </div>
-
-<div class="container">
-  <h4>Services</h4>
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>Icon</th>
-        <th>Service</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody>
-    {% for character in characters %}
-      <tr>
-        <td>
-            <img style="width: 50px;" src="{{character.character_portrait}}"/>
-        </td>
-        <td>
-            Discord
-        </td>
-        <td>
-            <i class="fa fa-ban fa-2x"></i>
-        </td>
-      </tr
-    {% endfor %}
-    <!-- Bottom Divider -->
-    <tr><td></td><td></td><td></td></tr>
-    </tbody>
-  </table>
-</div>
-
-
 {% endblock %}
