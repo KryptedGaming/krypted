@@ -12,7 +12,7 @@ def add_token(request):
     return redirect(settings.ESI_URL_CACHE)
 
 def remove_token(request, user):
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         current_user = request.user
         if current_user == user:
             token = get_object_or_404(Token, user=user)
@@ -23,7 +23,7 @@ def remove_token(request, user):
 
 def receive_token(request):
     print("######## RECEIVE TOKEN ########")
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         ## SSO PROCESS
         print("Loading SSO settings...")
         esi_app = settings.ESI_APP
@@ -46,7 +46,7 @@ def receive_token(request):
 
         ## CREATE TOKEN
         logger.info(
-                "Creating token...\n" + 
+                "Creating token...\n" +
                 "Lengths: " + "R: " + str(len(str(esi_token['refresh_token']))))
         print("CREATING TOKEN")
         token = Token(

@@ -64,7 +64,7 @@ def get_character_wallet(token):
                     query.append(data.first_party_id)
                     query.append(data.second_party_id)
                 except:
-                    print("OK")
+                    pass
 
             try:
                 op = settings.ESI_APP.op['post_universe_names'](ids=query)
@@ -80,11 +80,11 @@ def get_character_wallet(token):
                         counter2 += 2
                         try:
                             if data.first_party_id == value.id:
-                                print("Setting data player1 to id:: " + str(data.first_party_id) + " - " + value.name)
+                                # print("Setting data player1 to id:: " + str(data.first_party_id) + " - " + value.name)
                                 data.first_party_id = value.name
-                                print(data)
+                                # print(data)
                             elif data.second_party_id == value.id:
-                                print("Setting data player2 to id")
+                                # print("Setting data player2 to id")
                                 data.second_party_id = value.name
                         except:
                             data['first_party_id'] = None

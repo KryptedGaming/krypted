@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from requests_oauthlib import OAuth2Session
 from django.conf import settings
 from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
+from modules.discord.models import DiscordToken
 import logging
 import base64
 import requests
@@ -17,20 +18,39 @@ def index(request):
     return HttpResponseRedirect(url)
 
 def callback(request):
-    context={}
-    code = request.GET['code']
-    context['code'] = code
-    context['encode'] = base64.b64encode(settings.DISCORD_CLIENT_ID + ":" + settings.DISCORD_SECRET)
-    encode = base64.b64encode(settings.DISCORD_CLIENT_ID + ":" + settings.DISCORD_SECRET)
-    res = requests.post('https://discordapp.com/api/oauth2/token?grant_type=authorization_code&code=' + code + '&redirect_uri=https%3A%2F%2Fdev.kryptedgaming.com%2Fdiscord%2Fcallback', headers={'Authorization': "Basic " + encode})
-    context['token'] = request.GET
-    context['request'] = res
-    context['response'] = res.json()
-    json = res.json()
+    data = {
+        "client_id": settings.DISCORD_CLIENT_ID,
+        "client_secret": settings.DISCORD_SECRET,
+        "grant_type": "authorization_code",
+        "code": request.GET['code'],
+        "redirect_uri": settings.DISCORD_CALLBACK_URL
+    }
+    headers = {
+        "Content-Type": "application/x-www-form-urlencoded"
+    }
+
+    r = requests.post('%s/oauth2/token' % settings.DISCORD_API_ENDPOINT, data, headers)
+    r.raise_for_status()
+
+    json = r.json()
     token = json['access_token']
-    context['token'] = token
-    me_data = requests.get('https://discordapp.com/api/users/@me', headers={'Authorization': "Bearer " + token})
-    context['me'] = me_data.json()
-    join_data = requests.post('https://discordapp.com/api/invites/MHtkWwm', headers={'Authorization': "Bearer " + token})
-    context['join'] = join_data.json()
-    return render(request, 'stupid.html', context)
+    print(json)
+    me = requests.get('https://discordapp.com/api/users/@me', headers={'Authorization': "Bearer " + token}).json()
+    join = requests.post(settings.DISCORD_INVITE_LINK, headers={'Authorization': "Bearer " + token}).json()
+
+    # Delete old token if exists
+    if DiscordToken.objects.filter(userid=me['id']).count() > 0:
+        token = DiscordToken.objects.get(userid=me['id'])
+        token.delete()
+    # Create new token
+    token = DiscordToken(
+        access_token = json['access_token'],
+        refresh_token = json['refresh_token'],
+        userid = me['id'],
+        username = me['username'] + "#" + me['discriminator'],
+        email = me['email'],
+        user = request.user
+    )
+    token.save()
+
+    return redirect('profile')
