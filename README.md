@@ -2,8 +2,6 @@
 Advanced authentication system for Krypted Gaming.
 
 #### Current Status
-- **On hold due to University.**
-
 - Waiting for ESI routes to stabilize (EVE Swagger Interface), have been having issues with important API routes
 
 - Customizing current AllianceAuth fork (what we're currently using for auth)
