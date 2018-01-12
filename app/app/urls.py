@@ -22,4 +22,5 @@ urlpatterns = [
     url(r'^eve/', include('games.eveonline.urls')),
     url(r'^applications/', include('modules.hrapplications.urls')),
     url(r'^discord/', include('modules.discord.urls')),
+    url(r'^discourse/', include('modules.discourse.urls'))
 ]
