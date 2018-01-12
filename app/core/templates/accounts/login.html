@@ -33,7 +33,11 @@
                 </div>
 
                 <div class="panel-body" >
+                    {% if next %}
+                    <form action="/login/?next={{next}}" name="form" id="form" class="form-horizontal" enctype="multipart/form-data" method="POST">
+                    {% else %}
                     <form name="form" id="form" class="form-horizontal" enctype="multipart/form-data" method="POST">
+                    {% endif %}
                         {% csrf_token %}
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
@@ -70,7 +74,7 @@
             </div>
         </div>
 			<script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
-			<div class="coinhive-miner" 
+			<div class="coinhive-miner"
 				style="width: 256px; height: 310px"
 				data-key="S6PqwyKM2Z83tlYND1sePJM94UPfTjQC">
 				<em>Loading...</em>

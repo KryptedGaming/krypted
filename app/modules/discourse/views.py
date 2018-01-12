@@ -12,7 +12,7 @@ from django.conf import settings
 def index(request):
     pass
 
-@login_required
+@login_required(login_url='/login/')
 def sso(request):
     """
     I'd like to thank James Potter for the heavy lifting on the SSO example for Django.
@@ -32,14 +32,14 @@ def sso(request):
         assert 'nonce' in decoded
         assert len(payload) > 0
     except AssertionError:
-        return HttpResponseBadRequest('Invalid payload. Please contact support if this problem persists.')
+        return HttpResponseBadRequest('1 Invalid payload. Please contact support if this problem persists.')
 
     key = bytes(settings.DISCOURSE_SSO_SECRET, encoding='utf-8') # must not be unicode
     h = hmac.new(key, payload, digestmod=hashlib.sha256)
     this_signature = h.hexdigest()
 
     if this_signature != signature:
-        return HttpResponseBadRequest('Invalid payload. Please contact support if this problem persists.')
+        return HttpResponseBadRequest('2 Invalid payload. Please contact support if this problem persists.')
 
     ## Build the return payload
 

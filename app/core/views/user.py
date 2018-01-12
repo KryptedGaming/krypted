@@ -9,16 +9,27 @@ from . import base
 def login_user(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
-
         if form.is_valid():
             user = authenticate(username=request.POST['username'],
                     password = request.POST['password'])
             if user is not None:
                 login(request, user)
-                return redirect('dashboard')
+                try:
+                    next = request.POST['next']
+                except:
+                    next = 'dashboard'
+                    return redirect(next)
             else:
-                return redirect('dashboard')
+                if request.POST['next']:
+                    return redirect(next)
+                else:
+                    return redirect('dashboard')
     else:
+        try:
+            next = request.GET['next']
+        except:
+            next = None
+
         form = LoginForm()
 
     return render(
@@ -26,6 +37,7 @@ def login_user(request):
             'accounts/login.html',
             context={
                 'form': form,
+                'next': next
                 }
             )
 
