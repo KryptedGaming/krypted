@@ -1,10 +1,12 @@
+from __future__ import absolute_import, unicode_literals
 from celery import task
-from eveonline.models import Token, EveCharacter
+from games.eveonline.models import Token, EveCharacter
 from django.contrib.auth.models import User
 from esipy import App, EsiClient, EsiSecurity
 
 @task()
 def verify_sso_tokens():
+    print("weeeee")
     tokens = Token.objects.all()
     esi_app = App.create('https://esi.tech.ccp.is/latest/swagger.json?datasource=tranquility')
 
