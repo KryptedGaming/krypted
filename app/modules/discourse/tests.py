@@ -6,3 +6,6 @@ from modules.discourse.utils import *
 def addGroupTest():
     group = Group.objects.all()[0]
     addGroup(group)
+def removeGroupTest():
+    group = Group.objects.all()[0]
+    removeGroup(DiscourseGroup.objects.get(group=group))
