@@ -18,6 +18,8 @@ def create_profile(request):
 
         profile = Profile(user=user, biography=biography, timezone=timezone)
         profile.save()
+        request.user.first_name = request.POST.get('first_name')
+        request.user.save()
         Notification(message="You have created a profile.").notify_user(user)
 
         return redirect('dashboard')
