@@ -37,21 +37,21 @@
                         {% csrf_token %}
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                            <input id="username" type="text" class="form-control" name="username" value="" placeholder="Username">
+                            <input id="username" type="text" class="form-control" name="username" value="" placeholder="Username" required>
                         </div>
 
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                            <input id="email" type="email" class="form-control" name="email" value="" placeholder="Email">
+                            <input id="email" type="email" class="form-control" name="email" value="" placeholder="Email" required>
                         </div>
 
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                            <input id="password" type="password" class="form-control" name="password" placeholder="Password">
+                            <input id="password" type="password" class="form-control" name="password" placeholder="Password" required>
                         </div>
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                            <input id="vpassword" type="password" class="form-control" name="vpassword" placeholder="Password Again">
+                            <input id="vpassword" type="password" class="form-control" name="vpassword" placeholder="Repeat Password" required>
                         </div>
 
                         <div class="form-group">

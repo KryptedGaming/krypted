@@ -54,12 +54,14 @@ def register_user(request):
             return redirect('login')
     else:
         form = RegisterForm()
-
     return render(
             request,
             'accounts/register.html',
-            context={}
+            context={
+                'form': form
+                }
             )
+
 
 def logout_user(request):
     return redirect('login')
