@@ -53,4 +53,4 @@ def callback(request):
     )
     token.save()
 
-    return redirect('profile')
+    return redirect('dashboard')

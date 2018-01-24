@@ -7,6 +7,7 @@ from core.models import Profile, Notification, Game, Event
 from . import base
 ## USER AUTHENTICATION
 def login_user(request):
+    next = None
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -25,21 +26,19 @@ def login_user(request):
                 else:
                     return redirect('dashboard')
     else:
+        form = LoginForm()
         try:
             next = request.GET['next']
         except:
             next = None
-
-        form = LoginForm()
-
-    return render(
-            request,
-            'accounts/login.html',
-            context={
-                'form': form,
-                'next': next
-                }
-            )
+        return render(
+                request,
+                'accounts/login.html',
+                context={
+                    'form': form,
+                    'next': next
+                    }
+                )
 
 def register_user(request):
     if request.method =='POST':
