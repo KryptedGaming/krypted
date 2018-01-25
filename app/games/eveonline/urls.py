@@ -14,6 +14,6 @@ urlpatterns = [
 ## SSO
 urlpatterns += [
     url(r'^add-sso-token/$', sso.add_token, name='add-sso-token'),
-    url(r'^remove-sso-token/$', sso.remove_token, name='remove-sso-token'),
+    url(r'^remove-sso-token/(?P<character>\w+)/$', sso.remove_token, name='remove-sso-token'),
     url(r'^sso/callback/$', sso.receive_token, name='receive-sso-token'),
 ]

@@ -105,18 +105,15 @@ def set_main_character(request, character):
     eve_character.character_alt_type = None
     eve_character.save()
     for alt in eve_alts:
-        alt.main = eve_character_main
+        alt.main = eve_character
         alt.character_alt_type = None
         alt.save()
     return redirect('eve-dashboard')
 
 def set_alt_character(request, character, alt_type):
-    try:
-        eve_character = EveCharacter.objects.get(character_id=character, user=request.user)
-        eve_character_main = EveCharacter.objects.get(user=request.user, main=None)
-        eve_character.main = eve_character_main
-        eve_character.character_alt_type = alt_type
-        eve_character.save()
-        return HttpResponse(status=200)
-    except:
-        return HttpResponse(status=404)
+    eve_character = EveCharacter.objects.get(token__character_id=character, user=request.user)
+    eve_character_main = EveCharacter.objects.get(user=request.user, main=None)
+    eve_character.main = eve_character_main
+    eve_character.character_alt_type = alt_type
+    eve_character.save()
+    return redirect('eve-dashboard')

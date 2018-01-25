@@ -3,6 +3,7 @@ from esipy import App, EsiClient, EsiSecurity
 from django.conf import settings
 from games.eveonline.models import Token, EveCharacter
 from django.contrib.auth.models import User
+from core.decorators import login_required
 
 import logging
 logger = logging.getLogger(__name__)
@@ -11,15 +12,11 @@ logger = logging.getLogger(__name__)
 def add_token(request):
     return redirect(settings.ESI_URL_CACHE)
 
-def remove_token(request, user):
-    if request.user.is_authenticated:
-        current_user = request.user
-        if current_user == user:
-            token = get_object_or_404(Token, user=user)
-            token.delete()
-        return redirect('eve')
-    else:
-        return redirect('login')
+@login_required
+def remove_token(request, character):
+    eve_character = EveCharacter.objects.get(user=request.user, token__character_id=character)
+    eve_character.token.delete()
+    return redirect('eve-dashboard')
 
 def receive_token(request):
     print("######## RECEIVE TOKEN ########")
@@ -70,9 +67,14 @@ def receive_token(request):
 
         portrait = esiclient.request(op)
 
+        try:
+            eve_main_character = EveCharacter.objects.get(main=None, user=request.user)
+        except:
+            eve_main_character = None
         character = EveCharacter(
                 character_name=esi_verified['CharacterName'],
                 character_portrait=portrait.data['px64x64'],
+                main=eve_main_character,
                 token=token,
                 user=request.user
         )
