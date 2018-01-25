@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from core.forms import LoginForm, RegisterForm, ProfileForm
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from core.models import Profile, Notification, Game, Event
 from . import base
 ## USER AUTHENTICATION
@@ -64,4 +64,5 @@ def register_user(request):
 
 
 def logout_user(request):
+    logout(request)
     return redirect('login')

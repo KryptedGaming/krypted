@@ -24,6 +24,7 @@ Dashboard
       <tr>
         <th>Portrait</th>
         <th>Character Name</th>
+        <th>Character Type</th>
         <th>Actions</th>
       </tr>
     </thead>
@@ -37,12 +38,20 @@ Dashboard
             <a href="/eve/character/{{character.token.character_id}}/">{{character.character_name}}</a>
         </td>
         <td>
+            <select class="form-control" id="sel1">
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+            </select>
+          </div>
+        <td>
             <button class="btn btn-danger btn-fill"><i class="fa fa-times"></i></button>
         </td>
-      </tr
+      </tr>
     {% endfor %}
     <!-- Bottom Divider -->
-    <tr><td></td><td></td><td></td></tr>
+    <tr><td></td><td></td><td></td><td></td></tr>
     </tbody>
   </table>
   <div class="container">

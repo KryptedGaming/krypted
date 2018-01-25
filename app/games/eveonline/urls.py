@@ -5,7 +5,9 @@ from games.eveonline.views import eve, sso
 urlpatterns = [
     url(r'^$', eve.dashboard, name='eve-dashboard'),
     url(r'^apply/$', eve.apply, name='eve-apply'),
-    url(r'^character/(?P<character>\w+)/$', eve.view_character, name='eve-view-character')
+    url(r'^character/(?P<character>\w+)/$', eve.view_character, name='eve-view-character'),
+    url(r'^character/set-main-character/(?P<character>\w+)/$', eve.set_main_character, name='eve-set-main-character'),
+    url(r'^character/set-alt-character/(?P<character>\w+)/(?P<alt_type>\w+)/$', eve.set_alt_character, name='eve-set-alt-character')
     # url(r'^apply/$', eve.apply, name='eve-apply'),
 ]
 
@@ -15,4 +17,3 @@ urlpatterns += [
     url(r'^remove-sso-token/$', sso.remove_token, name='remove-sso-token'),
     url(r'^sso/callback/$', sso.receive_token, name='receive-sso-token'),
 ]
-
