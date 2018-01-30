@@ -5,6 +5,14 @@ Dashboard
 {% endblock %}
 
 {% block content %}
+<script>
+  console.log("hi");
+  $(document).ready(function() {
+    $("sel1").change(function() {
+      console.log("bi");
+    });
+  });
+</script>
 <style>
 .guildbtn {
     min-width: 50%;
@@ -42,13 +50,12 @@ Dashboard
             <div class="form-control" disabled>
               Main Character
             </div>
+            {% elif character.character_alt_type != None %}
+            <div class="form-control" disabled>
+              {{character.get_character_alt_type_display}}
+            </div>
             {% else %}
-            <select class="form-control" id="sel1">
-              <option>Capital Alt</option>
-              <option>Industry Alt</option>
-              <option>PvP Alt</option>
-              <option>Useless Alt</option>
-            </select>
+            <button data-toggle="modal" data-target="#selectModal{{character.token.character_id}}" class="btn btn-warning btn-fill pull-left"><i class="fa fa-pencil"></i></button>
             {% endif %}
         <td>
           <button onclick="location.href='/eve/remove-sso-token/{{character.token.character_id}}'" class="btn btn-danger btn-fill"><i class="fa fa-times"></i></button>
@@ -70,44 +77,13 @@ Dashboard
 
 </div>
 
-<div class="modal fade" id="selectModal" data-backdrop="false">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4>Click on a character</h4>
-            </div>
-            <div class="modal-body">
-              <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th>Portrait</th>
-                    <th>Character Name</th>
-                    <th>Select</th>
-                  </tr>
-                </thead>
-                <tbody>
-                {% for character in characters %}
-                  <tr>
-                    <td>
-                        <img style="width: 50px;" src="{{character.character_portrait}}"/>
-                    </td>
-                    <td>
-                        <a href="/eve/character/{{character.token.character_id}}/">{{character.character_name}}</a>
-                    </td>
-                    <td>
-                        <button onclick="location.href='/eve/character/set-main-character/{{character.token.character_id}}'" class="btn btn-success btn-fill"><i class="fa fa-check-square-o"></i></button>
-                    </td>
-                  </tr>
-                {% endfor %}
-                <!-- Bottom Divider -->
-                <tr><td></td><td></td><td></tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
+<div class="modal fade col-md-12" id="selectModal" data-backdrop="false">
+  {% include "eveonline/main_character_modal.html" %}
 </div>
+
+{% for character in characters %}
+<div class="modal fade col-md-12" id="selectModal{{character.token.character_id}}" data-backdrop="false">
+  {% include "eveonline/alt_character_modal.html" %}
+</div>
+{% endfor %}
 {% endblock %}

@@ -52,15 +52,9 @@ class Token(models.Model):
             return True
 
 class EveCharacter(models.Model):
-    eve_alt_types = (
-        ("pvp_alt", "PvP Alt"),
-        ("cap_alt", "Capital Alt"),
-        ("industry_alt", "Industry Alt"),
-        ("useless_alt", "Useless Alt")
-    )
     character_name = models.CharField(max_length=255, primary_key=True)
     character_portrait = models.URLField(max_length=255, blank=True, null=True)
-    character_alt_type = models.CharField(max_length=255, choices=eve_alt_types, null=True)
+    character_alt_type = models.CharField(max_length=255, choices=settings.EVE_ALT_TYPES, null=True)
 
     ## SSO Token
     token = models.OneToOneField("Token", on_delete=models.CASCADE)

@@ -8,11 +8,13 @@ from django.conf import settings
 from django.contrib import messages
 from django.http import HttpResponse
 from django.db.models import Q
+from django.conf import settings
 
 # Create your views here.
 @login_required
 def dashboard(request):
     context = get_eve_context(request)
+    context['alt_types'] = settings.EVE_ALT_TYPES
     return render(request, 'eveonline/dashboard.html', context)
 
 @login_required

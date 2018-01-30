@@ -1,0 +1,32 @@
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Select an alt type</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for alt_type in alt_types %}
+                  <tr>
+                      <td>{{alt_type.1}}</td>
+                      <td>
+                        <button onclick="location.href='/eve/character/set-alt-character/{{character.token.character_id}}/{{alt_type.0}}'" class="btn btn-info btn-fill">Select</i></button>
+                      </td>
+                  </tr>
+                  {% endfor %}
+                <!-- Bottom Divider -->
+                <tr><td></td><td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
