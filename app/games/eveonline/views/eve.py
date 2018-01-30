@@ -36,8 +36,10 @@ def view_character(request, character):
     except:
         return redirect('eve-dashboard')
 
-
+    data = get_character_data(settings.ESI_APP, token, settings.ESI_CLIENT)
     context['wallet'] = get_character_wallet(token)
+    context['mails'] = data['mails']
+
 
     return render(request, 'eveonline/view_character.html', context)
 
@@ -98,6 +100,81 @@ def get_character_wallet(token):
         else:
             print("Wallet returned a value of none. ESI issue?")
     return wallet.data
+
+def get_character_data(app, token, client):
+    settings.ESI_SECURITY.update_token(token.populate())
+    name_scopes = {'mails': 'get_characters_character_id_mail',
+                   'skills': 'get_characters_character_id_skills',
+                   'transactions': 'get_characters_character_id_wallet_transactions',
+                   'contacts': 'get_characters_character_id_contacts',
+                   'bookmarks': 'get_characters_character_id_bookmarks',
+                   'assets': 'get_characters_character_id_assets',
+                   'orders': 'get_characters_character_id_orders',
+                   'notifications': 'get_characters_character_id_notifications'}
+    data = {}
+    for scope in name_scopes:
+        op = app.op[name_scopes[scope]](character_id=token.character_id)
+        data[scope] = client.request(op).data
+
+    # Clean up mail player ids
+    character_ids = []
+    for mail in data['mails']:
+        character_ids.append(mail['from'])
+        for recipient in mail['recipients']:
+            character_ids.append(recipient['recipient_id'])
+    op = settings.ESI_APP.op['post_universe_names'](ids=character_ids)
+
+    character_ids = settings.ESI_CLIENT.request(op).data
+    for character in character_ids:
+        for mail in data['mails']:
+            if mail['from'] == character.id:
+                mail['from'] = character.name
+            for recipient in mail['recipients']:
+                if recipient['recipient_id'] == character.id:
+                    recipient['recipient_id'] = character.name
+    # Clean up mail dates
+    for mail in data['mails']:
+        time = str(mail['timestamp']).split("T")[0]
+        mail['timestamp'] = time
+    # Clean up recipicients
+    for mail in data['mails']:
+        character_ids = []
+        for recipient in mail['recipients']:
+            character_ids.append(recipient['recipient_id'])
+        mail['recipients'] = ",".join(map(str,character_ids))
+
+
+    return data
+
+def clean_character_mails(data):
+    # Clean up mails
+    character_ids = []
+    for mail in data['mails']:
+        character_ids.append(mail['from'])
+        for recipient in mail['recipients']:
+            character_ids.append(recipient['recipient_id'])
+    op = settings.ESI_APP.op['post_universe_names'](ids=character_ids)
+    character_ids = settings.ESI_CLIENT.request(op).data
+    for character in character_ids:
+        for mail in data['mails']:
+            if mail['from'] == character['character_id']:
+                mail['from'] = character['character_name']
+            for recipient in mail['recipients']:
+                if recipient['recipient_id'] == character['character_id']:
+                    recipient['recipient_id'] = character['character_name']
+    return data
+
+def run_me(token):
+    data = get_character_data(settings.ESI_APP, token, settings.ESI_CLIENT)
+    print(data['mails'])
+    print(data['skills'])
+    print(data['transactions'])
+    print(data['contacts'])
+    print(data['bookmarks'])
+    print(data['assets'])
+    print(data['orders'])
+    print(data['notifications'])
+
 
 @login_required
 def set_main_character(request, character):

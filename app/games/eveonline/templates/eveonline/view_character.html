@@ -5,68 +5,108 @@ View Character
 {% endblock %}
 
 {% block content %}
+<div class="container">
     <img class="img-rounded" src="{{character.character_portrait}}"></img>
+    {{character.token.character_name}}
+
     <hr>
-<div class="well">
-    <ul class="nav nav-tabs">
-      <li class="active"><a href="#skills" data-toggle="tab">Skills</a></li>
-      <li><a href="#assets" data-toggle="tab">Assets</a></li>
-      <li><a href="#bookmarks" data-toggle="tab">Bookmarks</a></li>
-      <li><a href="#contacts" data-toggle="tab">Contacts</a></li>
-      <li><a href="#journal" data-toggle="tab">Journal</a></li>
-      <li><a href="#mail" data-toggle="tab">Mail</a></li>
-      <li><a href="#notifications" data-toggle="tab">Notifications</a></li>
-      <li><a href="#orders" data-toggle="tab">Orders</a></li>
-      <li><a href="#transactions" data-toggle="tab">Transactions</a></li>
+    <div class="well">
+        <ul class="nav nav-tabs">
+          <li class="active"><a href="#skills" data-toggle="tab">Skills</a></li>
+          <li><a href="#assets" data-toggle="tab">Assets</a></li>
+          <li><a href="#contracts" data-toggle="tab">Contracts</a></li>
+          <li><a href="#contacts" data-toggle="tab">Contacts</a></li>
+          <li><a href="#journal" data-toggle="tab">Journal</a></li>
+          <li><a href="#mail" data-toggle="tab">Mail</a></li>
+          <li><a href="#notifications" data-toggle="tab">Notifications</a></li>
+          <li><a href="#orders" data-toggle="tab">Orders</a></li>
+          <li><a href="#transactions" data-toggle="tab">Transactions</a></li>
 
-    </ul>
-
-    <div id="myTabContent" class="tab-content">
-      <div class="tab-pane active in" id="skills">
+        </ul>
+        <div id="myTabContent" class="tab-content">
+          <div class="tab-pane active in" id="skills">
+              Not implemented.
+          </div>
+          <div class="tab-pane fade" id="contracts">
+              Not implemented.
+          </div>
+          <div class="tab-pane fade" id="contacts">
+              Not implemented.
+          </div>
+          <div class="tab-pane fade" id="journal">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>From</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for transaction in wallet %}
+                  <tr {%if "player" in transaction.ref_type %} style="background-color:#efe483;"{%endif%}>
+                    {% if "market" not in transaction.ref_type and "transaction" not in transaction.ref_type and "contract" not in transaction.ref_type %}
+                    <td>{{transaction.ref_type | cleanTypes}}</td>
+                    {% if transaction.amount > 0 %}
+                    <td style="color: green;">{{transaction.amount}}</td>
+                    {% else %}
+                    <td style="color: red;">{{transaction.amount}}</td>
+                    {% endif %}
+                    <td>{{transaction.second_party_id}}</td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+                <!-- Bottom Divider -->
+                <tr><td></td><td></td><td></td></tr>
+                </tbody>
+              </table>
+              {% if wallet == None %}
+              <h3 class="text-center">Wallet failed to load</h3>
+              {% endif %}
+          </div>
+          <div class="tab-pane fade" id="mail">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Subject</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for mail in mails %}
+                  <tr>
+                      <td>
+                          {{mail.timestamp}}
+                      </td>
+                      <td>
+                          <a href="{{mail.from|eveWhoConverter}}">{{mail.from}}</a>
+                      </td>
+                      <td>
+                          <a href="{{mail.from|eveWhoConverter}}">{{mail.recipients}}</a>
+                      </td>
+                      <td>
+                          {{mail.subject}}
+                      </td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+              {% if wallet == None %}
+              <h3 class="text-center">Wallet failed to load</h3>
+              {% endif %}
+          </div>
+          <div class="tab-pane fade" id="notifications">
+              Not implemented.
+          </div>
+          <div class="tab-pane fade" id="orders">
+              Not implemented.
+          </div>
+          <div class="tab-pane fade" id="transactions">
+              Not implemented.
+          </div>
       </div>
-      <div class="tab-pane fade" id="bookmarks">
-      </div>
-      <div class="tab-pane fade" id="contacts">
-      </div>
-      <div class="tab-pane fade" id="journal">
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>Type</th>
-                <th>Amount</th>
-                <th>From</th>
-              </tr>
-            </thead>
-            <tbody>
-            {% for transaction in wallet %}
-              <tr {%if "player" in transaction.ref_type %} style="background-color:#efe483;"{%endif%}>
-                <td>{{transaction.ref_type | cleanTypes}}</td>
-                {% if transaction.amount > 0 %}
-                <td style="color: green;">{{transaction.amount}}</td>
-                {% else %}
-                <td style="color: red;">{{transaction.amount}}</td>
-                {% endif %}
-                <td>{{transaction.second_party_id}}</td>
-            </tr>
-            {% endfor %}
-            <!-- Bottom Divider -->
-            <tr><td></td><td></td><td></td></tr>
-            </tbody>
-          </table>
-          {% if wallet == None %}
-          <h3 class="text-center">Wallet failed to load</h3>
-          {% endif %}
-      </div>
-      <div class="tab-pane fade" id="mail">
-      </div>
-      <div class="tab-pane fade" id="noitfications">
-      </div>
-      <div class="tab-pane fade" id="orders">
-      </div>
-      <div class="tab-pane fade" id="transactions">
-      </div>
-
-
-
-  </div>
+    </div>
+</div>
 {% endblock %}

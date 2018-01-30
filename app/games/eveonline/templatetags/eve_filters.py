@@ -38,3 +38,9 @@ def cleanTypes(string):
     for data in string:
         cleaned_value += data.title() + " "
     return cleaned_value
+
+@register.filter(name='eveWhoConverter')
+def eveWhoConverter(string):
+    string = string.replace(' ', '+')
+    url = "https://evewho.com/pilot/" + string
+    return url
