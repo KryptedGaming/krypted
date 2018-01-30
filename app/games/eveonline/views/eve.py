@@ -116,6 +116,10 @@ def get_character_data(app, token, client):
         op = app.op[name_scopes[scope]](character_id=token.character_id)
         data[scope] = client.request(op).data
 
+    """
+    HANDLING MAIL 
+    TODO: Move this to a function: clean_character_mails
+    """
     # Clean up mail player ids
     character_ids = []
     for mail in data['mails']:
