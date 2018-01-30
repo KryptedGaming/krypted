@@ -55,6 +55,8 @@ class EveCharacter(models.Model):
     character_name = models.CharField(max_length=255, primary_key=True)
     character_portrait = models.URLField(max_length=255, blank=True, null=True)
     character_alt_type = models.CharField(max_length=255, choices=settings.EVE_ALT_TYPES, null=True)
+    character_corporation = models.CharField(max_length=255, blank=True, null=True)
+    character_alliance = models.CharField(max_length=255, blank=True, null=True)
 
     ## SSO Token
     token = models.OneToOneField("Token", on_delete=models.CASCADE)
