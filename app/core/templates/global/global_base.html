@@ -188,6 +188,17 @@
 
         <div class="content">
 
+			<div class="container">
+		    {% if messages %}
+		        {% for message in messages %}
+		        <div class="alert alert-danger alert-dismissable">
+		            <a style="color: white;" href="#"  data-dismiss="alert" aria-label="close">
+		            {{message}}
+					</a>
+		        </div>
+		        {% endfor %}
+		    {% endif %}
+		</div>
 				{% block content %}
 				{% endblock %}
 

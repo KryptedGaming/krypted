@@ -13,13 +13,11 @@ View Character
     <div class="well">
         <ul class="nav nav-tabs">
           <li class="active"><a href="#skills" data-toggle="tab">Skills</a></li>
-          <li><a href="#assets" data-toggle="tab">Assets</a></li>
           <li><a href="#contracts" data-toggle="tab">Contracts</a></li>
           <li><a href="#contacts" data-toggle="tab">Contacts</a></li>
           <li><a href="#journal" data-toggle="tab">Journal</a></li>
           <li><a href="#mail" data-toggle="tab">Mail</a></li>
           <li><a href="#notifications" data-toggle="tab">Notifications</a></li>
-          <li><a href="#orders" data-toggle="tab">Orders</a></li>
           <li><a href="#transactions" data-toggle="tab">Transactions</a></li>
 
         </ul>
@@ -28,10 +26,52 @@ View Character
               Not implemented.
           </div>
           <div class="tab-pane fade" id="contracts">
-              Not implemented.
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Issued By</th>
+                    <th>Accepted By</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for contract in contracts %}
+                  <tr>
+                      <td>
+                          {{contract.timestamp}}
+                      </td>
+                      <td>
+                          {{contract.issuer_id}}
+                      </td>
+                      <td>
+                          {{contract.acceptor_id}}
+                      </td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
           </div>
           <div class="tab-pane fade" id="contacts">
-              Not implemented.
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Standing</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for contact in contacts %}
+                  <tr>
+                      <td>
+                          <a href="{{contact.contact_url}}">{{contact.contact_id}}</a>
+                      </td>
+                      <td>
+                          {{contact.standing}}
+                      </td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
           </div>
           <div class="tab-pane fade" id="journal">
               <table class="table table-striped">
@@ -84,7 +124,7 @@ View Character
                           <a href="{{mail.from|eveWhoConverter}}">{{mail.from}}</a>
                       </td>
                       <td>
-                          <a href="{{mail.from|eveWhoConverter}}">{{mail.recipients}}</a>
+                          {% for recipient in mail.recipients %} <a href="{{recipient.recipient_url}}">{{recipient.recipient_id}}</a>{% endfor %}
                       </td>
                       <td>
                           {{mail.subject}}
@@ -98,9 +138,6 @@ View Character
               {% endif %}
           </div>
           <div class="tab-pane fade" id="notifications">
-              Not implemented.
-          </div>
-          <div class="tab-pane fade" id="orders">
               Not implemented.
           </div>
           <div class="tab-pane fade" id="transactions">

@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.http import HttpResponse
 from django.db.models import Q
 from django.conf import settings
+from operator import itemgetter
 
 # Create your views here.
 @login_required
@@ -36,13 +37,50 @@ def view_character(request, character):
     except:
         return redirect('eve-dashboard')
 
-    data = get_character_data(settings.ESI_APP, token, settings.ESI_CLIENT)
+    data = get_character_data(token)
     context['wallet'] = get_character_wallet(token)
-    context['mails'] = data['mails']
+    try:
+        context['mails'] = data['mails']
+    except:
+        messages.add_message(request, messages.ERROR, 'Mails failed to load.')
+        context['mails'] = None
+    try:
+        context['contacts'] = data['contacts']
+    except:
+        messages.add_message(request, messages.ERROR, 'Contacts failed to load.')
+        context['contacts'] = None
+    try:
+        context['contracts'] = data['contracts']
+    except:
+        messages.add_message(request, messages.ERROR, 'Contracts failed to load.')
+        context['contracts'] = None
 
 
     return render(request, 'eveonline/view_character.html', context)
 
+@login_required
+def set_main_character(request, character):
+    eve_character = EveCharacter.objects.get(token__character_id=character, user=request.user)
+    eve_alts = EveCharacter.objects.filter(~Q(token__character_id=character), user=request.user)
+    eve_character.main = None
+    eve_character.character_alt_type = None
+    eve_character.save()
+    for alt in eve_alts:
+        alt.main = eve_character
+        alt.character_alt_type = None
+        alt.save()
+    return redirect('eve-dashboard')
+
+@login_required
+def set_alt_character(request, character, alt_type):
+    eve_character = EveCharacter.objects.get(token__character_id=character, user=request.user)
+    eve_character_main = EveCharacter.objects.get(user=request.user, main=None)
+    eve_character.main = eve_character_main
+    eve_character.character_alt_type = alt_type
+    eve_character.save()
+    return redirect('eve-dashboard')
+
+@login_required
 def get_eve_context(request):
     context = get_global_context(request)
     user = request.user
@@ -101,7 +139,7 @@ def get_character_wallet(token):
             print("Wallet returned a value of none. ESI issue?")
     return wallet.data
 
-def get_character_data(app, token, client):
+def get_character_data(token):
     settings.ESI_SECURITY.update_token(token.populate())
     name_scopes = {'mails': 'get_characters_character_id_mail',
                    'skills': 'get_characters_character_id_skills',
@@ -110,20 +148,27 @@ def get_character_data(app, token, client):
                    'bookmarks': 'get_characters_character_id_bookmarks',
                    'assets': 'get_characters_character_id_assets',
                    'orders': 'get_characters_character_id_orders',
-                   'notifications': 'get_characters_character_id_notifications'}
+                   'notifications': 'get_characters_character_id_notifications',
+                   'contracts': 'get_characters_character_id_contracts'}
     data = {}
     for scope in name_scopes:
-        op = app.op[name_scopes[scope]](character_id=token.character_id)
-        data[scope] = client.request(op).data
+        op = settings.ESI_APP.op[name_scopes[scope]](character_id=token.character_id)
+        data[scope] = settings.ESI_CLIENT.request(op).data
 
-    """
-    HANDLING MAIL 
-    TODO: Move this to a function: clean_character_mails
-    """
+    data = clean_mail_results(data)
+    data = clean_contracts(data)
+    if (len(data['contacts']) > 0):
+        data = clean_contacts(data)
+
+    return data
+
+def clean_mail_results(data):
     # Clean up mail player ids
     character_ids = []
+    print(data)
     for mail in data['mails']:
-        character_ids.append(mail['from'])
+        print(mail)
+        character_ids.append(int(mail['from']))
         for recipient in mail['recipients']:
             character_ids.append(recipient['recipient_id'])
     op = settings.ESI_APP.op['post_universe_names'](ids=character_ids)
@@ -144,59 +189,61 @@ def get_character_data(app, token, client):
     for mail in data['mails']:
         character_ids = []
         for recipient in mail['recipients']:
-            character_ids.append(recipient['recipient_id'])
-        mail['recipients'] = ",".join(map(str,character_ids))
-
-
+            if recipient['recipient_type'] == "character":
+                recipient['recipient_url'] = "https://evewho.com/pilot/" + recipient['recipient_id'].replace(" ", "+")
+            elif recipient['recipient_type'] == "corporation":
+                recipient['recipient_url'] = "https://evewho.com/corp/" + recipient['recipient_id'].replace(" ", "+")
+            elif recipient['recipient_type'] == "alliance":
+                recipient['recipient_url'] = "https://evewho.com/alli/" + recipient['recipient_id'].replace(" ", "+")
+        # mail['recipients'] = ",".join(map(str,character_ids))
     return data
 
-def clean_character_mails(data):
-    # Clean up mails
+def clean_contacts(data):
     character_ids = []
-    for mail in data['mails']:
-        character_ids.append(mail['from'])
-        for recipient in mail['recipients']:
-            character_ids.append(recipient['recipient_id'])
+    for contact in data['contacts']:
+        character_ids.append(contact['contact_id'])
     op = settings.ESI_APP.op['post_universe_names'](ids=character_ids)
     character_ids = settings.ESI_CLIENT.request(op).data
     for character in character_ids:
-        for mail in data['mails']:
-            if mail['from'] == character['character_id']:
-                mail['from'] = character['character_name']
-            for recipient in mail['recipients']:
-                if recipient['recipient_id'] == character['character_id']:
-                    recipient['recipient_id'] = character['character_name']
+        for contact in data['contacts']:
+            if contact['contact_id'] == character.id:
+                contact['contact_id'] = character.name
+                # create evewho links
+                if contact['contact_type'] == "character":
+                    contact['contact_url'] = "https://evewho.com/pilot/" + contact['contact_id'].replace(" ", "+")
+                elif contact['contact_type'] == "corporation":
+                    contact['contact_url'] = "https://evewho.com/corp/" + contact['contact_id'].replace(" ", "+")
+                elif contact['contact_type'] == "alliance":
+                    contact['contact_url'] = "https://evewho.com/alli/" + contact['contact_id'].replace(" ", "+")
+
+    data['contacts'] = sorted(data['contacts'], key=itemgetter('standing'))
     return data
 
-def run_me(token):
-    data = get_character_data(settings.ESI_APP, token, settings.ESI_CLIENT)
-    print(data['mails'])
-    print(data['skills'])
-    print(data['transactions'])
-    print(data['contacts'])
-    print(data['bookmarks'])
-    print(data['assets'])
-    print(data['orders'])
-    print(data['notifications'])
+def clean_contracts(data):
+    character_ids = []
+    for contract in data['contracts']:
+        if contract['issuer_id'] != 0:
+            character_ids.append(contract['issuer_id'])
+        if contract['acceptor_id'] != 0:
+            character_ids.append(contract['acceptor_id'])
+    op = settings.ESI_APP.op['post_universe_names'](ids=character_ids)
+    character_ids = settings.ESI_CLIENT.request(op).data
+    print(character_ids)
+    for character in character_ids:
+        for contract in data['contracts']:
+            if contract['issuer_id'] == character.id:
+                contract['issuer_id'] = character.name
+            elif contract['acceptor_id'] == character.id:
+                contract['acceptor_id'] = character.name
+    # Clean up mail dates
+    for contract in data['contracts']:
+        time = str(contract['date_issued']).split("T")[0]
+        contract['timestamp'] = time
 
+    return data
 
-@login_required
-def set_main_character(request, character):
-    eve_character = EveCharacter.objects.get(token__character_id=character, user=request.user)
-    eve_alts = EveCharacter.objects.filter(~Q(token__character_id=character), user=request.user)
-    eve_character.main = None
-    eve_character.character_alt_type = None
-    eve_character.save()
-    for alt in eve_alts:
-        alt.main = eve_character
-        alt.character_alt_type = None
-        alt.save()
-    return redirect('eve-dashboard')
-
-def set_alt_character(request, character, alt_type):
-    eve_character = EveCharacter.objects.get(token__character_id=character, user=request.user)
-    eve_character_main = EveCharacter.objects.get(user=request.user, main=None)
-    eve_character.main = eve_character_main
-    eve_character.character_alt_type = alt_type
-    eve_character.save()
-    return redirect('eve-dashboard')
+def run():
+    token = Token.objects.all()[9]
+    token.refresh()
+    data = get_character_data(token)
+    return data

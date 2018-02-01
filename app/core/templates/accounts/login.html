@@ -19,9 +19,15 @@
 
 
 <body>
-
     <div class="container login">
-
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-danger alert-dismissable">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                {{message}}
+            </div>
+            {% endfor %}
+        {% endif %}
         <div class="text-center">
             <img style="margin: 0 auto; width: 20%;" src="http://kryptedgaming.com/wp-content/uploads/2017/03/Core.png">
         </div>

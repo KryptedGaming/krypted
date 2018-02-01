@@ -3,6 +3,7 @@ from django.urls import reverse
 from core.forms import LoginForm, RegisterForm, ProfileForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
 from core.models import Profile, Notification, Game, Event
 from . import base
 ## USER AUTHENTICATION
@@ -17,14 +18,17 @@ def login_user(request):
                 login(request, user)
                 try:
                     next = request.POST['next']
+                    return redirect(next)
                 except:
                     next = 'dashboard'
                     return redirect(next)
+
             else:
-                if request.POST['next']:
-                    return redirect(next)
-                else:
-                    return redirect('dashboard')
+                messages.add_message(request, messages.ERROR, 'Failed to authenticate.')
+                return redirect('login')
+        else:
+            messages.add_message(request, messages.ERROR, 'Failed to authenticate.')
+            return redirect('login')
     else:
         form = LoginForm()
         try:
