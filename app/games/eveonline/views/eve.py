@@ -10,6 +10,7 @@ from django.http import HttpResponse
 from django.db.models import Q
 from django.conf import settings
 from operator import itemgetter
+import json
 
 # Create your views here.
 @login_required
@@ -39,6 +40,7 @@ def view_character(request, character):
 
     data = get_character_data(token)
     context['wallet'] = get_character_wallet(token)
+    context['net_worth'] = '{:20,}'.format(int(data['wallet']))
     try:
         context['mails'] = data['mails']
     except:
@@ -55,6 +57,13 @@ def view_character(request, character):
         messages.add_message(request, messages.ERROR, 'Contracts failed to load.')
         context['contracts'] = None
 
+    try:
+        context['skill_tree'] = data['skill_tree']
+        context['sp'] = '{:20,}'.format(int(data['sp']))
+    except:
+        messages.add_message(request, messages.ERROR, 'Skills failed to load.')
+        context['skill_tree'] = None
+        context['sp'] = None
 
     return render(request, 'eveonline/view_character.html', context)
 
@@ -149,7 +158,8 @@ def get_character_data(token):
                    'assets': 'get_characters_character_id_assets',
                    'orders': 'get_characters_character_id_orders',
                    'notifications': 'get_characters_character_id_notifications',
-                   'contracts': 'get_characters_character_id_contracts'}
+                   'contracts': 'get_characters_character_id_contracts',
+                   'wallet': 'get_characters_character_id_wallet'}
     data = {}
     for scope in name_scopes:
         op = settings.ESI_APP.op[name_scopes[scope]](character_id=token.character_id)
@@ -157,6 +167,7 @@ def get_character_data(token):
 
     data = clean_mail_results(data)
     data = clean_contracts(data)
+    data = build_skill_tree(data)
     if (len(data['contacts']) > 0):
         data = clean_contacts(data)
 
@@ -242,8 +253,23 @@ def clean_contracts(data):
 
     return data
 
-def run():
-    token = Token.objects.all()[9]
-    token.refresh()
-    data = get_character_data(token)
+def build_skill_tree(data):
+    with open('/home/auth/kryptedauth/app/games/eveonline/dumps/skills.txt') as skills:
+        skills_template = json.load(skills)
+        skills_tree = {}
+        player_skills = data['skills']['skills']
+
+        # Build the skill tree from Template
+        for category in skills_template:
+                skills_tree[category] = {}
+                print(skills_tree)
+                for skill in skills_template[category][1]:
+                    skills_tree[category][skill] = [skills_template[category][1][skill], "0"]
+        for skill in player_skills:
+            for category in skills_tree:
+                for skill_id in skills_tree[category]:
+                    if int(skill['skill_id']) == int(skill_id):
+                        skills_tree[category][skill_id][1] = skill['trained_skill_level']
+        data['skill_tree'] = skills_tree
+        data['sp'] = data['skills']['total_sp']
     return data

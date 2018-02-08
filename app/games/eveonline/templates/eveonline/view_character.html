@@ -6,8 +6,10 @@ View Character
 
 {% block content %}
 <div class="container">
-    <img class="img-rounded" src="{{character.character_portrait}}"></img>
-    {{character.token.character_name}}
+    <img style="padding-right: 20px;" class="img-rounded pull-left" src="{{character.character_portrait}}"></img>
+    {{character.token.character_name}}<br>
+    {{net_worth}} ISK<br>
+    {{sp}} SP
 
     <hr>
     <div class="well">
@@ -17,13 +19,30 @@ View Character
           <li><a href="#contacts" data-toggle="tab">Contacts</a></li>
           <li><a href="#journal" data-toggle="tab">Journal</a></li>
           <li><a href="#mail" data-toggle="tab">Mail</a></li>
-          <li><a href="#notifications" data-toggle="tab">Notifications</a></li>
           <li><a href="#transactions" data-toggle="tab">Transactions</a></li>
 
         </ul>
         <div id="myTabContent" class="tab-content">
           <div class="tab-pane active in" id="skills">
-              Not implemented.
+              {% for category, skill_data in skill_tree.items %}
+              <div class="panel-group">
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <h4 class="panel-title">
+                        <a data-toggle="collapse" href="#{{ category|cut:" " }}">{{category}}</a>
+                      </h4>
+                    </div>
+                    <div id="{{ category|cut:" " }}" class="panel-collapse collapse">
+                        <div class="container">
+                            <br>
+                          {% for skill_id, skill in skill_data.items %}
+                          <p>{{skill.0}} : {{skill.1}}</p><br>
+                          {% endfor %}
+                        </div>
+                    </div>
+                  </div>
+              </div>
+              {% endfor %}
           </div>
           <div class="tab-pane fade" id="contracts">
               <table class="table table-striped">
@@ -44,7 +63,11 @@ View Character
                           {{contract.issuer_id}}
                       </td>
                       <td>
+                          {% if contract.acceptor_id != 0 %}
                           {{contract.acceptor_id}}
+                          {% else %}
+                          Outstanding
+                          {% endif %}
                       </td>
                   </tr>
                 {% endfor %}
@@ -136,9 +159,6 @@ View Character
               {% if wallet == None %}
               <h3 class="text-center">Wallet failed to load</h3>
               {% endif %}
-          </div>
-          <div class="tab-pane fade" id="notifications">
-              Not implemented.
           </div>
           <div class="tab-pane fade" id="transactions">
               Not implemented.
