@@ -1,16 +1,9 @@
 {% extends "global/global_base.html" %}
 {% block sidebar %}
-<div class="sidebar-wrapper">
-			<div class="logo">
-					<a href="http://www.kryptedgaming.com" class="simple-text">
-							Krypted Gaming
-					</a>
-			</div>
-
     <ul class="nav">
       <li {% if request.path == '/' %} class="active" {% endif %}>
           <a href="{% url 'eve-dashboard' %}">
-              <i class="fa fa-dashboard"></i>
+              <i class="fa fa-home"></i>
               <p>Dashboard</p>
           </a>
       </li>
@@ -43,5 +36,4 @@
       {% endif %}
       <li class="divider"></li>
     </ul>
-</div>
 {% endblock %}

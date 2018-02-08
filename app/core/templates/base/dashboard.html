@@ -5,25 +5,21 @@ Dashboard
 {% endblock %}
 
 {% block content %}
-<div id="account_setup" class="col-md-10 col-md-offset-1">
-    <div class="card">
-        <div style="padding: 10px 10px 10px 10px" class="card text-center">
-                <h4 class="text-center">Account Setup</h4>
-            <div id="chart" class="ct-chart ct-golden-section ct-negative-labels"></div>
-        </div>
-    </div>
-</div>
-
 <div id="main">
   <div class="col-md-4 ">
       <div class="card">
           <div style="padding: 5px 5px 5px 5px" class="card text-center">
                   <h4 class="text-center">Guilds</h4>
                   <hr>
-                  {% for guild in profile.guilds.all %}
-                  <button onclick="location.href='/{{guild.slug}}/'" style="min-width: 75%;" class="btn btn-info btn-fill"><img style="float: left; width: 25px;" src="{{guild.image}}"/> {{guild.title}}</button>
+                  {% if profile.guilds.all %}
+                      {% for guild in profile.guilds.all %}
+                      <button onclick="location.href='/{{guild.slug}}/'" style="min-width: 75%;" class="btn btn-info btn-fill"><img style="float: left; width: 25px;" src="{{guild.image}}"/> {{guild.title}}</button>
+                      <hr>
+                      {% endfor %}
+                  {% else %}
+                  You need to join a guild.
                   <hr>
-                  {% endfor %}
+                  {% endif %}
           </div>
       </div>
   </div>
@@ -50,36 +46,4 @@ Dashboard
       </div>
   </div>
 </div>
-<script>
-    var progress = 10;
-    {% if profile %}
-    progress += 15;
-    {% endif %}
-    {% if profile.games.count > 0 %}
-    progress += 25;
-    {% endif %}
-    {% if profile.guilds.count > 0 %}
-    progress += 25;
-    {% endif %}
-
-    if (progress == 75) {
-        $('#account_setup').hide();
-    } else {
-        $('#main').hide();
-        progress_label = progress + "%"
-        progress_remaining_label = 100 - progress + "% Remaining"
-        new Chartist.Pie('.ct-chart', {
-        series: [progress, 100-progress],
-        labels: [progress_label, " "]
-        }, {
-          donut: true,
-          donutWidth: 80,
-          startAngle: 270,
-          total: 200,
-          showLabel: true
-        });
-    }
-
-
-</script>
 {% endblock %}

@@ -31,17 +31,25 @@
 				padding-top: 10px;
 				padding-bottom: 10px;
 			}
+
+			.modal-backdrop {
+			  z-index: -1;
+			}
 		</style>
 </head>
 <body>
-
 <div class="wrapper">
-	<div class="sidebar" data-color="krypted" data-image="{% static "global/img/sidebar.jpg" %}">
-		{% block sidebar %}
-
-		{% endblock %}
+	<div class="sidebar" data-color="krypted">
+		<div class="sidebar-wrapper">
+		    <div class="logo">
+		        <a href="/" class="simple-text">
+					<img style="width: 40%;" src="http://kryptedgaming.com/wp-content/uploads/2017/03/Core.png"></img>
+		        </a>
+		    </div>
+			{% block sidebar %}
+			{% endblock %}
+		</div>
 	</div>
-
     <div class="main-panel">
         <nav class="navbar navbar-default navbar-fixed">
             <div class="container-fluid">
@@ -59,9 +67,8 @@
 					</a>
                 </div>
                 <div class="collapse navbar-collapse">
+					<!-- NOTIFICATIONS -->
                     <ul class="nav navbar-nav navbar-left">
-
-						<!-- NOTIFICATIONS -->
                         <li class="dropdown">
                               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     <i class="fa fa-globe"></i>
@@ -85,42 +92,16 @@
                                 <li><a href="/notifications/">View All</a></li>
                               </ul>
                         </li>
-
-						<!-- MESSAGES -->
-						{% comment %}<li class="dropdown">
-                              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                    <i class="fa fa-envelope"></i>
-                                    <b class="caret hidden-sm hidden-xs"></b>
-									{% if notifications.count > 0 %}
-                                    <span class="notification hidden-sm hidden-xs">{{notifications.count}}</span>{%endif%}
-									<p class="hidden-lg hidden-md">
-										Notifications
-										<b class="caret"></b>
-									</p>
-                              </a>
-                              <ul class="dropdown-menu">
-
-								{% if notifications %}
-								{% for notification in notifications %}
-                                <li><a href="#"><span class="label label-default">{{notification.title}}</span> {{notification.message}}</a></li>
-                                {% endfor %}
-								{% else %}
-
-								<li><a href="#">No unread notifications.</a></li>
-								{% endif %}
-								<li class="divider"></li>
-                                <li><a href="#">View All</a></li>
-                              </ul>
-                        </li> {% endcomment %}
                     </ul>
-
+					<!-- USER MENU -->
                     <ul class="nav navbar-nav navbar-right">
                         <li class="dropdown">
                               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                              <p>
-																{{user.username|title}}
-																<b class="caret"></b>
-															</p>
+								  <i class="fa fa-user"></i>
+	                              <p>
+									{{user.username|title}}
+									<b class="caret"></b>
+								  </p>
                               </a>
                               <ul class="dropdown-menu">
                                 <li><a href="{% url 'profile' %}">Profile</a></li>
@@ -134,74 +115,18 @@
             </div>
         </nav>
 
-		<!--   Core JS Files   -->
-		<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
-		<!--  Checkbox, Radio & Switch Plugins -->
-		<script src="{% static "global/js/bootstrap-checkbox-radio-switch.min.js" %}"></script>
-
-		<!--  Charts Plugin -->
-		<script src="{% static "global/js/chartist.min.js" %}"></script>
-
-		<!--  Notifications Plugin    -->
-		<script src="{% static "global/js/bootstrap-notify.min.js" %}"></script>
-
-		<!-- JS-->
-		<script src="{% static "global/js/base.js" %}"></script>
-
-		{% if profile == None %}
-			<script type="text/javascript">
-				$(document).ready(function(){
-
-					$.notify({
-						message: "You don't have a profile yet! <br> <b>Please click here to make one.</b>",
-						url : "{% url 'create-profile' %}"
-					},{
-						type: 'danger',
-						timer: 4000,
-					});
-
-				});
-			</script>
-		{% else %}
-		{% if profile.guilds.count < 1 %}
-		<script type="text/javascript">
-			$(document).ready(function(){
-
-				$.notify({
-					message: "You don't have a guild yet! <br> <b>Please click here to join one.</b>",
-					url : "{% url 'guilds' %}"
-				},{
-					type: 'info',
-					timer: 4000
-				});
-
-			});
-		</script>
-		{% endif %}
-
-		{% endif %}
-
-
-
 
         <div class="content">
-
+			{% if messages %}
 			<div class="container">
-		    {% if messages %}
-		        {% for message in messages %}
-		        <div class="alert alert-danger alert-dismissable">
-		            <a style="color: white;" href="#"  data-dismiss="alert" aria-label="close">
-		            {{message}}
-					</a>
-		        </div>
-		        {% endfor %}
-		    {% endif %}
-		</div>
-				{% block content %}
-				{% endblock %}
-
+			    {% for message in messages %}
+				<div class="alert alert-danger">
+					{{message}}
+				</div>
+			    {% endfor %}
+			{% endif %}
+			{% block content %}
+			{% endblock %}
         </div>
 
 
@@ -237,6 +162,21 @@
             </div>
         </footer>
 
+		<!--   Core JS Files   -->
+		<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+		<!--  Checkbox, Radio & Switch Plugins -->
+		<script src="{% static "global/js/bootstrap-checkbox-radio-switch.min.js" %}"></script>
+
+		<!--  Charts Plugin -->
+		<script src="{% static "global/js/chartist.min.js" %}"></script>
+
+		<!--  Notifications Plugin    -->
+		<script src="{% static "global/js/bootstrap-notify.min.js" %}"></script>
+
+		<!-- JS-->
+		<script src="{% static "global/js/base.js" %}"></script>
     </div>
 </div>
 

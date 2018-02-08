@@ -1,34 +1,27 @@
 {% extends 'global/global_base.html' %}
 
 {% block sidebar %}
-	<div class="sidebar-wrapper">
-        <div class="logo">
-            <a href="http://www.kryptedgaming.com" class="simple-text">
-				<img style="width: 75%;" src="http://kryptedgaming.com/wp-content/uploads/2017/03/Core.png"></img>
+
+    <ul class="nav">
+        <li {% if request.path == '/' %} class="active" {% endif %}>
+            <a href="{% url 'dashboard' %}">
+                <i class="fa fa-home"></i>
+                <p>Dashboard</p>
             </a>
-        </div>
+        </li>
+		<li>
+    		<a href="/games/">
+    				<i class="fa fa-gamepad"></i>
+    				<p>Games</p>
+    		</a>
+		</li>
+		<li>
+    		<a href="/guilds/">
+    				<i class="fa fa-star"></i>
+    				<p>Guilds</p>
+    		</a>
+		</li>
 
-        <ul class="nav">
-            <li {% if request.path == '/' %} class="active" {% endif %}>
-                <a href="{% url 'dashboard' %}">
-                    <i class="pe-7s-graph"></i>
-                    <p>Dashboard</p>
-                </a>
-            </li>
-						<li>
-								<a href="/games/">
-										<i class="pe-7s-joy"></i>
-										<p>Games</p>
-								</a>
-						</li>
-						<li>
-								<a href="/guilds/">
-										<i class="pe-7s-star"></i>
-										<p>Guilds</p>
-								</a>
-						</li>
-
-		<li class="divider"></li>
-        </ul>
-	</div>
+	<li class="divider"></li>
+    </ul>
 {% endblock %}
