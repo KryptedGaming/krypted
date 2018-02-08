@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.contrib.auth.models import User, Group
 from django.contrib.auth import authenticate, login
+from django.contrib import messages
 from core.decorators import login_required
 from core.models import Profile, Notification, Game, Event, Guild
 from core.views.base import get_global_context
@@ -37,6 +38,11 @@ def view_application(request, pk):
 def view_applications_all(request):
     context = get_global_context(request)
     context['applications'] = Application.objects.all()
+    # Check if user has permission to admin applications
+    hrgroup, result = Group.objects.get_or_create(name='HR')
+    if hrgroup not in request.user.groups.all():
+        messages.add_message(request, messages.ERROR, 'You do not have permission to view that.')
+        return redirect('dashboard')
     return render(request, 'hrapplications/view_applications_all.html', context)
 
 @login_required
