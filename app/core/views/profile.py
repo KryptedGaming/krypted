@@ -7,8 +7,10 @@ from core.models import Profile, Notification, Game, Event, Guild
 from . import base
 from core.decorators import login_required
 from core.views.base import get_global_context
+from core.decorators import *
 
 @login_required
+@no_user_profile
 def create_profile(request):
     user = request.user
 
