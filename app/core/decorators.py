@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import redirect
 from modules.discord.models import DiscordToken
 from core.models import Profile
+from django.contrib.auth.decorators import user_passes_test
 
 def login_required(function):
     def wrapper(request, *args, **kw):

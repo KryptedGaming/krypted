@@ -1,9 +1,21 @@
 {% extends "hrapplications/base.html" %}
 {% block content %}
 <ul class="nav nav-tabs">
-  <li active><a data-toggle="tab" href="#pending">Pending</a></li>
-  <li><a data-toggle="tab" href="#processing">Processing</a></li>
-  <li><a data-toggle="tab" href="#complete">Complete</a></li>
+  <li active>
+    <a data-toggle="tab" href="#pending">
+      Pending
+    </a>
+  </li>
+  <li>
+    <a data-toggle="tab" href="#processing">
+      Processing
+    </a>
+  </li>
+  <li>
+    <a data-toggle="tab" href="#complete">
+      Complete
+    </a>
+  </li>
 </ul>
 
 <div class="tab-content">
@@ -12,7 +24,9 @@
 			<thead>
 				<tr>
 					<th scope="col">Created</th>
+          <th scope="col">Guild</th>
 					<th scope="col">User</th>
+          <th scope="col">Processor</th>
 					<th scope="col">Actions</th>
 				</tr>
 			</thead>
@@ -20,9 +34,21 @@
         {% for application in applications %}
         {% if application.status == "Pending" %}
 				<tr>
-          <th scope="row">TBD</th>
-          <td>{{application.user.username}}</td>
-          <td><button class="btn btn-warning" disabled><i class="fa fa-pencil"></i></button></td>
+          <td>{{application.created}}</td>
+          <td>{{application.template.name}}</td>
+          <td>{{application.user.username}}</span></td>
+          <td>
+            {% if application.reviewer %}
+            {{application.reviewer}}
+            {% else %}
+            <a href="{% url 'hr-assign-application' application=application.pk user=request.user.pk %}">
+              Assign self
+            </a>
+            {% endif %}
+          </td>
+          <td>
+            <button class="btn btn-info" onclick="location.href='{% url "hr-view-application" pk=application.id %}'"><i class="fa fa-eye"></i></button>
+          </td>
 				</tr>
         {% endif %}
         {% endfor %}
@@ -34,19 +60,31 @@
 			<thead>
 				<tr>
 					<th scope="col">Created</th>
+          <th scope="col">Guild</th>
 					<th scope="col">User</th>
-					<th scope="col">Reviewer</th>
+          <th scope="col">Processor</th>
 					<th scope="col">Actions</th>
 				</tr>
 			</thead>
 			<tbody>
         {% for application in applications %}
-        {% if application.status == "Processing" or application.status == "On Hold" %}
+        {% if application.status == "Processing" %}
 				<tr>
-          <th scope="row">TBD</th>
-          <td>{{application.user.username}}</td>
-          <td>{{application.reviewer.username}}</td>
-          <td><button class="btn btn-warning" disabled><i class="fa fa-pencil"></i></button></td>
+          <td>{{application.created}}</td>
+          <td>{{application.template.name}}</td>
+          <td>{{application.user.username}}</span></td>
+          <td>
+            {% if application.reviewer %}
+            {{application.reviewer}}
+            {% else %}
+            <a href="{% url 'hr-assign-application' application=application.pk user=request.user.pk %}">
+              Assign self
+            </a>
+            {% endif %}
+          </td>
+          <td>
+            <button class="btn btn-info" onclick="location.href='{% url "hr-view-application" pk=application.id %}'"><i class="fa fa-eye"></i></button>
+          </td>
 				</tr>
         {% endif %}
         {% endfor %}
@@ -57,10 +95,10 @@
 		<table class="table">
 			<thead>
 				<tr>
-					<th scope="col">Date Completed</th>
-					<th scope="col">User</th>
-					<th scope="col">Reviewer</th>
 					<th scope="col">Status</th>
+          <th scope="col">Guild</th>
+					<th scope="col">User</th>
+          <th scope="col">Processor</th>
 					<th scope="col">Actions</th>
 				</tr>
 			</thead>
@@ -68,11 +106,27 @@
         {% for application in applications %}
         {% if application.status == "Approved" or application.status == "Rejected" %}
 				<tr>
-          <th scope="row">TBD</th>
-          <td>{{application.user.username}}</td>
-          <td>{{application.reviewer.username}}</td>
-          <td>{{application.status}}</td>
-          <td><button class="btn btn-warning" disabled><i class="fa fa-pencil"></i></button></td>
+          <td>
+            {% if application.status == "Approved" %}
+            <span class="label label-success">Approved</span>
+            {% else %}
+            <span class="label label-danger">Rejected</span>
+            {% endif %}
+          </td>
+          <td>{{application.template.name}}</td>
+          <td>{{application.user.username}}</span></td>
+          <td>
+            {% if application.reviewer %}
+            {{application.reviewer}}
+            {% else %}
+            <a href="{% url 'hr-assign-application' application=application.pk user=request.user.pk %}">
+              Assign self
+            </a>
+            {% endif %}
+          </td>
+          <td>
+            <button class="btn btn-info" onclick="location.href='{% url "hr-view-application" pk=application.id %}'"><i class="fa fa-eye"></i></button>
+          </td>
 				</tr>
         {% endif %}
         {% endfor %}

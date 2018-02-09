@@ -15,4 +15,8 @@ urlpatterns += [
     url(r'^delete/(?P<slug>\w+)/$', hrapplications.delete_application, name='hr-delete-application'),
     url(r'^view/(?P<pk>\w+)/$', hrapplications.view_application, name='hr-view-application'),
     url(r'^view/$', hrapplications.view_applications_all, name='hr-view-applications-all'),
-]
+    url(r'application/add-comment/$', hrapplications.add_application_comment, name='hr-add-application-comment'),
+    url(r'application/approve/(?P<application>\w+)/$', hrapplications.approve_application, name='hr-approve-application'),
+    url(r'application/deny/(?P<application>\w+)/$', hrapplications.deny_application, name='hr-deny-application'),
+    url(r'application/assign/(?P<application>\w+)/(?P<user>\w+)/$', hrapplications.assign_application, name='hr-assign-application')
+    ]

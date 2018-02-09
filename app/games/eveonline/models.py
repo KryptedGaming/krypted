@@ -51,6 +51,19 @@ class Token(models.Model):
             print("Token refresh not needed.")
             return True
 
+    def force_refresh(self):
+        try:
+            settings.ESI_SECURITY.update_token(self.populate())
+            new_token = settings.ESI_SECURITY.refresh()
+            self.access_token = new_token['access_token']
+            self.refresh_token = new_token['refresh_token']
+            self.expiry = timezone.now() + datetime.timedelta(0, new_token['expires_in'])
+            self.save()
+            return True
+        except:
+            self.delete()
+            return False
+
 class EveCharacter(models.Model):
     character_name = models.CharField(max_length=255, primary_key=True)
     character_portrait = models.URLField(max_length=255, blank=True, null=True)

@@ -29,41 +29,44 @@ def apply(request):
 
 @login_required
 def view_character(request, character):
+    if Group.objects.get(name="HR") not in request.user.groups.all() or Group.objects.get(name="EVE") not in request.user.groups.all():
+        messages.add_message(request, messages.ERROR, 'You do not have permission to view that.')
+        return redirect('dashboard')
     context = get_eve_context(request)
     character = EveCharacter.objects.get(token__character_id=character)
     context['character'] = character
     token = character.token
     try:
         token.refresh()
+        data = get_character_data(token)
+        context['wallet'] = get_character_wallet(token)
+        context['net_worth'] = '{:20,}'.format(int(data['wallet']))
+        try:
+            context['mails'] = data['mails']
+        except:
+            messages.add_message(request, messages.ERROR, 'Mails failed to load.')
+            context['mails'] = None
+        try:
+            context['contacts'] = data['contacts']
+        except:
+            messages.add_message(request, messages.ERROR, 'Contacts failed to load.')
+            context['contacts'] = None
+        try:
+            context['contracts'] = data['contracts']
+        except:
+            messages.add_message(request, messages.ERROR, 'Contracts failed to load.')
+            context['contracts'] = None
+
+        try:
+            context['skill_tree'] = data['skill_tree']
+            context['sp'] = '{:20,}'.format(int(data['sp']))
+        except:
+            messages.add_message(request, messages.ERROR, 'Skills failed to load.')
+            context['skill_tree'] = None
+            context['sp'] = None
     except:
         return redirect('eve-dashboard')
 
-    data = get_character_data(token)
-    context['wallet'] = get_character_wallet(token)
-    context['net_worth'] = '{:20,}'.format(int(data['wallet']))
-    try:
-        context['mails'] = data['mails']
-    except:
-        messages.add_message(request, messages.ERROR, 'Mails failed to load.')
-        context['mails'] = None
-    try:
-        context['contacts'] = data['contacts']
-    except:
-        messages.add_message(request, messages.ERROR, 'Contacts failed to load.')
-        context['contacts'] = None
-    try:
-        context['contracts'] = data['contracts']
-    except:
-        messages.add_message(request, messages.ERROR, 'Contracts failed to load.')
-        context['contracts'] = None
-
-    try:
-        context['skill_tree'] = data['skill_tree']
-        context['sp'] = '{:20,}'.format(int(data['sp']))
-    except:
-        messages.add_message(request, messages.ERROR, 'Skills failed to load.')
-        context['skill_tree'] = None
-        context['sp'] = None
 
     return render(request, 'eveonline/view_character.html', context)
 

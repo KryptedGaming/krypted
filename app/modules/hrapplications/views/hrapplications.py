@@ -7,6 +7,7 @@ from core.decorators import login_required
 from core.models import Profile, Notification, Game, Event, Guild
 from core.views.base import get_global_context
 from modules.hrapplications.models import ApplicationTemplate, Application, Question, Response, Comment
+from games.eveonline.models import *
 import logging
 logger = logging.getLogger(__name__)
 
@@ -30,6 +31,7 @@ def view_application(request, pk):
         context['admin'] = True
     else:
         context['admin'] = False
+    context['characters'] = EveCharacter.objects.filter(user=application.user)
     context['application'] = application
     context['responses'] = responses
     return render(request, 'hrapplications/view_application.html', context)
@@ -56,6 +58,7 @@ def create_application(request, slug):
         application = Application(
                 template=ApplicationTemplate.objects.get(name=slug),
                 user = request.user,
+                profile = Profile.objects.get(user=request.user),
                 status = "Pending",
                 reviewer = None,
                 )
@@ -71,6 +74,8 @@ def create_application(request, slug):
         if slug == 'eve':
             try:
                 template = ApplicationTemplate.objects.get(name='eve')
+                characters = EveCharacter.objects.filter(user=request.user)
+                context['characters'] = characters
             except:
                 logger.info("FIXTURE ERROR: No EVE template for applications.")
         elif slug == 'albion':
@@ -81,7 +86,7 @@ def create_application(request, slug):
         else:
             logger.info("ERROR : User requested a slug with no supported template." + str(slug))
         context['template'] = template
-        return render(request, 'hrapplications/create_application.html', context)
+        return render(request, 'hrapplications/application_base.html', context)
 
 @login_required
 def modify_application(request, slug):
@@ -92,3 +97,34 @@ def modify_application(request, slug):
 def delete_application(request, slug):
     context = get_global_context(request)
     return render(request, 'hrapplications/dashboard.html', context)
+
+@login_required
+def add_application_comment(request, application):
+    pass
+
+@login_required
+def approve_application(request, application):
+    application = Application.objects.get(pk=application)
+    if Group.objects.get(name="HR") in request.user.groups.all():
+        messages.add_message(request, messages.SUCCESS, 'Application accepted.')
+        application.status = "Approved"
+        application.save()
+    return redirect('hr-view-applications-all')
+
+@login_required
+def deny_application(request, application):
+    application = Application.objects.get(pk=application)
+    if Group.objects.get(name="HR") in request.user.groups.all():
+        messages.add_message(request, messages.WARNING, 'Application rejected.')
+        application.status = "Rejected"
+        application.save()
+    return redirect('hr-view-applications-all')
+
+@login_required
+def assign_application(request, application, user):
+    application = Application.objects.get(pk=application)
+    user = User.objects.get(pk=user)
+    application.reviewer = user
+    application.status = "Processing"
+    application.save()
+    return redirect('hr-view-applications-all')

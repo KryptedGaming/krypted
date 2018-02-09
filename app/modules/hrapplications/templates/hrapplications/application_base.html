@@ -1,0 +1,31 @@
+{% extends "hrapplications/base.html" %}
+{% load hr_filters %}
+{% block content %}
+    {# GAME SPECIFIC #}
+    {% if template.name == 'EVE' %}
+    {% include "hrapplications/games/eve_character_display.html" %}
+    {% endif %}
+    {# QUESTIONS #}
+    <h3>Questions</h3>
+    <form class="form" method="POST">
+        {% csrf_token %}
+        {% for question in template.questions.all %}
+          {% if question.question_type == "Blank" %}
+          <div class="form-group">
+            <label class="control-label" for="id_{{question.pk}}">{{question.title}}</label>
+            <textarea class="form-control" cols="40" id="id_{{question.pk}}" name='{{question.pk}}' rows="5" required></textarea>
+          </div>
+          {% else %}
+          <div class="form-group">
+          <label for="{{question.id}}">{{question.title}}</label>
+            <select class="form-control" id="{{question.id}}" name="{{question.pk}}">
+              {% for choice in question.question_choices|choiceBuilder %}
+                <option>{{choice}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          {% endif %}
+        {% endfor %}
+        <button class="btn btn-lg btn-info btn-block btn-fill" type="submit">Submit</button>
+    </form>
+{% endblock %}
