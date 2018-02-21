@@ -56,7 +56,7 @@ def sync_user_group(user):
         user.groups.remove(Group.objects.get(name="EVE"))
 
 @task()
-def sync_characters_corporation(user):
+def sync_character(user):
     characters = EveCharacter.objects.filter(user=user)
     purge = True
     for character in characters:
@@ -70,3 +70,8 @@ def sync_characters_corporation(user):
             user.groups.add(Group.objects.get(name="EVE"))
         except:
             pass
+
+@task()
+def sync_characters():
+    for user in User.objects.filter(groups__name='EVE'):
+        sync_character(user)

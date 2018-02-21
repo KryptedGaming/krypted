@@ -14,5 +14,6 @@ def sync_groups():
 
 @task()
 def sync_users():
+    sync_groups()
     for user in User.objects.all():
         syncUser(user)

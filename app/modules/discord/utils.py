@@ -90,7 +90,7 @@ def cleanUserRoles(user):
             removeDiscordGroupFromUser(user, role)
         # clean roles that user sholdn't have
         else:
-            role = DiscordRole.objects.get(role=role)
+            role = DiscordRole.objects.get(role_id=role)
             if role.group not in user.groups.all():
                 removeDiscordGroupFromUser(user, role)
 
@@ -99,7 +99,10 @@ def syncUser(user):
     Expects a User object.
     Syncs a single user.
     """
-    cleanUserRoles(user)
-    for group in user.groups.all():
-        role_to_add = DiscordRole.objects.get(group=group)
-        addDiscordGroupToUser(user, role_to_add)
+    if DiscordToken.objects.filter(user=user).count() > 0:
+        cleanUserRoles(user)
+        for group in user.groups.all():
+            role_to_add = DiscordRole.objects.get(group=group)
+            addDiscordGroupToUser(user, role_to_add)
+    else:
+        pass
