@@ -61,6 +61,7 @@
                 {% endif %}
             <td>
               <button onclick="location.href='/eve/remove-sso-token/{{character.token.character_id}}'" class="btn btn-danger btn-fill"><i class="fa fa-times"></i></button>
+              <button onclick="location.href='/eve/refresh-sso-token/{{character.token.character_id}}'" class="btn btn-warning btn-fill"><i class="fa fa-retweet"></i></button>
             </td>
           </tr>
         {% endfor %}

@@ -5,9 +5,33 @@
   <!-- Optionally, you can add icons to the links -->
   <li><a href="{% url 'eve-dashboard' %}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
   {% if in_guild %}
+  <li class="treeview">
+    <a href="#"><i class="fa fa-calendar"></i> <span>Fleets</span>
+      <span class="pull-right-container">
+          <i class="fa fa-angle-left pull-right"></i>
+        </span>
+    </a>
+    <ul class="treeview-menu">
+      <li><a href="#">View Fleets</a></li>
+      <li><a href="#">Statistics</a></li>
+      <li><a href="#">Leaderboard</a></li>
+    </ul>
+  </li>
+  <li class="treeview">
+    <a href="#"><i class="fa fa-wrench"></i> <span>Tools</span>
+      <span class="pull-right-container">
+          <i class="fa fa-angle-left pull-right"></i>
+        </span>
+    </a>
+    <ul class="treeview-menu">
+      <li><a href="#">Pathfinder</a></li>
+      <li><a href="#">Helltrain</a></li>
+    </ul>
+  </li>
   {% else %}
   <li><a href="{% url 'eve-apply' %}"><i class="fa fa-paperclip"></i> <span>Apply</span></a></li>
   {% endif %}
+
   <!-- ADMIN LINKS -->
   <li class="header">ADMIN</li>
   <!-- Optionally, you can add icons to the links -->

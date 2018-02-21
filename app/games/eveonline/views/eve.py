@@ -107,13 +107,11 @@ def set_alt_character(request, character, alt_type):
 @login_required
 def get_eve_context(request):
     context = get_global_context(request)
-    user = request.user
-    group = Group.objects.get_or_create(name='EVE')
-    if group in user.groups.all():
+    if Group.objects.get(name="EVE") in request.user.groups.all():
         context['in_guild'] = True
     else:
         context['in_guild'] = False
-    context['characters'] = EveCharacter.objects.filter(user=user)
+    context['characters'] = EveCharacter.objects.filter(user=request.user)
     return context
 
 def get_character_wallet(token):

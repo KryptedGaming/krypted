@@ -18,11 +18,6 @@
       </a>
     </li>
     <li>
-      <a data-toggle="tab" href="#processing">
-        Processing
-      </a>
-    </li>
-    <li>
       <a data-toggle="tab" href="#complete">
         Complete
       </a>
@@ -44,7 +39,7 @@
   			</thead>
   			<tbody>
           {% for application in applications %}
-          {% if application.status == "Pending" %}
+          {% if application.status == "Pending" or application.status == "Processing" %}
   				<tr>
             <td>{{application.created}}</td>
             <td>{{application.template.name}}</td>
@@ -67,42 +62,6 @@
   			</tbody>
   		</table>
     </div>
-  <div id="processing" class="tab-pane fade in box-body">
-		<table class="table">
-			<thead>
-				<tr>
-					<th scope="col">Created</th>
-          <th scope="col">Guild</th>
-					<th scope="col">User</th>
-          <th scope="col">Processor</th>
-					<th scope="col">Actions</th>
-				</tr>
-			</thead>
-			<tbody>
-        {% for application in applications %}
-        {% if application.status == "Processing" %}
-				<tr>
-          <td>{{application.created}}</td>
-          <td>{{application.template.name}}</td>
-          <td>{{application.user.username}}</span></td>
-          <td>
-            {% if application.reviewer %}
-            {{application.reviewer}}
-            {% else %}
-            <a href="{% url 'hr-assign-application' application=application.pk user=request.user.pk %}">
-              Assign self
-            </a>
-            {% endif %}
-          </td>
-          <td>
-            <button class="btn btn-info" onclick="location.href='{% url "hr-view-application" pk=application.id %}'"><i class="fa fa-eye"></i></button>
-          </td>
-				</tr>
-        {% endif %}
-        {% endfor %}
-			</tbody>
-		</table>
-  </div>
   <div id="complete" class="tab-pane fade box-body">
 		<table class="table">
 			<thead>

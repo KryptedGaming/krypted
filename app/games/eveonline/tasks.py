@@ -56,7 +56,7 @@ def sync_user_group(user):
         user.groups.remove(Group.objects.get(name="EVE"))
 
 @task()
-def sync_character_corporation(user):
+def sync_characters_corporation(user):
     characters = EveCharacter.objects.filter(user=user)
     purge = True
     for character in characters:
