@@ -1,8 +1,0 @@
-Django==2.0.1
-PyMySQL==0.8.0
-requests==2.9.1
-requests-oauthlib==0.8.0
-EsiPy==0.3.0
-oauthlib==1.0.3
-mysqlclient==1.3.12
-celery==4.1.0

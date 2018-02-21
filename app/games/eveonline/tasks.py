@@ -1,8 +1,9 @@
 from __future__ import absolute_import, unicode_literals
 from celery import task
 from games.eveonline.models import Token, EveCharacter
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from esipy import App, EsiClient, EsiSecurity
+from django.conf import settings
 
 @task()
 def verify_sso_tokens():
@@ -33,3 +34,25 @@ def verify_sso_tokens():
 
         if not valid:
             token.delete()
+
+@task()
+def sync_user_group(user):
+    tokens = Token.objects.filter(user=user)
+    for token in tokens:
+        token.refresh()
+    characters = EveCharacter.objects.filter(user=user)
+    group_clear = True
+
+    for character in characters:
+        print(character)
+        if character.character_corporation == settings.MAIN_CORPORATION_ID:
+            print("Match")
+            group_clear = False
+
+    if not group_clear:
+        if Group.objects.get(name="EVE") not in user.groups.all():
+            user.groups.add(Group.objects.get(name="EVE"))
+        else:
+            pass
+    else:
+        user.groups.remove(Group.objects.get(name="EVE"))

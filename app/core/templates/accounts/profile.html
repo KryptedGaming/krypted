@@ -10,11 +10,10 @@ My Profile
         <div class="content">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-md-8">
-                        <div class="card">
+                    <div class="box">
+                        <div class="box-body">
                             <div class="header">
-                                <h4 class="title pull-left">Edit Profile</h4>
-                                <button type="submit" class="btn btn-info btn-fill pull-right">Join Guild</button>
+                                <h4 class="title pull-left">Edit Profile</h4><br>
                             </div>
 
                             <div class="content">
@@ -22,7 +21,7 @@ My Profile
                                 <form name="form" enctype="multipart/form-data" method="POST">
                                     {% csrf_token %}
                                     <div class="row">
-                                        <div class="col-md-3">
+                                        <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>Username</label>
                                                 <input type="text" class="form-control" placeholder="Username" value="{{user.username}}" disabled>
@@ -65,32 +64,6 @@ My Profile
                                     <button type="submit" class="btn btn-warning btn-fill pull-right">Update Profile</button>
                                     <div class="clearfix"></div>
                                 </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card card-user">
-                            <div class="image">
-                                <img src="{% static 'dashboard/img/gradient.jpg'%}"/>
-                            </div>
-                            <div class="content">
-                                <div class="author">
-                                     <a href="#">
-                                    <img class="avatar border-gray" src="{% static 'dashboard/img/default-avatar.png'%}"/>
-
-                                      <h4 class="title">{{user.first_name}}<br />
-                                         <small>{{user.username}}</small>
-                                      </h4>
-                                    </a>
-                                </div>
-                                <p style="word-wrap: break-word;" class="description text-center"> {{profile.biography}}
-                                </p>
-                            </div>
-                            <hr>
-                            <div class="text-center">
-                                <button href="#" class="btn btn-simple pad"><i class="fa fa-steam"></i></button>
-                                <button href="#" class="btn btn-simple pad"><i class="fa fa-twitter"></i></button>
-                                <button href="#" class="btn btn-simple pad"><i class="fa fa-twitch"></i></button>
                             </div>
                         </div>
                     </div>

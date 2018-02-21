@@ -1,13 +1,16 @@
 {% extends "base/base.html" %}
 {% load staticfiles %}
 {% block brand %}
-Dashboard
+      <h1>
+        Dashboard
+        <small>Summary</small>
+      </h1>
 {% endblock %}
 
 {% block content %}
 <div id="main">
   <div class="col-md-4 ">
-      <div class="card">
+      <div class="box box-widget">
           <div style="padding: 5px 5px 5px 5px" class="card text-center">
                   <h4 class="text-center">Guilds</h4>
                   <hr>
@@ -25,7 +28,7 @@ Dashboard
   </div>
 
   <div class="col-md-4 ">
-      <div class="card">
+      <div class="box box-widget">
           <div style="padding: 5px 5px 5px 5px" class="card text-center">
                   <h4 class="text-center">Recent activity</h4>
                   <hr>
@@ -36,7 +39,7 @@ Dashboard
   </div>
 
   <div class="col-md-4 ">
-      <div class="card">
+      <div class="box box-widget">
           <div style="padding: 5px 5px 5px 5px" class="card text-center">
                   <h4 class="text-center">Stats</h4>
                   <hr>

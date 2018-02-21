@@ -1,27 +1,50 @@
 {% extends 'global/global_base.html' %}
-
 {% block sidebar %}
-
-    <ul class="nav">
-        <li {% if request.path == '/' %} class="active" {% endif %}>
-            <a href="{% url 'dashboard' %}">
-                <i class="fa fa-home"></i>
-                <p>Dashboard</p>
-            </a>
-        </li>
-		<li>
-    		<a href="/games/">
-    				<i class="fa fa-gamepad"></i>
-    				<p>Games</p>
-    		</a>
-		</li>
-		<li>
-    		<a href="/guilds/">
-    				<i class="fa fa-star"></i>
-    				<p>Guilds</p>
-    		</a>
-		</li>
-
-	<li class="divider"></li>
+  <!-- CORE LINKS -->
+  <li class="header">MAIN NAVIGATION</li>
+  <!-- Optionally, you can add icons to the links -->
+  <li><a href="{% url 'dashboard' %}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
+  <li class="treeview">
+    <a href="#"><i class="fa fa-user"></i> <span>Profile</span>
+      <span class="pull-right-container">
+          <i class="fa fa-angle-left pull-right"></i>
+        </span>
+    </a>
+    <ul class="treeview-menu">
+      <li><a href="{% url 'games' %}">Manage Games</a></li>
+      <li><a href="{% url 'guilds' %}">Manage Groups</a></li>
     </ul>
+  </li>
+  {% if profile.guilds.all %}
+  <li class="treeview">
+    <a href="#"><i class="fa fa-users"></i> <span>Groups</span>
+      <span class="pull-right-container">
+          <i class="fa fa-angle-left pull-right"></i>
+        </span>
+    </a>
+    <ul class="treeview-menu">
+      {% for guild in profile.guilds.all %}
+      <li><a href="/{{guild.slug}}/">{{guild.title}}</a></li>
+      {% endfor %}
+    </ul>
+  </li>
+  {% endif %}
+
+  <li class="treeview">
+    <a href="#"><i class="fa fa-twitter"></i> <span>Social</span>
+      <span class="pull-right-container">
+          <i class="fa fa-angle-left pull-right"></i>
+        </span>
+    </a>
+    <ul class="treeview-menu">
+      <li><a href="https://steamcommunity.com/groups/kryptedgaming">Steam</a></li>
+      <li><a href="https://twitter.com/KryptedGaming">Twitter</a></li>
+      <li><a href="https://www.facebook.com/KryptedGaming/">Facebook</a></li>
+    </ul>
+  </li>
+
+  <!-- ADMIN LINKS -->
+  <li class="header">ADMIN</li>
+  <!-- Optionally, you can add icons to the links -->
+  <li><a href="{% url 'hr-view-applications-all' %}"><i class="fa fa-paperclip"></i> <span>Applications</span></a></li>
 {% endblock %}

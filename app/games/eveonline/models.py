@@ -83,26 +83,18 @@ class EveCharacter(models.Model):
     def __str__(self):
         return self.character_name
 
-    def update_portrait(self):
+    def update_corporation(self):
         try:
-            esi_app = App.create('https://esi.tech.ccp.is/latest/swagger.json?datasource=tranquility')
+            self.token.refresh()
+            esi_app = settings.ESI_APP
+            esi_security = settings.ESI_SECURITY
+            esi_security.update_token(self.token.populate())
+            op = esi_app.op['get_characters_character_id'](character_id=self.token.character_id)
+            corporation = settings.ESI_CLIENT.request(op)
 
-            esi_security = EsiSecurity(
-                app=esi_app,
-                redirect_uri=settings.ESI_CALLBACK_URL,
-                client_id=settings.ESI_CLIENT_ID,
-                secret_key=settings.ESI_SECRET_KEY,
-            )
-
-            esi_client = EsiClient(esi_security)
-
-            esi_security.update_token(self.populate())
-
-            new_token = esi_security.refresh()
-            self.access_token = new_token['access_token']
-            self.refresh_token = new_token['refresh_token']
+            self.character_corporation = corporation.data['corporation_id']
+            self.save()
             return True
-
-        except:
-            self.delete()
+        except Exception as e:
+            print(str(e))
             return False

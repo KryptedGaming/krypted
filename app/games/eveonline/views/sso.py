@@ -64,8 +64,8 @@ def receive_token(request):
         esiclient = settings.ESI_CLIENT
 
         op = esi_app.op['get_characters_character_id_portrait'](character_id=token.character_id)
-
         portrait = esiclient.request(op)
+
 
         try:
             eve_main_character = EveCharacter.objects.get(main=None, user=request.user)
@@ -78,6 +78,7 @@ def receive_token(request):
                 token=token,
                 user=request.user
         )
+        character.update_corporation()
         character.save()
         print("CHARACTER CREATED")
         print(character)

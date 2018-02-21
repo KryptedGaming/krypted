@@ -1,7 +1,14 @@
 {% extends 'eveonline/base.html' %}
+{% load staticfiles %}
 
 {% block brand %}
-Dashboard
+  <h1>
+    EVE Online
+    <small>Game Dashboard</small>
+  </h1>
+{% endblock %}
+{% block includes %}
+<link rel="stylesheet" href="{% static 'global/ui/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -18,47 +25,50 @@ Dashboard
     min-width: 50%;
 }
 </style>
-<div class="container">
-  <h4>Characters</h4>
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>Portrait</th>
-        <th>Character Name</th>
-        <th>Character Type</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-    {% for character in characters %}
-      <tr>
-        <td>
-            <img style="width: 50px;" src="{{character.character_portrait}}"/>
-        </td>
-        <td>
-            <a href="/eve/character/{{character.token.character_id}}/">{{character.character_name}}</a>
-        </td>
-        <td>
-            {% if character.main == None %}
-            <div class="form-control" disabled>
-              Main Character
-            </div>
-            {% elif character.character_alt_type != None %}
-            <div class="form-control" disabled>
-              {{character.get_character_alt_type_display}}
-            </div>
-            {% else %}
-            <button data-toggle="modal" data-target="#selectModal{{character.token.character_id}}" class="btn btn-warning btn-fill pull-left"><i class="fa fa-pencil"></i></button>
-            {% endif %}
-        <td>
-          <button onclick="location.href='/eve/remove-sso-token/{{character.token.character_id}}'" class="btn btn-danger btn-fill"><i class="fa fa-times"></i></button>
-        </td>
-      </tr>
-    {% endfor %}
-    <!-- Bottom Divider -->
-    <tr><td></td><td></td><td></td><td></td></tr>
-    </tbody>
-  </table>
+
+  <div class="box">
+    <div class="box-body">
+      <h4>Characters</h4>
+      <table class="table table-bordered table-hover">
+        <thead>
+          <tr>
+            <th>Portrait</th>
+            <th>Character Name</th>
+            <th>Character Type</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for character in characters %}
+          <tr>
+            <td>
+                <img style="width: 50px;" src="{{character.character_portrait}}"/>
+            </td>
+            <td>
+                <a href="/eve/character/{{character.token.character_id}}/">{{character.character_name}}</a>
+            </td>
+            <td>
+                {% if character.main == None %}
+                <div class="form-control" disabled>
+                  Main Character
+                </div>
+                {% elif character.character_alt_type != None %}
+                <div class="form-control" disabled>
+                  {{character.get_character_alt_type_display}}
+                </div>
+                {% else %}
+                <button data-toggle="modal" data-target="#selectModal{{character.token.character_id}}" class="btn btn-warning btn-fill pull-left"><i class="fa fa-pencil"></i></button>
+                {% endif %}
+            <td>
+              <button onclick="location.href='/eve/remove-sso-token/{{character.token.character_id}}'" class="btn btn-danger btn-fill"><i class="fa fa-times"></i></button>
+            </td>
+          </tr>
+        {% endfor %}
+        <!-- Bottom Divider -->
+        </tbody>
+      </table>
+    </div>
+  </div>
   <div class="container">
       <button onclick="location.href='{% url 'add-sso-token' %}'" class="col-md-4 col-md-offset-4 btn btn-success btn-fill">Add Character</button>
   </div>
@@ -68,8 +78,6 @@ Dashboard
   </div>
 
 
-</div>
-
 <div class="modal fade col-md-12" id="selectModal" data-backdrop="false">
   {% include "eveonline/main_character_modal.html" %}
 </div>
@@ -78,5 +86,11 @@ Dashboard
 <div class="modal fade col-md-12" id="selectModal{{character.token.character_id}}" data-backdrop="false">
   {% include "eveonline/alt_character_modal.html" %}
 </div>
+</div>
 {% endfor %}
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'global/ui/bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'global/ui/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
 {% endblock %}
