@@ -105,7 +105,7 @@ def add_application_comment(request, application):
 @login_required
 def approve_application(request, application):
     application = Application.objects.get(pk=application)
-    if Group.objects.get(name="HR") in request.user.groups.all():
+    if Group.objects.get(name=settings.HR_GROUP) in request.user.groups.all():
         messages.add_message(request, messages.SUCCESS, 'Application accepted.')
         application.status = "Approved"
         application.save()
@@ -114,7 +114,7 @@ def approve_application(request, application):
 @login_required
 def deny_application(request, application):
     application = Application.objects.get(pk=application)
-    if Group.objects.get(name="HR") in request.user.groups.all():
+    if Group.objects.get(name=settings.HR_GROUP) in request.user.groups.all():
         messages.add_message(request, messages.WARNING, 'Application rejected.')
         application.status = "Rejected"
         application.save()

@@ -29,7 +29,7 @@ def apply(request):
 
 @login_required
 def view_character(request, character):
-    if Group.objects.get(name="HR") not in request.user.groups.all() or Group.objects.get(name="EVE") not in request.user.groups.all():
+    if Group.objects.get(name=settings.HR_GROUP) not in request.user.groups.all() or Group.objects.get(name=settings.EVE_ONLINE_GROUP) not in request.user.groups.all():
         messages.add_message(request, messages.ERROR, 'You do not have permission to view that.')
         return redirect('dashboard')
     context = get_eve_context(request)
@@ -107,7 +107,7 @@ def set_alt_character(request, character, alt_type):
 @login_required
 def get_eve_context(request):
     context = get_global_context(request)
-    if Group.objects.get(name="EVE") in request.user.groups.all():
+    if Group.objects.get(name=settings.EVE_ONLINE_GROUP) in request.user.groups.all():
         context['in_guild'] = True
     else:
         context['in_guild'] = False
