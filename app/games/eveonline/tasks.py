@@ -52,7 +52,21 @@ def sync_user_group(user):
     if not group_clear:
         if Group.objects.get(name="EVE") not in user.groups.all():
             user.groups.add(Group.objects.get(name="EVE"))
-        else:
-            pass
     else:
         user.groups.remove(Group.objects.get(name="EVE"))
+
+@task()
+def sync_character_corporation(user):
+    characters = EveCharacter.objects.filter(user=user)
+    purge = True
+    for character in characters:
+        character.update_corporation()
+        if character.character_corporation in settings.VERIFIED_CORPORATIONS:
+            purge = False
+    if purge:
+        user.groups.clear()
+    else:
+        try:
+            user.groups.add(Group.objects.get(name="EVE"))
+        except:
+            pass

@@ -91,8 +91,21 @@ class EveCharacter(models.Model):
             esi_security.update_token(self.token.populate())
             op = esi_app.op['get_characters_character_id'](character_id=self.token.character_id)
             corporation = settings.ESI_CLIENT.request(op)
+            # clean ids
+            ugly_ids = [corporation.data['corporation_id']]
+            try:
+                ugly_ids.append(corporation.data['alliance_id'])
+            except:
+                pass
+            op = settings.ESI_APP.op['post_universe_names'](ids=ugly_ids)
+            corporation = settings.ESI_CLIENT.request(op)
 
-            self.character_corporation = corporation.data['corporation_id']
+
+            self.character_corporation = corporation.data[0]['name']
+            try:
+                self.character_alliance = corporation.data[1]['name']
+            except:
+                pass
             self.save()
             return True
         except Exception as e:
