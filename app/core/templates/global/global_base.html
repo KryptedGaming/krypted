@@ -63,23 +63,30 @@
             <!-- Menu toggle button -->
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <i class="fa fa-bell-o"></i>
-              <span class="label label-warning">10</span>
+              {% if notifications.all %}
+              <span class="label label-warning">{{notifications.all.count}}</span>
+              {% endif %}
             </a>
             <ul class="dropdown-menu">
-              <li class="header">You have 10 notifications</li>
               <li>
                 <!-- Inner Menu: contains the notifications -->
                 <ul class="menu">
+                  {% for notification in notifications %}
                   <li><!-- start notification -->
                     <a href="#">
-                      <i class="fa fa-users text-aqua"></i> 5 new members joined today
+                      <i class="fa fa-exclamation text-aqua"></i>{{notification.message}}
                     </a>
                   </li>
+                  {% endfor %}
                   <!-- end notification -->
                 </ul>
               </li>
-              <li class="footer"><a href="#">View all</a></li>
+              <li class="footer"><a href="{% url 'notifications' %}">View all</a></li>
             </ul>
+          </li>
+          <!-- Control Sidebar Toggle Button -->
+          <li>
+            <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
           </li>
           <!-- User Account Menu -->
           <li class="dropdown user user-menu">
@@ -110,10 +117,6 @@
               </li>
             </ul>
           </li>
-          <!-- Control Sidebar Toggle Button -->
-          <li>
-            <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
-          </li>
         </ul>
       </div>
     </nav>
@@ -135,13 +138,21 @@
       {% block brand %}
       {% endblock %}
       <ol class="breadcrumb">
-        <li><a href="#"></i>Level</a></li>
-        <li class="active">Here</li>
+        <li><a href="#"></i>Not</a></li>
+        <li class="active">Implemented</li>
       </ol>
     </section>
 
     <!-- Main content -->
     <section class="content container-fluid">
+      {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-danger alert-dismissible">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+          {{message}}
+        </div>
+        {% endfor %}
+      {% endif %}
       {% block content %}
       {% endblock %}
 
@@ -172,37 +183,14 @@
       <!-- Home tab content -->
       <div class="tab-pane active" id="control-sidebar-home-tab">
         <h3 class="control-sidebar-heading">Recent Activity</h3>
+        <p>Not implemented.</p>
         <ul class="control-sidebar-menu">
-          <li>
-            <a href="javascript:;">
-              <i class="menu-icon fa fa-birthday-cake bg-red"></i>
-
-              <div class="menu-info">
-                <h4 class="control-sidebar-subheading">Langdon's Birthday</h4>
-
-                <p>Will be 23 on April 24th</p>
-              </div>
-            </a>
-          </li>
         </ul>
         <!-- /.control-sidebar-menu -->
 
         <h3 class="control-sidebar-heading">Tasks Progress</h3>
+        <p>Not implemented.</p>
         <ul class="control-sidebar-menu">
-          <li>
-            <a href="javascript:;">
-              <h4 class="control-sidebar-subheading">
-                Custom Template Design
-                <span class="pull-right-container">
-                    <span class="label label-danger pull-right">70%</span>
-                  </span>
-              </h4>
-
-              <div class="progress progress-xxs">
-                <div class="progress-bar progress-bar-danger" style="width: 70%"></div>
-              </div>
-            </a>
-          </li>
         </ul>
         <!-- /.control-sidebar-menu -->
 
@@ -215,17 +203,7 @@
       <div class="tab-pane" id="control-sidebar-settings-tab">
         <form method="post">
           <h3 class="control-sidebar-heading">General Settings</h3>
-
-          <div class="form-group">
-            <label class="control-sidebar-subheading">
-              Report panel usage
-              <input type="checkbox" class="pull-right" checked>
-            </label>
-
-            <p>
-              Some information about this general settings option
-            </p>
-          </div>
+        <p>Not implemented.</p>
           <!-- /.form-group -->
         </form>
       </div>

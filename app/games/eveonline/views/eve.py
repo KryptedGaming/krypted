@@ -38,9 +38,20 @@ def view_character(request, character):
     token = character.token
     try:
         token.refresh()
-        data = get_character_data(token)
-        context['wallet'] = get_character_wallet(token)
-        context['net_worth'] = '{:20,}'.format(int(data['wallet']))
+        try:
+            data = get_character_data(token)
+        except:
+            messages.add_message(request, messages.ERROR, 'Failed at view_character. Error code 1.')
+        try:
+            context['wallet'] = get_character_wallet(token)
+        except:
+            context['wallet'] = None
+            messages.add_message(request, messages.ERROR, 'Wallet failed to load.')
+        try:
+            context['net_worth'] = '{:20,}'.format(int(data['wallet']))
+        except:
+            context['net_worth'] = None
+            messages.add_message(request, messages.ERROR, 'Net worth failed to load.')
         try:
             context['mails'] = data['mails']
         except:
@@ -64,7 +75,8 @@ def view_character(request, character):
             messages.add_message(request, messages.ERROR, 'Skills failed to load.')
             context['skill_tree'] = None
             context['sp'] = None
-    except:
+    except Exception as e:
+        messages.add_message(request, messages.ERROR, 'Could not load character. ' + str(e))
         return redirect('eve-dashboard')
 
 
@@ -178,23 +190,22 @@ def get_character_data(token):
 
 def clean_mail_results(data):
     # Clean up mail player ids
-    character_ids = []
-    print(data)
+    character_ids = set()
     for mail in data['mails']:
-        print(mail)
-        character_ids.append(int(mail['from']))
+        character_ids.add(int(mail['from']))
         for recipient in mail['recipients']:
-            character_ids.append(recipient['recipient_id'])
+            if recipient['recipient_type'] != "mailing_list":
+                character_ids.add(recipient['recipient_id'])
+    character_ids = list(character_ids)
     op = settings.ESI_APP.op['post_universe_names'](ids=character_ids)
-
     character_ids = settings.ESI_CLIENT.request(op).data
     for character in character_ids:
         for mail in data['mails']:
-            if mail['from'] == character.id:
-                mail['from'] = character.name
+            if mail['from'] == character['id']:
+                mail['from'] = character['name']
             for recipient in mail['recipients']:
-                if recipient['recipient_id'] == character.id:
-                    recipient['recipient_id'] = character.name
+                if recipient['recipient_id'] == character['id']:
+                    recipient['recipient_id'] = character['name']
     # Clean up mail dates
     for mail in data['mails']:
         time = str(mail['timestamp']).split("T")[0]
@@ -209,6 +220,8 @@ def clean_mail_results(data):
                 recipient['recipient_url'] = "https://evewho.com/corp/" + recipient['recipient_id'].replace(" ", "+")
             elif recipient['recipient_type'] == "alliance":
                 recipient['recipient_url'] = "https://evewho.com/alli/" + recipient['recipient_id'].replace(" ", "+")
+            else:
+                recipient['recipient_url'] = ""
         # mail['recipients'] = ",".join(map(str,character_ids))
     return data
 

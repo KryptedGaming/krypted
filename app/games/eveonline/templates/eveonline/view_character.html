@@ -1,16 +1,29 @@
 {% extends "eveonline/base.html" %}
 {% load eve_filters %}
 {% block brand %}
-View Character
+  <h1>
+    Character Audit
+    <small>Displays Character Information</small>
+  </h1>
 {% endblock %}
 
 {% block content %}
-<div class="container">
-    <img style="padding-right: 20px;" class="img-rounded pull-left" src="{{character.character_portrait}}"></img>
-    {{character.token.character_name}}<br>
-    {{net_worth}} ISK<br>
-    {{sp}} SP
-
+<div class="box">
+  <div class="box-body">
+    <div class="row">
+      <div class="col-sm-4 border-right">
+        <img style="padding-right: 20px;" class="img-rounded pull-left" src="{{character.character_portrait}}"></img>
+        {{character.token.character_name}}<br>
+        {{net_worth}} ISK<br>
+        {{sp}} SP
+      </div>
+      <div class="col-sm-4 border-right">
+        Skill Summary
+      </div>
+      <div class="col-sm-4">
+        Dangers
+      </div>
+    </div>
     <hr>
     <div class="well">
         <ul class="nav nav-tabs">
@@ -165,5 +178,6 @@ View Character
           </div>
       </div>
     </div>
+  </div>
 </div>
 {% endblock %}

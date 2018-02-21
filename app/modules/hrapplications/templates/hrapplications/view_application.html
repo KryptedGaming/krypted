@@ -1,10 +1,18 @@
 {% extends "hrapplications/base.html" %}
+{% block brand %}
+  <h1>
+    View Application
+    <small>{{user.username}}</small>
+  </h1>
+{% endblock %}
 {% block content %}
-<h3>{{application.user|title}}'s application to {{application.template.guild}}</h3>
-<hr>
 <!-- Game Specific -->
 {% if application.template.name == 'EVE' %}
-{% include 'hrapplications/games/eve_character_display.html' %}
+<div class="box">
+  <div class="box-body">
+    {% include 'hrapplications/games/eve_character_display.html' %}
+  </div>
+</div>
 {% endif %}
 
 <!-- Application Body -->
