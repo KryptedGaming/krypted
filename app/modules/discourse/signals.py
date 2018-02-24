@@ -29,7 +29,7 @@ def user_group_change(sender, **kwargs):
 @receiver(post_save, sender=Group)
 def global_group_add(sender, **kwargs):
     group = kwargs.get('instance')
-    add_discourse_group.apply_async(args=[group.role_id])
+    add_discourse_group.apply_async(args=[group.pk])
 
 @receiver(pre_delete, sender=Group)
 def global_group_remove(sender, **kwargs):
