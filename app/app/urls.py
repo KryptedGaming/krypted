@@ -25,5 +25,3 @@ urlpatterns = [
     url(r'^discord/', include('modules.discord.urls')),
     url(r'^discourse/', include('modules.discourse.urls'))
 ]
-
-handler500 = error_views.error_500

@@ -24,7 +24,7 @@ urlpatterns += [
     # HELPERS
     url(r'^profile/add-game/name=(?P<game_to_add>\d+)/$',
         profile.profile_add_game, name='profile-add-game'),
-    url(r'^profile/remove-game/name=(?P<game>\d+)/$',
+    url(r'^profile/remove-game/name=(?P<game_to_remove>\d+)/$',
         profile.profile_remove_game, name='profile-remove-game'),
     url(r'^profile/add-guild/name=(?P<guild>\d+)/$',
         profile.profile_add_guild, name='profile-add-guild'),
