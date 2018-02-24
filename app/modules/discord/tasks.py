@@ -1,6 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 from celery import task
 from modules.discord.models import *
+from modules.discord.models import DiscordToken
 from django.contrib.auth.models import User, Group
 from modules.discord.utils import *
 
@@ -13,7 +14,12 @@ def sync_groups():
     # TODO : add method to delete old Discord groups
 
 @task()
+def sync_user(user):
+    syncUser(user)
+
+@task()
 def sync_users():
     sync_groups()
     for user in User.objects.all():
-        syncUser(user)
+        if DiscordToken.objects.filter(user=user).count() > 0:
+            sync_user(user)

@@ -13,14 +13,18 @@ def sync_groups():
 def sync_users():
     updateGroups()
     for user in User.objects.all():
-        # remove them from all the current groups
-        # TODO : optimize so that it's just removing old ones. requires discourse group tracking
-        for group in DiscourseGroup.objects.all():
-            removeUserFromGroup(user, group)
+        sync_user(user)
 
-        for group in user.groups.all():
-            print(user.groups.all())
-            try:
-                addUserToGroup(user, DiscourseGroup.objects.get(group=group))
-            except:
-                pass
+@task()
+def sync_user(user):
+    # remove them from all the current groups
+    # TODO : optimize so that it's just removing old ones. requires discourse group tracking
+    for group in DiscourseGroup.objects.all():
+        removeUserFromGroup(user, group)
+
+    for group in user.groups.all():
+        print(user.groups.all())
+        try:
+            addUserToGroup(user, DiscourseGroup.objects.get(group=group))
+        except:
+            pass

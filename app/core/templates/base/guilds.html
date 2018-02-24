@@ -26,13 +26,10 @@
       <tbody>
       {% for guild in guilds %}
         <tr>
-          <td><img style="width: 50px;" src="{{guild.image}}"/></td>
+          <td><img style="width: 26px;" src="{{guild.image}}"/></td>
           <td><a href="/{{guild.slug}}">{{guild.title}}</a></td>
           <td>
-              {% if guild in profile.guilds.all %} <button onclick="location.href='/{{guild.slug}}/'" class="guildbtn btn btn-info btn-fill">View</button>
-              {% else %} <button onclick="location.href='/{{guild.slug}}/apply/'" class="guildbtn btn btn-success btn-fill">Apply</button>
-              {% endif %}
-
+              <button onclick="location.href='/{{guild.slug}}/'" class="guildbtn btn btn-info btn-fill">View</button>
           </td>
         </tr
       {% endfor %}

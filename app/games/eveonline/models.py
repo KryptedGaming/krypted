@@ -43,13 +43,10 @@ class Token(models.Model):
                 self.refresh_token = new_token['refresh_token']
                 self.expiry = timezone.now() + datetime.timedelta(0, new_token['expires_in'])
                 self.save()
-                return True
             except:
                 self.delete()
-                return False
         else:
             print("Token refresh not needed.")
-            return True
 
     def force_refresh(self):
         try:

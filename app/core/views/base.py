@@ -86,3 +86,6 @@ def get_global_context(request):
     }
 
     return context
+
+def error_500(request):
+    return render(request, 'global/500.html', context={})

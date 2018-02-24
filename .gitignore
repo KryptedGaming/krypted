@@ -110,3 +110,5 @@ db.sqlite3
 *static/admin*
 app/static/admin
 app/static/global/ui
+app/log
+app/celerybeat.pid

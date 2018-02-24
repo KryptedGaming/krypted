@@ -16,6 +16,7 @@ def addGroup(group):
         'group[name]': group.name
     }
     add_group = dict(requests.post(url=url, data=data).json())
+    print(add_group)
     discourse_group = DiscourseGroup(role_id=add_group['basic_group']['id'], group=group)
     discourse_group.save()
 

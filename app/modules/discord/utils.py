@@ -24,6 +24,7 @@ def addDiscordGroup(group):
             'Authorization': 'Bot ' + settings.DISCORD_BOT_TOKEN
         }
     ).json()
+    print(create_group)
     role = DiscordRole(role_id=create_group['id'], group=group)
     role.save()
     return role

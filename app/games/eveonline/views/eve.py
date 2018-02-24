@@ -10,13 +10,16 @@ from django.http import HttpResponse
 from django.db.models import Q
 from django.conf import settings
 from operator import itemgetter
-import json
+import json, logging, datetime
+
+logger = logging.getLogger(__name__)
 
 # Create your views here.
 @login_required
 def dashboard(request):
     context = get_eve_context(request)
     context['alt_types'] = settings.EVE_ALT_TYPES
+    logger.info("User connected to the EVE dashboard.")
     return render(request, 'eveonline/dashboard.html', context)
 
 @login_required

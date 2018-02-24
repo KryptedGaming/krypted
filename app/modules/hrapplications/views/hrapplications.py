@@ -26,7 +26,7 @@ def view_application(request, pk):
     responses = Response.objects.filter(application=application)
     logger.info(responses)
     # Check if user has permission to admin applications
-    hrgroup, result = Group.objects.get_or_create(name='HR')
+    hrgroup, result = Group.objects.get_or_create(name=settings.HR_GROUP)
     if application.template.guild.group in request.user.groups.all() and hrgroup in request.user.groups.all():
         context['admin'] = True
     else:
@@ -41,7 +41,7 @@ def view_applications_all(request):
     context = get_global_context(request)
     context['applications'] = Application.objects.all()
     # Check if user has permission to admin applications
-    hrgroup, result = Group.objects.get_or_create(name='HR')
+    hrgroup, result = Group.objects.get_or_create(name=settings.HR_GROUP)
     if hrgroup not in request.user.groups.all():
         messages.add_message(request, messages.ERROR, 'You do not have permission to view that.')
         return redirect('dashboard')
@@ -56,7 +56,7 @@ def create_application(request, slug):
             return redirect('hr-view-applications')
         logger.info(str(request.POST))
         application = Application(
-                template=ApplicationTemplate.objects.get(name=slug),
+                template=ApplicationTemplate.objects.get(guild=Guild.objects.get(slug=slug)),
                 user = request.user,
                 profile = Profile.objects.get(user=request.user),
                 status = "Pending",
@@ -73,7 +73,7 @@ def create_application(request, slug):
     else:
         if slug == 'eve':
             try:
-                template = ApplicationTemplate.objects.get(name='eve')
+                template = ApplicationTemplate.objects.get(guild=Guild.objects.get(title="EVE Online"))
                 characters = EveCharacter.objects.filter(user=request.user)
                 context['characters'] = characters
             except:

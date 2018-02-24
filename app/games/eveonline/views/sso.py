@@ -4,7 +4,7 @@ from django.conf import settings
 from games.eveonline.models import Token, EveCharacter
 from django.contrib.auth.models import User
 from core.decorators import login_required
-from games.eveonline.tasks import sync_character
+from games.eveonline.tasks import sync_user
 
 import logging
 logger = logging.getLogger(__name__)
@@ -17,13 +17,14 @@ def add_token(request):
 def remove_token(request, character):
     eve_character = EveCharacter.objects.get(user=request.user, token__character_id=character)
     eve_character.token.delete()
+    sync_user(request.user)
     return redirect('eve-dashboard')
 
 @login_required
 def refresh_token(request, character):
     eve_character = EveCharacter.objects.get(user=request.user, token__character_id=character)
     eve_character.token.refresh()
-    sync_character(request.user)
+    sync_user(request.user)
     return redirect('eve-dashboard')
 
 def receive_token(request):
@@ -86,7 +87,7 @@ def receive_token(request):
                 token=token,
                 user=request.user
         )
-        sync_character(request.user)
+        sync_user(request.user)
         character.save()
         print("CHARACTER CREATED")
         print(character)

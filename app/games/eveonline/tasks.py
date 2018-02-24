@@ -2,76 +2,76 @@ from __future__ import absolute_import, unicode_literals
 from celery import task
 from games.eveonline.models import Token, EveCharacter
 from django.contrib.auth.models import User, Group
+from core.models import Profile, Guild
 from esipy import App, EsiClient, EsiSecurity
 from django.conf import settings
+from modules.discourse.tasks import sync_user as sync_discourse_user
+from modules.discord.tasks import sync_user as sync_discord_user
+import logging
 
+logger = logging.getLogger(__name__)
+
+"""
+MAJOR TASKS
+These tasks are periodically ran.
+"""
 @task()
 def verify_sso_tokens():
-    print("weeeee")
     tokens = Token.objects.all()
-    esi_app = App.create('https://esi.tech.ccp.is/latest/swagger.json?datasource=tranquility')
-
-    esi_security = EsiSecurity(
-        app=esi_app,
-        redirect_uri='http://localhost:8000/oauth/callback',
-        client_id='d4f29f2a7dfa43978d8aaa3d1492a76f',
-        secret_key='TvDAQTa6ApSEdGENPhdAOlhngrhHguDgSfARB6WH',
-    )
-
-    esiclient = EsiClient(
-        security=esi_security,
-        cache=None,
-        headers={'User-Agent': 'User-Agent'}
-    )
-
     for token in tokens:
-        valid = True
-        esi_security.update_token(token.populate())
-        try:
-            esi_security.refresh()
-        except:
-            valid = False
+        verify_sso_token(token)
 
-        if not valid:
-            token.delete()
 
 @task()
-def sync_user_group(user):
+def sync_users():
+    verify_sso_tokens()         # make sure tokens are valid
+    for user in User.objects.all():
+        if Token.objects.filter(user=user).count() > 0:
+            sync_user(user)
+
+
+"""
+MINOR TASKS
+These tasks build the above tasks.
+"""
+@task()
+def verify_sso_token(token):
+    settings.ESI_SECURITY.update_token(token.populate())
+    try:
+        settings.ESI_SECURITY.refresh()
+    except Exception as e:
+        character = EveCharacter.objects.get(token=token)
+        logger.info("Token of %s expired for %s" % (character, token.user))
+        character.character_corporation = "ERROR"
+        character.character_alliance = "ERROR"
+        character.save()
+        sync_user(user)
+
+@task()
+def sync_user(user):
+    # Get user information
+    profile = Profile.objects.get(user=user)
     tokens = Token.objects.filter(user=user)
-    for token in tokens:
-        token.refresh()
     characters = EveCharacter.objects.filter(user=user)
     group_clear = True
+    eve_online_group = Group.objects.get(name=settings.EVE_ONLINE_GROUP)
 
-    for character in characters:
-        print(character)
-        if character.character_corporation == settings.MAIN_CORPORATION_ID:
-            print("Match")
-            group_clear = False
-
-    if not group_clear:
-        if Group.objects.get(name="EVE") not in user.groups.all():
-            user.groups.add(Group.objects.get(name="EVE"))
-    else:
-        user.groups.remove(Group.objects.get(name="EVE"))
-
-@task()
-def sync_character(user):
-    characters = EveCharacter.objects.filter(user=user)
-    purge = True
+    # Determine if member should have access
     for character in characters:
         character.update_corporation()
-        if character.character_corporation in settings.VERIFIED_CORPORATIONS:
-            purge = False
-    if purge:
-        user.groups.clear()
-    else:
-        try:
-            user.groups.add(Group.objects.get(name="EVE"))
-        except:
-            pass
+        if settings.EVE_ORGANIZATION_MODE == "CORPORATION":
+            if character.character_corporation in settings.VERIFIED_CORPORATIONS:
+                group_clear = False
+        else:
+            if character.character_alliance in settings.VERIFIED_CORPORATIONS:
+                group_clear = False
 
-@task()
-def sync_characters():
-    for user in User.objects.filter(groups__name='EVE'):
-        sync_character(user)
+    # Update user groups
+    if group_clear:
+        user.groups.remove(Group.objects.get(name=eve_online_group.name))
+        profile.guilds.remove(Guild.objects.get(group=eve_online_group))
+    else:
+        user.groups.add(eve_online_group)
+        profile.guilds.add(Guild.objects.get(group=eve_online_group))
+    sync_discord_user(user)
+    sync_discourse_user(user)
