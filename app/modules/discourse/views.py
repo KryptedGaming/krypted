@@ -7,6 +7,7 @@ from urllib import parse as urlparse
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest, HttpResponseRedirect
 from django.conf import settings
+from modules.discourse.models import DiscourseUser
 
 @login_required
 def index(request):
@@ -57,6 +58,7 @@ def sso(request):
     query_string = urlparse.urlencode({'sso': return_payload, 'sig': h.hexdigest()})
 
     ## Redirect back to Discourse
+    DiscourseUser.objects.get_or_create(user_id=request.user.id, auth_user=request.user)
 
     url = '%s/session/sso_login' % settings.DISCOURSE_BASE_URL
     return HttpResponseRedirect('%s?%s' % (url, query_string))

@@ -5,8 +5,6 @@ from django.contrib.auth.models import User, Group
 from core.models import Profile, Guild
 from esipy import App, EsiClient, EsiSecurity
 from django.conf import settings
-from modules.discourse.tasks import sync_user as sync_discourse_user
-from modules.discord.tasks import sync_user as sync_discord_user
 import logging
 
 logger = logging.getLogger(__name__)
@@ -24,6 +22,7 @@ def verify_sso_tokens():
 
 @task()
 def sync_users():
+    logger.info("Bulk updating all users for EVE Online roles")
     verify_sso_tokens()         # make sure tokens are valid
     for user in User.objects.all():
         if Token.objects.filter(user=user).count() > 0:
@@ -36,19 +35,21 @@ These tasks build the above tasks.
 """
 @task()
 def verify_sso_token(token):
+    character = EveCharacter.objects.get(token=token)
     settings.ESI_SECURITY.update_token(token.populate())
+    logger.info("Syncing token for %s" % character.character_name)
     try:
         settings.ESI_SECURITY.refresh()
     except Exception as e:
-        character = EveCharacter.objects.get(token=token)
         logger.info("Token of %s expired for %s" % (character, token.user))
         character.character_corporation = "ERROR"
         character.character_alliance = "ERROR"
         character.save()
-        sync_user(user)
+        sync_user(token.user)
 
 @task()
 def sync_user(user):
+    logger.info("Syncing user %s for EVE Online..." % user.username)
     # Get user information
     profile = Profile.objects.get(user=user)
     tokens = Token.objects.filter(user=user)
@@ -68,10 +69,11 @@ def sync_user(user):
 
     # Update user groups
     if group_clear:
+        logger.info("Removing EVE Online role for %s" % user.username)
         user.groups.remove(Group.objects.get(name=eve_online_group.name))
         profile.guilds.remove(Guild.objects.get(group=eve_online_group))
     else:
+        logger.info("Adding EVE Online role for %s" % user.username)
         user.groups.add(eve_online_group)
         profile.guilds.add(Guild.objects.get(group=eve_online_group))
-    sync_discord_user(user)
-    sync_discourse_user(user)
+    logger.info("")
