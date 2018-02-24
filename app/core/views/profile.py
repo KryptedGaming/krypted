@@ -8,6 +8,9 @@ from . import base
 from core.decorators import login_required
 from core.views.base import get_global_context
 from core.decorators import *
+import logging
+
+logger = logging.getLogger(__name__)
 
 @login_required
 @no_user_profile
@@ -40,33 +43,36 @@ def profile_add_game(request, game_to_add):
     user = request.user
     try:
         profile = Profile.objects.get(user=user)
+        game = Game.objects.get(id=game_to_add)
         if profile:
-            profile.games.add(Game.objects.get(id=game_to_add))
+            profile.games.add(game)
             profile.save()
             Notification(message="You added game " +
-             game_to_add + " to your account.").notify_user(user)
+             game.title + " to your account.").notify_user(user)
         else:
             return redirect('create-profile')
     except:
         Notification(message="You failed to add game " +
-         game_to_add + " to your account.").notify_user(user)
+         game.title + " to your account.").notify_user(user)
     return redirect('games')
 
 @login_required
-def profile_remove_game(request, game):
+def profile_remove_game(request, game_to_remove):
     user = request.user
+    game = Game.objects.get(id=game_to_remove)
     try:
         profile = Profile.objects.get(user=user)
         if profile:
-            profile.games.remove(Game.objects.get(id=game))
+            profile.games.remove(game)
             profile.save()
             Notification(message="You removed game " +
-             game + " to your account.").notify_user(user)
+             game.title + " from your account.").notify_user(user)
         else:
             return redirect('create-profile')
-    except:
+    except Exception as e:
+        logger.info(e)
         Notification(message="You failed to removed game " +
-         game + " to your account.").notify_user(user)
+         game.title + " to your account.").notify_user(user)
     return redirect('games')
 
 @login_required
