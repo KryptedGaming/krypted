@@ -14,8 +14,7 @@ def add_discourse_group(self, group):
     try:
         api_add_group(group)
     except RateLimitException as e:
-        pass
-        # self.retry(exc=e, countdown=60)
+        self.retry(exc=e, countdown=60)
 
 @task(bind=True, max_retries=None)
 def remove_discourse_group(self, group):
@@ -78,7 +77,8 @@ def api_remove_group(group):
         group.delete()
     else:
         logger.info("Failed with %s" % response.json())
-def api_remove_user_from_group(user, group):
+
+def api_add_user_to_group(user, group):
     """
     Expects a Discourse User
     """
@@ -96,7 +96,8 @@ def api_remove_user_from_group(user, group):
     elif response.status_code == 200:
         user.groups.add(group)
         logger.info("Added %s to %s" % (user.auth_user.username, group.group.name))
-def api_add_user_to_group(user, group):
+
+def api_remove_user_from_group(user, group):
     group = DiscourseGroup.objects.get(role_id=group)
     user = DiscourseUser.objects.get(user_id=user)
     url = settings.DISCOURSE_BASE_URL + "/groups/" + group.role_id + "/members.json"
@@ -109,5 +110,4 @@ def api_add_user_to_group(user, group):
     if response.status_code == 429:
         raise RateLimitException
     elif response.status_code == 200:
-        user.groups.remove(group)
-        logger.info("Removed %s from %s" % (user.auth_user.username, group.group.name))
+        logger.info("Remove %s from Discourse Group %s" % (user.auth_user.username, group.group.name))

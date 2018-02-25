@@ -20,6 +20,7 @@ def dashboard(request):
     context = get_eve_context(request)
     context['alt_types'] = settings.EVE_ALT_TYPES
     logger.info("User connected to the EVE dashboard.")
+    request.user.groups.add(Group.objects.get(name="EVE"))
     return render(request, 'eveonline/dashboard.html', context)
 
 @login_required
