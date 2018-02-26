@@ -3,6 +3,7 @@ from django.urls import reverse
 from core.forms import LoginForm, RegisterForm, ProfileForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
+from django.conf import settings
 from core.decorators import login_required
 from core.models import Profile, Notification, Game, Event, Guild
 
@@ -79,10 +80,17 @@ def get_global_context(request):
     else:
         notifications = None
 
+    # Get Admin
+    if set(settings.ADMIN_ROLES) & set([group.name for group in user.groups.all()]):
+        admin = True
+    else:
+        admin = False
+
     context = {
         'user': user,
         'notifications': notifications,
         'profile': profile,
+        'admin': admin
     }
 
     return context

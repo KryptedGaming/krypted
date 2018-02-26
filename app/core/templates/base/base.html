@@ -45,7 +45,9 @@
   </li>
 
   <!-- ADMIN LINKS -->
+  {% if admin %}
   <li class="header">ADMIN</li>
   <!-- Optionally, you can add icons to the links -->
   <li><a href="{% url 'hr-view-applications-all' %}"><i class="fa fa-paperclip"></i> <span>Applications</span></a></li>
+  {% endif %}
 {% endblock %}
