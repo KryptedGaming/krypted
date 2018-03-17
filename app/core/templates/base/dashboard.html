@@ -30,10 +30,17 @@
   <div class="col-md-4 ">
       <div class="box box-widget">
           <div style="padding: 5px 5px 5px 5px" class="card text-center">
-                  <h4 class="text-center">Recent activity</h4>
+            <div class="container-fluid">
+                  <h4 class="text-center">Services</h4>
                   <hr>
-                  Under construction.
+                  <button onclick="location.href='{% url 'slack_resend' %}'" style="min-width: 75%;" class="btn btn-{% if slack_user %}success{%else%}danger{%endif%}">Slack</button>
                   <hr>
+                  <button style="min-width: 75%;" class="btn btn-{% if discord_user %}success{%else%}danger{%endif%}">Discord</button>
+                  <hr>
+                  <button onclick="location.href='https://forumv2.kryptedgaming.com'" style="min-width: 75%;" class="btn btn-{% if discourse_user %}success{%else%}danger{%endif%}">Discourse</button>
+                  <hr>
+                  <p>If a service has a red background, click on it to enable it.</p>
+              </div>
           </div>
       </div>
   </div>

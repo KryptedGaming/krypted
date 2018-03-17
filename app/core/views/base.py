@@ -86,11 +86,32 @@ def get_global_context(request):
     else:
         admin = False
 
+    # Check services
+    from modules.slack.models import SlackUser
+    from modules.discord.models import DiscordToken
+    from modules.discourse.models import DiscourseUser
+    if SlackUser.objects.filter(user=user).count() > 0:
+        slack_user = True
+    else:
+        slack_user = False
+    if DiscordToken.objects.filter(user=user).count() > 0:
+        discord_user = True
+    else:
+        discord_user = False
+    if DiscourseUser.objects.filter(auth_user=user).count() > 0:
+        discourse_user = True
+    else:
+        discourse_user = False
+
+
     context = {
         'user': user,
         'notifications': notifications,
         'profile': profile,
-        'admin': admin
+        'admin': admin,
+        'slack_user': slack_user,
+        'discourse_user': discourse_user,
+        'discord_user': discord_user,
     }
 
     return context
