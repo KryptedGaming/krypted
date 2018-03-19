@@ -1,5 +1,5 @@
 from django.contrib import admin
-from core.models import Notification, Profile, Guild, Game, Event
+from core.models import *
 
 # Register your models here.
 @admin.register(Notification)
@@ -46,3 +46,20 @@ class GuildAdmin(admin.ModelAdmin):
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
     list_display = ('id','title', 'group')
+
+@admin.register(GroupRequest)
+class GroupRequestAdmin(admin.ModelAdmin):
+    list_display = ('get_user', 'get_group', 'date_requested')
+
+    def get_user(self):
+        return self.user.username
+
+    def get_group(self):
+        return self.group.group.name
+
+@admin.register(GroupEntity)
+class GroupEntityAdmin(admin.ModelAdmin):
+    list_display = ('get_group', 'hidden')
+
+    def get_group(self, group_entity):
+        return group_entity.group.name

@@ -4,16 +4,18 @@ from core.forms import LoginForm, RegisterForm, ProfileForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.conf import settings
-from core.decorators import login_required
-from core.models import Profile, Notification, Game, Event, Guild
+from core.decorators import login_required, tutorial_complete
+from core.models import Profile, Notification, Game, Event, Guild, GroupEntity, GroupRequest
 
 ## BASE
 @login_required
 def dashboard(request):
     context = get_global_context(request)
+    context['guilds'] = Guild.objects.all()
     return render(request, 'base/dashboard.html', context)
 
 @login_required
+@tutorial_complete
 def guilds(request):
     context = get_global_context(request)
     if not context['profile']:
@@ -22,6 +24,29 @@ def guilds(request):
     return render(request, 'base/guilds.html', context)
 
 @login_required
+@tutorial_complete
+def groups(request, **kwargs):
+    """
+    Page for managing group requests.
+    See GroupEntity and GroupRequest models.
+    """
+    context = get_global_context(request)
+    groups = []
+    for group in GroupEntity.objects.filter(hidden=False):
+        groups.append({'group': group, 'requested': GroupRequest.objects.filter(group=group, user=request.user).exists()})
+    context['groups'] = groups
+    context['manage'] = request.user.has_perm('core.manage_group_requests')
+    context['audit'] = request.user.has_perm('core.audit_group_requests')
+    if context['manage'] and not context['audit']:
+        context['group_requests'] = GroupRequest.objects.filter(status="Pending")
+    elif context['manage'] and context['audit']:
+        context['group_requests'] = GroupRequest.objects.all()
+    context['tab'] = kwargs.get('tab')
+
+    return render(request, 'base/groups.html', context)
+
+@login_required
+@tutorial_complete
 def games(request):
     context = get_global_context(request)
     if not context['profile']:

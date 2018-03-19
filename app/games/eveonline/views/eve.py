@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from games.eveonline.models import Token, EveCharacter
 from django.contrib.auth.models import User, Group
 from core.models import Guild
-from core.decorators import login_required
+from core.decorators import login_required, tutorial_complete
 from core.views.base import get_global_context
 from django.conf import settings
 from django.contrib import messages
@@ -16,14 +16,15 @@ logger = logging.getLogger(__name__)
 
 # Create your views here.
 @login_required
+@tutorial_complete
 def dashboard(request):
     context = get_eve_context(request)
     context['alt_types'] = settings.EVE_ALT_TYPES
     logger.info("User connected to the EVE dashboard.")
-    request.user.groups.add(Group.objects.get(name="EVE"))
     return render(request, 'eveonline/dashboard.html', context)
 
 @login_required
+@tutorial_complete
 def apply(request):
     if EveCharacter.objects.filter(user=request.user).exists():
         return redirect('hr-create-application', slug='eve')

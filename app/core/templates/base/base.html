@@ -4,7 +4,18 @@
   <li class="header">MAIN NAVIGATION</li>
   <!-- Optionally, you can add icons to the links -->
   <li><a href="{% url 'dashboard' %}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
-  <li><a href="https://forumv2.kryptedgaming.com"><i class="fa fa-quote-left"></i> <span>Forum</span></a></li>
+  <li class="treeview">
+    <a href="#"><i class="fa fa-users"></i> <span>Groups</span>
+      <span class="pull-right-container">
+          <i class="fa fa-angle-left pull-right"></i>
+        </span>
+    </a>
+    <ul class="treeview-menu">
+      {% for guild in guilds %}
+      <li><a href="/{{guild.slug}}/">{{guild.title}}</a></li>
+      {% endfor %}
+    </ul>
+  </li>
   <li class="treeview">
     <a href="#"><i class="fa fa-user"></i> <span>Profile</span>
       <span class="pull-right-container">
@@ -16,20 +27,6 @@
       <li><a href="{% url 'guilds' %}">Manage Guilds</a></li>
     </ul>
   </li>
-  {% if profile.guilds.all %}
-  <li class="treeview">
-    <a href="#"><i class="fa fa-users"></i> <span>Groups</span>
-      <span class="pull-right-container">
-          <i class="fa fa-angle-left pull-right"></i>
-        </span>
-    </a>
-    <ul class="treeview-menu">
-      {% for guild in profile.guilds.all %}
-      <li><a href="/{{guild.slug}}/">{{guild.title}}</a></li>
-      {% endfor %}
-    </ul>
-  </li>
-  {% endif %}
 
   <li class="treeview">
     <a href="#"><i class="fa fa-twitter"></i> <span>Social</span>

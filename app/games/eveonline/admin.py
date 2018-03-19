@@ -1,5 +1,5 @@
 from django.contrib import admin
-from games.eveonline.models import Token, EveCharacter
+from games.eveonline.models import *
 
 # Register your models here.
 @admin.register(Token)
@@ -12,3 +12,7 @@ class EveCharacterAdmin(admin.ModelAdmin):
 
     def get_username(self, EveCharacter):
         return EveCharacter.user.username
+
+@admin.register(EveCorporation)
+class EveCorporationAdmin(admin.ModelAdmin):
+    list_display = ('name', 'ceo')

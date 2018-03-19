@@ -1,0 +1,162 @@
+{% extends 'base/base.html' %}
+{% load staticfiles %}
+{% load core_filters %}
+
+{% block brand %}
+  <h1>
+    Groups
+    <small>Manage authentication group requests</small>
+  </h1>
+{% endblock %}
+
+{% block includes %}
+<link rel="stylesheet" href="{% static 'global/ui/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
+{% endblock %}
+{% block content %}
+<div class="nav-tabs-custom">
+  <ul class="nav nav-tabs">
+    <li class="active">
+      <a data-toggle="tab" href="#request">
+        Request
+      </a>
+    </li>
+    {% if manage %}
+    <li>
+      <a data-toggle="tab" href="#pending">
+        Pending
+      </a>
+    </li>
+    {% endif %}
+    {% if audit %}
+    <li>
+      <a data-toggle="tab" href="#log">
+        Log
+      </a>
+    </li>
+    {% endif %}
+  </ul>
+</div>
+
+<div class="tab-content box">
+    <div id="request" class="tab-pane fade in active box-body">
+      <table class="table">
+        <thead>
+          <th scope="col">Group</th>
+          <th scope="col">Description</th>
+          <th scope="col">Action</th>
+        </thead>
+        <tbody>
+          {% for group in groups %}
+          <tr>
+            <td>{{group.group.group.name|cleanGroupName}}</td> {# oh man.. that chain #}
+            <td>{{group.group.description}}</td>
+            {% if group.requested %}
+            <td><i class="fa fa-spinner"></i></td>
+            {% elif group.group.group in user.groups.all %}
+            <td><button class="btn btn-danger">Leave</button></td>
+            {% else %}
+            <td><button class="btn btn-success">Apply</button></td>
+            {% endif %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+    </div>
+    <div id="pending" class="tab-pane fade box-body">
+  		<table class="table">
+  			<thead>
+  				<tr>
+  					<th scope="col">Created</th>
+            <th scope="col">Guild</th>
+  					<th scope="col">User</th>
+            <th scope="col">Processor</th>
+  					<th scope="col">Actions</th>
+  				</tr>
+  			</thead>
+  			<tbody>
+          {% for application in applications %}
+          {% if application.status == "Pending" or application.status == "Processing" %}
+  				<tr>
+            <td>{{application.created}}</td>
+            <td>{{application.template.name}}</td>
+            <td>{{application.user.username}}</span></td>
+            <td>
+              {% if application.reviewer %}
+              {{application.reviewer}}
+              {% else %}
+              <a href="{% url 'hr-assign-application' application=application.pk user=request.user.pk %}">
+                Assign self
+              </a>
+              {% endif %}
+            </td>
+            <td>
+              <button class="btn btn-info" onclick="location.href='{% url "hr-view-application" pk=application.id %}'"><i class="fa fa-eye"></i></button>
+            </td>
+  				</tr>
+          {% endif %}
+          {% endfor %}
+  			</tbody>
+  		</table>
+    </div>
+  <div id="log" class="tab-pane fade box-body">
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">Status</th>
+          <th scope="col">Guild</th>
+					<th scope="col">User</th>
+          <th scope="col">Processor</th>
+					<th scope="col">Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+        {% for application in applications %}
+        {% if application.status == "Approved" or application.status == "Rejected" %}
+				<tr>
+          <td>
+            {% if application.status == "Approved" %}
+            <span class="label label-success">Approved</span>
+            {% else %}
+            <span class="label label-danger">Rejected</span>
+            {% endif %}
+          </td>
+          <td>{{application.template.name}}</td>
+          <td>{{application.user.username}}</span></td>
+          <td>
+            {% if application.reviewer %}
+            {{application.reviewer}}
+            {% else %}
+            <a href="{% url 'hr-assign-application' application=application.pk user=request.user.pk %}">
+              Assign self
+            </a>
+            {% endif %}
+          </td>
+          <td>
+            <button class="btn btn-info" onclick="location.href='{% url "hr-view-application" pk=application.id %}'"><i class="fa fa-eye"></i></button>
+          </td>
+				</tr>
+        {% endif %}
+        {% endfor %}
+			</tbody>
+		</table>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(function () {
+    $('table').DataTable({
+      'paging'      : false,
+      'lengthChange': false,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : false
+    })
+ })
+</script>
+<script src="{% static 'global/ui/bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'global/ui/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+{% endblock %}

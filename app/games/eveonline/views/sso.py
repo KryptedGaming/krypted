@@ -17,14 +17,14 @@ def add_token(request):
 def remove_token(request, character):
     eve_character = EveCharacter.objects.get(user=request.user, token__character_id=character)
     eve_character.token.delete()
-    sync_user(request.user)
+    sync_user.apply_async(args=[request.user.pk])
     return redirect('eve-dashboard')
 
 @login_required
 def refresh_token(request, character):
     eve_character = EveCharacter.objects.get(user=request.user, token__character_id=character)
     eve_character.token.refresh()
-    sync_user(request.user)
+    sync_user.apply_async(args=[request.user.pk])
     return redirect('eve-dashboard')
 
 def receive_token(request):
@@ -87,8 +87,9 @@ def receive_token(request):
                 token=token,
                 user=request.user
         )
-        sync_user(request.user)
         character.save()
+        character.update_corporation()
+        sync_user.apply_async(args=[request.user.pk])
         print("CHARACTER CREATED")
         print(character)
 

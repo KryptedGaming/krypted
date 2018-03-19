@@ -83,3 +83,31 @@ class Event(models.Model):
     notes = models.CharField(max_length=32, blank=True, null=True)
     group = models.ForeignKey(Group, on_delete=models.CASCADE, blank=True, null=True)
     importance = models.CharField(choices=importance_choices, max_length=12, blank=True, null=True)
+
+class GroupRequest(models.Model):
+    status_choices = (
+            ("Pending", "Pending"),
+            ("Accepted", "Accepted"),
+            ("Rejected", "Rejected"),
+            ("Vetoed", "Vetoed")
+            )
+
+    status = models.CharField(max_length=32, choices=status_choices)
+    date_requested = models.DateField(auto_now=True)
+    date_updated = models.DateField(auto_now=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, primary_key=True)
+    processed_by = models.ForeignKey(User, related_name='processor', on_delete=models.CASCADE, blank=True, null=True)
+    group = models.ForeignKey("GroupEntity", on_delete=models.CASCADE)
+
+    class Meta:
+        permissions = (
+                ('manage_group_requests', u'Can manage group requests.'),
+                ('audit_group_requests', u'Can view the group request audit log.')
+        )
+
+class GroupEntity(models.Model):
+    group = models.OneToOneField(Group, on_delete=models.CASCADE, primary_key=True)
+    description = models.CharField(max_length=512, blank=True)
+    hidden = models.BooleanField(default=True, help_text="Hidden from the apply menu.")
+    public = models.BooleanField(default=False, help_text="Automatically join upon request.")
+    managers = models.ManyToManyField(User, blank=True, null=True, help_text="Users who can accept/decline requests.")

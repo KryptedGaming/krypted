@@ -8,3 +8,4 @@
 
 Tips
 1. Update DNS // echo "nameserver 8.8.8.8" | sudo tee /etc/resolvconf/resolv.conf.d/base > /dev/null
+2. Don't forget to add GroupRequest permissions to groups, otherwise they can't manage them

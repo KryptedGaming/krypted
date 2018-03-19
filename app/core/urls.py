@@ -1,12 +1,14 @@
 from django.conf.urls import include, url
 from django.contrib import admin
-from core.views import base, user, profile, events
+from core.views import base, user, profile, events, groups
 
 ## BASE
 urlpatterns = [
     url(r'^$', base.dashboard, name='dashboard'),
     url(r'^guilds/$', base.guilds, name='guilds'),
+    url(r'^groups/$', base.groups, name='groups'),
     url(r'^games/$', base.games, name='games'),
+    url(r'^games/(?P<tab>\w+)/$', base.games, name='games'),
     url(r'^profile/$', base.profile, name='profile'),
     url(r'^notifications/$', base.notifications, name='notifications'),
 ]
@@ -30,6 +32,13 @@ urlpatterns += [
         profile.profile_add_guild, name='profile-add-guild'),
     url(r'^profile/remove-guild/name=(?P<guild>\d+)/$',
         profile.profile_remove_guild, name='profile-remove-guild'),
+]
+
+## GROUPS
+urlpatterns += [
+    url(r'^groups/apply/group=(?P<group>\d+)/$', groups.group_apply, name='group-apply'),
+    url(r'^groups/adduser/group=(?P<group>\d+)/user=(?P<user>\d+)/$', groups.group_add_user, name='group-add_user'),
+    url(r'^groups/removeuser/group=(?P<group>\d+)/user=(?P<user>\d+)/$', groups.group_remove_user, name='group-add_user'),
 ]
 
 ## EVENTS

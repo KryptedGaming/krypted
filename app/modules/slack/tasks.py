@@ -17,6 +17,7 @@ def sync_slack_users():
             SlackUser.objects.get(user=user)
             logger.info("Retrieved slack user for %s" % user.pk)
         except:
+            logger.info("Searching for slack user %s" % user.pk)
             get_slack_user.apply_async(args=[user.pk])
 
 
@@ -26,16 +27,17 @@ def add_slack_user(self, user):
     Expects an Authentication User
     """
     user = User.objects.get(pk=user)
+    logger.info("Inviting %s to Slack" % user.email)
     url = settings.SLACK_BASE_URL + "users.admin.invite"
     data = {
-            'token': settings.SLACK_TOKEN,
+            'token': settings.SLACK_LEGACY_TOKEN,
             'email': user.email
     }
     response = requests.put(url=url, data=data)
     if response.status_code == 429:
         raise RateLimitException
     elif response.status_code == 200:
-        print(response.json())
+        logger.info(response.json())
 
 @task(bind=True)
 def get_slack_user(self, user):

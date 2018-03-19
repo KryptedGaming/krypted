@@ -17,14 +17,18 @@ These tasks are periodically ran.
 def verify_sso_tokens():
     tokens = Token.objects.all()
     for token in tokens:
-        verify_sso_token(token)
+        try:
+            EveCharacter.objects.get(token=token)
+            verify_sso_token.apply_async(args=[token.character_id])
+        except:
+            token.delete()
 
 
 @task()
 def sync_users():
     logger.info("Bulk updating all users for EVE Online roles")
-    verify_sso_tokens()         # make sure tokens are valid
     for user in User.objects.all():
+        logger.info("Syncing EVE Online permissions for %s" % user.username)
         if Token.objects.filter(user=user).count() > 0:
             sync_user(user)
 
@@ -34,7 +38,8 @@ MINOR TASKS
 These tasks build the above tasks.
 """
 @task()
-def verify_sso_token(token):
+def verify_sso_token(character_id):
+    token = Token.objects.get(character_id=character_id)
     character = EveCharacter.objects.get(token=token)
     settings.ESI_SECURITY.update_token(token.populate())
     logger.info("Syncing token for %s" % character.character_name)
@@ -45,12 +50,13 @@ def verify_sso_token(token):
         character.character_corporation = "ERROR"
         character.character_alliance = "ERROR"
         character.save()
-        sync_user(token.user)
+        sync_user.apply_sync(args=[token.user.pk])
 
 @task()
 def sync_user(user):
-    logger.info("Syncing user %s for EVE Online..." % user.username)
     # Get user information
+    user = User.objects.get(pk=user)
+    logger.info("Syncing user %s for EVE Online..." % user.username)
     profile = Profile.objects.get(user=user)
     tokens = Token.objects.filter(user=user)
     characters = EveCharacter.objects.filter(user=user)
@@ -58,22 +64,51 @@ def sync_user(user):
     eve_online_group = Group.objects.get(name=settings.EVE_ONLINE_GROUP)
 
     # Determine if member should have access
+    groups = []
+
     for character in characters:
         character.update_corporation()
-        if settings.EVE_ORGANIZATION_MODE == "CORPORATION":
-            if character.character_corporation in settings.VERIFIED_CORPORATIONS:
+        if settings.ALLIANCE_MODE:
+            logger.info("ALLIANCE MODE ENABLED... Checking Alliance IDs.")
+            if str(character.corporation.alliance_id) in settings.MAIN_ENTITY_ID:
+                logger.info("Alliance mode, case 1.")
+                groups.append(Group.objects.get(name=settings.EVE_ONLINE_GROUP))
+                groups.append(Group.objects.get(name=settings.MAIN_GROUP))
                 group_clear = False
+            elif str(character.corporation.alliance_id) in settings.SECONDARY_ENTITY_IDS:
+                logger.info("Alliance mode, case 2.")
+                groups.append(Group.objects.get(name=settings.EVE_ONLINE_GROUP))
+                groups.append(Group.objects.get(name=settings.MINOR_GROUP))
+                group_clear = False
+            else:
+                logger.info("Alliance mode, case 3.")
         else:
-            if character.character_alliance in settings.VERIFIED_CORPORATIONS:
+            logger.info("CORPORATION MODE ENABLED... Checking Coporation IDs.")
+            if str(character.corporation.corporation_id) in settings.MAIN_ENTITY_ID:
+                logger.info("Corporation mode, case 1.")
+                groups.append(Group.objects.get(name=settings.EVE_ONLINE_GROUP))
+                groups.append(Group.objects.get(name=settings.MAIN_GROUP))
                 group_clear = False
+            elif str(character.corporation.corporation_id) in settings.SECONDARY_ENTITY_IDS:
+                logger.info("Corporation mode, case 2.")
+                groups.append(Group.objects.get(name=settings.EVE_ONLINE_GROUP))
+                groups.append(Group.objects.get(name=settings.MINOR_GROUP))
+                group_clear = False
+            else:
+                logger.info("Corporation mode, case 3.")
+
 
     # Update user groups
     if group_clear:
         logger.info("Removing EVE Online role for %s" % user.username)
-        user.groups.remove(Group.objects.get(name=eve_online_group.name))
+        user.groups.remove(Group.objects.get(name=settings.EVE_ONLINE_GROUP))
+        user.groups.remove(Group.objects.get(name=settings.MAIN_GROUP))
+        user.groups.remove(Group.objects.get(name=settings.MINOR_GROUP))
+        user.groups.add(Group.objects.get(name=settings.GUEST_GROUP))
         profile.guilds.remove(Guild.objects.get(group=eve_online_group))
     else:
         logger.info("Adding EVE Online role for %s" % user.username)
-        user.groups.add(eve_online_group)
+        for group in groups:
+            user.groups.add(group)
+        user.groups.remove(Group.objects.get(name=settings.GUEST_GROUP))
         profile.guilds.add(Guild.objects.get(group=eve_online_group))
-    logger.info("")
