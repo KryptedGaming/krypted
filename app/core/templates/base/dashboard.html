@@ -35,7 +35,7 @@
                   <hr>
                   <button onclick="location.href='{% url 'slack_resend' %}'" style="min-width: 75%;" class="btn btn-{% if slack_user %}success{%else%}danger{%endif%}">Slack</button>
                   <hr>
-                  <button style="min-width: 75%;" class="btn btn-{% if discord_user %}success{%else%}danger{%endif%}">Discord</button>
+                  <button onclick="location.href='{% url 'discord_index' %}'" style="min-width: 75%;" class="btn btn-{% if discord_user %}success{%else%}danger{%endif%}">Discord</button>
                   <hr>
                   <button onclick="location.href='https://forumv2.kryptedgaming.com'" style="min-width: 75%;" class="btn btn-{% if discourse_user %}success{%else%}danger{%endif%}">Discourse</button>
                   <hr>

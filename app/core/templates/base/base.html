@@ -1,5 +1,10 @@
 {% extends 'global/global_base.html' %}
 {% block sidebar %}
+  <!-- WELCOME -->
+  {% if profile.guilds.all.count < 1 %}
+  <li class="header">WELCOME</li>
+  <li><a href="{% url 'eve-apply' %}"><i class="fa fa-paperclip"></i> <span>Apply</span></a></li>
+  {% endif %}
   <!-- CORE LINKS -->
   <li class="header">MAIN NAVIGATION</li>
   <!-- Optionally, you can add icons to the links -->
