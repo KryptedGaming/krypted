@@ -51,11 +51,11 @@
             <td>{{group.group.group.name|cleanGroupName}}</td> {# oh man.. that chain #}
             <td>{{group.group.description}}</td>
             {% if group.requested %}
-            <td><i class="fa fa-spinner"></i></td>
+            <td><i class="fa fa-spinner fa-spin"></i></td>
             {% elif group.group.group in user.groups.all %}
-            <td><button class="btn btn-danger">Leave</button></td>
+            <td><button onclick="location.href='{% url 'group-remove-user' group.group.group.pk request.user.pk %}'" class="btn btn-danger">Leave</button></td>
             {% else %}
-            <td><button class="btn btn-success">Apply</button></td>
+            <td><button onclick="location.href='{% url 'group-apply' group.group.group.pk %}'" class="btn btn-success">Apply</button></td>
             {% endif %}
           </tr>
           {% endfor %}
@@ -67,79 +67,54 @@
   		<table class="table">
   			<thead>
   				<tr>
-  					<th scope="col">Created</th>
-            <th scope="col">Guild</th>
+  					<th scope="col">Group</th>
+            <th scope="col">Character</th>
   					<th scope="col">User</th>
-            <th scope="col">Processor</th>
   					<th scope="col">Actions</th>
   				</tr>
   			</thead>
   			<tbody>
-          {% for application in applications %}
-          {% if application.status == "Pending" or application.status == "Processing" %}
+          {% for group_request in group_requests %}
   				<tr>
-            <td>{{application.created}}</td>
-            <td>{{application.template.name}}</td>
-            <td>{{application.user.username}}</span></td>
+            <td>{{group_request.request.group.group.name}}</td>
+            <td>{{group_request.character}}</td>
+            <td>{{group_request.request.user.username}}</span></td>
+            {% if group_request.permission %}
             <td>
-              {% if application.reviewer %}
-              {{application.reviewer}}
-              {% else %}
-              <a href="{% url 'hr-assign-application' application=application.pk user=request.user.pk %}">
-                Assign self
-              </a>
-              {% endif %}
+              <button class="btn btn-success" onclick="location.href='{% url 'group-add-user' group_request.request.group.group.pk group_request.request.user.pk %}'"><i class="fa fa-check"></i></button>
+              <button class="btn btn-danger" onclick="location.href='{% url 'group-add-user' group_request.request.group.group.pk group_request.request.user.pk %}'"><i class="fa fa-times"></i></button>
             </td>
-            <td>
-              <button class="btn btn-info" onclick="location.href='{% url "hr-view-application" pk=application.id %}'"><i class="fa fa-eye"></i></button>
-            </td>
+            {% endif %}
   				</tr>
-          {% endif %}
           {% endfor %}
   			</tbody>
   		</table>
     </div>
   <div id="log" class="tab-pane fade box-body">
-		<table class="table">
-			<thead>
-				<tr>
-					<th scope="col">Status</th>
-          <th scope="col">Guild</th>
-					<th scope="col">User</th>
-          <th scope="col">Processor</th>
-					<th scope="col">Actions</th>
-				</tr>
-			</thead>
-			<tbody>
-        {% for application in applications %}
-        {% if application.status == "Approved" or application.status == "Rejected" %}
-				<tr>
-          <td>
-            {% if application.status == "Approved" %}
-            <span class="label label-success">Approved</span>
-            {% else %}
-            <span class="label label-danger">Rejected</span>
+  		<table class="table">
+  			<thead>
+  				<tr>
+  					<th scope="col">Group</th>
+            <th scope="col">Character</th>
+  					<th scope="col">User</th>
+  					<th scope="col">Actions</th>
+  				</tr>
+  			</thead>
+  			<tbody>
+          {% for group_request in audit_requests %}
+  				<tr>
+            <td>{{group_request.request.group.group.name}}</td>
+            <td>{{group_request.character}}</td>
+            <td>{{group_request.request.user.username}}</span></td>
+            {% if group_request.permission %}
+            <td>
+              <button class="btn btn-danger" onclick="location.href='{% url 'group-remove-user' group_request.request.group.group.pk group_request.request.user.pk %}'"><i class="fa fa-undo"></i></button>
+            </td>
             {% endif %}
-          </td>
-          <td>{{application.template.name}}</td>
-          <td>{{application.user.username}}</span></td>
-          <td>
-            {% if application.reviewer %}
-            {{application.reviewer}}
-            {% else %}
-            <a href="{% url 'hr-assign-application' application=application.pk user=request.user.pk %}">
-              Assign self
-            </a>
-            {% endif %}
-          </td>
-          <td>
-            <button class="btn btn-info" onclick="location.href='{% url "hr-view-application" pk=application.id %}'"><i class="fa fa-eye"></i></button>
-          </td>
-				</tr>
-        {% endif %}
-        {% endfor %}
-			</tbody>
-		</table>
+  				</tr>
+          {% endfor %}
+  			</tbody>
+  		</table>
   </div>
 </div>
 {% endblock %}

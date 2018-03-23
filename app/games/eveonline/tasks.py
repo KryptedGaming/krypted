@@ -68,6 +68,7 @@ def sync_user(user):
 
     for character in characters:
         character.update_corporation()
+        logger.info("ALLIANCE MODE: %s" % settings.ALLIANCE_MODE)
         if settings.ALLIANCE_MODE:
             logger.info("ALLIANCE MODE ENABLED... Checking Alliance IDs.")
             if str(character.corporation.alliance_id) in settings.MAIN_ENTITY_ID:

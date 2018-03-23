@@ -154,3 +154,12 @@ class EveCharacter(models.Model):
                 self.corporation.corporation_id = None
                 self.save()
                 self.update_corporation()
+
+    def get_absolute(self):
+        """
+        Ensures that we return the main character
+        """
+        if self.main:
+            return self.main
+        else:
+            return self

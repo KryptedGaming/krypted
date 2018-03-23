@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, login
 from django.conf import settings
 from core.decorators import login_required, tutorial_complete
 from core.models import Profile, Notification, Game, Event, Guild, GroupEntity, GroupRequest
+from core.utils import *
 
 ## BASE
 @login_required
@@ -32,16 +33,47 @@ def groups(request, **kwargs):
     """
     context = get_global_context(request)
     groups = []
-    for group in GroupEntity.objects.filter(hidden=False):
-        groups.append({'group': group, 'requested': GroupRequest.objects.filter(group=group, user=request.user).exists()})
-    context['groups'] = groups
+    # PERMISSIONS
     context['manage'] = request.user.has_perm('core.manage_group_requests')
     context['audit'] = request.user.has_perm('core.audit_group_requests')
-    if context['manage'] and not context['audit']:
-        context['group_requests'] = GroupRequest.objects.filter(status="Pending")
-    elif context['manage'] and context['audit']:
-        context['group_requests'] = GroupRequest.objects.all()
     context['tab'] = kwargs.get('tab')
+
+    # STANDARD GROUP VIEW
+    for group in GroupEntity.objects.filter(hidden=False):
+        groups.append({
+            'group': group, 
+            'requested': GroupRequest.objects.filter(group=group, user=request.user, status="Pending").exists()
+            })
+    context['groups'] = groups
+
+    # PENDING VIEW
+    if context['manage']:
+        group_requests = []
+        for group_request in GroupRequest.objects.filter(status="Pending"):
+            if not group_request.group.managers or request.user in group_request.group.managers.all():
+                permission = False
+            else:
+                permission = True
+            group_requests.append({
+                'request': group_request,
+                'character': get_main_eve_character(group_request.user),
+                'permission': permission 
+                })
+        context['group_requests'] = group_requests
+
+    # AUDIT VIEW
+    if context['audit']:
+        group_requests = []
+        for group_request in GroupRequest.objects.filter(status="Accepted"):
+            group_requests.append({
+                'request': group_request,
+                'character': get_main_eve_character(group_request.user),
+                'permission': True
+                })
+        context['audit_requests'] = group_requests
+
+
+
 
     return render(request, 'base/groups.html', context)
 

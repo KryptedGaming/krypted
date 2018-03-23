@@ -4,20 +4,22 @@ from django.contrib.auth.models import User, Group
 from django.contrib import messages
 from core.models import GroupEntity, GroupRequest
 from core.decorators import login_required
+from django.contrib.auth.decorators import permission_required
 from . import base
 
 @login_required
 def group_apply(request, group):
-    group = Group.objects.get(pk=group)
+    group = GroupEntity.objects.get(group__pk=group)
     group_request = GroupRequest(user=request.user, status="Pending", group=group)
     group_request.save()
     return redirect('groups')
 
 @login_required
+@permission_required('manage_group_requests')
 def group_add_user(request, group, user):
     group = Group.objects.get(pk=group)
     user = User.objects.get(pk=user)
-    group_request = GroupRequest.objects.get(user=user, status="Pending", group=group)
+    group_request = GroupRequest.objects.get(user=user, status="Pending", group=GroupEntity.objects.get(group=group))
     group_request.status = "Accepted"
     user.groups.add(group)
     user.save()
@@ -28,9 +30,10 @@ def group_add_user(request, group, user):
 def group_remove_user(request, group, user):
     group = Group.objects.get(pk=group)
     user = User.objects.get(pk=user)
-    group_request = GroupRequest.objects.get(user=user, status="Pending", group=group)
-    group_request.status = "Vetoed"
-    user.groups.remove(group)
-    user.save()
-    group_request.save()
+    if user.has_perm('manage_group_requests') or user is request.user:
+        group_request = GroupRequest.objects.get(user=user, status="Accepted", group=GroupEntity.objects.get(group=group))
+        group_request.status = "Vetoed"
+        user.groups.remove(group)
+        user.save()
+        group_request.save()
     return redirect('groups')

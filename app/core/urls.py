@@ -37,8 +37,8 @@ urlpatterns += [
 ## GROUPS
 urlpatterns += [
     url(r'^groups/apply/group=(?P<group>\d+)/$', groups.group_apply, name='group-apply'),
-    url(r'^groups/adduser/group=(?P<group>\d+)/user=(?P<user>\d+)/$', groups.group_add_user, name='group-add_user'),
-    url(r'^groups/removeuser/group=(?P<group>\d+)/user=(?P<user>\d+)/$', groups.group_remove_user, name='group-add_user'),
+    url(r'^groups/adduser/group=(?P<group>\d+)/user=(?P<user>\d+)/$', groups.group_add_user, name='group-add-user'),
+    url(r'^groups/removeuser/group=(?P<group>\d+)/user=(?P<user>\d+)/$', groups.group_remove_user, name='group-remove-user'),
 ]
 
 ## EVENTS

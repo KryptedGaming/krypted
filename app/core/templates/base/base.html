@@ -10,7 +10,7 @@
   <!-- Optionally, you can add icons to the links -->
   <li><a href="{% url 'dashboard' %}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
   <li class="treeview">
-    <a href="#"><i class="fa fa-users"></i> <span>Groups</span>
+    <a href="#"><i class="fa fa-users"></i> <span>Games</span>
       <span class="pull-right-container">
           <i class="fa fa-angle-left pull-right"></i>
         </span>
@@ -28,6 +28,7 @@
         </span>
     </a>
     <ul class="treeview-menu">
+      <li><a href="{% url 'groups' %}">Manage Groups</a></li>
       <li><a href="{% url 'games' %}">Manage Games</a></li>
       <li><a href="{% url 'guilds' %}">Manage Guilds</a></li>
     </ul>
