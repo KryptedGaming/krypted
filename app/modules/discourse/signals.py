@@ -9,19 +9,23 @@ logger = logging.getLogger(__name__)
 
 @receiver(m2m_changed, sender=User.groups.through)
 def user_group_change(sender, **kwargs):
-    user = DiscourseUser.objects.get(auth_user=kwargs.get('instance'))
-    action = str(kwargs.get('action'))
-    groups = []
-    for pk in kwargs.get('pk_set'):
-        groups.append(DiscourseGroup.objects.get(group__pk=pk))
-    if action == "post_remove":
-        for group in groups:
-            logger.info("[SIGNAL] Removing discourse user %s from discourse group %s" % (user, group))
-            remove_user_from_discourse_group.apply_async(args=[user.user_id, group.role_id])
-    elif action == "post_add":
-        for group in groups:
-            logger.info("[SIGNAL]Adding discourse user %s to discourse group %s" % (user, group))
-            add_user_to_discourse_group.apply_async(args=[user.user_id, group.role_id])
+    try:
+        user = DiscourseUser.objects.get(auth_user=kwargs.get('instance'))
+        action = str(kwargs.get('action'))
+        groups = []
+        for pk in kwargs.get('pk_set'):
+            groups.append(DiscourseGroup.objects.get(group__pk=pk))
+        if action == "post_remove":
+            for group in groups:
+                logger.info("[SIGNAL] Removing discourse user %s from discourse group %s" % (user, group))
+                remove_user_from_discourse_group.apply_async(args=[user.user_id, group.role_id])
+        elif action == "post_add":
+            for group in groups:
+                logger.info("[SIGNAL]Adding discourse user %s to discourse group %s" % (user, group))
+                add_user_to_discourse_group.apply_async(args=[user.user_id, group.role_id])
+    except Exception as e:
+        logger.info("Failed to updated Discourse groups. %s" % e)
+
 
 @receiver(post_save, sender=Group)
 def global_group_add(sender, **kwargs):

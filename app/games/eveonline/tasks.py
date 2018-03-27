@@ -15,13 +15,10 @@ These tasks are periodically ran.
 """
 @task()
 def verify_sso_tokens():
+    logger.info("Verifying all SSO tokens")
     tokens = Token.objects.all()
     for token in tokens:
-        try:
-            EveCharacter.objects.get(token=token)
-            verify_sso_token.apply_async(args=[token.character_id])
-        except:
-            token.delete()
+        verify_sso_token.apply_async(args=[token.character_id])
 
 
 @task()

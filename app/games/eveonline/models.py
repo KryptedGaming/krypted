@@ -1,10 +1,9 @@
 from __future__ import unicode_literals
-
 from django.db import models
-from django.contrib.auth.models import User, Group
 from django.conf import settings
-import datetime
 from django.utils import timezone
+from django.contrib.auth.models import User, Group
+import datetime
 
 # Create your models here.
 class Token(models.Model):

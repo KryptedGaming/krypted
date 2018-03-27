@@ -12,7 +12,6 @@ from core.utils import *
 @login_required
 def dashboard(request):
     context = get_global_context(request)
-    context['guilds'] = Guild.objects.all()
     return render(request, 'base/dashboard.html', context)
 
 @login_required
@@ -21,7 +20,6 @@ def guilds(request):
     context = get_global_context(request)
     if not context['profile']:
         return redirect('create-profile')
-    context['guilds'] = Guild.objects.all()
     return render(request, 'base/guilds.html', context)
 
 @login_required
@@ -41,7 +39,7 @@ def groups(request, **kwargs):
     # STANDARD GROUP VIEW
     for group in GroupEntity.objects.filter(hidden=False):
         groups.append({
-            'group': group, 
+            'group': group,
             'requested': GroupRequest.objects.filter(group=group, user=request.user, status="Pending").exists()
             })
     context['groups'] = groups
@@ -57,7 +55,7 @@ def groups(request, **kwargs):
             group_requests.append({
                 'request': group_request,
                 'character': get_main_eve_character(group_request.user),
-                'permission': permission 
+                'permission': permission
                 })
         context['group_requests'] = group_requests
 
@@ -169,6 +167,7 @@ def get_global_context(request):
         'slack_user': slack_user,
         'discourse_user': discourse_user,
         'discord_user': discord_user,
+        'guilds': Guild.objects.all()
     }
 
     return context

@@ -51,11 +51,11 @@ class EventAdmin(admin.ModelAdmin):
 class GroupRequestAdmin(admin.ModelAdmin):
     list_display = ('get_user', 'get_group', 'date_requested')
 
-    def get_user(self):
-        return self.user.username
+    def get_user(self, gr):
+        return gr.user.username
 
-    def get_group(self):
-        return self.group.group.name
+    def get_group(self, gr):
+        return gr.group.group.name
 
 @admin.register(GroupEntity)
 class GroupEntityAdmin(admin.ModelAdmin):

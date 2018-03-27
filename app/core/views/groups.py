@@ -6,6 +6,9 @@ from core.models import GroupEntity, GroupRequest
 from core.decorators import login_required
 from django.contrib.auth.decorators import permission_required
 from . import base
+import logging
+
+logger = logging.getLogger(__name__)
 
 @login_required
 def group_apply(request, group):
@@ -30,10 +33,12 @@ def group_add_user(request, group, user):
 def group_remove_user(request, group, user):
     group = Group.objects.get(pk=group)
     user = User.objects.get(pk=user)
-    if user.has_perm('manage_group_requests') or user is request.user:
+    logger.info("Group_remove_user called")
+    if request.user.has_perm('manage_group_requests') or user is request.user:
         group_request = GroupRequest.objects.get(user=user, status="Accepted", group=GroupEntity.objects.get(group=group))
-        group_request.status = "Vetoed"
         user.groups.remove(group)
         user.save()
-        group_request.save()
+        group_request.delete()
+    else:
+        logger.info("User %s does not have permission for that." % request.user.username)
     return redirect('groups')
