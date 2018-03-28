@@ -27,7 +27,18 @@ def sync_users():
     for user in User.objects.all():
         logger.info("Syncing EVE Online permissions for %s" % user.username)
         if Token.objects.filter(user=user).count() > 0:
-            sync_user(user)
+            sync_user.apply_async(args=[user.pk])
+        else:
+            try:
+                profile = Profile.objects.get(user=user)
+                profile.guilds.remove(Guild.objects.get(group__name=settings.EVE_ONLINE_GROUP))
+            except:
+                pass
+            user.groups.remove(Group.objects.get(name=settings.EVE_ONLINE_GROUP))
+            user.groups.remove(Group.objects.get(name=settings.MAIN_GROUP))
+            user.groups.remove(Group.objects.get(name=settings.MINOR_GROUP))
+            user.groups.add(Group.objects.get(name=settings.GUEST_GROUP))
+
 
 
 """
