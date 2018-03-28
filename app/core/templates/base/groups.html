@@ -79,12 +79,14 @@
             <td>{{group_request.request.group.group.name}}</td>
             <td>{{group_request.character}}</td>
             <td>{{group_request.request.user.username}}</span></td>
-            {% if group_request.permission %}
             <td>
+            {% if group_request.permission %}
               <button class="btn btn-success" onclick="location.href='{% url 'group-add-user' group_request.request.group.group.pk group_request.request.user.pk %}'"><i class="fa fa-check"></i></button>
               <button class="btn btn-danger" onclick="location.href='{% url 'group-add-user' group_request.request.group.group.pk group_request.request.user.pk %}'"><i class="fa fa-times"></i></button>
-            </td>
+            {% else %}
+            No access.
             {% endif %}
+            </td>
   				</tr>
           {% endfor %}
   			</tbody>

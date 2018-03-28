@@ -14,12 +14,19 @@ def sync_slack_users():
     logger.info("Syncing slack users")
     for user in User.objects.all():
         try:
-            SlackUser.objects.get(user=user)
+            slack_user = SlackUser.objects.get(user=user)
             logger.info("Retrieved slack user for %s" % user.pk)
-        except:
-            logger.info("Searching for slack user %s" % user.pk)
+        except Exception as e:
+            slack_user = None
+            logger.info("Searching for slack user %s: %s" % (user.pk, e))
             get_slack_user.apply_async(args=[user.pk])
 
+        if slack_user:
+            for group in slack_user.user.groups.all():
+                if SlackChannel.objects.filter(groups__name__in=[group]).exists():
+                    slack_channels = SlackChannel.objects.filter(groups__name__in=[group])
+                    for slack_channel in slack_channels:
+                        add_slack_user_to_channel.apply_async(args=[slack_channel.slack_id, slack_user.slack_id])
 
 @task(bind=True)
 def add_slack_user(self, user):
@@ -63,10 +70,16 @@ def get_slack_user(self, user):
 def add_slack_channel(self, channel, groups=None):
     """
     Expects a string 'channel' for the channel name
+    Expects groups string seperated by -
     """
     logger.info("Creating Slack channel: %s" % channel)
     if groups:
+        raw_groups = groups.split("-")
+        groups = []
         url = settings.SLACK_BASE_URL + "groups.create"
+        for group in raw_groups:
+            groups.append(Group.objects.get(pk=group))
+
     else:
         url = settings.SLACK_BASE_URL + "channels.create"
     data = {
@@ -78,11 +91,11 @@ def add_slack_channel(self, channel, groups=None):
         raise RateLimitException
     elif response.status_code == 200:
         if groups:
-            slack_channel = SlackChannel(slack_id=response.json()['group']['id'])
+            slack_channel = SlackChannel(slack_id=response.json()['group']['id'], name=channel)
             slack_channel.save()
             slack_channel.groups.set(groups)
         else:
-            slack_channel = SlackChannel(slack_id=response.json()['channel']['id'])
+            slack_channel = SlackChannel(slack_id=response.json()['channel']['id'], name=channel)
             slack_channel.save()
         logger.info(response.json())
 

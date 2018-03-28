@@ -49,9 +49,9 @@ def groups(request, **kwargs):
         group_requests = []
         for group_request in GroupRequest.objects.filter(status="Pending"):
             if not group_request.group.managers or request.user in group_request.group.managers.all():
-                permission = False
-            else:
                 permission = True
+            else:
+                permission = False
             group_requests.append({
                 'request': group_request,
                 'character': get_main_eve_character(group_request.user),
