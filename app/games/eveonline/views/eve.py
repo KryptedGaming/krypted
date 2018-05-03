@@ -119,6 +119,10 @@ def get_eve_context(request):
     context['characters'] = EveCharacter.objects.filter(user=request.user)
     return context
 
+"""
+Helper Functions
+Used for the above web calls
+"""
 def get_character_wallet(token):
     settings.ESI_SECURITY.update_token(token.populate())
     op = settings.ESI_APP.op['get_characters_character_id_wallet_journal'](character_id=token.character_id)
@@ -179,6 +183,7 @@ def get_character_data(token):
                    'contracts': 'get_characters_character_id_contracts',
                    'wallet': 'get_characters_character_id_wallet'}
     data = {}
+    data['character_id'] = token.character_id
     for scope in name_scopes:
         op = settings.ESI_APP.op[name_scopes[scope]](character_id=token.character_id)
         data[scope] = settings.ESI_CLIENT.request(op).data
@@ -226,6 +231,11 @@ def clean_mail_results(data):
             else:
                 recipient['recipient_url'] = ""
         # mail['recipients'] = ",".join(map(str,character_ids))
+    # Add mail data
+    for mail in data['mails']:
+        op = settings.ESI_APP.op['get_characters_character_id_mail_mail_id'](character_id=data['character_id'], mail_id=mail['mail_id'])
+        mail_body = settings.ESI_CLIENT.request(op).data
+        mail['body'] = mail_body['body']
     return data
 
 def clean_contacts(data):

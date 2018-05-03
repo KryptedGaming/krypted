@@ -148,6 +148,7 @@
                     <th>From</th>
                     <th>To</th>
                     <th>Subject</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -165,6 +166,14 @@
                       <td>
                           {{mail.subject}}
                       </td>
+                      <td>
+                        <button
+                          data-toggle="modal"
+                          data-target="#selectModal{{mail.mail_id}}"
+                          class="btn btn-warning btn-fill pull-left">
+                          <i class="fa fa-eye"></i>
+                        </button>
+                      </td>
                   </tr>
                 {% endfor %}
                 </tbody>
@@ -180,4 +189,10 @@
     </div>
   </div>
 </div>
+{% for mail in mails %}
+<div class="modal fade col-md-12" id="selectModal{{mail.mail_id}}" data-backdrop="false">
+  {% include "eveonline/mail_modal.html" %}
+</div>
+</div>
+{% endfor %}
 {% endblock %}
