@@ -82,7 +82,7 @@ def receive_token(request):
             eve_main_character = None
         character = EveCharacter(
                 character_name=esi_verified['CharacterName'],
-                character_portrait=portrait.data['px64x64'],
+                character_portrait=portrait.data['px64x64'].replace("http", "https"),
                 main=eve_main_character,
                 token=token,
                 user=request.user

@@ -34,6 +34,8 @@ def view_application(request, pk):
     context['characters'] = EveCharacter.objects.filter(user=application.user)
     context['application'] = application
     context['responses'] = responses
+    context['approve'] = request.user.has_perm('hrapplications.approve_application')
+    context['deny'] = request.user.has_perm('hrapplications.deny_application')
     return render(request, 'hrapplications/view_application.html', context)
 
 @login_required
@@ -41,8 +43,7 @@ def view_applications_all(request):
     context = get_global_context(request)
     context['applications'] = Application.objects.all()
     # Check if user has permission to admin applications
-    hrgroup, result = Group.objects.get_or_create(name=settings.HR_GROUP)
-    if hrgroup not in request.user.groups.all():
+    if not request.user.has_perm('hrapplications.view_applications'):
         messages.add_message(request, messages.ERROR, 'You do not have permission to view that.')
         return redirect('dashboard')
     return render(request, 'hrapplications/view_applications_all.html', context)

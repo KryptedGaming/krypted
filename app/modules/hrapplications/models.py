@@ -34,6 +34,13 @@ class Application(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     processed_date = models.DateTimeField(blank=True, null=True)
 
+    class Meta:
+        permissions = (
+                ('view_applications', u'Can view all applications'),
+                ('approve_application', u'Can approve an application'),
+                ('deny_application', u'Can deny an application')
+        )
+
 class Question(models.Model):
     question_choices = (
         ("Blank", "Blank"),
