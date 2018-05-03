@@ -11,40 +11,40 @@ logger = logging.getLogger(__name__)
 
 @receiver(m2m_changed, sender=User.groups.through)
 def user_group_change(sender, **kwargs):
-    logger.info("Groups changed for user. Updating Discord groups.")
+    logger.info("[SIGNAL] Groups changed for user. Updating Discord groups.")
     user = kwargs.get('instance')
     action = str(kwargs.get('action'))
     try:
-        DiscordToken.objects.get(user=user)
+        DiscordUser.objects.get(user=user)
         groups = []
-        logger.info("%s groups have changed with action %s" % (user.username, action))
+        logger.info("[SIGNAL] %s groups have changed with action %s" % (user.username, action))
         for pk in kwargs.get('pk_set'):
-            groups.append(DiscordRole.objects.get(group__pk=pk))
+            groups.append(DiscordGroup.objects.get(group__pk=pk))
         if action == "post_remove":
             for group in groups:
-                logger.info("Removing %s from Discord Group %s" % (user.username, group))
-                remove_user_from_discord_group.apply_async(args=[user.pk, group.role_id])
+                logger.info("[SIGNAL] Removing %s from Discord Group %s" % (user.username, group))
+                remove_user_from_discord_group.apply_async(args=[user.pk, group.id])
         elif action == "post_add":
             for group in groups:
-                logger.info("Adding %s to Discord Group %s" % (user.username, group))
-                add_user_to_discord_group.apply_async(args=[user.pk, group.role_id])
+                logger.info("[SIGNAL] Adding %s to Discord Group %s" % (user.username, group))
+                add_user_to_discord_group.apply_async(args=[user.pk, group.id])
     except Exception as e:
-        logger.info("Failed to updated Discord groups. %s" % e)
+        logger.info("[SIGNAL] Failed to updated Discord groups. %s" % e)
 
 
 @receiver(post_save, sender=Group)
 def global_group_add(sender, **kwargs):
     def call():
         group = kwargs.get('instance')
-        logger.info("Group change. Adding discord group %s" % group.name)
+        logger.info("[SIGNAL] Group change. Adding discord group %s" % group.name)
         add_discord_group.apply_async(args=[group.pk])
     transaction.on_commit(call)
 
 @receiver(pre_delete, sender=Group)
 def global_group_remove(sender, **kwargs):
     try:
-        group = DiscordRole.objects.get(group=kwargs.get('instance'))
-        logger.info("Group change. Removing discord group %s" % group.group.name)
+        group = DiscordGroup.objects.get(group=kwargs.get('instance'))
+        logger.info("[SIGNAL] Group change. Removing discord group %s" % group.group.name)
         remove_discord_group.apply_async(args=[group.group.pk])
     except Exception as e:
-        logger.info("Could not remove Discord role. Roles may be out of sync. %s" % e)
+        logger.info("[SIGNAL] Could not remove Discord role. Roles may be out of sync. %s" % e)

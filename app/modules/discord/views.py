@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from requests_oauthlib import OAuth2Session
 from django.conf import settings
 from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
-from modules.discord.models import DiscordToken
+from modules.discord.models import DiscordUser
 import logging
 import base64
 import requests
@@ -39,14 +39,14 @@ def callback(request):
     join = requests.post(settings.DISCORD_INVITE_LINK, headers={'Authorization': "Bearer " + token}).json()
 
     # Delete old token if exists
-    if DiscordToken.objects.filter(userid=me['id']).count() > 0:
-        token = DiscordToken.objects.get(userid=me['id'])
+    if DiscordUser.objects.filter(id=me['id']).count() > 0:
+        token = DiscordUser.objects.get(id=me['id'])
         token.delete()
     # Create new token
-    token = DiscordToken(
+    token = DiscordUser(
         access_token = json['access_token'],
         refresh_token = json['refresh_token'],
-        userid = me['id'],
+        id = me['id'],
         username = me['username'] + "#" + me['discriminator'],
         email = me['email'],
         user = request.user

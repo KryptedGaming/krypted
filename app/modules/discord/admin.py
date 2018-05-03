@@ -1,16 +1,16 @@
 from django.contrib import admin
-from modules.discord.models import DiscordToken, DiscordRole
+from modules.discord.models import DiscordUser, DiscordGroup
 
-@admin.register(DiscordToken)
-class DiscordTokenAdmin(admin.ModelAdmin):
-    list_display = ('userid', 'username', 'user')
+@admin.register(DiscordUser)
+class DiscordUserAdmin(admin.ModelAdmin):
+    list_display = ('id', 'username', 'user')
 
-    def get_username(self, DiscordToken):
-        return DiscordToken.user.username
+    def get_username(self, DiscordUser):
+        return DiscordUser.user.username
 
-@admin.register(DiscordRole)
-class DiscordRoleAdmin(admin.ModelAdmin):
-    list_display = ('role_id', 'group_name')
+@admin.register(DiscordGroup)
+class DiscordGroupAdmin(admin.ModelAdmin):
+    list_display = ('id', 'group_name')
 
-    def group_name(self, DiscordToken):
-        return DiscordToken.group.name
+    def group_name(self, DiscordUser):
+        return DiscordUser.group.name

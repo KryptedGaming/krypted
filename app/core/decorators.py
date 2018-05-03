@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
-from modules.discord.models import DiscordToken
+from modules.discord.models import DiscordUser
 from modules.discourse.models import DiscourseUser
 from core.models import Profile
 
@@ -19,7 +19,7 @@ def tutorial_complete(function):
         if Profile.objects.filter(user=request.user).count() == 0:
             messages.add_message(request, messages.ERROR, 'Please create a profile before accessing this area.')
             return redirect('create-profile')
-        if DiscordToken.objects.filter(user=request.user).count() == 0:
+        if DiscordUser.objects.filter(user=request.user).count() == 0:
             messages.add_message(request, messages.ERROR, 'Please link your Discord account before accessing this area. Click "Discord" under Services.')
             return redirect('dashboard')
         if DiscourseUser.objects.filter(auth_user=request.user).count() == 0:

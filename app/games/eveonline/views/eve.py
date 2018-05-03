@@ -35,7 +35,7 @@ def apply(request):
 @login_required
 def view_character(request, character):
     if Group.objects.get(name=settings.HR_GROUP) not in request.user.groups.all() or Group.objects.get(name=settings.EVE_ONLINE_GROUP) not in request.user.groups.all():
-        messages.add_message(request, messages.ERROR, 'You do not have permission to view that.')
+        messages.add_message(request, messages.ERROR, 'You do not have permission to view that. %s' % str(request.user.groups.all()))
         return redirect('dashboard')
     context = get_eve_context(request)
     character = EveCharacter.objects.get(token__character_id=character)

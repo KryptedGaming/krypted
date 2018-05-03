@@ -7,6 +7,12 @@ from django.conf import settings
 from core.decorators import login_required, tutorial_complete
 from core.models import Profile, Notification, Game, Event, Guild, GroupEntity, GroupRequest
 from core.utils import *
+from modules.slack.models import SlackUser
+from modules.discord.models import DiscordUser
+from modules.discourse.models import DiscourseUser
+import logging
+
+logger = logging.getLogger(__name__)
 
 ## BASE
 @login_required
@@ -142,14 +148,11 @@ def get_global_context(request):
         admin = False
 
     # Check services
-    from modules.slack.models import SlackUser
-    from modules.discord.models import DiscordToken
-    from modules.discourse.models import DiscourseUser
     if SlackUser.objects.filter(user=user).count() > 0:
         slack_user = True
     else:
         slack_user = False
-    if DiscordToken.objects.filter(user=user).count() > 0:
+    if DiscordUser.objects.filter(user=user).count() > 0:
         discord_user = True
     else:
         discord_user = False

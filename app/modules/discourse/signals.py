@@ -18,11 +18,11 @@ def user_group_change(sender, **kwargs):
         if action == "post_remove":
             for group in groups:
                 logger.info("[SIGNAL] Removing discourse user %s from discourse group %s" % (user, group))
-                remove_user_from_discourse_group.apply_async(args=[user.user_id, group.role_id])
+                remove_user_from_discourse_group.apply_async(args=[user.id, group.id])
         elif action == "post_add":
             for group in groups:
-                logger.info("[SIGNAL]Adding discourse user %s to discourse group %s" % (user, group))
-                add_user_to_discourse_group.apply_async(args=[user.user_id, group.role_id])
+                logger.info("[SIGNAL] Adding discourse user %s to discourse group %s" % (user, group))
+                add_user_to_discourse_group.apply_async(args=[user.id, group.id])
     except Exception as e:
         logger.info("Failed to updated Discourse groups. %s" % e)
 
@@ -39,8 +39,8 @@ def global_group_add(sender, **kwargs):
 @receiver(pre_delete, sender=Group)
 def global_group_remove(sender, **kwargs):
     try:
-        group = DiscourseGroup.objects.get(group=kwargs.get('instance'))
-        logger.info("[SIGNAL] Group %s removed. Removing from Discourse." % group.group.name)
-        remove_discourse_group.apply_async(args=[group.role_id])
+        group = kwargs.get('instance')
+        logger.info("[SIGNAL] Group %s removed. Removing from Discourse." % group.name)
+        remove_discourse_group.apply_async(args=[group.pk])
     except:
         logger.error("[SIGNAL] Discourse Group was not found, groups may be out of sync.")
