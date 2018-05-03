@@ -82,7 +82,7 @@
             <td>
             {% if group_request.permission %}
               <button class="btn btn-success" onclick="location.href='{% url 'group-add-user' group_request.request.group.group.pk group_request.request.user.pk %}'"><i class="fa fa-check"></i></button>
-              <button class="btn btn-danger" onclick="location.href='{% url 'group-add-user' group_request.request.group.group.pk group_request.request.user.pk %}'"><i class="fa fa-times"></i></button>
+              <button class="btn btn-danger" onclick="location.href='{% url 'group-remove-user' group_request.request.group.group.pk group_request.request.user.pk %}'"><i class="fa fa-times"></i></button>
             {% else %}
             No access.
             {% endif %}

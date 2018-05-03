@@ -40,7 +40,7 @@ def sso(request):
     this_signature = h.hexdigest()
 
     if this_signature != signature:
-        return HttpResponseBadRequest('2 Invalid payload. Please contact support if this problem persists.')
+        return HttpResponseBadRequest('Signature: %s || Signature: %s' % (this_signature, signature))
 
     ## Build the return payload
 

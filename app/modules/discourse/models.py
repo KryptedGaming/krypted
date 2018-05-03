@@ -15,24 +15,28 @@ class DiscourseUser(models.Model):
 
     def add_group(self, group):
         """
-        Expects a Discord Group
+        Expects a Discourse Group
         """
         url = settings.DISCOURSE_BASE_URL + "/groups/" + group.id + "/members.json"
+        logger.info(url)
         data = {
             'api_key': settings.DISCOURSE_API_KEY,
             'api_username': 'system',
             'usernames': self.auth_user.username.replace(" ", "_")
         }
+        logger.info(data['usernames'])
         response = requests.put(url=url, data=data)
         if response.status_code == 429:
             raise RateLimitException
         elif response.status_code == 200:
             self.auth_user.groups.add(group.group)
             logger.info("[MODEL] Added %s to %s" % (self.auth_user.username, group.group.name))
+        else:
+            logger.error("[MODEL] Failed to add %s to %s: %s" % (self.auth_user.username, group.group.name, response.json()))
 
     def remove_group(self, group):
         """
-        Expects a Discord Group
+        Expects a Discourse Group
         """
         url = settings.DISCOURSE_BASE_URL + "/groups/" + group.id + "/members.json"
         data = {
@@ -68,7 +72,7 @@ class DiscourseGroup(models.Model):
             logger.info("[MODEL] Discourse Group successfully added")
             response = dict(response.json())
             self.id = response['basic_group']['id']
-            super(DiscouseGroup, self).save(*args, **kwargs)
+            super(DiscourseGroup, self).save(*args, **kwargs)
         else:
             logger.info("[MODEL] Discourse Group addition failed with %s" % response.json())
 

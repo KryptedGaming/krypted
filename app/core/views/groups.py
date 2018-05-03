@@ -14,6 +14,10 @@ logger = logging.getLogger(__name__)
 def group_apply(request, group):
     group = GroupEntity.objects.get(group__pk=group)
     group_request = GroupRequest(user=request.user, status="Pending", group=group)
+    if group.public:
+        group_request.status = "Accepted"
+        request.user.groups.add(group.group)
+        request.user.save()
     group_request.save()
     return redirect('groups')
 
@@ -35,7 +39,7 @@ def group_remove_user(request, group, user):
     user = User.objects.get(pk=user)
     logger.info("Group_remove_user called")
     if request.user.has_perm('manage_group_requests') or user is request.user:
-        group_request = GroupRequest.objects.get(user=user, status="Accepted", group=GroupEntity.objects.get(group=group))
+        group_request = GroupRequest.objects.get(user=user, group=GroupEntity.objects.get(group=group))
         user.groups.remove(group)
         user.save()
         group_request.delete()

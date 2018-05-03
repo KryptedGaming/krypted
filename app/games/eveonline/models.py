@@ -4,6 +4,9 @@ from django.conf import settings
 from django.utils import timezone
 from django.contrib.auth.models import User, Group
 import datetime
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Create your models here.
 class Token(models.Model):
@@ -72,6 +75,25 @@ class EveCorporation(models.Model):
     def __str__(self):
         return self.name
 
+    def save(self, *args, **kwargs):
+        op = settings.ESI_APP.op['get_corporations_corporation_id'](corporation_id=self.corporation_id)
+        response = settings.ESI_CLIENT.request(op)
+        self.name = response.data['name']
+        self.ticker = response.data['ticker']
+        self.member_count = response.data['member_count']
+        self.tax_rate = response.data['tax_rate']
+        try:
+            self.ceo = EveCharacter.objects.get(token__character_id=response.data['ceo_id'])
+        except:
+            logger.warning("CEO for Corporation %s is not registered" % self.corporation_id)
+        try:
+            self.alliance_id = response.data['alliance_id']
+        except:
+            logger.warning("Corporation %s is not in an alliance" % self.corporation_id)
+        super(EveCorporation, self).save(*args, **kwargs)
+
+
+
     def update_corporation(self, corporation_id):
         from django.core.exceptions import ObjectDoesNotExist
         op = settings.ESI_APP.op['get_corporations_corporation_id'](corporation_id=self.corporation_id)
@@ -95,7 +117,7 @@ class EveCorporation(models.Model):
 class EveCharacter(models.Model):
     character_name = models.CharField(max_length=255, primary_key=True)
     character_portrait = models.URLField(max_length=255, blank=True, null=True)
-    character_alt_type = models.CharField(max_length=255, choices=settings.EVE_ALT_TYPES, null=True)
+    character_alt_type = models.CharField(max_length=255, choices=settings.EVE_ALT_TYPES, null=True, blank=True)
     corporation = models.ForeignKey("EveCorporation", null=True, on_delete=models.CASCADE)
 
     ## SSO Token
@@ -111,8 +133,8 @@ class EveCharacter(models.Model):
         return self.character_name
 
     def update_corporation(self):
+        logger.info("Updating Corporation for %s" % self.character_name)
         if not self.corporation:
-            from django.core.exceptions import ObjectDoesNotExist
             # Pull the character information
             self.token.refresh()
             esi_app = settings.ESI_APP
@@ -120,31 +142,14 @@ class EveCharacter(models.Model):
             esi_security.update_token(self.token.populate())
             op = esi_app.op['get_characters_character_id'](character_id=self.token.character_id)
             character = settings.ESI_CLIENT.request(op)
+            logger.info("Response: %s" % str(character.data))
             # Build the corporation if needed
             if EveCorporation.objects.filter(corporation_id=character.data['corporation_id']).exists():
                 self.corporation = EveCorporation.objects.get(corporation_id=character.data['corporation_id'])
                 self.save()
             else:
-                op = esi_app.op['get_corporations_corporation_id'](corporation_id=character.data['corporation_id'])
-                corporation = settings.ESI_CLIENT.request(op)
-                eve_corporation = EveCorporation(
-                    corporation_id = character.data['corporation_id'],
-                    name = corporation.data['name'],
-                    ticker = corporation.data['ticker'],
-                    member_count = corporation.data['member_count'],
-                    tax_rate = corporation.data['tax_rate']
-                )
-                try:
-                 eve_corporation.ceo = EveCharacter.objects.get(token__character_id = corporation.data['ceo_id'])
-                except ObjectDoesNotExist:
-                 eve_corporation.ceo = None
-                try:
-                    eve_corporation.alliance_id = corporation.data['alliance_id'],
-                except:
-                    eve_corporation.alliance_id = None
-                eve_corporation.save()
-                self.corporation = eve_corporation
-                self.save()
+                EveCorporation(corporation_id=character.data['corporation_id']).save()
+                self.corporation = EveCorporation.objects.get(corporation_id=character.data['corporation_id'])
         else:
             self.token.refresh()
             op = settings.ESI_APP.op['get_characters_character_id'](character_id=self.token.character_id)

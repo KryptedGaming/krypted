@@ -147,6 +147,9 @@ def get_global_context(request):
     else:
         admin = False
 
+    # Slack enabled
+    slack_enabled = settings.SLACK_ENABLED
+
     # Check services
     if SlackUser.objects.filter(user=user).count() > 0:
         slack_user = True
@@ -167,6 +170,7 @@ def get_global_context(request):
         'notifications': notifications,
         'profile': profile,
         'admin': admin,
+        'slack_enabled': slack_enabled,
         'slack_user': slack_user,
         'discourse_user': discourse_user,
         'discord_user': discord_user,
