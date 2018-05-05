@@ -45,8 +45,9 @@ class Token(models.Model):
                 self.refresh_token = new_token['refresh_token']
                 self.expiry = timezone.now() + datetime.timedelta(0, new_token['expires_in'])
                 self.save()
-            except:
-                self.delete()
+            except Exception as e:
+                if e.response['error'] == 'invalid_token':
+                    self.delete()
         else:
             print("Token refresh not needed.")
 
@@ -92,8 +93,6 @@ class EveCorporation(models.Model):
             logger.warning("Corporation %s is not in an alliance" % self.corporation_id)
         super(EveCorporation, self).save(*args, **kwargs)
 
-
-
     def update_corporation(self, corporation_id):
         from django.core.exceptions import ObjectDoesNotExist
         op = settings.ESI_APP.op['get_corporations_corporation_id'](corporation_id=self.corporation_id)
@@ -118,7 +117,7 @@ class EveCharacter(models.Model):
     character_name = models.CharField(max_length=255, primary_key=True)
     character_portrait = models.URLField(max_length=255, blank=True, null=True)
     character_alt_type = models.CharField(max_length=255, choices=settings.EVE_ALT_TYPES, null=True, blank=True)
-    corporation = models.ForeignKey("EveCorporation", null=True, on_delete=models.CASCADE)
+    corporation = models.ForeignKey("EveCorporation", null=True, on_delete=models.SET_NULL)
 
     ## SSO Token
     token = models.OneToOneField("Token", on_delete=models.CASCADE)

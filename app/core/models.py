@@ -91,11 +91,11 @@ class GroupRequest(models.Model):
             ("Rejected", "Rejected"),
             ("Vetoed", "Vetoed")
             )
-
+    id = models.AutoField(primary_key=True)
     status = models.CharField(max_length=32, choices=status_choices)
     date_requested = models.DateField(auto_now=True)
     date_updated = models.DateField(auto_now=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     processed_by = models.ForeignKey(User, related_name='processor', on_delete=models.CASCADE, blank=True, null=True)
     group = models.ForeignKey("GroupEntity", on_delete=models.CASCADE)
 

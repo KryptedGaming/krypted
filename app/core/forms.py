@@ -19,8 +19,8 @@ class LoginForm(forms.Form):
         return input
 
 class RegisterForm(forms.Form):
-    username = forms.CharField(max_length=32)
-    email = forms.CharField(max_length=32)
+    username = forms.CharField(max_length=64)
+    email = forms.CharField(max_length=64)
     password = forms.CharField(max_length=32)
     vpassword = forms.CharField(max_length=32)
 
