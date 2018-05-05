@@ -1,169 +1,86 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from games.eveonline.models import Token, EveCharacter
+from django.contrib.auth.models import User, Group
+from core.models import Guild
+from core.decorators import login_required, tutorial_complete
+from core.views.base import get_global_context
+from django.conf import settings
+from django.contrib import messages
+from django.http import HttpResponse
+from django.db.models import Q
+from django.conf import settings
+from operator import itemgetter
+import json, logging, datetime
 
-# Create your views here.
-@login_required
-def view_character(request, character):
-    if Group.objects.get(name=settings.HR_GROUP) not in request.user.groups.all() or Group.objects.get(name=settings.EVE_ONLINE_GROUP) not in request.user.groups.all():
-        messages.add_message(request, messages.ERROR, 'You do not have permission to view that. %s' % str(request.user.groups.all()))
-        return redirect('dashboard')
-    context = get_eve_context(request)
-    character = EveCharacter.objects.get(token__character_id=character)
-    context['character'] = character
-    token = character.token
-    try:
-        token.refresh()
-        try:
-            data = get_character_data(token)
-        except:
-            messages.add_message(request, messages.ERROR, 'Failed at view_character. Error code 1.')
-        try:
-            context['wallet'] = get_character_wallet(token)
-        except:
-            context['wallet'] = None
-            messages.add_message(request, messages.ERROR, 'Wallet failed to load.')
-        try:
-            context['net_worth'] = '{:20,}'.format(int(data['wallet']))
-        except:
-            context['net_worth'] = None
-            messages.add_message(request, messages.ERROR, 'Net worth failed to load.')
-        try:
-            context['mails'] = data['mails']
-        except:
-            messages.add_message(request, messages.ERROR, 'Mails failed to load.')
-            context['mails'] = None
-        try:
-            context['contacts'] = data['contacts']
-        except:
-            messages.add_message(request, messages.ERROR, 'Contacts failed to load.')
-            context['contacts'] = None
-        try:
-            context['contracts'] = data['contracts']
-        except:
-            messages.add_message(request, messages.ERROR, 'Contracts failed to load.')
-            context['contracts'] = None
-
-        try:
-            context['skill_tree'] = data['skill_tree']
-            context['sp'] = '{:20,}'.format(int(data['sp']))
-        except:
-            messages.add_message(request, messages.ERROR, 'Skills failed to load.')
-            context['skill_tree'] = None
-            context['sp'] = None
-    except Exception as e:
-        messages.add_message(request, messages.ERROR, 'Could not load character. ' + str(e))
-        return redirect('eve-dashboard')
-
-
-    return render(request, 'eveonline/view_character.html', context)
-
-@login_required
-def set_main_character(request, character):
-    eve_character = EveCharacter.objects.get(token__character_id=character, user=request.user)
-    eve_alts = EveCharacter.objects.filter(~Q(token__character_id=character), user=request.user)
-    eve_character.main = None
-    eve_character.character_alt_type = None
-    eve_character.save()
-    for alt in eve_alts:
-        alt.main = eve_character
-        alt.character_alt_type = None
-        alt.save()
-    return redirect('eve-dashboard')
-
-@login_required
-def set_alt_character(request, character, alt_type):
-    eve_character = EveCharacter.objects.get(token__character_id=character, user=request.user)
-    eve_character_main = EveCharacter.objects.get(user=request.user, main=None)
-    eve_character.main = eve_character_main
-    eve_character.character_alt_type = alt_type
-    eve_character.save()
-    return redirect('eve-dashboard')
-
-@login_required
-def get_eve_context(request):
-    context = get_global_context(request)
-    if Group.objects.get(name=settings.EVE_ONLINE_GROUP) in request.user.groups.all():
-        context['in_guild'] = True
-    else:
-        context['in_guild'] = False
-    context['characters'] = EveCharacter.objects.filter(user=request.user)
-    return context
-
+logger = logging.getLogger(__name__)
 """
 Helper Functions
 Used for the above web calls
 """
-def get_character_wallet(token):
+def get_raw_character_data(token):
+    logger.info("Starting EVE Online Audit for Character: %s" % token.character_name)
+    token.refresh()
     settings.ESI_SECURITY.update_token(token.populate())
-    op = settings.ESI_APP.op['get_characters_character_id_wallet_journal'](character_id=token.character_id)
-
-    try:
-        wallet = settings.ESI_CLIENT.request(op)
-    except:
-        print("WALLET FAILED")
-    else:
-        query = []
-        if wallet.data:
-            for data in wallet.data:
-                try:
-                    query.append(data.first_party_id)
-                    query.append(data.second_party_id)
-                except:
-                    pass
-
-            try:
-                op = settings.ESI_APP.op['post_universe_names'](ids=query)
-                resolved = settings.ESI_CLIENT.request(op)
-            except:
-                pass
-            else:
-                counter1 = 0
-                counter2 = 0
-                for value in resolved.data:
-                    counter1 += 1
-                    for data in wallet.data:
-                        counter2 += 2
-                        try:
-                            if data.first_party_id == value.id:
-                                # print("Setting data player1 to id:: " + str(data.first_party_id) + " - " + value.name)
-                                data.first_party_id = value.name
-                                # print(data)
-                            elif data.second_party_id == value.id:
-                                # print("Setting data player2 to id")
-                                data.second_party_id = value.name
-                        except:
-                            data['first_party_id'] = None
-                            data['second_party_id'] = None
-                print(counter1)
-                print(counter2)
-        else:
-            print("Wallet returned a value of none. ESI issue?")
-    return wallet.data
-
-def get_character_data(token):
-    settings.ESI_SECURITY.update_token(token.populate())
-    name_scopes = {'mails': 'get_characters_character_id_mail',
+    name_scopes = {
+                   'mails': 'get_characters_character_id_mail',
                    'skills': 'get_characters_character_id_skills',
                    'transactions': 'get_characters_character_id_wallet_transactions',
+                   'journal': 'get_characters_character_id_wallet_journal',
                    'contacts': 'get_characters_character_id_contacts',
-                   'bookmarks': 'get_characters_character_id_bookmarks',
                    'assets': 'get_characters_character_id_assets',
                    'orders': 'get_characters_character_id_orders',
                    'notifications': 'get_characters_character_id_notifications',
                    'contracts': 'get_characters_character_id_contracts',
-                   'wallet': 'get_characters_character_id_wallet'}
+                   'wallet': 'get_characters_character_id_wallet'
+                   }
     data = {}
     data['character_id'] = token.character_id
     for scope in name_scopes:
         op = settings.ESI_APP.op[name_scopes[scope]](character_id=token.character_id)
-        data[scope] = settings.ESI_CLIENT.request(op).data
+        response = settings.ESI_CLIENT.request(op)
+        if response.status == 200:
+            data[scope] = response.data
+        else:
+            print("Bad response: %s" % response.status)
 
-    data = clean_mail_results(data)
-    data = clean_contracts(data)
-    data = build_skill_tree(data)
-    if (len(data['contacts']) > 0):
+    if data['journal']:
+        data = clean_character_journal(data)
+    if data['mails']:
+        data = clean_mail_results(data)
+    if data['contracts']:
+        data = clean_contracts(data)
+    if data['contacts']:
         data = clean_contacts(data)
 
     return data
+
+def clean_character_journal(data):
+    query = []
+    journal = data['journal']
+    if journal:
+        for entry in journal:
+            query.append(entry.first_party_id)
+            query.append(entry.second_party_id)
+        op = settings.ESI_APP.op['post_universe_names'](ids=query)
+        response = settings.ESI_CLIENT.request(op)
+        print(response.status)
+        if response.status == 200:
+            counter1 = 0
+            counter2 = 0
+            for value in response.data:
+                counter1 += 1
+                for entry in journal:
+                    counter2 += 2
+                    try:
+                        if entry.first_party_id == value.id:
+                            entry.first_party_id = value.name
+                        elif entry.second_party_id == value.id:
+                            entry.second_party_id = value.name
+                    except:
+                        entry['first_party_id'] = None
+                        entry['second_party_id'] = None
+    return data
+
 
 def clean_mail_results(data):
     # Clean up mail player ids
@@ -249,25 +166,4 @@ def clean_contracts(data):
         time = str(contract['date_issued']).split("T")[0]
         contract['timestamp'] = time
 
-    return data
-
-def build_skill_tree(data):
-    with open('/home/auth/kryptedauth/app/games/eveonline/dumps/skills.txt') as skills:
-        skills_template = json.load(skills)
-        skills_tree = {}
-        player_skills = data['skills']['skills']
-
-        # Build the skill tree from Template
-        for category in skills_template:
-                skills_tree[category] = {}
-                print(skills_tree)
-                for skill in skills_template[category][1]:
-                    skills_tree[category][skill] = [skills_template[category][1][skill], "0"]
-        for skill in player_skills:
-            for category in skills_tree:
-                for skill_id in skills_tree[category]:
-                    if int(skill['skill_id']) == int(skill_id):
-                        skills_tree[category][skill_id][1] = skill['trained_skill_level']
-        data['skill_tree'] = skills_tree
-        data['sp'] = data['skills']['total_sp']
     return data

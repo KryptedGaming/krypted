@@ -120,10 +120,10 @@ class EveCharacter(models.Model):
     corporation = models.ForeignKey("EveCorporation", null=True, on_delete=models.SET_NULL)
 
     ## SSO Token
-    token = models.OneToOneField("Token", on_delete=models.CASCADE)
+    token = models.OneToOneField("Token", null=True, on_delete=models.CASCADE)
 
     ## CORE
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
 
     ## ALTERNATE CHARACTER
     main = models.ForeignKey("EveCharacter", blank=True, null=True, on_delete=models.CASCADE)

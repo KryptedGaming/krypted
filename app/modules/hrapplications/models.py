@@ -37,6 +37,8 @@ class Application(models.Model):
     class Meta:
         permissions = (
                 ('view_applications', u'Can view all applications'),
+                ('view_application', u'Can view individual applications'),
+                ('audit_eve_application', u'Can audit an EVE application'),
                 ('approve_application', u'Can approve an application'),
                 ('deny_application', u'Can deny an application')
         )

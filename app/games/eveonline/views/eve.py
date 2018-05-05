@@ -2,13 +2,14 @@ from django.shortcuts import render, redirect
 from games.eveonline.models import Token, EveCharacter
 from django.contrib.auth.models import User, Group
 from core.models import Guild
-from core.decorators import login_required, tutorial_complete
+from core.decorators import login_required, tutorial_complete, permission_required
 from core.views.base import get_global_context
 from django.conf import settings
 from django.contrib import messages
 from django.http import HttpResponse
 from django.db.models import Q
 from django.conf import settings
+from games.eveonline.modules.audit.views import get_raw_character_data
 from operator import itemgetter
 import json, logging, datetime
 
@@ -33,22 +34,20 @@ def apply(request):
         return redirect('eve-dashboard')
 
 @login_required
+@permission_required('audit_eve_application')
 def view_character(request, character):
-    if Group.objects.get(name=settings.HR_GROUP) not in request.user.groups.all() or Group.objects.get(name=settings.EVE_ONLINE_GROUP) not in request.user.groups.all():
-        messages.add_message(request, messages.ERROR, 'You do not have permission to view that. %s' % str(request.user.groups.all()))
-        return redirect('dashboard')
     context = get_eve_context(request)
     character = EveCharacter.objects.get(token__character_id=character)
     context['character'] = character
     token = character.token
+    token.refresh()
     try:
-        token.refresh()
         try:
-            data = get_character_data(token)
-        except:
-            messages.add_message(request, messages.ERROR, 'Failed at view_character. Error code 1.')
+            data = get_character_data(request, token)
+        except Exception as e:
+            messages.add_message(request, messages.ERROR, 'Failed at view_character. Error code 1. %s' % e)
         try:
-            context['wallet'] = get_character_wallet(token)
+            context['wallet'] = data['journal']
         except:
             context['wallet'] = None
             messages.add_message(request, messages.ERROR, 'Wallet failed to load.')
@@ -123,77 +122,68 @@ def get_eve_context(request):
 Helper Functions
 Used for the above web calls
 """
-def get_character_wallet(token):
+def get_character_data(request, token):
+    logger.info("Starting EVE Online Audit for Character: %s" % token.character_name)
+    token.refresh()
     settings.ESI_SECURITY.update_token(token.populate())
-    op = settings.ESI_APP.op['get_characters_character_id_wallet_journal'](character_id=token.character_id)
-
-    try:
-        wallet = settings.ESI_CLIENT.request(op)
-    except:
-        print("WALLET FAILED")
-    else:
-        query = []
-        if wallet.data:
-            for data in wallet.data:
-                try:
-                    query.append(data.first_party_id)
-                    query.append(data.second_party_id)
-                except:
-                    pass
-
-            try:
-                op = settings.ESI_APP.op['post_universe_names'](ids=query)
-                resolved = settings.ESI_CLIENT.request(op)
-            except:
-                pass
-            else:
-                counter1 = 0
-                counter2 = 0
-                for value in resolved.data:
-                    counter1 += 1
-                    for data in wallet.data:
-                        counter2 += 2
-                        try:
-                            if data.first_party_id == value.id:
-                                # print("Setting data player1 to id:: " + str(data.first_party_id) + " - " + value.name)
-                                data.first_party_id = value.name
-                                # print(data)
-                            elif data.second_party_id == value.id:
-                                # print("Setting data player2 to id")
-                                data.second_party_id = value.name
-                        except:
-                            data['first_party_id'] = None
-                            data['second_party_id'] = None
-                print(counter1)
-                print(counter2)
-        else:
-            print("Wallet returned a value of none. ESI issue?")
-    return wallet.data
-
-def get_character_data(token):
-    settings.ESI_SECURITY.update_token(token.populate())
-    name_scopes = {'mails': 'get_characters_character_id_mail',
+    name_scopes = {
+                   'mails': 'get_characters_character_id_mail',
                    'skills': 'get_characters_character_id_skills',
                    'transactions': 'get_characters_character_id_wallet_transactions',
+                   'journal': 'get_characters_character_id_wallet_journal',
                    'contacts': 'get_characters_character_id_contacts',
-                   'bookmarks': 'get_characters_character_id_bookmarks',
                    'assets': 'get_characters_character_id_assets',
                    'orders': 'get_characters_character_id_orders',
                    'notifications': 'get_characters_character_id_notifications',
                    'contracts': 'get_characters_character_id_contracts',
-                   'wallet': 'get_characters_character_id_wallet'}
+                   'wallet': 'get_characters_character_id_wallet'
+                   }
     data = {}
     data['character_id'] = token.character_id
     for scope in name_scopes:
         op = settings.ESI_APP.op[name_scopes[scope]](character_id=token.character_id)
-        data[scope] = settings.ESI_CLIENT.request(op).data
+        response = settings.ESI_CLIENT.request(op)
+        if response.status == 200:
+            data[scope] = response.data
+        else:
+            print("Bad response: %s" % response.status)
 
-    data = clean_mail_results(data)
-    data = clean_contracts(data)
-    data = build_skill_tree(data)
-    if (len(data['contacts']) > 0):
+    if data['journal']:
+        data = clean_character_journal(data)
+    if data['mails']:
+        data = clean_mail_results(data)
+    if data['contracts']:
+        data = clean_contracts(data)
+    if data['contacts']:
         data = clean_contacts(data)
 
+    return data
+
+def clean_character_journal(data):
+    query = []
+    journal = data['journal']
+    if journal:
+        for entry in journal:
+            query.append(entry.first_party_id)
+            query.append(entry.second_party_id)
+        op = settings.ESI_APP.op['post_universe_names'](ids=query)
+        response = settings.ESI_CLIENT.request(op)
+        print(response.status)
+        if response.status == 200:
+            counter1 = 0
+            counter2 = 0
+            for value in response.data:
+                counter1 += 1
+                for entry in journal:
+                    counter2 += 2
+                    try:
+                        if entry.first_party_id == value.id:
+                            entry.first_party_id = value.name
+                        elif entry.second_party_id == value.id:
+                            entry.second_party_id = value.name
+                    except:
+                        entry['first_party_id'] = None
+                        entry['second_party_id'] = None
     return data
 
 def clean_mail_results(data):

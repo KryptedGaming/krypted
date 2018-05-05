@@ -14,6 +14,17 @@ def login_required(function):
             return function(request, *args, **kw)
     return wrapper
 
+def permission_required(permission, next='dashboard'):
+    def decorator(function):
+        def _wrapped_view(request, *args, **kwargs):
+            if not request.user.has_perm(permission):
+                messages.add_message(request, messages.WARNING, 'You do not have permission to view that. Missing: %s' % permission)
+                return redirect(next)
+            else:
+                return function(request, *args, **kwargs)
+        return _wrapped_view
+    return decorator
+
 def tutorial_complete(function):
     def wrapper(request, *args, **kwargs):
         if Profile.objects.filter(user=request.user).count() == 0:

@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
-from django.contrib.auth.models import User, Group
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User, Group
 from django.contrib import messages
-from core.decorators import login_required
+from core.decorators import login_required, permission_required
 from core.models import Profile, Notification, Game, Event, Guild
 from core.views.base import get_global_context
 from modules.hrapplications.models import ApplicationTemplate, Application, Question, Response, Comment
@@ -20,17 +20,12 @@ def dashboard(request):
     return render(request, 'hrapplications/dashboard.html', context)
 
 @login_required
+@permission_required('view_application')
 def view_application(request, pk):
     context = get_global_context(request)
     application = Application.objects.get(pk=pk)
     responses = Response.objects.filter(application=application)
     logger.info(responses)
-    # Check if user has permission to admin applications
-    hrgroup, result = Group.objects.get_or_create(name=settings.HR_GROUP)
-    if application.template.guild.group in request.user.groups.all() and hrgroup in request.user.groups.all():
-        context['admin'] = True
-    else:
-        context['admin'] = False
     context['characters'] = EveCharacter.objects.filter(user=application.user)
     context['application'] = application
     context['responses'] = responses
@@ -39,13 +34,11 @@ def view_application(request, pk):
     return render(request, 'hrapplications/view_application.html', context)
 
 @login_required
+@permission_required('view_applications')
 def view_applications_all(request):
     context = get_global_context(request)
     context['applications'] = Application.objects.all()
     # Check if user has permission to admin applications
-    if not request.user.has_perm('hrapplications.view_applications'):
-        messages.add_message(request, messages.ERROR, 'You do not have permission to view that.')
-        return redirect('dashboard')
     return render(request, 'hrapplications/view_applications_all.html', context)
 
 @login_required
@@ -104,21 +97,21 @@ def add_application_comment(request, application):
     pass
 
 @login_required
+@permission_required('approve_application')
 def approve_application(request, application):
     application = Application.objects.get(pk=application)
-    if Group.objects.get(name=settings.HR_GROUP) in request.user.groups.all():
-        messages.add_message(request, messages.SUCCESS, 'Application accepted.')
-        application.status = "Approved"
-        application.save()
+    messages.add_message(request, messages.SUCCESS, 'Application accepted.')
+    application.status = "Approved"
+    application.save()
     return redirect('hr-view-applications-all')
 
 @login_required
+@permission_required('deny_application')
 def deny_application(request, application):
     application = Application.objects.get(pk=application)
-    if Group.objects.get(name=settings.HR_GROUP) in request.user.groups.all():
-        messages.add_message(request, messages.WARNING, 'Application rejected.')
-        application.status = "Rejected"
-        application.save()
+    messages.add_message(request, messages.WARNING, 'Application rejected.')
+    application.status = "Rejected"
+    application.save()
     return redirect('hr-view-applications-all')
 
 @login_required
