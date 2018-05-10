@@ -11,6 +11,11 @@ urlpatterns = [
     # url(r'^apply/$', eve.apply, name='eve-apply'),
 ]
 
+# ## MODULES
+# urlpatterns = [
+#     url(r'^audit/', include('games.eveonline.modules.audit.urls')),
+# ]
+
 ## SSO
 urlpatterns += [
     url(r'^add-sso-token/$', sso.add_token, name='add-sso-token'),

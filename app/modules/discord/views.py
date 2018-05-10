@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
-from requests_oauthlib import OAuth2Session
 from django.conf import settings
 from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
+from django.contrib import messages
+from requests_oauthlib import OAuth2Session
 from modules.discord.models import DiscordUser
 import logging
 import base64
@@ -37,7 +38,10 @@ def callback(request):
     print(json)
     me = requests.get('https://discordapp.com/api/users/@me', headers={'Authorization': "Bearer " + token}).json()
     join = requests.post(settings.DISCORD_INVITE_LINK, headers={'Authorization': "Bearer " + token}).json()
-
+    # Catch errors
+    if not me['email']:
+        messages.add_message(request, messages.ERROR, 'Could not find an email on your Discord profile. Please make sure your not signed in as a Guest Discord user.')
+        return redirect('dashboard')
     # Delete old token if exists
     if DiscordUser.objects.filter(id=me['id']).count() > 0:
         token = DiscordUser.objects.get(id=me['id'])

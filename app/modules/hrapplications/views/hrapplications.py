@@ -20,7 +20,7 @@ def dashboard(request):
     return render(request, 'hrapplications/dashboard.html', context)
 
 @login_required
-@permission_required('view_application')
+@permission_required('hrapplications.view_application')
 def view_application(request, pk):
     context = get_global_context(request)
     application = Application.objects.get(pk=pk)
@@ -34,7 +34,7 @@ def view_application(request, pk):
     return render(request, 'hrapplications/view_application.html', context)
 
 @login_required
-@permission_required('view_applications')
+@permission_required('hrapplications.view_applications')
 def view_applications_all(request):
     context = get_global_context(request)
     context['applications'] = Application.objects.all()
@@ -97,7 +97,7 @@ def add_application_comment(request, application):
     pass
 
 @login_required
-@permission_required('approve_application')
+@permission_required('hrapplications.approve_application')
 def approve_application(request, application):
     application = Application.objects.get(pk=application)
     messages.add_message(request, messages.SUCCESS, 'Application accepted.')
@@ -106,7 +106,7 @@ def approve_application(request, application):
     return redirect('hr-view-applications-all')
 
 @login_required
-@permission_required('deny_application')
+@permission_required('hrapplications.deny_application')
 def deny_application(request, application):
     application = Application.objects.get(pk=application)
     messages.add_message(request, messages.WARNING, 'Application rejected.')

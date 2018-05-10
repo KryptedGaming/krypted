@@ -34,7 +34,7 @@ def apply(request):
         return redirect('eve-dashboard')
 
 @login_required
-@permission_required('audit_eve_application')
+@permission_required('hrapplications.audit_eve_application')
 def view_character(request, character):
     context = get_eve_context(request)
     character = EveCharacter.objects.get(token__character_id=character)
@@ -45,7 +45,7 @@ def view_character(request, character):
         try:
             data = get_character_data(request, token)
         except Exception as e:
-            messages.add_message(request, messages.ERROR, 'Failed at view_character. Error code 1. %s' % e)
+            messages.add_message(request, messages.ERROR, 'Failed to load, refresh. If this persists, pass it on to Bear. Exception: %s' % e)
         try:
             context['wallet'] = data['journal']
         except:
@@ -73,11 +73,11 @@ def view_character(request, character):
             context['contracts'] = None
 
         try:
-            context['skill_tree'] = data['skill_tree']
+            # context['skill_tree'] = data['skill_tree']
             context['sp'] = '{:20,}'.format(int(data['sp']))
         except:
             messages.add_message(request, messages.ERROR, 'Skills failed to load.')
-            context['skill_tree'] = None
+            # context['skill_tree'] = None
             context['sp'] = None
     except Exception as e:
         messages.add_message(request, messages.ERROR, 'Could not load character. ' + str(e))
@@ -127,14 +127,10 @@ def get_character_data(request, token):
     token.refresh()
     settings.ESI_SECURITY.update_token(token.populate())
     name_scopes = {
-                   'mails': 'get_characters_character_id_mail',
                    'skills': 'get_characters_character_id_skills',
-                   'transactions': 'get_characters_character_id_wallet_transactions',
+                   'mails': 'get_characters_character_id_mail',
                    'journal': 'get_characters_character_id_wallet_journal',
                    'contacts': 'get_characters_character_id_contacts',
-                   'assets': 'get_characters_character_id_assets',
-                   'orders': 'get_characters_character_id_orders',
-                   'notifications': 'get_characters_character_id_notifications',
                    'contracts': 'get_characters_character_id_contracts',
                    'wallet': 'get_characters_character_id_wallet'
                    }
@@ -148,14 +144,27 @@ def get_character_data(request, token):
         else:
             print("Bad response: %s" % response.status)
 
+    data['sp'] = data['skills']['total_sp']
     if data['journal']:
-        data = clean_character_journal(data)
+        try:
+            data = clean_character_journal(data)
+        except Exception as e:
+            logger.info("[AUDIT] Journal failed to load with %s" % e)
     if data['mails']:
-        data = clean_mail_results(data)
+        try:
+            data = clean_mail_results(data)
+        except Exception as e:
+            logger.info("[AUDIT] Mails failed to load with %s" % e)
     if data['contracts']:
-        data = clean_contracts(data)
+        try:
+            data = clean_contracts(data)
+        except Exception as e:
+            logger.info("[AUDIT] Contracts failed to load with %s" % e)
     if data['contacts']:
-        data = clean_contacts(data)
+        try:
+            data = clean_contacts(data)
+        except Exception as e:
+            logger.info("[AUDIT] Contacts failed to load with %s" % e)
 
     return data
 
@@ -164,8 +173,10 @@ def clean_character_journal(data):
     journal = data['journal']
     if journal:
         for entry in journal:
-            query.append(entry.first_party_id)
-            query.append(entry.second_party_id)
+            if 'first_party_id' in entry:
+                query.append(entry.first_party_id)
+            if 'second_party_id' in entry:
+                query.append(entry.second_party_id)
         op = settings.ESI_APP.op['post_universe_names'](ids=query)
         response = settings.ESI_CLIENT.request(op)
         print(response.status)
@@ -272,23 +283,23 @@ def clean_contracts(data):
 
     return data
 
-def build_skill_tree(data):
-    with open('/home/auth/kryptedauth/app/games/eveonline/dumps/skills.txt') as skills:
-        skills_template = json.load(skills)
-        skills_tree = {}
-        player_skills = data['skills']['skills']
-
-        # Build the skill tree from Template
-        for category in skills_template:
-                skills_tree[category] = {}
-                print(skills_tree)
-                for skill in skills_template[category][1]:
-                    skills_tree[category][skill] = [skills_template[category][1][skill], "0"]
-        for skill in player_skills:
-            for category in skills_tree:
-                for skill_id in skills_tree[category]:
-                    if int(skill['skill_id']) == int(skill_id):
-                        skills_tree[category][skill_id][1] = skill['trained_skill_level']
-        data['skill_tree'] = skills_tree
-        data['sp'] = data['skills']['total_sp']
-    return data
+# def build_skill_tree(data):
+#     with open('/home/auth/kryptedauth/app/games/eveonline/dumps/skills.txt') as skills:
+#         skills_template = json.load(skills)
+#         skills_tree = {}
+#         player_skills = data['skills']['skills']
+#
+#         # Build the skill tree from Template
+#         for category in skills_template:
+#                 skills_tree[category] = {}
+#                 print(skills_tree)
+#                 for skill in skills_template[category][1]:
+#                     skills_tree[category][skill] = [skills_template[category][1][skill], "0"]
+#         for skill in player_skills:
+#             for category in skills_tree:
+#                 for skill_id in skills_tree[category]:
+#                     if int(skill['skill_id']) == int(skill_id):
+#                         skills_tree[category][skill_id][1] = skill['trained_skill_level']
+#         data['skill_tree'] = skills_tree
+#         data['sp'] = data['skills']['total_sp']
+#     return data

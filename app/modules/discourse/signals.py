@@ -31,7 +31,7 @@ def user_group_change(sender, **kwargs):
 def global_group_add(sender, **kwargs):
     def call():
         group = kwargs.get('instance')
-        logger.info("Group %s added. Adding to Discourse." % group.name)
+        logger.info("[SIGNAL] Group %s added. Adding to Discourse." % group.name)
         add_discourse_group.apply_async(args=[group.pk])
     transaction.on_commit(call)
 

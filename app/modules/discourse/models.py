@@ -30,9 +30,9 @@ class DiscourseUser(models.Model):
             raise RateLimitException
         elif response.status_code == 200:
             self.auth_user.groups.add(group.group)
-            logger.info("[MODEL] Added %s to %s" % (self.auth_user.username, group.group.name))
+            logger.info("[DISCOURSE][MODEL] Added %s to %s" % (self.auth_user.username, group.group.name))
         else:
-            logger.error("[MODEL] Failed to add %s to %s: %s" % (self.auth_user.username, group.group.name, response.json()))
+            logger.error("[DISCOURSE][MODEL] Failed to add %s to %s: %s" % (self.auth_user.username, group.group.name, response.json()))
 
     def remove_group(self, group):
         """
@@ -49,7 +49,7 @@ class DiscourseUser(models.Model):
             raise RateLimitException
             self.auth_user.groups.remove(group.group)
         elif response.status_code == 200:
-            logger.info("Remove %s from Discourse Group %s" % (self.auth_user.username, group.group.name))
+            logger.info("[DISCOURSE][MODEL] Remove %s from Discourse Group %s" % (self.auth_user.username, group.group.name))
 
 class DiscourseGroup(models.Model):
     id = models.CharField(max_length=255, primary_key=True)

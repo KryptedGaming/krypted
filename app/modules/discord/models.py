@@ -59,7 +59,7 @@ class DiscordUser(models.Model):
 
 class DiscordGroup(models.Model):
     id = models.CharField(max_length=255, primary_key=True)
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True, blank=True)
+    group = models.OneToOneField(Group, on_delete=models.CASCADE, null=True)
 
     def save(self, *args, **kwargs):
         """

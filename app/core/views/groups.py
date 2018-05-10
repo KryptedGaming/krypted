@@ -11,6 +11,17 @@ import logging
 logger = logging.getLogger(__name__)
 
 @login_required
+def hard_sync(request):
+    logger.info("%s has requested a hard sync." % request.user)
+    groups = request.user.groups.all()
+    for group in groups:
+        request.user.groups.remove(group)
+    for group in groups:
+        request.user.groups.add(group)
+    messages.add_message(request, messages.SUCCESS, 'Your groups have been synced.')
+    return redirect('dashboard')
+
+@login_required
 def group_apply(request, group):
     group = GroupEntity.objects.get(group__pk=group)
     group_request = GroupRequest(user=request.user, status="Pending", group=group)

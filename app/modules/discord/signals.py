@@ -11,13 +11,11 @@ logger = logging.getLogger(__name__)
 
 @receiver(m2m_changed, sender=User.groups.through)
 def user_group_change(sender, **kwargs):
-    logger.info("[SIGNAL] Groups changed for user. Updating Discord groups.")
     user = kwargs.get('instance')
     action = str(kwargs.get('action'))
     try:
         DiscordUser.objects.get(user=user)
         groups = []
-        logger.info("[SIGNAL] %s groups have changed with action %s" % (user.username, action))
         for pk in kwargs.get('pk_set'):
             groups.append(DiscordGroup.objects.get(group__pk=pk))
         if action == "post_remove":
