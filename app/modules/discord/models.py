@@ -11,7 +11,7 @@ class DiscordUser(models.Model):
     refresh_token = models.CharField(max_length=255)
     username = models.CharField(max_length=255)
     email = models.CharField(max_length=255)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     groups = models.ManyToManyField("DiscordGroup")
 
     def sanitize(self):
@@ -61,10 +61,13 @@ class DiscordGroup(models.Model):
     id = models.CharField(max_length=255, primary_key=True)
     group = models.OneToOneField(Group, on_delete=models.CASCADE, null=True)
 
+    def __str__(self):
+        return self.group.name
+
     def save(self, *args, **kwargs):
         """
         Expects a string role_name and a Group object.
-        Creates a Discord Group in the auth database, as well as the Discord server.
+        Creates a Discourse Group in the auth database, as well as the Discord server.
         """
         # group = kwargs.get('group')
         url = settings.DISCORD_API_ENDPOINT + "/guilds/" + settings.DISCORD_SERVER_ID + "/roles"
@@ -88,8 +91,8 @@ class DiscordGroup(models.Model):
 
     def delete(self, *args, **kwargs):
         """
-        Expects a DiscordGroup object.
-        Deletes the Discord Role from our database and the Discord server.
+        Expects a DiscourseGroup object.
+        Deletes the Discourse Role from our database and the Discord server.
         """
         url = settings.DISCORD_API_ENDPOINT + "/guilds/" + settings.DISCORD_SERVER_ID + "/roles/" + self.id
         response = requests.delete(url, headers={

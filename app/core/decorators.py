@@ -5,10 +5,15 @@ from django.contrib.auth.decorators import user_passes_test
 from modules.discord.models import DiscordUser
 from modules.discourse.models import DiscourseUser
 from core.models import Profile
+import logging
+
+logger = logging.getLogger(__name__)
 
 def login_required(function):
     def wrapper(request, *args, **kw):
         if not request.user.is_authenticated:
+            messages.add_message(request, messages.WARNING, 'Please log in first.')
+            logger.info("%s not authenticated, sending to login screen." % str(request.user))
             return redirect('login')
         else:
             return function(request, *args, **kw)
@@ -19,6 +24,7 @@ def permission_required(permission, next='dashboard'):
         def _wrapped_view(request, *args, **kwargs):
             if not request.user.has_perm(permission):
                 messages.add_message(request, messages.WARNING, 'You do not have permission to view that. Missing: %s' % permission)
+                logger.info("%s attempted illegal action. Missing %s, sending to %s" % (str(request.user), permission, next))
                 return redirect(next)
             else:
                 return function(request, *args, **kwargs)

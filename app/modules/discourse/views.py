@@ -58,7 +58,7 @@ def sso(request):
     query_string = urlparse.urlencode({'sso': return_payload, 'sig': h.hexdigest()})
 
     ## Redirect back to Discourse
-    DiscourseUser.objects.get_or_create(id=request.user.id, auth_user=request.user)
+    DiscourseUser.objects.get_or_create(auth_user=request.user)
 
     url = '%s/session/sso_login' % settings.DISCOURSE_BASE_URL
     return HttpResponseRedirect('%s?%s' % (url, query_string))

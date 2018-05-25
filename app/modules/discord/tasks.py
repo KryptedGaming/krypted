@@ -9,21 +9,24 @@ import logging, requests, json
 logger = logging.getLogger(__name__)
 
 @task()
-def sync_discord_user(user):
-    user = DiscordUser.objects.get(user__pk=user)
-    groups = Group.objects.all()
-    for group in groups:
-        discord_group = DiscordGroup.objects.get(group=group)
-        logger.info(str(user.groups.all()))
-        logger.info(str(user.user.groups.all()))
-        if group in user.user.groups.all() and discord_group not in user.groups.all():
-            logger.info("[TASK] User failed case ADD role check for %s" % (group.name))
-            add_user_to_discord_group.apply_async(args=[str(user.user.pk), str(discord_group.id)])
-        elif group not in user.user.groups.all() and discord_group in user.groups.all():
-            logger.info("[TASK] User failed case REMOVE role check for %s" % (group.name))
-            remove_user_from_discord_group.apply_async(args=[str(user.user.pk), str(discord_group.id)])
-        else:
-            logger.info("[TASK] User passed role check for %s" % (group.name))
+def sync_discord_user(user_id):
+    user = User.objects.get(id=user_id)
+    try:
+        discord_user = DiscordUser.objects.get(user=user)
+        call_counter = 0
+        for discord_group in DiscordGroup.objects.all():
+            if discord_group.group in user.groups.all() and discord_group not in discord_user.groups.all():
+                logger.info("%s has group %s, but was missing it. Syncing." % (user.username, discord_group.group.name))
+                add_user_to_discord_group.apply_async(args=[user.pk, discord_group.id], countdown=call_counter)
+                call_counter += 1
+            if discord_group.group not in user.groups.all() and discord_group in discord_user.groups.all():
+                logger.info("%s does not have group %s, but had it. Syncing." % (user.username, discord_group.group.name))
+                remove_user_from_discord_group.apply_async(args=[user.pk, discord_group.id], countdown=call_counter)
+                call_counter += 1
+    except Exception as e:
+        logger.info("Failed to sync Discord user. %s" % e)
+
+
 
 @task(bind=True, autoretry_for=(RateLimitException,), retry_backoff=True)
 def add_discord_group(self, group):

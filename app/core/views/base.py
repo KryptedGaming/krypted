@@ -54,7 +54,7 @@ def groups(request, **kwargs):
     if context['manage']:
         group_requests = []
         for group_request in GroupRequest.objects.filter(status="Pending"):
-            if not group_request.group.managers or request.user in group_request.group.managers.all():
+            if not group_request.group.managers.all() or request.user in group_request.group.managers.all():
                 permission = True
             else:
                 permission = False

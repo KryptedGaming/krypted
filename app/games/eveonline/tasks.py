@@ -5,7 +5,7 @@ from django.contrib.auth.models import User, Group
 from core.models import Profile, Guild
 from esipy import App, EsiClient, EsiSecurity
 from django.conf import settings
-import logging
+import logging, time
 
 logger = logging.getLogger(__name__)
 
@@ -24,19 +24,18 @@ def verify_sso_tokens():
 @task()
 def sync_users():
     logger.info("Bulk updating all users for EVE Online roles")
-    for user in User.objects.all():
+    call_count = 0
+    for user in User.objects.filter(groups__name=settings.EVE_ONLINE_GROUP):
         logger.info("Syncing EVE Online permissions for %s" % user.username)
         if Token.objects.filter(user=user).count() > 0:
-            sync_user.apply_async(args=[user.pk])
+            sync_user.apply_async(args=[user.pk], countdown=call_count*10)
+            call_count += 1
         else:
             try:
-                profile = Profile.objects.get(user=user)
-                profile.guilds.remove(Guild.objects.get(group__name=settings.EVE_ONLINE_GROUP))
+                Profile.objects.get(user=user).guilds.remove(Guild.objects.get(group__name=settings.EVE_ONLINE_GROUP))
             except:
                 pass
             user.groups.remove(Group.objects.get(name=settings.EVE_ONLINE_GROUP))
-            user.groups.remove(Group.objects.get(name=settings.MAIN_GROUP))
-            user.groups.remove(Group.objects.get(name=settings.MINOR_GROUP))
             user.groups.add(Group.objects.get(name=settings.GUEST_GROUP))
 
 
@@ -66,58 +65,49 @@ def sync_user(user):
     user = User.objects.get(pk=user)
     logger.info("Syncing user %s for EVE Online..." % user.username)
     profile = Profile.objects.get(user=user)
-    tokens = Token.objects.filter(user=user)
-    characters = EveCharacter.objects.filter(user=user)
-    group_clear = True
-    eve_online_group = Group.objects.get(name=settings.EVE_ONLINE_GROUP)
-
-    # Determine if member should have access
-    groups = []
-
-    for character in characters:
-        character.update_corporation()
-        logger.info("ALLIANCE MODE: %s" % settings.ALLIANCE_MODE)
-        if settings.ALLIANCE_MODE:
-            logger.info("ALLIANCE MODE ENABLED... Checking Alliance IDs.")
-            if str(character.corporation.alliance_id) in settings.MAIN_ENTITY_ID:
-                logger.info("Alliance mode, case 1.")
-                groups.append(Group.objects.get(name=settings.EVE_ONLINE_GROUP))
-                groups.append(Group.objects.get(name=settings.MAIN_GROUP))
-                group_clear = False
-            elif str(character.corporation.alliance_id) in settings.SECONDARY_ENTITY_IDS:
-                logger.info("Alliance mode, case 2.")
-                groups.append(Group.objects.get(name=settings.EVE_ONLINE_GROUP))
-                groups.append(Group.objects.get(name=settings.MINOR_GROUP))
-                group_clear = False
-            else:
-                logger.info("Alliance mode, case 3.")
-        else:
-            logger.info("CORPORATION MODE ENABLED... Checking Coporation IDs.")
-            if str(character.corporation.corporation_id) in settings.MAIN_ENTITY_ID:
-                logger.info("Corporation mode, case 1.")
-                groups.append(Group.objects.get(name=settings.EVE_ONLINE_GROUP))
-                groups.append(Group.objects.get(name=settings.MAIN_GROUP))
-                group_clear = False
-            elif str(character.corporation.corporation_id) in settings.SECONDARY_ENTITY_IDS:
-                logger.info("Corporation mode, case 2.")
-                groups.append(Group.objects.get(name=settings.EVE_ONLINE_GROUP))
-                groups.append(Group.objects.get(name=settings.MINOR_GROUP))
-                group_clear = False
-            else:
-                logger.info("Corporation mode, case 3.")
-
-
-    # Update user groups
-    if group_clear:
-        logger.info("Removing EVE Online role for %s" % user.username)
-        user.groups.remove(Group.objects.get(name=settings.EVE_ONLINE_GROUP))
-        user.groups.remove(Group.objects.get(name=settings.MAIN_GROUP))
-        user.groups.remove(Group.objects.get(name=settings.MINOR_GROUP))
+    if not EveCharacter.objects.filter(main=None, user=user):
+        if Group.objects.get(name=settings.EVE_ONLINE_MAIN_GROUP) in user.groups.all():
+            user.groups.remove(Group.objects.get(name=settings.EVE_ONLINE_MAIN_GROUP))
+        if Group.objects.get(name=settings.EVE_ONLINE_GROUP) in user.groups.all():
+            user.groups.remove(Group.objects.get(name=settings.EVE_ONLINE_GROUP))
         user.groups.add(Group.objects.get(name=settings.GUEST_GROUP))
-        profile.guilds.remove(Guild.objects.get(group=eve_online_group))
     else:
-        logger.info("Adding EVE Online role for %s" % user.username)
-        for group in groups:
-            user.groups.add(group)
-        user.groups.remove(Group.objects.get(name=settings.GUEST_GROUP))
-        profile.guilds.add(Guild.objects.get(group=eve_online_group))
+        main_character = EveCharacter.objects.get(main=None, user=user)
+        main_status = False
+        secondary_status = False
+        if settings.ALLIANCE_MODE:
+            if str(main_character.corporation.alliance_id) in settings.MAIN_ENTITY_ID:
+                main_status = True
+            elif str(main_character.corporation.alliance_id) in settings.SECONDARY_ENTITY_IDS:
+                secondary_status = True
+            else:
+                if Group.objects.get(name=settings.EVE_ONLINE_GROUP) in user.groups.all():
+                    user.groups.remove(Group.objects.get(name=settings.EVE_ONLINE_GROUP))
+                user.groups.add(Group.objects.get(name=settings.GUEST_GROUP))
+        else:
+            if str(main_character.corporation.corporation_id) in settings.MAIN_ENTITY_ID:
+                main_status = True
+            elif str(main_character.corporation.corporation_id) in settings.SECONDARY_ENTITY_IDS:
+                secondary_status = True
+            else:
+                if Group.objects.get(name=settings.EVE_ONLINE_GROUP) in user.groups.all():
+                    user.groups.remove(Group.objects.get(name=settings.EVE_ONLINE_GROUP))
+                user.groups.add(Group.objects.get(name=settings.GUEST_GROUP))
+
+        if main_status:
+                user.groups.add(Group.objects.get(name=settings.EVE_ONLINE_MAIN_GROUP))
+                time.sleep(1)
+                user.groups.add(Group.objects.get(name=settings.EVE_ONLINE_GROUP))
+                time.sleep(1)
+                user.groups.add(Group.objects.get(name=settings.RECRUIT_GROUP))
+                if Group.objects.get(name=settings.GUEST_GROUP) in user.groups.all():
+                    user.groups.remove(Group.objects.get(name=settings.GUEST_GROUP))
+                profile.guilds.add(Guild.objects.get(group__name=settings.EVE_ONLINE_GROUP))
+
+        if secondary_status:
+                user.groups.add(Group.objects.get(name=settings.EVE_ONLINE_GROUP))
+                time.sleep(1)
+                user.groups.add(Group.objects.get(name=settings.RECRUIT_GROUP))
+                if Group.objects.get(name=settings.GUEST_GROUP) in user.groups.all():
+                    user.groups.remove(Group.objects.get(name=settings.GUEST_GROUP))
+                profile.guilds.add(Guild.objects.get(group__name=settings.EVE_ONLINE_GROUP))

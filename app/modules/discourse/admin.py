@@ -10,7 +10,7 @@ class DiscourseGroupAdmin(admin.ModelAdmin):
 
 @admin.register(DiscourseUser)
 class DiscourseUserAdmin(admin.ModelAdmin):
-    list_display = ('id', 'get_user', 'all_groups')
+    list_display = ('id', 'get_user', 'all_groups', 'linked')
 
     def get_user(self, DiscourseUser):
         return DiscourseUser.auth_user.username

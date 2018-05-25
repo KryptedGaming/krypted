@@ -3,8 +3,7 @@ from django.urls import reverse
 from django.contrib.auth.models import User, Group
 from django.contrib import messages
 from core.models import GroupEntity, GroupRequest
-from core.decorators import login_required
-from django.contrib.auth.decorators import permission_required
+from core.decorators import login_required, permission_required
 from . import base
 import logging
 
@@ -33,10 +32,11 @@ def group_apply(request, group):
     return redirect('groups')
 
 @login_required
-@permission_required('manage_group_requests')
+@permission_required('core.manage_group_requests')
 def group_add_user(request, group, user):
     group = Group.objects.get(pk=group)
     user = User.objects.get(pk=user)
+    logger.info("Group_add_user called")
     group_request = GroupRequest.objects.get(user=user, status="Pending", group=GroupEntity.objects.get(group=group))
     group_request.status = "Accepted"
     user.groups.add(group)
@@ -45,15 +45,13 @@ def group_add_user(request, group, user):
     return redirect('groups')
 
 @login_required
+@permission_required('core.manage_group_requests')
 def group_remove_user(request, group, user):
     group = Group.objects.get(pk=group)
     user = User.objects.get(pk=user)
     logger.info("Group_remove_user called")
-    if request.user.has_perm('manage_group_requests') or user is request.user:
-        group_request = GroupRequest.objects.get(user=user, group=GroupEntity.objects.get(group=group))
-        user.groups.remove(group)
-        user.save()
-        group_request.delete()
-    else:
-        logger.info("User %s does not have permission for that." % request.user.username)
+    group_request = GroupRequest.objects.get(user=user, group=GroupEntity.objects.get(group=group))
+    user.groups.remove(group)
+    user.save()
+    group_request.delete()
     return redirect('groups')

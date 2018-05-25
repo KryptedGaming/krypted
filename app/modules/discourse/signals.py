@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 @receiver(m2m_changed, sender=User.groups.through)
 def user_group_change(sender, **kwargs):
     try:
-        user = DiscourseUser.objects.get(auth_user=kwargs.get('instance'))
+        user = kwargs.get('instance')
         action = str(kwargs.get('action'))
         groups = []
         for pk in kwargs.get('pk_set'):
@@ -24,7 +24,7 @@ def user_group_change(sender, **kwargs):
                 logger.info("[SIGNAL] Adding discourse user %s to discourse group %s" % (user, group))
                 add_user_to_discourse_group.apply_async(args=[user.id, group.id])
     except Exception as e:
-        logger.info("Failed to updated Discourse groups. %s" % e)
+        logger.info("Failed to update user groups. %s" % e)
 
 
 @receiver(post_save, sender=Group)

@@ -30,6 +30,8 @@ class RegisterForm(forms.Form):
 
         if User.objects.filter(username=input.get('username')).exists():
             self.add_error('username', "Username is taken.")
+        if " " in input.get('username'):
+            self.add_error('username', "No spaces allowed in usernames.")
         if password:
             if input.get('password') != input.get('vpassword'):
                 self.add_error('password', 'Passwords do not match.')
