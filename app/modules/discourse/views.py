@@ -3,11 +3,12 @@ import base64
 import hmac
 import hashlib
 from urllib import parse as urlparse
-
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest, HttpResponseRedirect
 from django.conf import settings
 from modules.discourse.models import DiscourseUser
+import logging
+logger = logging.getLogger(__name__)
 
 @login_required
 def index(request):
@@ -43,7 +44,6 @@ def sso(request):
         return HttpResponseBadRequest('Signature: %s || Signature: %s' % (this_signature, signature))
 
     ## Build the return payload
-
     qs = urlparse.parse_qs(decoded)
     params = {
         'nonce': qs['nonce'][0],
@@ -58,6 +58,7 @@ def sso(request):
     query_string = urlparse.urlencode({'sso': return_payload, 'sig': h.hexdigest()})
 
     ## Redirect back to Discourse
+    logger.info("Creating Discourse user for %s" % request.user.username)
     DiscourseUser.objects.get_or_create(auth_user=request.user)
 
     url = '%s/session/sso_login' % settings.DISCOURSE_BASE_URL

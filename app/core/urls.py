@@ -11,6 +11,7 @@ urlpatterns = [
     url(r'^games/(?P<tab>\w+)/$', base.games, name='games'),
     url(r'^profile/$', base.profile, name='profile'),
     url(r'^notifications/$', base.notifications, name='notifications'),
+    url(r'^members/$', base.view_members, name='view-members'),
 ]
 
 ## USER AUTHENTICATION

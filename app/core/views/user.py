@@ -22,12 +22,11 @@ def login_user(request):
                 except:
                     next = 'dashboard'
                     return redirect(next)
-
-            else:
-                messages.add_message(request, messages.ERROR, 'Failed to authenticate.')
-                return redirect('login')
         else:
-            messages.add_message(request, messages.ERROR, 'Failed to authenticate.')
+            if not User.objects.filter(username=request.POST['username']).exists():
+                messages.add_message(request, messages.ERROR, 'That user does not exist.')
+            else:
+                messages.add_message(request, messages.ERROR, 'Wrong username or password.')
             return redirect('login')
     else:
         form = LoginForm()

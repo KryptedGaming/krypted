@@ -15,6 +15,20 @@ class DiscourseUser(models.Model):
     def __str__(self):
         return self.auth_user.username
 
+    def save(self, *args, **kwargs):
+        url = settings.DISCOURSE_BASE_URL + "/users/" + self.auth_user.username.replace(" ", "_") + ".json"
+        data = {
+            'api_key': settings.DISCOURSE_API_KEY,
+            'api_username': 'system',
+        }
+        response = requests.get(url=url, data=data)
+        if response.status_code == 429:
+            raise RateLimitException
+        if response.status_code == 200:
+            self.id = response.json()['user']['id']
+            self.linked = True
+            super(DiscourseUser, self).save(*args, **kwargs)
+
     def add_group(self, group):
         """
         Expects a Discourse Group
@@ -44,23 +58,6 @@ class DiscourseUser(models.Model):
         """
         Expects a Discourse Group
         """
-        # Get Discourse User ID
-        if not self.linked:
-            logger.info("[DISCOURSE][MODEL] Updating ID for %s" % self.auth_user.username)
-            url = settings.DISCOURSE_BASE_URL + "/users/" + self.auth_user.username.replace(" ", "_") + ".json"
-            data = {
-                'api_key': settings.DISCOURSE_API_KEY,
-                'api_username': 'system',
-            }
-            response = requests.get(url=url, data=data)
-            if response.status_code == 429:
-                raise RateLimitException
-            if response.status_code == 200:
-                self.id = response.json()['user']['id']
-                self.linked = True
-                self.save()
-
-
         # Remove the Group
         url = settings.DISCOURSE_BASE_URL + "/groups/" + group.id + "/members.json"
         data = {

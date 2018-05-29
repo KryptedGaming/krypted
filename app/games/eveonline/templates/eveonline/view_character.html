@@ -1,4 +1,5 @@
 {% extends "eveonline/base.html" %}
+{% load staticfiles %}
 {% load eve_filters %}
 {% block brand %}
   <h1>
@@ -7,9 +8,14 @@
   </h1>
 {% endblock %}
 
+{% block includes %}
+<link rel="stylesheet" href="{% static 'global/ui/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
+{% endblock %}
+
 {% block content %}
 <div class="box">
   <div class="box-body">
+    <!-- TOP PANE -->
     <div class="row">
       <div class="col-sm-4 border-right">
         <img style="padding-right: 20px;" class="img-rounded pull-left" src="{{character.character_portrait}}"></img>
@@ -25,36 +31,15 @@
       </div>
     </div>
     <hr>
+    <!-- AUDIT PANE -->
     <div class="well">
         <ul class="nav nav-tabs">
           <li><a href="#contracts" data-toggle="tab">Contracts</a></li>
           <li><a href="#contacts" data-toggle="tab">Contacts</a></li>
           <li><a href="#journal" data-toggle="tab">Journal</a></li>
           <li><a href="#mail" data-toggle="tab">Mail</a></li>
-
         </ul>
-        <div id="myTabContent" class="tab-content">
-          <div class="tab-pane active in" id="skills">
-              {% for category, skill_data in skill_tree.items %}
-              <div class="panel-group">
-                  <div class="panel panel-default">
-                    <div class="panel-heading">
-                      <h4 class="panel-title">
-                        <a data-toggle="collapse" href="#{{ category|cut:" " }}">{{category}}</a>
-                      </h4>
-                    </div>
-                    <div id="{{ category|cut:" " }}" class="panel-collapse collapse">
-                        <div class="container">
-                            <br>
-                          {% for skill_id, skill in skill_data.items %}
-                          <p>{{skill.0}} : {{skill.1}}</p><br>
-                          {% endfor %}
-                        </div>
-                    </div>
-                  </div>
-              </div>
-              {% endfor %}
-          </div>
+        <div class="tab-content">
           <div class="tab-pane fade" id="contracts">
               <table class="table table-striped">
                 <thead>
@@ -159,7 +144,7 @@
                           <a href="{{mail.from|eveWhoConverter}}">{{mail.from}}</a>
                       </td>
                       <td>
-                          {% for recipient in mail.recipients %} <a href="{{recipient.recipient_url}}">{{recipient.recipient_id}}</a>{% endfor %}
+                          {% for recipient in mail.recipients %} <a href="">{{recipient.recipient_id}}</a>{% endfor %}
                       </td>
                       <td>
                           {{mail.subject}}
@@ -176,21 +161,26 @@
                 {% endfor %}
                 </tbody>
               </table>
-              {% if wallet == None %}
-              <h3 class="text-center">Wallet failed to load</h3>
-              {% endif %}
           </div>
-          <div class="tab-pane fade" id="transactions">
-              Not implemented.
-          </div>
-      </div>
+        </div>
     </div>
   </div>
 </div>
-{% for mail in mails %}
-<div class="modal fade col-md-12" id="selectModal{{mail.mail_id}}" data-backdrop="false">
-  {% include "eveonline/mail_modal.html" %}
-</div>
-</div>
-{% endfor %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(function () {
+    $('table').DataTable({
+      'paging'      : false,
+      'lengthChange': false,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : false
+    })
+ })
+</script>
+<script src="{% static 'global/ui/bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'global/ui/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
 {% endblock %}

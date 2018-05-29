@@ -25,7 +25,6 @@ def view_application(request, pk):
     context = get_global_context(request)
     application = Application.objects.get(pk=pk)
     responses = Response.objects.filter(application=application)
-    logger.info(responses)
     context['characters'] = EveCharacter.objects.filter(user=application.user)
     context['application'] = application
     context['responses'] = responses
@@ -48,7 +47,6 @@ def create_application(request, slug):
     if request.POST:
         if Application.objects.filter(user=request.user, template__name=slug).exists():
             return redirect('hr-view-applications')
-        logger.info(str(request.POST))
         application = Application(
                 template=ApplicationTemplate.objects.get(guild=Guild.objects.get(slug=slug)),
                 user = request.user,

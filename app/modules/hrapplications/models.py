@@ -57,7 +57,8 @@ class Question(models.Model):
 
 class Response(models.Model):
     question = models.ForeignKey("Question", on_delete=models.CASCADE, blank=True, null=True)
-    response = models.CharField(max_length=1200, blank=True, null=True)
+    response = models.TextField(blank=True, null=True)
+    # response = models.CharField(max_length=1200, blank=True, null=True)
     application = models.ForeignKey("Application", on_delete=models.CASCADE, related_name="response_applciation")
 
 class Comment(models.Model):

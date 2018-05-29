@@ -1,17 +1,22 @@
+# DJANGO IMPORTS
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
-from core.forms import LoginForm, RegisterForm, ProfileForm
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.contrib.auth import authenticate, login
 from django.conf import settings
+# LOCAL IMPORTS
+from core.forms import LoginForm, RegisterForm, ProfileForm
 from core.decorators import login_required, tutorial_complete
 from core.models import Profile, Notification, Game, Event, Guild, GroupEntity, GroupRequest
-from core.utils import *
+from core.utils import get_main_eve_character
+# MODULE IMPORTS
 from modules.slack.models import SlackUser
 from modules.discord.models import DiscordUser
 from modules.discourse.models import DiscourseUser
+# GAME IMPORTS
+from games.eveonline.models import EveCharacter
+# OTHER IMPORTS
 import logging
-
 logger = logging.getLogger(__name__)
 
 ## BASE
@@ -178,6 +183,21 @@ def get_global_context(request):
     }
 
     return context
+
+def view_members(request):
+    context = get_global_context(request)
+    members = {}
+    for user in User.objects.all():
+        members[user.username] = {}
+        members[user.username]['discourse'] = DiscourseUser.objects.filter(auth_user=user).exists()
+        members[user.username]['discord'] = DiscordUser.objects.filter(user=user).exists()
+        if members[user.username]['discord']:
+            members[user.username]['discord_user'] = DiscordUser.objects.get(user=user).username
+        members[user.username]['eve'] = Group.objects.get(name=settings.EVE_ONLINE_GROUP) in user.groups.all()
+        members[user.username]['eve_character'] = get_main_eve_character(user)
+        members[user.username]['wow'] = Group.objects.get(name=settings.WORLD_OF_WARCRAFT_GROUP) in user.groups.all()
+    context['members'] = members
+    return render(request, 'base/members.html', context=context)
 
 def error_500(request):
     return render(request, 'global/500.html', context={})

@@ -142,7 +142,7 @@ def get_character_data(request, token):
         if response.status == 200:
             data[scope] = response.data
         else:
-            print("Bad response: %s" % response.status)
+            logger.info("Bad response: %s" % response.status)
 
     data['sp'] = data['skills']['total_sp']
     if data['journal']:
@@ -179,7 +179,6 @@ def clean_character_journal(data):
                 query.append(entry.second_party_id)
         op = settings.ESI_APP.op['post_universe_names'](ids=query)
         response = settings.ESI_CLIENT.request(op)
-        print(response.status)
         if response.status == 200:
             counter1 = 0
             counter2 = 0
@@ -201,19 +200,21 @@ def clean_mail_results(data):
     # Clean up mail player ids
     character_ids = set()
     for mail in data['mails']:
-        character_ids.add(int(mail['from']))
+        if int(mail['from']) < 145000000 or mail['from'] > 146000000:
+            character_ids.add(mail['from'])
         for recipient in mail['recipients']:
             if recipient['recipient_type'] != "mailing_list":
                 character_ids.add(recipient['recipient_id'])
     character_ids = list(character_ids)
+
     op = settings.ESI_APP.op['post_universe_names'](ids=character_ids)
     character_ids = settings.ESI_CLIENT.request(op).data
     for character in character_ids:
         for mail in data['mails']:
-            if mail['from'] == character['id']:
+            if str(mail['from']) == str(character['id']):
                 mail['from'] = character['name']
             for recipient in mail['recipients']:
-                if recipient['recipient_id'] == character['id']:
+                if str(recipient['recipient_id']) == str(character['id']):
                     recipient['recipient_id'] = character['name']
     # Clean up mail dates
     for mail in data['mails']:
@@ -231,12 +232,14 @@ def clean_mail_results(data):
                 recipient['recipient_url'] = "https://evewho.com/alli/" + recipient['recipient_id'].replace(" ", "+")
             else:
                 recipient['recipient_url'] = ""
-        # mail['recipients'] = ",".join(map(str,character_ids))
     # Add mail data
     for mail in data['mails']:
         op = settings.ESI_APP.op['get_characters_character_id_mail_mail_id'](character_id=data['character_id'], mail_id=mail['mail_id'])
         mail_body = settings.ESI_CLIENT.request(op).data
-        mail['body'] = mail_body['body']
+        if 'body' in mail_body:
+            mail['body'] = mail_body['body']
+        else:
+            mail['body'] = "UNABLE TO PULL BODY."
     return data
 
 def clean_contacts(data):
@@ -269,7 +272,6 @@ def clean_contracts(data):
             character_ids.append(contract['acceptor_id'])
     op = settings.ESI_APP.op['post_universe_names'](ids=character_ids)
     character_ids = settings.ESI_CLIENT.request(op).data
-    print(character_ids)
     for character in character_ids:
         for contract in data['contracts']:
             if contract['issuer_id'] == character.id:

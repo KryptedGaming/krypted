@@ -1,14 +1,17 @@
 {% extends "hrapplications/base.html" %}
 {% load staticfiles %}
+
 {% block brand %}
   <h1>
     View Applications
     <small>All applications to the community</small>
   </h1>
 {% endblock %}
+
 {% block includes %}
 <link rel="stylesheet" href="{% static 'global/ui/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
 {% endblock %}
+
 {% block content %}
 <div class="nav-tabs-custom">
   <ul class="nav nav-tabs">

@@ -13,6 +13,7 @@ def cleanTypes(string):
 
 @register.filter(name='eveWhoConverter')
 def eveWhoConverter(string):
+    string = str(string)
     string = string.replace(' ', '+')
     url = "https://evewho.com/pilot/" + string
     return url
