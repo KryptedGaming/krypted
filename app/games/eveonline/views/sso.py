@@ -4,7 +4,7 @@ from django.conf import settings
 from games.eveonline.models import Token, EveCharacter
 from django.contrib.auth.models import User
 from core.decorators import login_required
-from games.eveonline.tasks import sync_user
+from games.eveonline.tasks import sync_user, verify_sso_token
 
 import logging
 logger = logging.getLogger(__name__)
@@ -24,28 +24,18 @@ def remove_token(request, character):
 def refresh_token(request, character):
     eve_character = EveCharacter.objects.get(user=request.user, token__character_id=character)
     eve_character.token.refresh()
-    sync_user.apply_async(args=[request.user.pk])
+    verify_sso_token.apply_async(args=[eve_character.token.character_id])
     return redirect('eve-dashboard')
 
 def receive_token(request):
-    print("######## RECEIVE TOKEN ########")
     if request.user.is_authenticated:
         ## SSO PROCESS
-        print("Loading SSO settings...")
-        esi_app = settings.ESI_APP
-
-        esi_security = settings.ESI_SECURITY
-
-        esi_client = EsiClient(esi_security)
-
         code = request.GET.get('code', None)
-        esi_token = esi_security.auth(code)
-        esi_verified = esi_security.verify()
-        print("Settings loaded")
+        esi_token = settings.ESI_SECURITY.auth(code)
+        esi_verified = settings.ESI_SECURITY.verify()
 
         ## CHECK IF TOKEN OF SAME CHARACTER EXISTS
         if Token.objects.filter(character_name=esi_verified['CharacterName']).count() > 0:
-            print("DUPLICATE CHARACTER FOUND, DELETING")
             token = Token.objects.get(character_name=esi_verified['CharacterName'])
             token.delete()
 
@@ -54,7 +44,6 @@ def receive_token(request):
         logger.info(
                 "Creating token...\n" +
                 "Lengths: " + "R: " + str(len(str(esi_token['refresh_token']))))
-        print("CREATING TOKEN")
         token = Token(
                 character_id=esi_verified['CharacterID'],
                 character_owner_hash=esi_verified['CharacterOwnerHash'],
@@ -65,21 +54,16 @@ def receive_token(request):
                 user=request.user
                 )
         token.save()
-        print("TOKEN CREATED")
-        print(token)
 
         ## CREATE CHARACTER
-        print("CREATING CHARACTER")
-        esiclient = settings.ESI_CLIENT
-
-        op = esi_app.op['get_characters_character_id_portrait'](character_id=token.character_id)
-        portrait = esiclient.request(op)
-
+        op = settings.ESI_APP.op['get_characters_character_id_portrait'](character_id=token.character_id)
+        portrait = settings.ESI_CLIENT.request(op)
 
         try:
             eve_main_character = EveCharacter.objects.get(main=None, user=request.user)
         except:
             eve_main_character = None
+
         character = EveCharacter(
                 character_name=esi_verified['CharacterName'],
                 character_portrait=portrait.data['px64x64'].replace("http", "https"),
@@ -87,12 +71,10 @@ def receive_token(request):
                 token=token,
                 user=request.user
         )
+
         character.save()
         character.update_corporation()
         sync_user.apply_async(args=[request.user.pk])
-        print("CHARACTER CREATED")
-        print(character)
-
         return redirect('/eve')
     else:
         return redirect('login')

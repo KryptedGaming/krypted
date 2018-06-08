@@ -134,6 +134,7 @@ class EveCharacter(models.Model):
     def update_corporation(self):
         logger.info("Updating Corporation for %s" % self.character_name)
         if not self.corporation:
+            logger.info("Character %s does not have a corporation. Updating." % self.character_name)
             # Pull the character information
             self.token.refresh()
             esi_app = settings.ESI_APP
@@ -154,9 +155,17 @@ class EveCharacter(models.Model):
             op = settings.ESI_APP.op['get_characters_character_id'](character_id=self.token.character_id)
             character = settings.ESI_CLIENT.request(op)
             if self.corporation.corporation_id != character.data['corporation_id']:
-                self.corporation.corporation_id = None
-                self.save()
-                self.update_corporation()
+                logger.info("Character %s has changed corporations. Updating." % self.character_name)
+                settings.ESI_SECURITY.update_token(self.token.populate())
+                op = settings.ESI_APP.op['get_characters_character_id'](character_id=self.token.character_id)
+                character = settings.ESI_CLIENT.request(op)
+                if EveCorporation.objects.filter(corporation_id=character.data['corporation_id']).exists():
+                    self.corporation = EveCorporation.objects.get(corporation_id=character.data['corporation_id'])
+                    self.save()
+                else:
+                    EveCorporation(corporation_id=character.data['corporation_id']).save()
+                    self.corporation = EveCorporation.objects.get(corporation_id=character.data['corporation_id'])
+                    self.save()
 
     def get_absolute(self):
         """

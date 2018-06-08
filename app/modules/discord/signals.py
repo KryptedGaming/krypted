@@ -20,21 +20,21 @@ def user_group_change(sender, **kwargs):
             groups.append(DiscordGroup.objects.get(group__pk=pk))
         if action == "post_remove":
             for group in groups:
-                logger.info("[SIGNAL] Removing %s from Discord Group %s" % (user.username, group))
+                logger.info("[SIGNAL][DISCORD] Removing %s from Discord Group %s" % (user.username, group))
                 remove_user_from_discord_group.apply_async(args=[user.pk, group.id])
         elif action == "post_add":
             for group in groups:
-                logger.info("[SIGNAL] Adding %s to Discord Group %s" % (user.username, group))
+                logger.info("[SIGNAL][DISCORD] Adding %s to Discord Group %s" % (user.username, group))
                 add_user_to_discord_group.apply_async(args=[user.pk, group.id])
     except Exception as e:
-        logger.info("[SIGNAL] Failed to updated Discord groups. %s" % e)
+        logger.info("[SIGNAL][DISCORD] Failed to updated Discord groups. %s" % e)
 
 
 @receiver(post_save, sender=Group)
 def global_group_add(sender, **kwargs):
     def call():
         group = kwargs.get('instance')
-        logger.info("[SIGNAL] Group change. Adding discord group %s" % group.name)
+        logger.info("[SIGNAL][DISCORD] Group change. Adding discord group %s" % group.name)
         add_discord_group.apply_async(args=[group.pk])
     transaction.on_commit(call)
 
@@ -42,7 +42,7 @@ def global_group_add(sender, **kwargs):
 def global_group_remove(sender, **kwargs):
     try:
         group = DiscordGroup.objects.get(group=kwargs.get('instance'))
-        logger.info("[SIGNAL] Group change. Removing discord group %s" % group.group.name)
+        logger.info("[SIGNAL][DISCORD] Group change. Removing discord group %s" % group.group.name)
         remove_discord_group.apply_async(args=[group.group.pk])
     except Exception as e:
-        logger.info("[SIGNAL] Could not remove Discord role. Roles may be out of sync. %s" % e)
+        logger.info("[SIGNAL][DISCORD] Could not remove Discord role. Roles may be out of sync. %s" % e)

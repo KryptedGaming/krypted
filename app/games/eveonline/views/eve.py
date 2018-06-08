@@ -11,7 +11,7 @@ from django.db.models import Q
 from django.conf import settings
 from games.eveonline.modules.audit.views import get_raw_character_data
 from operator import itemgetter
-import json, logging, datetime
+import json, logging, datetime, time
 
 logger = logging.getLogger(__name__)
 
@@ -124,6 +124,7 @@ Used for the above web calls
 """
 def get_character_data(request, token):
     logger.info("Starting EVE Online Audit for Character: %s" % token.character_name)
+    start = time.time()
     token.refresh()
     settings.ESI_SECURITY.update_token(token.populate())
     name_scopes = {
@@ -142,30 +143,34 @@ def get_character_data(request, token):
         if response.status == 200:
             data[scope] = response.data
         else:
-            logger.info("Bad response: %s" % response.status)
+            logger.info("Bad response for %s: %s" % (scope, response.status))
+            try:
+                logger.info("Response: %s" % response.json())
+            except:
+                pass
 
     data['sp'] = data['skills']['total_sp']
-    if data['journal']:
+    if 'journal' in data:
         try:
             data = clean_character_journal(data)
         except Exception as e:
             logger.info("[AUDIT] Journal failed to load with %s" % e)
-    if data['mails']:
+    if 'mails' in data:
         try:
             data = clean_mail_results(data)
         except Exception as e:
             logger.info("[AUDIT] Mails failed to load with %s" % e)
-    if data['contracts']:
+    if 'contracts' in data:
         try:
             data = clean_contracts(data)
         except Exception as e:
             logger.info("[AUDIT] Contracts failed to load with %s" % e)
-    if data['contacts']:
+    if 'contacts' in data:
         try:
             data = clean_contacts(data)
         except Exception as e:
             logger.info("[AUDIT] Contacts failed to load with %s" % e)
-
+    logger.info("EVE Online audit for %s finished in %s seconds." % (token.character_name, str(time.time() - start)))
     return data
 
 def clean_character_journal(data):

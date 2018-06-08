@@ -26,3 +26,10 @@ def user_service_status(user):
     status['discord'] = groups == discord_groups
     status['discourse'] = groups == discourse_groups
     return status
+
+def hard_sync(user):
+    groups = user.groups.all()
+    for group in groups:
+        user.groups.remove(group)
+    for group in groups:
+        user.groups.add(group)

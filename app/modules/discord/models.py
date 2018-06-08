@@ -28,14 +28,18 @@ class DiscordUser(models.Model):
             'Content-Type': 'application/x-www-form-urlencoded',
             'Authorization': 'Bot ' + settings.DISCORD_BOT_TOKEN
         })
+        logger.info(url)
         if response.status_code == 429:
-            logger.warning("[MODEL] RATELIMIT to add ROLE [%s] to USER [%s]" % (role.group.name, self.user.username))
+            logger.warning("[MODEL][DISCORD] RATELIMIT to add ROLE [%s] to USER [%s]" % (role.group.name, self.user.username))
             raise RateLimitException
         elif response.status_code == 204:
-            logger.info("[MODEL] SUCCESS to add ROLE [%s] to USER [%s]" % (role.group.name, self.user.username))
+            logger.info("[MODEL][DISCORD] SUCCESS to add ROLE [%s] to USER [%s]" % (role.group.name, self.user.username))
             self.groups.add(role)
+        elif response.status_code == 10007:
+            logger.info("[MODEL][DISCORD] Discord user for %s does not exist. Deleting token." % (self.user.username))
+            self.delete()
         else:
-            logger.error("[MODEL] FAILURE to add ROEL [%s] to USER [%s]: %s" % (role.group.name, self.user.username, response.json()))
+            logger.error("[MODEL][DISCORD] FAILURE to add ROLE [%s] to USER [%s]: %s" % (role.group.name, self.user.username, response.json()))
 
 
     def remove_group(self, role):
@@ -49,13 +53,13 @@ class DiscordUser(models.Model):
             'Authorization': 'Bot ' + settings.DISCORD_BOT_TOKEN
         })
         if response.status_code == 429:
-            logger.warning("[MODEL] RATELIMIT to remove ROLE [%s] from USER [%s]" % (role.group.name, self.user.username))
+            logger.warning("[MODEL][DISCORD] RATELIMIT to remove ROLE [%s] from USER [%s]" % (role.group.name, self.user.username))
             raise RateLimitException
         elif response.status_code == 204:
-            logger.info("[MODEL] SUCCESS to remove ROLE [%s] from USER [%s]" % (role.group.name, self.user.username))
+            logger.info("[MODEL][DISCORD] SUCCESS to remove ROLE [%s] from USER [%s]" % (role.group.name, self.user.username))
             self.groups.remove(role)
         else:
-            logger.error("[MODEL] FAILURE to remove ROLE [%s] from USER [%s]: %s" % (role.group.name, self.user.username, response.json()))
+            logger.error("[MODEL][DISCORD] FAILURE to remove ROLE [%s] from USER [%s]: %s" % (role.group.name, self.user.username, response.json()))
 
 class DiscordGroup(models.Model):
     id = models.CharField(max_length=255, primary_key=True)
@@ -83,11 +87,11 @@ class DiscordGroup(models.Model):
         if response.status_code == 429:
             raise RateLimitException
         elif response.status_code == 200:
-            logger.info("[MODEL] Discord Group successfully added")
+            logger.info("[MODEL][DISCORD] Discord Group successfully added")
             self.id = response.json()['id']
             super(DiscordGroup, self).save(*args, **kwargs)
         else:
-            logger.error("[MODEL] Adding Disord role %s failed with %s : %s" % (group.name, response.status_code, response.json()))
+            logger.error("[MODEL][DISCORD] Adding Disord role %s failed with %s : %s" % (group.name, response.status_code, response.json()))
 
     def delete(self, *args, **kwargs):
         """
@@ -102,7 +106,7 @@ class DiscordGroup(models.Model):
         if response.status_code == 429:
             raise RateLimitException
         elif response.status_code == 204:
-            logger.info("[MODEL] Discord Group successfully removed")
+            logger.info("[MODEL][DISCORD] Discord Group successfully removed")
             super(DiscordGroup, self).delete(*args, **kwargs)
         else:
-            logger.error("[MODEL] Removing Disord role %s failed with %s" % (role.group.name, response.json()))
+            logger.error("[MODEL][DISCORD] Removing Disord role %s failed with %s" % (role.group.name, response.json()))

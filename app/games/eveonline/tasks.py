@@ -52,12 +52,14 @@ def verify_sso_token(character_id):
     logger.info("Syncing token for %s" % character.character_name)
     try:
         settings.ESI_SECURITY.refresh()
+        character.update_corporation()
+        sync_user.apply_async(args=[token.user.pk], countdown=10)
     except Exception as e:
-        logger.info("Token of %s expired for %s" % (character, token.user))
+        logger.info("Token of %s expired for %s. %s" % (character, token.user, e))
         character.character_corporation = "ERROR"
         character.character_alliance = "ERROR"
         character.save()
-        sync_user.apply_sync(args=[token.user.pk])
+        sync_user.apply_async(args=[token.user.pk])
 
 @task()
 def sync_user(user):

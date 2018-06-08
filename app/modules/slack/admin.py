@@ -3,14 +3,14 @@ from modules.slack.models import *
 
 @admin.register(SlackUser)
 class SlackUserAdmin(admin.ModelAdmin):
-    list_display = ('slack_id', 'get_user')
+    list_display = ('id', 'get_user')
 
     def get_user(self, SlackUser):
         return SlackUser.user.username
 
 @admin.register(SlackChannel)
 class SlackUserAdmin(admin.ModelAdmin):
-    list_display = ('slack_id', 'get_groups')
+    list_display = ('id', 'get_groups')
 
     def get_groups(self, SlackChannel):
         groups = []
