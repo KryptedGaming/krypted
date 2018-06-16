@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from core.models import Guild, Profile
 from games.eveonline.models import EveCharacter
+from modules.discord.models import DiscordUser
 
 # Create your models here.
 class ApplicationTemplate(models.Model):
@@ -34,6 +35,14 @@ class Application(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     processed_date = models.DateTimeField(blank=True, null=True)
 
+    def get_timezone(self):
+        return self.profile.timezone
+
+    def get_discord_username(self):
+        discord_user = DiscordUser.objects.get(user=self.user)
+        return discord_user.username
+
+
     class Meta:
         permissions = (
                 ('view_applications', u'Can view all applications'),
@@ -52,6 +61,7 @@ class Question(models.Model):
     help_text = models.CharField(max_length=254, blank=True, null=True)
     question_type = models.CharField(max_length=12, choices=question_choices, default="Blank")
     question_choices = models.CharField(max_length=254, blank=True, null=True)
+
     def __str__(self):
         return self.title
 

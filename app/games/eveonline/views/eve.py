@@ -25,15 +25,6 @@ def dashboard(request):
     return render(request, 'eveonline/dashboard.html', context)
 
 @login_required
-@tutorial_complete
-def apply(request):
-    if EveCharacter.objects.filter(user=request.user).exists():
-        return redirect('hr-create-application', slug='eve')
-    else:
-        messages.error(request, "You must add EVE characters before applying to this guild.")
-        return redirect('eve-dashboard')
-
-@login_required
 @permission_required('hrapplications.audit_eve_application')
 def view_character(request, character):
     context = get_eve_context(request)

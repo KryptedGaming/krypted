@@ -10,9 +10,12 @@ urlpatterns = [
 
 ## APPLICATIONS
 urlpatterns += [
-    url(r'^create/(?P<slug>\w+)/$', hrapplications.create_application, name='hr-create-application'),
-    url(r'^modify/(?P<slug>\w+)/$', hrapplications.modify_application, name='hr-modify-application'),
-    url(r'^delete/(?P<slug>\w+)/$', hrapplications.delete_application, name='hr-delete-application'),
+    # overrides
+    url(r'^add/eve/$', hrapplications.add_eve_application, name='hr-add-eve-application'),
+    # base
+    url(r'^add/(?P<slug>\w+)/$', hrapplications.add_application, name='hr-add-application'),
+    url(r'^change/(?P<id>\d+)/$', hrapplications.change_application, name='hr-change-application'),
+    url(r'^delete/(?P<id>\d+)/$', hrapplications.delete_application, name='hr-delete-application'),
     url(r'^view/(?P<pk>\w+)/$', hrapplications.view_application, name='hr-view-application'),
     url(r'^view/$', hrapplications.view_applications_all, name='hr-view-applications-all'),
     url(r'application/add-comment/$', hrapplications.add_application_comment, name='hr-add-application-comment'),

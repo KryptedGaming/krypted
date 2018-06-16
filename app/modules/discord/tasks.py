@@ -54,3 +54,22 @@ def remove_user_from_discord_group(self, user, group):
     group = DiscordGroup.objects.get(id=group)
     logger.info("[TASK][DISCORD] Removing %s from Discord Group: %s" % (discord_user.user.username, group.group.name))
     discord_user.remove_group(group)
+
+@task()
+def send_discord_message(channel_id, message):
+        url = settings.DISCORD_API_ENDPOINT + "/channels/" + str(channel_id) + "/messages"
+        # Set channel name
+        data=json.dumps({'content': message})
+        response = requests.post(url,
+            data=data,
+            headers={
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Bot ' + settings.DISCORD_BOT_TOKEN
+            }
+        )
+        if response.status_code == 429:
+            raise RateLimitException
+        elif response.status_code == 200:
+            pass
+        else:
+            logger.error("[DISCORD] Failed to send Discord message.")

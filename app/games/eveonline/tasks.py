@@ -91,10 +91,6 @@ def sync_user(user):
                 main_status = True
             elif str(main_character.corporation.corporation_id) in settings.SECONDARY_ENTITY_IDS:
                 secondary_status = True
-            else:
-                if Group.objects.get(name=settings.EVE_ONLINE_GROUP) in user.groups.all():
-                    user.groups.remove(Group.objects.get(name=settings.EVE_ONLINE_GROUP))
-                user.groups.add(Group.objects.get(name=settings.GUEST_GROUP))
 
         if main_status:
                 user.groups.add(Group.objects.get(name=settings.EVE_ONLINE_MAIN_GROUP))
@@ -113,3 +109,10 @@ def sync_user(user):
                 if Group.objects.get(name=settings.GUEST_GROUP) in user.groups.all():
                     user.groups.remove(Group.objects.get(name=settings.GUEST_GROUP))
                 profile.guilds.add(Guild.objects.get(group__name=settings.EVE_ONLINE_GROUP))
+
+        if not main_status and not secondary_status:
+            eve_groups = Group.objects.filter(name__contains="EVE-")
+            for group in eve_groups:
+                time.sleep(1)
+                user.groups.remove(group)
+                profile.guilds.remove(Guild.objects.get(group__name=settings.EVE_ONLINE_GROUP))

@@ -7,6 +7,9 @@ from core.decorators import login_required, permission_required
 from core.models import Profile, Notification, Game, Event, Guild
 from core.views.base import get_global_context
 from modules.hrapplications.models import ApplicationTemplate, Application, Question, Response, Comment
+from modules.hrapplications.decorators import services_required, eve_characters_required
+from modules.discord.models import DiscordUser
+from modules.discord.tasks import send_discord_message
 from games.eveonline.models import *
 import logging
 logger = logging.getLogger(__name__)
@@ -41,12 +44,14 @@ def view_applications_all(request):
     return render(request, 'hrapplications/view_applications_all.html', context)
 
 @login_required
-def create_application(request, slug):
-    logger.info(str(request.user) + " has requested to create an application for: " + str(slug))
+@services_required
+@eve_characters_required
+def add_eve_application(request, slug='eve'):
     context = get_global_context(request)
     if request.POST:
-        if Application.objects.filter(user=request.user, template__name=slug).exists():
-            return redirect('hr-view-applications')
+        # if Application.objects.filter(user=request.user, template__guild__slug=slug).exists():
+        #     return redirect('hr-change-application', id=Application.objects.get(user=request.user, template__slug=slug).id)
+        notify_recruitment_channel(request.user, slug)
         application = Application(
                 template=ApplicationTemplate.objects.get(guild=Guild.objects.get(slug=slug)),
                 user = request.user,
@@ -63,27 +68,60 @@ def create_application(request, slug):
             response.save()
         return redirect('dashboard')
     else:
-        if slug == 'eve':
-            try:
-                template = ApplicationTemplate.objects.get(guild=Guild.objects.get(title="EVE Online"))
-                characters = EveCharacter.objects.filter(user=request.user)
-                context['characters'] = characters
-            except:
-                logger.info("FIXTURE ERROR: No EVE template for applications.")
-        elif slug == 'albion':
-            try:
-                template = ApplicationTemplate.objects.get(name='albion')
-            except:
-                logger.info("FIXTURE ERROR: No Albion template for applications.")
-        else:
-            logger.info("ERROR : User requested a slug with no supported template." + str(slug))
+        if Application.objects.filter(user=request.user, template__guild__slug=slug).exists():
+            return redirect('hr-change-application', id=Application.objects.get(user=request.user, template__guild__slug=slug).id)
+        try:
+            template = ApplicationTemplate.objects.get(guild=Guild.objects.get(title="EVE Online"))
+            characters = EveCharacter.objects.filter(user=request.user)
+            context['characters'] = characters
+        except:
+            logger.info("FIXTURE ERROR: No EVE template for applications.")
+
         context['template'] = template
         return render(request, 'hrapplications/application_base.html', context)
 
 @login_required
-def modify_application(request, slug):
+@services_required
+def add_application(request, slug):
     context = get_global_context(request)
-    return render(request, 'hrapplications/dashboard.html', context)
+    if request.POST:
+        notify_recruitment_channel(request.user, slug)
+        application = Application(
+                template=ApplicationTemplate.objects.get(guild=Guild.objects.get(slug=slug)),
+                user = request.user,
+                profile = Profile.objects.get(user=request.user),
+                status = "Pending",
+                reviewer = None,
+                )
+        application.save()
+
+        # Build responses
+        for question in application.template.questions.all():
+            response = Response(question=question, application=application)
+            response.response = request.POST.get(str(question.pk), "Response was not provided.")
+            response.save()
+        return redirect('dashboard')
+    else:
+        if Application.objects.filter(user=request.user, template__guild__slug=slug).exists():
+            return redirect('hr-change-application', id=Application.objects.get(user=request.user, template__guild__slug=slug).id)
+        template = ApplicationTemplate.objects.get(guild__slug=slug)
+        context['template'] = template
+    return render(request, 'hrapplications/application_base.html', context)
+
+@login_required
+def change_application(request, id):
+    context = get_global_context(request)
+    application = Application.objects.get(pk=id)
+    if request.POST:
+        for question in application.template.questions.all():
+            response = Response(question=question, application=application)
+            response.response = request.POST.get(str(question.pk), "Response was not provided.")
+            response.save()
+        return redirect('dashboard')
+    else:
+        context['template'] = application.template
+        context['application'] = application
+    return render(request, 'hrapplications/application_base.html', context)
 
 @login_required
 def delete_application(request, slug):
@@ -100,6 +138,7 @@ def approve_application(request, application):
     application = Application.objects.get(pk=application)
     messages.add_message(request, messages.SUCCESS, 'Application accepted.')
     application.status = "Approved"
+    notify_applicant_decision(application.user, slug=application.template.guild.slug, decision="ACCEPTED")
     application.save()
     return redirect('hr-view-applications-all')
 
@@ -109,6 +148,7 @@ def deny_application(request, application):
     application = Application.objects.get(pk=application)
     messages.add_message(request, messages.WARNING, 'Application rejected.')
     application.status = "Rejected"
+    notify_applicant_decision(application.user, slug=application.template.guild.slug, decision="REJECTED")
     application.save()
     return redirect('hr-view-applications-all')
 
@@ -118,5 +158,47 @@ def assign_application(request, application, user):
     user = User.objects.get(pk=user)
     application.reviewer = user
     application.status = "Processing"
+    notify_applicant_recruiter_assignment(application.user, application.template.guild.slug, user)
     application.save()
     return redirect('hr-view-applications-all')
+
+# HELPER FUNCTIONS
+def notify_recruitment_channel(user, slug):
+    try:
+        guild_applying_to = Guild.objects.get(slug=slug)
+        user_discord_user = DiscordUser.objects.get(user=user)
+        if slug == 'eve':
+            user_eve_character = EveCharacter.objects.get(user=user, main=None)
+            message = "@%s has created an application to join EVE Online. @here" % user_discord_user.username
+            channel = settings.DISCORD_CHANNEL_IDS['#hr-manager']
+            send_discord_message(channel, message)
+        else:
+            message = "@%s has created an application to join %s. @here" % (user_discord_user.username, guild_applying_to.title)
+            channel = settings.DISCORD_CHANNEL_IDS['#hr-manager']
+            send_discord_message(channel, message)
+
+    except Exception as e:
+        logger.error("Fatal error in notify_recruitment_channel(). %s" % e)
+
+def notify_applicant_decision(user, slug, decision):
+    try:
+        guild_applying_to = Guild.objects.get(slug=slug)
+        user_discord_user = DiscordUser.objects.get(user=user)
+        if slug == 'eve':
+            message = "<@%s>, your application to %s has been **%s**." % (user_discord_user.id, guild_applying_to.title, decision)
+            channel = settings.DISCORD_CHANNEL_IDS['#recruitment']
+        send_discord_message(channel, message)
+    except Exception as e:
+        logger.error("Fatal error in notify_applicant_decision(). %s" % e)
+
+def notify_applicant_recruiter_assignment(user, slug, recruiter):
+    try:
+        guild_applying_to = Guild.objects.get(slug=slug)
+        user_discord_user = DiscordUser.objects.get(user=user)
+        recruiter_discord_user = DiscordUser.objects.get(user=recruiter)
+        if slug == 'eve':
+            message = "<@%s>, your application to %s has been assigned to Recruiter <@%s>." % (user_discord_user.id, guild_applying_to.title, recruiter_discord_user.id)
+            channel = settings.DISCORD_CHANNEL_IDS['#recruitment']
+        send_discord_message(channel, message)
+    except Exception as e:
+        logger.error("Fatal error in notify_applicant_recruiter_assignment(). %s" % e)

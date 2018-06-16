@@ -48,7 +48,8 @@ class Notification(models.Model):
 class Profile(models.Model):
     timezone_choices = (
         ("EU", "EU"),
-        ("US", "US")
+        ("US", "US"),
+        ("AU", "AU")
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     biography = models.CharField(max_length=1500, blank=True, null=True)
