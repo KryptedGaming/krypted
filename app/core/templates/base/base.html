@@ -1,7 +1,7 @@
 {% extends 'global/global_base.html' %}
 {% block sidebar %}
   <!-- WELCOME -->
-  {% if profile.guilds.all.count < 1 %}
+  {% if profile.guilds.all.count < 1  or not profile %}
   <li class="header">WELCOME</li>
   <li><a href="{% url 'guilds' %}"><i class="fa fa-paperclip"></i> <span>Apply</span></a></li>
   {% endif %}
@@ -22,19 +22,6 @@
       {% endfor %}
     </ul>
   </li>
-
-  <!-- <li class="treeview">
-    <a href="#"><i class="fa fa-user"></i> <span>Profile</span>
-      <span class="pull-right-container">
-          <i class="fa fa-angle-left pull-right"></i>
-        </span>
-    </a>
-    <ul class="treeview-menu">
-      <li><a href="{% url 'groups' %}">Manage Groups</a></li>
-      <li><a href="{% url 'games' %}">Manage Games</a></li>
-      <li><a href="{% url 'guilds' %}">Manage Guilds</a></li>
-    </ul>
-  </li> -->
 
   <li class="treeview">
     <a href="#"><i class="fa fa-twitter"></i> <span>Social</span>

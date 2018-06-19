@@ -35,10 +35,11 @@ class DiscordUser(models.Model):
         elif response.status_code == 204:
             logger.info("[MODEL][DISCORD] SUCCESS to add ROLE [%s] to USER [%s]" % (role.group.name, self.user.username))
             self.groups.add(role)
-        elif response.status_code == 10007:
-            logger.info("[MODEL][DISCORD] Discord user for %s does not exist. Deleting token." % (self.user.username))
-            self.delete()
         else:
+            # Delete local token if user is gone
+            if 'code' in response.json():
+                if response.json()['code'] == 10007:
+                    self.delete()
             logger.error("[MODEL][DISCORD] FAILURE to add ROLE [%s] to USER [%s]: %s" % (role.group.name, self.user.username, response.json()))
 
 

@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login
 from django.conf import settings
 # LOCAL IMPORTS
 from core.forms import LoginForm, RegisterForm, ProfileForm
-from core.decorators import login_required, tutorial_complete
+from core.decorators import login_required, services_required
 from core.models import Profile, Notification, Game, Event, Guild, GroupEntity, GroupRequest
 from core.utils import get_main_eve_character
 # MODULE IMPORTS
@@ -26,7 +26,7 @@ def dashboard(request):
     return render(request, 'base/dashboard.html', context)
 
 @login_required
-@tutorial_complete
+@services_required
 def guilds(request):
     context = get_global_context(request)
     if not context['profile']:
@@ -34,7 +34,7 @@ def guilds(request):
     return render(request, 'base/guilds.html', context)
 
 @login_required
-@tutorial_complete
+@services_required
 def groups(request, **kwargs):
     """
     Page for managing group requests.
@@ -87,7 +87,7 @@ def groups(request, **kwargs):
     return render(request, 'base/groups.html', context)
 
 @login_required
-@tutorial_complete
+@services_required
 def games(request):
     context = get_global_context(request)
     if not context['profile']:

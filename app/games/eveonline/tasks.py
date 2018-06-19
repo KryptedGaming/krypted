@@ -31,14 +31,13 @@ def sync_users():
             sync_user.apply_async(args=[user.pk], countdown=call_count*10)
             call_count += 1
         else:
+            eve_guild = Guild.objects.get(group__name=settings.EVE_ONLINE_GROUP)
+            eve_group = Group.objects.get(name=settings.EVE_ONLINE_GROUP)
             try:
-                Profile.objects.get(user=user).guilds.remove(Guild.objects.get(group__name=settings.EVE_ONLINE_GROUP))
-            except:
-                pass
-            user.groups.remove(Group.objects.get(name=settings.EVE_ONLINE_GROUP))
-            user.groups.add(Group.objects.get(name=settings.GUEST_GROUP))
-
-
+                if eve_group in user.groups.all():
+                    sync_user.apply_async(args=[user.pk], countdown=call_count*10)
+            except Exception as e:
+                logger.error("Error when syncing EVE user. %s" % e)
 
 """
 MINOR TASKS
@@ -68,11 +67,7 @@ def sync_user(user):
     logger.info("Syncing user %s for EVE Online..." % user.username)
     profile = Profile.objects.get(user=user)
     if not EveCharacter.objects.filter(main=None, user=user):
-        if Group.objects.get(name=settings.EVE_ONLINE_MAIN_GROUP) in user.groups.all():
-            user.groups.remove(Group.objects.get(name=settings.EVE_ONLINE_MAIN_GROUP))
-        if Group.objects.get(name=settings.EVE_ONLINE_GROUP) in user.groups.all():
-            user.groups.remove(Group.objects.get(name=settings.EVE_ONLINE_GROUP))
-        user.groups.add(Group.objects.get(name=settings.GUEST_GROUP))
+        clear_eve_groups(user)
     else:
         main_character = EveCharacter.objects.get(main=None, user=user)
         main_status = False
@@ -85,7 +80,6 @@ def sync_user(user):
             else:
                 if Group.objects.get(name=settings.EVE_ONLINE_GROUP) in user.groups.all():
                     user.groups.remove(Group.objects.get(name=settings.EVE_ONLINE_GROUP))
-                user.groups.add(Group.objects.get(name=settings.GUEST_GROUP))
         else:
             if str(main_character.corporation.corporation_id) in settings.MAIN_ENTITY_ID:
                 main_status = True
@@ -98,21 +92,22 @@ def sync_user(user):
                 user.groups.add(Group.objects.get(name=settings.EVE_ONLINE_GROUP))
                 time.sleep(1)
                 user.groups.add(Group.objects.get(name=settings.RECRUIT_GROUP))
-                if Group.objects.get(name=settings.GUEST_GROUP) in user.groups.all():
-                    user.groups.remove(Group.objects.get(name=settings.GUEST_GROUP))
                 profile.guilds.add(Guild.objects.get(group__name=settings.EVE_ONLINE_GROUP))
 
         if secondary_status:
                 user.groups.add(Group.objects.get(name=settings.EVE_ONLINE_GROUP))
                 time.sleep(1)
                 user.groups.add(Group.objects.get(name=settings.RECRUIT_GROUP))
-                if Group.objects.get(name=settings.GUEST_GROUP) in user.groups.all():
-                    user.groups.remove(Group.objects.get(name=settings.GUEST_GROUP))
                 profile.guilds.add(Guild.objects.get(group__name=settings.EVE_ONLINE_GROUP))
 
         if not main_status and not secondary_status:
-            eve_groups = Group.objects.filter(name__contains="EVE-")
-            for group in eve_groups:
-                time.sleep(1)
-                user.groups.remove(group)
-                profile.guilds.remove(Guild.objects.get(group__name=settings.EVE_ONLINE_GROUP))
+            clear_eve_groups(user)
+
+def clear_eve_groups(user):
+    profile = Profile.objects.get(user=user)
+    eve_groups = Group.objects.filter(name__contains="EVE")
+    for group in eve_groups:
+        time.sleep(1)
+        if group in user.groups.all():
+            user.groups.remove(group)
+    profile.guilds.remove(Guild.objects.get(group__name=settings.EVE_ONLINE_GROUP))

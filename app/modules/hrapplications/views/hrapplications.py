@@ -184,9 +184,8 @@ def notify_applicant_decision(user, slug, decision):
     try:
         guild_applying_to = Guild.objects.get(slug=slug)
         user_discord_user = DiscordUser.objects.get(user=user)
-        if slug == 'eve':
-            message = "<@%s>, your application to %s has been **%s**." % (user_discord_user.id, guild_applying_to.title, decision)
-            channel = settings.DISCORD_CHANNEL_IDS['#recruitment']
+        channel = settings.DISCORD_CHANNEL_IDS['#recruitment']
+        message = "<@%s>, your application to %s has been **%s**." % (user_discord_user.id, guild_applying_to.title, decision)
         send_discord_message(channel, message)
     except Exception as e:
         logger.error("Fatal error in notify_applicant_decision(). %s" % e)
@@ -196,9 +195,8 @@ def notify_applicant_recruiter_assignment(user, slug, recruiter):
         guild_applying_to = Guild.objects.get(slug=slug)
         user_discord_user = DiscordUser.objects.get(user=user)
         recruiter_discord_user = DiscordUser.objects.get(user=recruiter)
-        if slug == 'eve':
-            message = "<@%s>, your application to %s has been assigned to Recruiter <@%s>." % (user_discord_user.id, guild_applying_to.title, recruiter_discord_user.id)
-            channel = settings.DISCORD_CHANNEL_IDS['#recruitment']
+        message = "<@%s>, your application to %s has been assigned to Recruiter <@%s>." % (user_discord_user.id, guild_applying_to.title, recruiter_discord_user.id)
+        channel = settings.DISCORD_CHANNEL_IDS['#recruitment']
         send_discord_message(channel, message)
     except Exception as e:
         logger.error("Fatal error in notify_applicant_recruiter_assignment(). %s" % e)

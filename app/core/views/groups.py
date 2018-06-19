@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.contrib.auth.models import User, Group
 from django.contrib import messages
 from core.models import GroupEntity, GroupRequest
-from core.decorators import login_required, permission_required
+from core.decorators import login_required, permission_required, services_required
 from . import base
 import logging
 
@@ -21,6 +21,7 @@ def hard_sync(request):
     return redirect('dashboard')
 
 @login_required
+@services_required
 def group_apply(request, group):
     group = GroupEntity.objects.get(group__pk=group)
     group_request = GroupRequest(user=request.user, status="Pending", group=group)

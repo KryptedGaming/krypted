@@ -53,3 +53,18 @@ def no_user_profile(function):
         except:
             return function(request, *args, **kw)
     return wrapper
+
+def services_required(function):
+    def wrapper(request, *args, **kw):
+        profile_exists = Profile.objects.filter(user=request.user).exists()
+        discord_user_exists = DiscordUser.objects.filter(user=request.user).exists()
+        discourse_user_exists = DiscourseUser.objects.filter(auth_user=request.user).exists()
+        if discord_user_exists and discourse_user_exists and profile_exists:
+            return function(request, *args, **kw)
+        elif not profile_exists:
+            messages.add_message(request, messages.ERROR, 'Please create a profile before accessing this area.')
+            return redirect('create-profile')
+        else:
+            messages.add_message(request, messages.ERROR, 'Please complete your services on this page before creating your application.')
+            return redirect('dashboard')
+    return wrapper

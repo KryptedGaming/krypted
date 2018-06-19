@@ -23,7 +23,7 @@ def sync_discourse_user(user_id):
                 remove_user_from_discourse_group.apply_async(args=[user.id, discourse_group.id], countdown=call_counter)
                 call_counter += 1
     except Exception as e:
-        logger.info("Failed to sync Discourse user. %s" % e)
+        logger.info("Failed to sync Discourse user for %s. %s" % (user.username, e))
 
 @task(bind=True, autoretry_for=(RateLimitException,), retry_backoff=True)
 def add_discourse_group(self, group):

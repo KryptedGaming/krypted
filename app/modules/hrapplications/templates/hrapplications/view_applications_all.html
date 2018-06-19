@@ -88,7 +88,7 @@
             {% endif %}
           </td>
           <td>{{application.template.name}}</td>
-          <td>{{application.user.username}}</span></td>
+          <td>@{{application.get_discord_username}} <i class="fa fa-globe" title="{{application.get_timezone}}"></i></td>
           <td>
             {% if application.reviewer %}
             {{application.reviewer}}
