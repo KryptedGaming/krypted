@@ -1,5 +1,6 @@
 from django.conf.urls import include, url
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
 from core.views import base, user, profile, events, groups
 
 ## BASE
@@ -41,6 +42,15 @@ urlpatterns += [
     url(r'^groups/adduser/group=(?P<group>\d+)/user=(?P<user>\d+)/$', groups.group_add_user, name='group-add-user'),
     url(r'^groups/removeuser/group=(?P<group>\d+)/user=(?P<user>\d+)/$', groups.group_remove_user, name='group-remove-user'),
     url(r'^groups/hard-sync/', groups.hard_sync, name='group-hard_sync')
+]
+
+## PASSWORD RESET
+urlpatterns += [
+    url(r'^password/reset$', auth_views.password_reset, name='password_reset'),
+    url(r'^password/reset/done/$', auth_views.password_reset_done, name='password_reset_done'),
+    url(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
+        auth_views.password_reset_confirm, name='password_reset_confirm'),
+    url(r'^reset/done/$', auth_views.password_reset_complete, name='password_reset_complete'),
 ]
 
 ## EVENTS

@@ -4,36 +4,39 @@ from core.forms import LoginForm, RegisterForm, ProfileForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.conf import settings
 from core.models import Profile, Notification, Game, Event
 from . import base
 ## USER AUTHENTICATION
 def login_user(request):
-    next = None
+    try:
+        next = request.GET['next']
+    except:
+        next = None
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
-            user = authenticate(username=request.POST['username'],
+            resolved_username = username_or_email_resolver(request.POST['username'])
+            user = authenticate(username=resolved_username,
                     password = request.POST['password'])
             if user is not None:
                 login(request, user)
-                try:
-                    next = request.POST['next']
+                if next:
+                    if "discourse" in next:
+                        return redirect(settings.DISCOURSE_BASE_URL)
                     return redirect(next)
-                except:
-                    next = 'dashboard'
-                    return redirect(next)
+                else:
+                    return redirect('dashboard')
         else:
-            if not User.objects.filter(username=request.POST['username']).exists():
-                messages.add_message(request, messages.ERROR, 'That user does not exist.')
+            username_invalid = not User.objects.filter(username=request.POST['username']).exists()
+            email_invalid = not User.objects.filter(email=request.POST['username']).exists()
+            if username_invalid and email_invalid:
+                messages.add_message(request, messages.ERROR, 'That user does not exist. %s' % request.POST['username'])
             else:
                 messages.add_message(request, messages.ERROR, 'Wrong username or password.')
             return redirect('login')
     else:
         form = LoginForm()
-        try:
-            next = request.GET['next']
-        except:
-            next = None
         return render(
                 request,
                 'accounts/login.html',
@@ -53,7 +56,6 @@ def register_user(request):
                     request.POST['password'],
                     )
             user.save()
-            print("Saved notification for user: " + user.username)
             return redirect('login')
     else:
         form = RegisterForm()
@@ -69,3 +71,10 @@ def register_user(request):
 def logout_user(request):
     logout(request)
     return redirect('login')
+
+## HELPERS
+def username_or_email_resolver(username):
+    if User.objects.filter(email=username).exists():
+        return User.objects.get(email=username).username
+    else:
+        return username

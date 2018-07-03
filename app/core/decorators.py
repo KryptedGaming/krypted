@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth import REDIRECT_FIELD_NAME
 from modules.discord.models import DiscordUser
 from modules.discourse.models import DiscourseUser
 from core.models import Profile
@@ -14,7 +15,7 @@ def login_required(function):
         if not request.user.is_authenticated:
             messages.add_message(request, messages.WARNING, 'Please log in first.')
             logger.info("%s not authenticated, sending to login screen." % str(request.user))
-            return redirect('login')
+            return redirect('/login/?next=' + request.path)
         else:
             return function(request, *args, **kw)
     return wrapper

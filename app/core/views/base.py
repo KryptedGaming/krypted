@@ -4,13 +4,15 @@ from django.urls import reverse
 from django.contrib.auth.models import User, Group
 from django.contrib.auth import authenticate, login
 from django.conf import settings
+from django.apps import apps
 # LOCAL IMPORTS
 from core.forms import LoginForm, RegisterForm, ProfileForm
 from core.decorators import login_required, services_required
 from core.models import Profile, Notification, Game, Event, Guild, GroupEntity, GroupRequest
 from core.utils import get_main_eve_character
 # MODULE IMPORTS
-from modules.slack.models import SlackUser
+if apps.is_installed('modules.slack'):
+    from modules.slack.models import SlackUser
 from modules.discord.models import DiscordUser
 from modules.discourse.models import DiscourseUser
 # GAME IMPORTS

@@ -1,93 +1,45 @@
-{% load staticfiles %}
-<head>
-    <!-- Bootstrap Core CSS -->
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+{% extends "accounts/authentication_base.html" %}
 
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-1.12.4.js" integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU=" crossorigin="anonymous"></script>
+{% block heading %}
+<div class="panel-title text-center">Please log in.</div>
+{% endblock %}
 
-    <!-- Bootstrap Core JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+{% block form_action %}
+{% if next %}
+<form action="/login/?next={{next}}" name="form" id="form" class="form-horizontal" enctype="multipart/form-data" method="POST">
+{% else %}
+<form name="form" id="form" class="form-horizontal" enctype="multipart/form-data" method="POST">
+{% endif %}
+{% endblock %}
 
-    <!-- Bootstrap Core JavaScript -->
-    <link href="{% static "accounts/css/accounts.css" %}" rel="stylesheet">
+{% block fields %}
+<div class="input-group">
+    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+    <input id="username" type="text" class="form-control" name="username" value="" placeholder="Username or Email">
+</div>
 
-    <!-- Bootstrap Core JavaScript -->
-    <script src="{% static "accounts/js/accounts.js" %}"></script>
+<div class="input-group">
+    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+    <input id="password" type="password" class="form-control" name="password" placeholder="Password">
+</div>
+{% endblock %}
 
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <!-- Tell the browser to be responsive to screen width -->
-    <title>Krypted Authentication - Player Integration Services</title>
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <meta name="description" content="The authentication service for Krypted Gaming. This service allows us to link in-game characters to user accounts, and syncronize groups across voice, text, and forums. It also tracks and utilizes character data.">
-    <meta http-equiv="content-type" content="text/html;charset=UTF-8">
-
-</head>
-
-
-<body>
-    <div class="container login">
-        {% if messages %}
-            {% for message in messages %}
-            <div class="alert alert-danger alert-dismissable">
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                {{message}}
-            </div>
-            {% endfor %}
-        {% endif %}
-        <div class="text-center">
-            <img style="margin: 0 auto; width: 20%;" src="https://kryptedgaming.com/wp-content/uploads/2018/02/Krypted-Gaming-Logo.png">
-        </div>
-
-        <div id="loginbox" class="mainbox col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3">
-            <div class="panel panel-default" >
-                <div class="panel-heading">
-                    <div class="panel-title text-center">Please log in.</div>
-                </div>
-
-                <div class="panel-body" >
-                    {% if next %}
-                    <form action="/login/?next={{next}}" name="form" id="form" class="form-horizontal" enctype="multipart/form-data" method="POST">
-                    {% else %}
-                    <form name="form" id="form" class="form-horizontal" enctype="multipart/form-data" method="POST">
-                    {% endif %}
-                        {% csrf_token %}
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                            <input id="username" type="text" class="form-control" name="username" value="" placeholder="Username">
-                        </div>
-
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                            <input id="password" type="password" class="form-control" name="password" placeholder="Password">
-                        </div>
-
-                        <div class="form-group">
-                            <!-- Button -->
-                            <div class="col-sm-12 controls login-btn">
-                                <button type="submit" href="#" class="btn btn-primary btn-log"><i class="glyphicon glyphicon-log-in"></i> Login</button>
-                            </div>
-                        </div>
-
-
-                            <div class="errors">
-                                {% for field in form %}
-                                {{field.errors}}
-                                {% endfor %}
-                            </div>
-
-
-
-                    </form>
-
-                    <div class="register-help">
-                        <a href="{% url 'register' %}">Don't have an account?</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+{% block submit %}
+<div class="form-group">
+    <div class="col-sm-12 controls login-btn">
+        <button type="submit" href="#" class="btn btn-primary btn-log"> Submit</button>
     </div>
+</div>
+{% endblock %}
 
-    <div id="particles"></div>
 
-</body>
+{% block endform %}
+</form>
+{% endblock %}
+
+{% block box_footer %}
+<div class="register-help">
+    <a href="{% url 'register' %}">Don't have an account?</p>
+    <a href="{% url 'password_reset' %}">Forgot your password?</p>
+</div>
+{% endblock %}

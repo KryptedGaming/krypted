@@ -51,21 +51,23 @@ class Profile(models.Model):
         ("US", "US"),
         ("AU", "AU")
     )
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    # Profile Information
     biography = models.CharField(max_length=1500, blank=True, null=True)
     timezone = models.CharField(choices=timezone_choices, max_length=2, blank=True, null=True)
+    active = models.BooleanField(default=True)
+
+    # Community Information
     points = models.IntegerField(default=0)
     games = models.ManyToManyField('Game', related_name='games')
     guilds = models.ManyToManyField('Guild', related_name='guilds')
-    active = models.BooleanField(default=True)
 
     # Social
     twitter = models.URLField(max_length=32, blank=True, null=True)
     steam = models.URLField(max_length=255, blank=True, null=True)
     blizzard = models.CharField(max_length=32, blank=True, null=True)
     discord = models.CharField(max_length=32, blank=True, null=True)
-
-    # Gaming
 
     def __str__(self):
         return self.user.username
@@ -111,4 +113,4 @@ class GroupEntity(models.Model):
     description = models.CharField(max_length=512, blank=True)
     hidden = models.BooleanField(default=True, help_text="Hidden from the apply menu.")
     public = models.BooleanField(default=False, help_text="Automatically join upon request.")
-    managers = models.ManyToManyField(User, blank=True, null=True, help_text="Users who can accept/decline requests.")
+    managers = models.ManyToManyField(User, blank=True, help_text="Users who can accept/decline requests.")

@@ -1,78 +1,60 @@
-{% load staticfiles %}
-<head>
-    <!-- Bootstrap Core CSS -->
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+{% extends "accounts/authentication_base.html" %}
 
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-1.12.4.js" integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU=" crossorigin="anonymous"></script>
+{% block heading %}
+<div class="panel-title text-center">Please register.</div>
+{% endblock %}
 
-    <!-- Bootstrap Core JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+{% block form_action %}
+<form name="form" id="form" class="form-horizontal" enctype="multipart/form-data" method="POST">
+{% endblock %}
 
-    <!-- Custom CSS  -->
-    <link href="{% static "accounts/css/accounts.css" %}" rel="stylesheet">
+{% block fields %}
+<div class="input-group">
+    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+    <input id="username" type="text" class="form-control" name="username" value="" maxlength="64" placeholder="Username" required>
+</div>
 
-    <!-- Custom JavaScript -->
-    <script src="{% static "accounts/js/accounts.js" %}"></script>
+<div class="input-group">
+    <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+    <input id="email" type="email" class="form-control" name="email" value="" maxlength="64" placeholder="Email" required>
+</div>
 
-</head>
+<div class="input-group">
+    <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+    <select id="timezone" name="timezone" class="form-control" required>
+      <option value="" disabled selected>Select Active Timezone</option>
+      <option value="US">US (United States)</option>
+      <option value="EU">EU (European)</option>
+      <option value="AU">AU (Australian)</option>
+    </select>
+</div>
 
+<div class="input-group">
+    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+    <input id="password" type="password" class="form-control" name="password" placeholder="Password" required>
+</div>
 
-<body>
+<div class="input-group">
+    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+    <input id="vpassword" type="password" class="form-control" name="vpassword" placeholder="Repeat Password" required>
+</div>
+{% endblock %}
 
-    <<div class="container login">
-
-        <div class="text-center">
-            <img style="margin: 0 auto; width: 20%;" src="https://kryptedgaming.com/wp-content/uploads/2018/02/Krypted-Gaming-Logo-4k.png">
-        </div>
-
-        <div id="loginbox" class="mainbox col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3">
-            <div class="panel panel-default" >
-                <div class="panel-heading">
-                    <div class="panel-title text-center">Please register.</div>
-                </div>
-
-                <div class="panel-body" >
-                    <form name="form" id="form" class="form-horizontal" enctype="multipart/form-data" method="POST">
-                        {% csrf_token %}
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                            <input id="username" type="text" class="form-control" name="username" value="" maxlength="64" placeholder="Username" required>
-                        </div>
-
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                            <input id="email" type="email" class="form-control" name="email" value="" maxlength="64" placeholder="Email" required>
-                        </div>
-
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                            <input id="password" type="password" class="form-control" name="password" placeholder="Password" required>
-                        </div>
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                            <input id="vpassword" type="password" class="form-control" name="vpassword" placeholder="Repeat Password" required>
-                        </div>
-
-                        <div class="form-group">
-                            <!-- Button -->
-                            <div class="col-sm-12 controls login-btn">
-                                <button type="submit" href="#" class="btn btn-success btn-log"><i class="glyphicon glyphicon-plus"></i> Register</button>
-                            </div>
-                        </div>
-
-                        <div class="errors">
-                            {% for field in form %}
-                            {{field.errors}}
-                            {% endfor %}
-                        </div>
-
-                    </form>
-                </div>
-            </div>
-        </div>
+{% block submit %}
+<div class="form-group">
+    <div class="col-sm-12 controls login-btn">
+        <button type="submit" href="#" class="btn btn-primary btn-log"> Submit</button>
     </div>
+</div>
+{% endblock %}
 
-    <div id="particles"></div>
 
-</body>
+{% block endform %}
+</form>
+{% endblock %}
+
+{% block box_footer %}
+<div class="register-help">
+    <a href="{% url 'login' %}">Already have an account?</p>
+</div>
+{% endblock %}

@@ -1,0 +1,83 @@
+
+{% load staticfiles %}
+<head>
+    <!-- Bootstrap Core CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-1.12.4.js" integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU=" crossorigin="anonymous"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <link href="{% static "accounts/css/accounts.css" %}" rel="stylesheet">
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="{% static "accounts/js/accounts.js" %}"></script>
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Tell the browser to be responsive to screen width -->
+    <title>Krypted Authentication - Login</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <meta name="description" content="Please log in to view this content.">
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8">
+
+</head>
+<body>
+    <div class="container login">
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-danger alert-dismissable">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                {{message}}
+            </div>
+            {% endfor %}
+        {% endif %}
+
+        <div id="loginbox" class="mainbox col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3">
+          <div class="text-center">
+              <img style="margin: 0 auto; width: 50%; padding-bottom: 2%;" src="https://kryptedgaming.com/wp-content/uploads/2018/06/FLAT_WHITE.png">
+          </div>
+            <div class="panel panel-default" >
+                <div class="panel-heading">
+                    {% block heading %}
+                    {% endblock %}
+                </div>
+
+                <div class="panel-body" >
+                  <!-- TEMPLATE FORM ACTION -->
+                  {% block form_action %}
+                  {% endblock %}
+
+                  {% csrf_token %}
+                  <!-- INPUT FIELDS -->
+                  {% block fields %}
+                  {% endblock %}
+
+                  <!-- INPUT SUBMISSION -->
+                  {% block submit %}
+                  {% endblock %}
+
+                  <!-- INPUT ERRORS -->
+                  <div class="errors">
+                      {% for field in form %}
+                      {{field.errors}}
+                      {% endfor %}
+                  </div>
+
+                  <!-- TEMPLATE FORM ENDING -->
+                  {% block endform %}
+                  {% endblock %}
+
+                  {% block box_footer %}
+                  {% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- INCLUDE PARTICLES -->
+    <div id="particles"></div>
+
+</body>

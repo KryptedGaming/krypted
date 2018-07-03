@@ -2,6 +2,9 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from core.models import Profile, Notification, Game
+import logging
+
+logger = logging.getLogger(__name__)
 
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=32)
@@ -9,29 +12,49 @@ class LoginForm(forms.Form):
 
     def clean(self):
         input = self.cleaned_data
+        username = self.resolve_username(input.get('username'))
 
-        if authenticate(username=input.get('username'),
-         password=input.get('password')) is not None:
-            pass
-        else:
+        if not authenticate(username=username, password=input.get('password')):
             self.add_error('username', 'Invalid credentials.')
 
         return input
 
+    def resolve_username(self, username):
+        email_valid = User.objects.filter(email=username).exists()
+        if email_valid:
+            return User.objects.get(email=username).username
+        else:
+            return username
+
+
+
 class RegisterForm(forms.Form):
-    username = forms.CharField(max_length=64)
-    email = forms.CharField(max_length=64)
-    password = forms.CharField(max_length=32)
-    vpassword = forms.CharField(max_length=32)
+    timezone_choices = (
+        ("EU", "EU"),
+        ("US", "US"),
+        ("AU", "AU")
+    )
+
+    username = forms.CharField(max_length=64, required=True)
+    email = forms.CharField(max_length=64, required=True)
+    password = forms.CharField(max_length=32, required=True)
+    vpassword = forms.CharField(max_length=32, required=True)
+    timezone = forms.CharField(max_length=2, required=True)
 
     def clean(self):
         input = self.cleaned_data
+        logger.error(input)
+        logger.error(" " in input.get('username'))
         password = input.get('password')
 
         if User.objects.filter(username=input.get('username')).exists():
             self.add_error('username', "Username is taken.")
-        if " " in input.get('username'):
-            self.add_error('username', "No spaces allowed in usernames.")
+        elif User.objects.filter(email=input.get('email')).exists():
+            self.add_error('username', "Email is already in use.")
+        elif " " in input.get('username'):
+            self.add_error('username', "Usernames cannot contain spaces")
+        elif "@" in input.get('username'):
+            self.add_error('username', "Usernames cannot contain @ symbols")
         if password:
             if input.get('password') != input.get('vpassword'):
                 self.add_error('password', 'Passwords do not match.')
