@@ -4,9 +4,9 @@ from django.conf import settings
 from django.contrib import messages
 from core.decorators import login_required, tutorial_complete, permission_required
 from games.eveonline.models import Token, EveCharacter
-from games.eveonline.modules.fleet.models import Fleet, FleetPoint
+# from games.eveonline.modules.fleet.models import Fleet, FleetPoint
 from games.eveonline.utils import generate_esi_session
-from games.eveonline.modules.fleet.forms import FleetForm
+# from games.eveonline.modules.fleet.forms import FleetForm
 import json, logging, datetime, time
 
 logger = logging.getLogger(__name__)

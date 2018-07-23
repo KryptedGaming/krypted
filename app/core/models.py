@@ -73,19 +73,14 @@ class Profile(models.Model):
         return self.user.username
 
 class Event(models.Model):
-    importance_choices = (
-            ("1", "Low"),
-            ("2", "Medium"),
-            ("3", "High")
-            )
     creator = models.ForeignKey(User, on_delete=models.CASCADE)
     date_posted = models.DateField(auto_now=True)
     date_occuring = models.DateTimeField(auto_now=False)
     title = models.CharField(max_length=32)
     description = models.CharField(max_length=128, blank=True, null=True)
     notes = models.CharField(max_length=32, blank=True, null=True)
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, blank=True, null=True)
-    importance = models.CharField(choices=importance_choices, max_length=12, blank=True, null=True)
+    guild = models.OneToOneField("Guild", on_delete=models.SET_NULL, null=True)
+    value = models.DecimalField(max_digits=2, decimal_places=1)
 
 class GroupRequest(models.Model):
     status_choices = (
@@ -110,7 +105,11 @@ class GroupRequest(models.Model):
 
 class GroupEntity(models.Model):
     group = models.OneToOneField(Group, on_delete=models.CASCADE, primary_key=True)
+    guild = models.ForeignKey(Guild, on_delete=models.CASCADE, blank=True, null=True)
     description = models.CharField(max_length=512, blank=True)
     hidden = models.BooleanField(default=True, help_text="Hidden from the apply menu.")
     public = models.BooleanField(default=False, help_text="Automatically join upon request.")
     managers = models.ManyToManyField(User, blank=True, help_text="Users who can accept/decline requests.")
+
+    def __str__(self):
+        return self.group.name

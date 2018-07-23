@@ -16,11 +16,16 @@ These tasks are periodically ran.
 """
 @task()
 def sync_user(user_id):
+    # SYNC SERVICES
     logger.info("Syncing API roles for user %s" % user_id)
     call_counter = 0
     sync_discourse_user.apply_async(args=[user_id], countdown=call_counter)
     sync_discord_user.apply_async(args=[user_id], countdown=call_counter)
     call_counter += 1
+    # SYNC COMMUNITY GROUPS
+    logger.info("Syncing community roles for user %s" % user_id)
+    user = User.objects.get(pk=user_id)
+    call_counter = 0
     logger.info("User %s synced." % user_id)
 
 @task()

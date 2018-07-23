@@ -13,7 +13,6 @@ logger = logging.getLogger(__name__)
 def login_required(function):
     def wrapper(request, *args, **kw):
         if not request.user.is_authenticated:
-            messages.add_message(request, messages.WARNING, 'Please log in first.')
             logger.info("%s not authenticated, sending to login screen." % str(request.user))
             return redirect('/login/?next=' + request.path)
         else:

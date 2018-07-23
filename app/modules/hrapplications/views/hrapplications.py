@@ -11,7 +11,7 @@ from modules.hrapplications.decorators import services_required, eve_characters_
 from modules.discord.models import DiscordUser
 from modules.discord.tasks import send_discord_message
 from games.eveonline.models import *
-import logging
+import logging, datetime
 logger = logging.getLogger(__name__)
 
 ## BASE
@@ -138,7 +138,9 @@ def approve_application(request, application):
     application = Application.objects.get(pk=application)
     messages.add_message(request, messages.SUCCESS, 'Application accepted.')
     application.status = "Approved"
+    application.processed_date = datetime.datetime.utcnow()
     notify_applicant_decision(application.user, slug=application.template.guild.slug, decision="ACCEPTED")
+    Profile.objects.get(user=application.user).guilds.add(application.template.guild)
     application.save()
     return redirect('hr-view-applications-all')
 
@@ -172,8 +174,12 @@ def notify_recruitment_channel(user, slug):
             message = "@%s has created an application to join EVE Online. @here" % user_discord_user.username
             channel = settings.DISCORD_CHANNEL_IDS['#hr-manager']
             send_discord_message(channel, message)
+        elif slug == 'wow':
+            message = "@%s has created an application to join World of Warcraft. @here" % user_discord_user.username
+            channel = settings.DISCORD_CHANNEL_IDS['#hr-manager']
+            send_discord_message(channel, message)
         else:
-            message = "@%s has created an application to join %s. @here" % (user_discord_user.username, guild_applying_to.title)
+            message = "@%s has created an application to join %s." % (user_discord_user.username, guild_applying_to.title)
             channel = settings.DISCORD_CHANNEL_IDS['#hr-manager']
             send_discord_message(channel, message)
 

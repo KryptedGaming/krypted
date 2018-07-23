@@ -1,6 +1,7 @@
 from modules.discord.models import DiscordUser
 from modules.discourse.models import DiscourseUser
 from games.eveonline.models import EveCharacter
+from core.models import Profile
 def get_main_eve_character(user):
     try:
         response = EveCharacter.objects.filter(user=user)[0].get_absolute()
@@ -33,3 +34,6 @@ def hard_sync(user):
         user.groups.remove(group)
     for group in groups:
         user.groups.add(group)
+
+def get_user_profile(user):
+    return Profile.objects.get(user=user)

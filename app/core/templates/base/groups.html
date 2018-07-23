@@ -43,6 +43,7 @@
         <thead>
           <th scope="col">Group</th>
           <th scope="col">Description</th>
+          <th scope="col">Guild</th>
           <th scope="col">Action</th>
         </thead>
         <tbody>
@@ -50,6 +51,13 @@
           <tr>
             <td>{{group.group.group.name|cleanGroupName}}</td> {# oh man.. that chain #}
             <td>{{group.group.description}}</td>
+            <td>
+              {% if group.group.guild %}
+              {{group.group.guild.title}}
+              {% else %}
+              Community
+              {% endif %}
+            </td>
             {% if group.requested %}
             <td><i class="fa fa-spinner fa-spin"></i></td>
             {% elif group.group.group in user.groups.all %}

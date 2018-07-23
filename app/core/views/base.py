@@ -9,7 +9,7 @@ from django.apps import apps
 from core.forms import LoginForm, RegisterForm, ProfileForm
 from core.decorators import login_required, services_required
 from core.models import Profile, Notification, Game, Event, Guild, GroupEntity, GroupRequest
-from core.utils import get_main_eve_character
+from core.utils import get_main_eve_character, get_user_profile
 # MODULE IMPORTS
 if apps.is_installed('modules.slack'):
     from modules.slack.models import SlackUser
@@ -51,10 +51,12 @@ def groups(request, **kwargs):
 
     # STANDARD GROUP VIEW
     for group in GroupEntity.objects.filter(hidden=False):
-        groups.append({
-            'group': group,
-            'requested': GroupRequest.objects.filter(group=group, user=request.user, status="Pending").exists()
-            })
+        if not group.guild or group.guild in get_user_profile(request.user).guilds.all():
+            groups.append({
+                'group': group,
+                'requested': GroupRequest.objects.filter(group=group, user=request.user, status="Pending").exists()
+                })
+    groups.sort(key=lambda x: "Community" if not x['group'].guild else x['group'].guild.title, reverse=True)
     context['groups'] = groups
 
     # PENDING VIEW

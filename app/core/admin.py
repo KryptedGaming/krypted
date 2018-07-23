@@ -43,9 +43,9 @@ class GuildAdmin(admin.ModelAdmin):
         return leader_list
 
 
-@admin.register(Event)
-class EventAdmin(admin.ModelAdmin):
-    list_display = ('id','title', 'group')
+# @admin.register(Event)
+# class EventAdmin(admin.ModelAdmin):
+#     list_display = ('id','title', 'guild')
 
 @admin.register(GroupRequest)
 class GroupRequestAdmin(admin.ModelAdmin):
