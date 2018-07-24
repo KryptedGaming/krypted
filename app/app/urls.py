@@ -8,11 +8,18 @@ from core.views import base as error_views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include('core.urls')),
-    url(r'^eve/', include('games.eveonline.urls')),
     url(r'^applications/', include('modules.hrapplications.urls')),
     url(r'^discord/', include('modules.discord.urls')),
     url(r'^discourse/', include('modules.discourse.urls')),
     url(r'^favicon.ico$', RedirectView.as_view(url=staticfiles_storage.url('favicon.ico')), name='favicon')
+]
+
+# GAMES
+urlpatterns += [
+    url(r'^eve/', include('games.eveonline.urls')),
+    url(r'^rust/', RedirectView.as_view(url='/applications/add/rust/')),
+    url(r'^dnd/', RedirectView.as_view(url='/applications/add/dnd/')),
+    url(r'^wow/', RedirectView.as_view(url='/applications/add/wow/'))
 ]
 
 # CONDITIONAL MODULES
