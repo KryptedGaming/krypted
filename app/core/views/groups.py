@@ -51,7 +51,7 @@ def group_remove_user(request, group, user):
     group = Group.objects.get(pk=group)
     user = User.objects.get(pk=user)
     logger.info("Group_remove_user called")
-    group_request = GroupRequest.objects.get(user=user, group=GroupEntity.objects.get(group=group))
+    group_request = GroupRequest.objects.filter(user=user, group=GroupEntity.objects.get(group=group)).first()
     user.groups.remove(group)
     user.save()
     group_request.delete()
