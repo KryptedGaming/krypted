@@ -112,3 +112,6 @@ app/static/admin
 app/static/global/ui
 app/log
 app/celerybeat.pid
+
+# hide conf
+app/app/conf/
