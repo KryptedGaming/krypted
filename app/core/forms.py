@@ -43,8 +43,6 @@ class RegisterForm(forms.Form):
 
     def clean(self):
         input = self.cleaned_data
-        logger.error(input)
-        logger.error(" " in input.get('username'))
         password = input.get('password')
 
         if User.objects.filter(username=input.get('username')).exists():
