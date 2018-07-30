@@ -3,6 +3,7 @@ from django.db import models
 from django.conf import settings
 from django.utils import timezone
 from django.contrib.auth.models import User, Group
+from app.conf import eve as eve_settings
 import datetime
 import logging
 
@@ -39,8 +40,8 @@ class Token(models.Model):
     def refresh(self):
         if timezone.now() > self.expiry:
             try:
-                settings.ESI_SECURITY.update_token(self.populate())
-                new_token = settings.ESI_SECURITY.refresh()
+                eve_settings.ESI_SECURITY.update_token(self.populate())
+                new_token = eve_settings.ESI_SECURITY.refresh()
                 self.access_token = new_token['access_token']
                 self.refresh_token = new_token['refresh_token']
                 self.expiry = timezone.now() + datetime.timedelta(0, new_token['expires_in'])
@@ -53,8 +54,8 @@ class Token(models.Model):
 
     def force_refresh(self):
         try:
-            settings.ESI_SECURITY.update_token(self.populate())
-            new_token = settings.ESI_SECURITY.refresh()
+            eve_settings.ESI_SECURITY.update_token(self.populate())
+            new_token = eve_settings.ESI_SECURITY.refresh()
             self.access_token = new_token['access_token']
             self.refresh_token = new_token['refresh_token']
             self.expiry = timezone.now() + datetime.timedelta(0, new_token['expires_in'])
@@ -77,8 +78,8 @@ class EveCorporation(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
-        op = settings.ESI_APP.op['get_corporations_corporation_id'](corporation_id=self.corporation_id)
-        response = settings.ESI_CLIENT.request(op)
+        op = eve_settings.ESI_APP.op['get_corporations_corporation_id'](corporation_id=self.corporation_id)
+        response = eve_settings.ESI_CLIENT.request(op)
         self.name = response.data['name']
         self.ticker = response.data['ticker']
         self.member_count = response.data['member_count']
@@ -95,9 +96,9 @@ class EveCorporation(models.Model):
 
     def update_corporation(self, corporation_id):
         from django.core.exceptions import ObjectDoesNotExist
-        op = settings.ESI_APP.op['get_corporations_corporation_id'](corporation_id=self.corporation_id)
-        op = settings.ESI_CLIENT.request(op)
-        corporation = settings.ESI_CLIENT.request(op)
+        op = eve_settings.ESI_APP.op['get_corporations_corporation_id'](corporation_id=self.corporation_id)
+        op = eve_settings.ESI_CLIENT.request(op)
+        corporation = eve_settings.ESI_CLIENT.request(op)
         self.name = corporation.data['name']
         self.ticker = corporation.data['ticker']
         self.member_count = corporation.data['member_count']
@@ -116,7 +117,7 @@ class EveCorporation(models.Model):
 class EveCharacter(models.Model):
     character_name = models.CharField(max_length=255, primary_key=True)
     character_portrait = models.URLField(max_length=255, blank=True, null=True)
-    character_alt_type = models.CharField(max_length=255, choices=settings.EVE_ALT_TYPES, null=True, blank=True)
+    character_alt_type = models.CharField(max_length=255, choices=eve_settings.EVE_ALT_TYPES, null=True, blank=True)
     corporation = models.ForeignKey("EveCorporation", null=True, on_delete=models.SET_NULL)
 
     ## SSO Token
@@ -152,13 +153,13 @@ class EveCharacter(models.Model):
                 self.corporation = EveCorporation.objects.get(corporation_id=character.data['corporation_id'])
         else:
             self.token.refresh()
-            op = settings.ESI_APP.op['get_characters_character_id'](character_id=self.token.character_id)
-            character = settings.ESI_CLIENT.request(op)
+            op = eve_settings.ESI_APP.op['get_characters_character_id'](character_id=self.token.character_id)
+            character = eve_settings.ESI_CLIENT.request(op)
             if self.corporation.corporation_id != character.data['corporation_id']:
                 logger.info("Character %s has changed corporations. Updating." % self.character_name)
-                settings.ESI_SECURITY.update_token(self.token.populate())
-                op = settings.ESI_APP.op['get_characters_character_id'](character_id=self.token.character_id)
-                character = settings.ESI_CLIENT.request(op)
+                eve_settings.ESI_SECURITY.update_token(self.token.populate())
+                op = eve_settings.ESI_APP.op['get_characters_character_id'](character_id=self.token.character_id)
+                character = eve_settings.ESI_CLIENT.request(op)
                 if EveCorporation.objects.filter(corporation_id=character.data['corporation_id']).exists():
                     self.corporation = EveCorporation.objects.get(corporation_id=character.data['corporation_id'])
                     self.save()

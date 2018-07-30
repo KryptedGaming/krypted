@@ -5,6 +5,7 @@ class SlackConfig(AppConfig):
     name = 'modules.slack'
 
     def ready(self):
-        from django.contrib.auth.models import User, Group
-        from modules.slack.signals import user_group_change
-        m2m_changed.connect(user_group_change, sender=User.groups.through)
+        pass
+        # from django.contrib.auth.models import User, Group
+        # from modules.slack.signals import user_group_change
+        # m2m_changed.connect(user_group_change, sender=User.groups.through)

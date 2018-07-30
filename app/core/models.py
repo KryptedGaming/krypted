@@ -38,7 +38,7 @@ class Group(DjangoGroup):
     type = models.CharField(max_length=12, choices=group_types)
 
     # REFERENCES
-    guild = models.OneToOneField("Guild", on_delete=models.SET_NULL, blank=True, null=True)
+    guild = models.OneToOneField("Guild", on_delete=models.SET_NULL, blank=True, null=True, related_name="group_guild")
     managers = models.ManyToManyField("User")
 
 class Event(models.Model):
@@ -55,7 +55,7 @@ class Event(models.Model):
     description = models.TextField()
     date = models.DateField()
     password = models.CharField(max_length=5)
-    value = models.DecimalField(max_digits=2)
+    value = models.DecimalField(max_digits=3, decimal_places=1)
 
     # REFERENCES
     user = models.ForeignKey("User", on_delete=models.SET_NULL, blank=True, null=True)
@@ -71,7 +71,7 @@ class Guild(models.Model):
     date_formed = models.DateField(auto_now=True)
 
     # REFERENCES
-    group = models.OneToOneField("Group", on_delete=models.SET_NULL)
+    group = models.OneToOneField("Group", on_delete=models.CASCADE, related_name="guild_group")
 
 """
 FUNCTIONAL MODELS
@@ -83,18 +83,18 @@ class GroupRequest(models.Model):
     Used by users to create group requests, which require management approvement
     """
     response_action_fields = (
-        "PENDING", "Pending",
-        "ACCEPTED", "Accepted",
-        "REJECTED", "Rejected",
-        "RETRACTED", "Retracted"
+        ("PENDING", "Pending"),
+        ("ACCEPTED", "Accepted"),
+        ("REJECTED", "Rejected"),
+        ("RETRACTED", "Retracted")
     )
     # AUTHENTICATION
-    request_user = models.ForeignKey("User", on_delete=models.CASCADE)
+    request_user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="group_request_request_user")
     request_group = models.OneToOneField("Group", on_delete=models.CASCADE)
     request_date = models.DateField(auto_now=True)
 
     # MANAGEMENT
-    response_user = models.ForeignKey("User", on_delete=models.SET_NULL)
+    response_user = models.ForeignKey("User", on_delete=models.SET_NULL, null=True)
     response_action = models.CharField(max_length=32, choices=response_action_fields)
     response_date = models.DateField(blank=True, null=True)
 
@@ -139,11 +139,11 @@ class GuildApplication(models.Model):
     status = models.CharField(max_length=16, choices=application_status_fields)
 
     # USER
-    request_user = models.ForeignKey("User", on_delete=models.CASCADE)
+    request_user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="guild_application_request_user")
     request_date = models.DateField(auto_now=True)
 
     # MANAGEMENT
-    response_user = models.ForeignKey("User", on_delete=models.CASCADE)
+    response_user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="guild_application_response_user")
     response_date = models.DateField(blank=True, null=True)
 
 """
@@ -155,7 +155,7 @@ class ModuleUser(models.Model):
     User for third-party modules like Discourse, Discord, and Slack
     """
     external_id = models.IntegerField(blank=True, null=True)
-    user = models.OneToOneField("User", on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     class Meta:
         abstract=True
@@ -165,7 +165,7 @@ class ModuleGroup(models.Model):
     Group for third-party modules like Discourse, Discord, and Slack
     """
     external_id = models.IntegerField(blank=True, null=True)
-    group = models.OneToOneField("Group", on_delete=models.CASCADE)
+    group = models.OneToOneField(Group, on_delete=models.CASCADE)
 
     class Meta:
         abstract=True

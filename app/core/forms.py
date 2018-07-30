@@ -1,7 +1,6 @@
 from django import forms
-from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
-from core.models import Profile, Notification, Game
+from core.models import User
 import logging
 
 logger = logging.getLogger(__name__)
@@ -62,26 +61,13 @@ class RegisterForm(forms.Form):
         return input
 
 class EventForm(forms.Form):
-    importance_choices =(
-            ("1", "Low"),
-            ("2", "Medium"),
-            ("3", "High")
-            )
-    date_occuring = forms.DateField(required=True)
-    title = forms.CharField(max_length=32, required=True)
-    description = forms.CharField(max_length=128, required=False)
-    notes = forms.CharField(max_length=32, required=False)
-    game = forms.ModelChoiceField(queryset=Game.objects.all(), empty_label="None", required=True)
-    importance = forms.CharField(widget=forms.Select(choices=importance_choices), max_length=12, required=True)
+    pass
 
 class ProfileForm(forms.Form):
-    biography = forms.CharField(max_length=1500, required=False)
-    games = forms.ModelChoiceField(queryset=Game.objects.all(), empty_label="None", required=False)
+    pass
 
 class NotificationForm(forms.Form):
-    title = forms.CharField(max_length=24)
-    text = forms.CharField(max_length=500)
-    game = forms.ModelChoiceField(queryset=Game.objects.all(), empty_label="None")
+    pass
 
 class GameForm(forms.Form):
-    title = forms.CharField(max_length=24)
+    pass
