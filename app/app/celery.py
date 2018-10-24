@@ -8,6 +8,7 @@ from django.conf import settings
 
 app = Celery('app')
 app.config_from_object('django.conf:settings', namespace='CELERY')
+app.conf.task_default_queue = 'dev'
 
 # Load task modules from all registered Django app configs.
 app.autodiscover_tasks(

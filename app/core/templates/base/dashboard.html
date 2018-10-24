@@ -37,9 +37,9 @@
                   <button onclick="location.href='{% url 'slack_resend' %}'" style="min-width: 75%;" class="btn btn-{% if slack_user %}success{%else%}danger{%endif%}">Slack</button>
                   <hr>
                   {% endif %}
-                  <button onclick="location.href='{% url 'discord_index' %}'" style="min-width: 75%;" class="btn btn-{% if discord_user %}success{%else%}danger{%endif%}">Discord</button>
+                  <button onclick="location.href='{% url 'discord_index' %}'" style="min-width: 75%;" class="btn btn-{% if request.user.discord %}success{%else%}danger{%endif%}">Discord</button>
                   <hr>
-                  <button onclick="location.href='https://forum.kryptedgaming.com'" style="min-width: 75%;" class="btn btn-{% if discourse_user %}success{%else%}danger{%endif%}">Forum</button>
+                  <button onclick="location.href='https://devforum.kryptedgaming.com'" style="min-width: 75%;" class="btn btn-{% if request.user.discourse %}success{%else%}danger{%endif%}">Forum</button>
                   <hr>
                   <p>If a service has a red background, click on it to enable it.</p>
               </div>
@@ -47,17 +47,4 @@
       </div>
   </div>
 
-  <!--
-  <div class="col-md-4 ">
-      <div class="box box-widget">
-          <div style="padding: 5px 5px 5px 5px" class="card text-center">
-                  <h4 class="text-center">Stats</h4>
-                  <hr>
-                  Under construction.
-                  <hr>
-          </div>
-      </div>
-  </div>
-  --!>
-</div>
 {% endblock %}

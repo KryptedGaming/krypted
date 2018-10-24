@@ -27,9 +27,9 @@
       {% for guild in guilds %}
         <tr>
           <td><img style="width: 26px;" src="{{guild.image}}"/></td>
-          <td><a href="/{{guild.slug}}">{{guild.title}}</a></td>
+          <td><a href="/{{guild.slug}}">{{guild.name}}</a></td>
           <td>
-              {% if guild not in profile.guilds.all %}
+              {% if guild not in request.user.guilds.all %}
               <button onclick="location.href='/applications/add/{{guild.slug}}/'" class="guildbtn btn btn-success btn-fill">Apply</button>
               {% else %}
               <button onclick="location.href='/{{guild.slug}}/'" class="guildbtn btn btn-info btn-fill">View</button>

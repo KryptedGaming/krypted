@@ -1,0 +1,9 @@
+{% extends 'global/global_base.html' %}
+
+{% block sidebar %}
+
+  <!-- ADMIN LINKS -->
+  <li class="header">NAVIGATION</li>
+  <!-- Optionally, you can add icons to the links -->
+  <li><a href="{% url 'hr-view-applications-all' %}"><i class="fa fa-paperclip"></i> <span>Applications</span></a></li>
+{% endblock %}

@@ -1,13 +1,12 @@
 from django.shortcuts import render
-import base64
-import hmac
-import hashlib
-from urllib import parse as urlparse
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest, HttpResponseRedirect
 from django.conf import settings
+from app.conf import discourse as discourse_settings
 from modules.discourse.models import DiscourseUser
-import logging
+from modules.discourse.tasks import update_external_id
+from urllib import parse as urlparse
+import logging, base64, hmac, hashlib
 logger = logging.getLogger(__name__)
 
 @login_required
@@ -36,7 +35,7 @@ def sso(request):
     except AssertionError:
         return HttpResponseBadRequest('1 Invalid payload. Please contact support if this problem persists.')
 
-    key = bytes(settings.DISCOURSE_SSO_SECRET, encoding='utf-8') # must not be unicode
+    key = bytes(discourse_settings.DISCOURSE_SSO_SECRET, encoding='utf-8') # must not be unicode
     h = hmac.new(key, payload, digestmod=hashlib.sha256)
     this_signature = h.hexdigest()
 
@@ -57,9 +56,8 @@ def sso(request):
     h = hmac.new(key, return_payload, digestmod=hashlib.sha256)
     query_string = urlparse.urlencode({'sso': return_payload, 'sig': h.hexdigest()})
 
-    ## Redirect back to Discourse
-    logger.info("Creating Discourse user for %s" % request.user.username)
-    DiscourseUser.objects.get_or_create(auth_user=request.user)
+    DiscourseUser.objects.get_or_create(user=request.user)
+    update_external_id.apply_async(args=[request.user.id], countdown=5)
 
-    url = '%s/session/sso_login' % settings.DISCOURSE_BASE_URL
+    url = '%s/session/sso_login' % discourse_settings.DISCOURSE_BASE_URL
     return HttpResponseRedirect('%s?%s' % (url, query_string))

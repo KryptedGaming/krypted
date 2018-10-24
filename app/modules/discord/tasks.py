@@ -1,0 +1,123 @@
+from __future__ import absolute_import, unicode_literals
+from celery import task
+from modules.discord.models import DiscordUser, DiscordGroup
+from modules.discord.client import DiscordClient
+from core.models import User, Group
+from django.conf import settings
+from core.exceptions import RateLimitException
+import logging, requests, json
+
+logger = logging.getLogger(__name__)
+
+@task()
+def sync_discord_users():
+    pass
+
+@task()
+def sync_discord_user(user_id):
+    user = User.objects.get(pk=user_id)
+    discord_user = DiscordUser.objects.get(user=user)
+    for discord_group in discord_user.groups.all():
+        if discord_group.group not in user.groups.all():
+            remove_user_from_discord_group.apply_async(args=[user_id, discord_group.group.pk])
+
+@task()
+def send_discord_message(channel_id, message):
+    pass
+
+@task(bind=True)
+def add_discord_group(self, group_id):
+    # Pull objects from database
+    group = Group.objects.get(id=group_id)
+    # Call discord client
+    response = DiscordClient.add_group_to_discord_server(group.name)
+    # Handle response
+    try:
+        if response.status_code == 429:
+            # RATE LIMIT
+            logger.warning("RATELIMIT - Adding Group [%s] to Discord Server." % group.name)
+            self.apply_async(args=[group.pk], cooldown=int(response.json()['retry_after'])/1000)
+        elif response.status_code == 200:
+            # SUCCESS
+            logger.info("SUCCESS - Adding Group [%s] to Discord Server." % group.name)
+            discord_group = DiscordGroup(
+                external_id=response.json()['id'],
+                group=group,
+            )
+            discord_group.save()
+        else:
+            # FAILURE
+            logger.error("FAILURE - Adding Group [%s] to Discord Server: %s" % (group.name, response.json()))
+    except Exception as e:
+        # FATAL
+        logger.error("FATAL - Error with add_discord_group function. %s" % e)
+
+@task(bind=True, autoretry_for=(RateLimitException,), retry_backoff=True)
+def remove_discord_group(self, discord_group_external_id):
+    discord_group = DiscordGroup.objects.get(external_id=discord_group_external_id)
+    # Call discord client
+    response = DiscordClient.remove_group_from_discord_server(discord_group_external_id)
+    # Handle response
+    try:
+        if response.status_code == 429:
+            # RATE LIMIT
+            logger.warning("RATELIMIT - Removing Group [%s] from Discord Server." % discord_group.external_id)
+            self.apply_async(args=[discourse_group_external_id], countdown=int(response.json()['retry_after'])/1000)
+        elif response.status_code == 204:
+            # SUCCESS
+            logger.info("SUCCESS - Removing Group [%s] from Discord Server." % discord_group.external_id)
+            discord_group.delete()
+        else:
+            # FAILURE
+            logger.error("FAILURE - Removing Group [%s] from Discord Server: %s" % (discord_group.external_id, response.json()))
+    except Exception as e:
+        # FATAL
+        logger.error("FATAL - Error with remove_discord_group function. %s" % e)
+
+@task(bind=True, autoretry_for=(RateLimitException,), retry_backoff=True)
+def add_user_to_discord_group(self, user_id, group_id):
+    # Pull objects from database
+    discord_user = DiscordUser.objects.get(user__id=user_id)
+    discord_group = DiscordGroup.objects.get(group__id=group_id)
+    # Call discord client
+    response = DiscordClient.add_group_to_discord_user(discord_user.external_id, discord_group.external_id)
+    # Handle response
+    try:
+        if response.status_code == 429:
+            # RATE LIMIT
+            logger.warning("RATELIMIT - Adding Group [%s] to User [%s]." % (discord_group.group.name, discord_user.username))
+            self.apply_async(args=[user_id, group_id], countdown=int(response.json()['retry_after'])/1000)
+        elif response.status_code == 204:
+            # SUCCESS
+            logger.info("SUCCESS - Adding Group [%s] to User [%s]." % (discord_group.group.name, discord_user.username))
+            discord_user.groups.add(discord_group)
+        else:
+            # FAILURE
+            logger.error("FAILURE - Adding Group [%s] to User [%s]." % (discord_group.group.name, discord_user.username))
+    except Exception as e:
+        # FATAL
+        logger.error("FATAL - Error with add_group_to_discord_user function. %s" % e)
+
+@task(bind=True, autoretry_for=(RateLimitException,), retry_backoff=True)
+def remove_user_from_discord_group(self, user_id, group_id):
+    # Pull objects from the database
+    discord_user = DiscordUser.objects.get(user__id=user_id)
+    discord_group = DiscordGroup.objects.get(group__id=group_id)
+    # Call discord client
+    response = DiscordClient.remove_group_from_discord_user(discord_user.external_id, discord_group.external_id)
+    # Handle response
+    try:
+        if response.status_code == 429:
+            # RATE LIMIT
+            logger.warning("RATELIMIT - Removing Group [%s] from [%s]." % (discord_group.group.name, discord_user.username))
+            self.apply_async(args=[user_id, group_id], countdown=int(response.json()['retry_after'])/1000)
+        elif response.status_code == 204:
+            # SUCCESS
+            logger.info("SUCCESS - Removing Group [%s] from [%s]" % (discord_group.group.name, discord_user.username))
+            discord_user.groups.remove(discord_group)
+        else:
+            # FAILURE
+            logger.error("FAILURE - Removing Group [%s] from [%s]" % (discord_group.group.name, discord_user.username))
+    except Exception as e:
+        # FATAL
+        logger.error("FATAL - Error with remove_group_from_discord_user function. %s" % e)

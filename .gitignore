@@ -107,8 +107,7 @@ db.sqlite3
 .DS_Store
 
 # hide collectstatic
-*static/admin*
-*static/django_extensions*
+app/static/django_extensions
 app/static/admin
 app/static/global/ui
 app/log

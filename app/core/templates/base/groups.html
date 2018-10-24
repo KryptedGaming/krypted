@@ -49,21 +49,26 @@
         <tbody>
           {% for group in groups %}
           <tr>
-            <td>{{group.group.group.name|cleanGroupName}}</td> {# oh man.. that chain #}
+            {{group.user_has_group}}
+            <td>{{group.group.name|cleanGroupName}}</td>
             <td>{{group.group.description}}</td>
             <td>
               {% if group.group.guild %}
-              {{group.group.guild.title}}
+              {{group.group.guild.name}}
               {% else %}
               Community
               {% endif %}
             </td>
             {% if group.requested %}
-            <td><i class="fa fa-spinner fa-spin"></i></td>
-            {% elif group.group.group in user.groups.all %}
-            <td><button onclick="location.href='{% url 'group-remove-user' group.group.group.pk request.user.pk %}'" class="btn btn-danger">Leave</button></td>
+            <td><button onclick="" class="btn btn-block btn-warning" disabled>Requested</button></td>
+            {% elif group.group in request.user.groups.all %}
+            <td><button onclick="location.href='{% url 'group-remove-user' group.group.id request.user.id %}'" class="btn btn-block btn-danger">Leave</button></td>
             {% else %}
-            <td><button onclick="location.href='{% url 'group-apply' group.group.group.pk %}'" class="btn btn-success">Apply</button></td>
+              {% if group.group.type == "PUBLIC" %}
+              <td><button onclick="location.href='{% url 'group-apply' group.group.id %}'" class="btn btn-block btn-success">Join</button></td>
+              {% else %}
+              <td><button onclick="location.href='{% url 'group-apply' group.group.id %}'" class="btn btn-block btn-success">Request</button></td>
+              {% endif %}
             {% endif %}
           </tr>
           {% endfor %}
@@ -76,7 +81,7 @@
   			<thead>
   				<tr>
   					<th scope="col">Group</th>
-            <th scope="col">Character</th>
+            <th scope="col">Guild</th>
   					<th scope="col">User</th>
   					<th scope="col">Actions</th>
   				</tr>
@@ -84,13 +89,13 @@
   			<tbody>
           {% for group_request in group_requests %}
   				<tr>
-            <td>{{group_request.request.group.group.name}}</td>
-            <td>{{group_request.character}}</td>
-            <td>{{group_request.request.user.username}}</span></td>
+            <td>{{group_request.request.request_group.name}}</td>
+            <td>{{group_request.request.request_group.guild.name}}</td>
+            <td>{{group_request.request.request_user.username}}</span></td>
             <td>
             {% if group_request.permission %}
-              <button class="btn btn-success" onclick="location.href='{% url 'group-add-user' group_request.request.group.group.pk group_request.request.user.pk %}'"><i class="fa fa-check"></i></button>
-              <button class="btn btn-danger" onclick="location.href='{% url 'group-remove-user' group_request.request.group.group.pk group_request.request.user.pk %}'"><i class="fa fa-times"></i></button>
+              <button class="btn btn-success" onclick="location.href='{% url 'group-add-user' group_request.request.request_group.id group_request.request.request_user.id %}'"><i class="fa fa-check"></i></button>
+              <button class="btn btn-danger" onclick="location.href='{% url 'group-remove-user' group_request.request.request_group.id group_request.request.request_user.id %}'"><i class="fa fa-times"></i></button>
             {% else %}
             No access.
             {% endif %}
@@ -105,7 +110,7 @@
   			<thead>
   				<tr>
   					<th scope="col">Group</th>
-            <th scope="col">Character</th>
+  					<th scope="col">Guild</th>
   					<th scope="col">User</th>
   					<th scope="col">Actions</th>
   				</tr>
@@ -113,12 +118,12 @@
   			<tbody>
           {% for group_request in audit_requests %}
   				<tr>
-            <td>{{group_request.request.group.group.name}}</td>
-            <td>{{group_request.character}}</td>
-            <td>{{group_request.request.user.username}}</span></td>
+            <td>{{group_request.request.request_group.name}}</td>
+            <td>{{group_request.request.request_group.guild.name}}</td>
+            <td>{{group_request.request.request_user.username}}</span></td>
             {% if group_request.permission %}
             <td>
-              <button class="btn btn-danger" onclick="location.href='{% url 'group-remove-user' group_request.request.group.group.pk group_request.request.user.pk %}'"><i class="fa fa-undo"></i></button>
+              <button class="btn btn-danger" onclick="location.href='{% url 'group-remove-user' group_request.request.request_group.pk group_request.request.request_user.pk %}'"><i class="fa fa-times"></i></button>
             </td>
             {% endif %}
   				</tr>

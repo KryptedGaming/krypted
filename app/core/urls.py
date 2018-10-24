@@ -1,48 +1,29 @@
 from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
-from core.views import base, user, profile, events, groups
+from core.views import views, accounts, events, groups, applications
 
 ## BASE
 urlpatterns = [
-    url(r'^$', base.dashboard, name='dashboard'),
-    url(r'^guilds/$', base.guilds, name='guilds'),
-    # url(r'^groups/$', base.groups, name='groups'),
-    # url(r'^games/$', base.games, name='games'),
-    # url(r'^games/(?P<tab>\w+)/$', base.games, name='games'),
-    # url(r'^profile/$', base.profile, name='profile'),
-    # url(r'^notifications/$', base.notifications, name='notifications'),
-    # url(r'^members/$', base.view_members, name='view-members'),
+    url(r'^$', views.dashboard, name='dashboard'),
+    url(r'^guilds/$', views.guilds, name='guilds'),
+    url(r'^groups/$', views.groups, name='groups'),
+    url(r'^members/$', views.view_members, name='view-members'),
 ]
 
 ## USER AUTHENTICATION
 urlpatterns += [
-    # url(r'^login/$', user.login_user, name='login'),
-    # url(r'^logout/$', user.logout_user, name='logout'),
-    # url(r'^register/$', user.register_user, name='register'),
+    url(r'^login/$', accounts.login_user, name='login'),
+    url(r'^logout/$', accounts.logout_user, name='logout'),
+    url(r'^register/$', accounts.register_user, name='register'),
 ]
 
-## PROFILES
-# urlpatterns += [
-#     url(r'^profile/create/$', profile.create_profile, name='create-profile'),
-#     # HELPERS
-#     url(r'^profile/add-game/name=(?P<game_to_add>\d+)/$',
-#         profile.profile_add_game, name='profile-add-game'),
-#     url(r'^profile/remove-game/name=(?P<game_to_remove>\d+)/$',
-#         profile.profile_remove_game, name='profile-remove-game'),
-#     url(r'^profile/add-guild/name=(?P<guild>\d+)/$',
-#         profile.profile_add_guild, name='profile-add-guild'),
-#     url(r'^profile/remove-guild/name=(?P<guild>\d+)/$',
-#         profile.profile_remove_guild, name='profile-remove-guild'),
-# ]
-
-## GROUPS
-# urlpatterns += [
-#     url(r'^groups/apply/group=(?P<group>\d+)/$', groups.group_apply, name='group-apply'),
-#     url(r'^groups/adduser/group=(?P<group>\d+)/user=(?P<user>\d+)/$', groups.group_add_user, name='group-add-user'),
-#     url(r'^groups/removeuser/group=(?P<group>\d+)/user=(?P<user>\d+)/$', groups.group_remove_user, name='group-remove-user'),
-#     url(r'^groups/hard-sync/', groups.hard_sync, name='group-hard_sync')
-# ]
+# GROUPS
+urlpatterns += [
+    url(r'^groups/apply/group=(?P<group>\d+)/$', groups.group_apply, name='group-apply'),
+    url(r'^groups/adduser/group=(?P<group_id>\d+)/user=(?P<user_id>\d+)/$', groups.group_add_user, name='group-add-user'),
+    url(r'^groups/removeuser/group=(?P<group_id>\d+)/user=(?P<user_id>\d+)/$', groups.group_remove_user, name='group-remove-user'),
+]
 
 ## PASSWORD RESET
 urlpatterns += [
@@ -62,3 +43,17 @@ urlpatterns += [
 #     url(r'^events/delete/(?P<pk>\d+)/$', events.delete_event, name='delete-event'),
 #     url(r'^events/create/$', events.create_event, name='create-event'),
 # ]
+
+
+## APPLICATIONS
+urlpatterns += [
+    # overrides
+    url(r'^applications/add/eve/$', applications.add_eve_application, name='hr-add-eve-application'),
+    # base
+    url(r'^applications/$', views.applications, name='hr-view-applications'),
+    url(r'^applications/add/(?P<slug>\w+)/$', applications.add_application, name='hr-add-application'),
+    url(r'^applications/view/(?P<pk>\w+)/$', applications.view_application, name='hr-view-application'),
+    url(r'^applications/application/approve/(?P<application>\w+)/$', applications.approve_application, name='hr-approve-application'),
+    url(r'^applications/application/deny/(?P<application>\w+)/$', applications.deny_application, name='hr-deny-application'),
+    url(r'^applications/application/assign/(?P<application>\w+)/(?P<user>\w+)/$', applications.assign_application, name='hr-assign-application')
+]

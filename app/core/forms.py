@@ -28,17 +28,11 @@ class LoginForm(forms.Form):
 
 
 class RegisterForm(forms.Form):
-    timezone_choices = (
-        ("EU", "EU"),
-        ("US", "US"),
-        ("AU", "AU")
-    )
-
     username = forms.CharField(max_length=64, required=True)
     email = forms.CharField(max_length=64, required=True)
     password = forms.CharField(max_length=32, required=True)
     vpassword = forms.CharField(max_length=32, required=True)
-    timezone = forms.CharField(max_length=2, required=True)
+    region = forms.CharField(max_length=2, required=True)
 
     def clean(self):
         input = self.cleaned_data

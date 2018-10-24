@@ -17,11 +17,5 @@ class DiscourseUser(ModuleUser):
         pass
 
 class DiscourseGroup(ModuleGroup):
-    # REFERENCES
-    group = models.OneToOneField(Group, on_delete=models.CASCADE)
-
-    def save(self, *args, **kwargs):
-        pass
-
-    def delete(self, *args, **kwargs):
+    def get_users():
         pass

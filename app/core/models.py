@@ -1,5 +1,4 @@
-from django.contrib.auth.models import User as DjangoUser
-from django.contrib.auth.models import Group as DjangoGroup
+from django.contrib.auth.models import AbstractUser, Group as DjangoGroup, PermissionsMixin
 from django.db import models
 from django.conf import settings
 
@@ -7,7 +6,7 @@ from django.conf import settings
 CORE MODELS
 These are the core models of Krypted Authentication. They describe user interaction.
 """
-class User(DjangoUser):
+class User(AbstractUser):
     """
     User model for Krypted Authentication.
     Extended off of the Django base user, with additional fields and properties.
@@ -18,7 +17,25 @@ class User(DjangoUser):
     region = models.CharField(max_length=2, choices=settings.REGIONS)
 
     # REFERENCES
-    guilds = models.ManyToManyField("Guild", blank=True, null=True)
+    guilds = models.ManyToManyField("Guild", blank=True)
+    groups = models.ManyToManyField("Group", blank=True)
+
+    # PROPERTIES
+    @property
+    def discord(self):
+        from modules.discord.models import DiscordUser
+        return DiscordUser.objects.filter(user=self).first()
+
+    @property
+    def discourse(self):
+        from modules.discourse.models import DiscourseUser
+        return DiscourseUser.objects.filter(user=self).first()
+
+    def has_group_request(self, group):
+        return GroupRequest.objects.filter(request_user=self, request_group=group, response_action="PENDING").exists()
+
+    def has_group(self, group):
+        return group in self.groups.all()
 
 class Group(DjangoGroup):
     """
@@ -39,7 +56,7 @@ class Group(DjangoGroup):
 
     # REFERENCES
     guild = models.OneToOneField("Guild", on_delete=models.SET_NULL, blank=True, null=True, related_name="group_guild")
-    managers = models.ManyToManyField("User")
+    managers = models.ManyToManyField("User", blank=True)
 
 class Event(models.Model):
     """
@@ -69,9 +86,14 @@ class Guild(models.Model):
     name = models.CharField(max_length=32)
     slug = models.CharField(max_length=8)
     date_formed = models.DateField(auto_now=True)
+    image = models.URLField()
 
     # REFERENCES
     group = models.OneToOneField("Group", on_delete=models.CASCADE, related_name="guild_group")
+
+
+    def __str__(self):
+        return self.name
 
 """
 FUNCTIONAL MODELS
@@ -98,6 +120,12 @@ class GroupRequest(models.Model):
     response_action = models.CharField(max_length=32, choices=response_action_fields)
     response_date = models.DateField(blank=True, null=True)
 
+    class Meta:
+        permissions = (
+                ('manage_group_requests', u'Can manage group requests.'),
+                ('audit_group_requests', u'Can view the group request audit log.')
+        )
+
 class GuildApplicationTemplate(models.Model):
     """
     Guild Application Template for Krypted Authentication
@@ -105,7 +133,10 @@ class GuildApplicationTemplate(models.Model):
     """
     # REFERENCES
     guild = models.OneToOneField("Guild", on_delete=models.CASCADE)
-    questions = models.ManyToManyField("GuildApplicationQuestion")
+    questions = models.ManyToManyField("GuildApplicationQuestion", blank=True)
+
+    def __str__(self):
+        return self.guild.name
 
 
 class GuildApplicationQuestion(models.Model):
@@ -121,6 +152,12 @@ class GuildApplicationQuestion(models.Model):
     name = models.CharField(max_length=32)
     help_text = models.TextField()
     type = models.CharField(max_length=16, choices=question_type_fields)
+
+    # OPTIONAL: MODAL
+    choices = models.CharField(max_length=256)
+
+    def __str__(self):
+        return self.name
 
 class GuildApplicationResponse(models.Model):
     # BASIC INFORMATION
@@ -143,8 +180,21 @@ class GuildApplication(models.Model):
     request_date = models.DateField(auto_now=True)
 
     # MANAGEMENT
-    response_user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="guild_application_response_user")
+    response_user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="guild_application_response_user", blank=True, null=True)
     response_date = models.DateField(blank=True, null=True)
+
+    # REFERENCES
+    template = models.ForeignKey("GuildApplicationTemplate", on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.request_user.username + "'s Application to " + self.template.guild.name
+
+    class Meta:
+        permissions = (
+                ('manage_guild_applications', u'Can manage Guild applications'),
+                ('audit_eve_applications', u'Can audit an EVE application'),
+        )
+
 
 """
 ABSTRACT MODELS
@@ -154,8 +204,8 @@ class ModuleUser(models.Model):
     """
     User for third-party modules like Discourse, Discord, and Slack
     """
-    external_id = models.IntegerField(blank=True, null=True)
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    external_id = models.BigIntegerField(blank=True, null=True)
+    user = models.OneToOneField("core.User", null=True, on_delete=models.SET_NULL)
 
     class Meta:
         abstract=True
@@ -164,8 +214,8 @@ class ModuleGroup(models.Model):
     """
     Group for third-party modules like Discourse, Discord, and Slack
     """
-    external_id = models.IntegerField(blank=True, null=True)
-    group = models.OneToOneField(Group, on_delete=models.CASCADE)
+    external_id = models.BigIntegerField(blank=True, null=True)
+    group = models.OneToOneField("core.Group", null=True, on_delete=models.SET_NULL)
 
     class Meta:
         abstract=True

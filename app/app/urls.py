@@ -3,7 +3,6 @@ from django.contrib.staticfiles.storage import staticfiles_storage
 from django.contrib import admin
 from django.views.generic.base import RedirectView
 from django.apps import apps
-from core.views import base as error_views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),

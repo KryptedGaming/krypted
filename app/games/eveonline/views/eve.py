@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from games.eveonline.models import Token, EveCharacter
-from django.contrib.auth.models import User, Group
+from core.models import User, Group
 from core.models import Guild
 from core.decorators import login_required, tutorial_complete, permission_required
 from core.views.base import get_global_context

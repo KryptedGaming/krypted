@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect, get_object_or_404
 from esipy import App, EsiClient, EsiSecurity
 from django.conf import settings
 from games.eveonline.models import Token, EveCharacter
-from django.contrib.auth.models import User
+from core.models import User
 from core.decorators import login_required
 from games.eveonline.tasks import sync_user, verify_sso_token
 

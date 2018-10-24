@@ -1,10 +1,5 @@
 {% extends 'global/global_base.html' %}
 {% block sidebar %}
-  <!-- WELCOME -->
-  {% if profile.guilds.all.count < 1  or not profile %}
-  <li class="header">WELCOME</li>
-  <li><a href="{% url 'guilds' %}"><i class="fa fa-paperclip"></i> <span>Apply</span></a></li>
-  {% endif %}
   <!-- CORE LINKS -->
   <li class="header">MAIN NAVIGATION</li>
   <!-- Optionally, you can add icons to the links -->
@@ -28,10 +23,11 @@
   </li>
 
   <!-- ADMIN LINKS -->
-  {% if admin %}
   <li class="header">ADMIN</li>
   <!-- Optionally, you can add icons to the links -->
-  <li><a href="{% url 'hr-view-applications-all' %}"><i class="fa fa-paperclip"></i> <span>Applications</span></a></li>
+  {% if perms.core.manage_guild_applications %}
+  <li><a href="{% url 'hr-view-applications' %}"><i class="fa fa-paperclip"></i> <span>Applications</span></a></li>
+  {% endif %}
   <li><a href="{% url 'view-members' %}"><i class="fa fa-users"></i> <span>Members</span></a></li>
   <li class="treeview">
     <a href="#"><i class="fa fa-mouse-pointer"></i> <span>Actions</span>
@@ -44,5 +40,4 @@
       <li><a href="/admin/">Admin Panel</a></li>
     </ul>
   </li>
-  {% endif %}
 {% endblock %}

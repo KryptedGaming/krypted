@@ -1,8 +1,8 @@
 from __future__ import absolute_import, unicode_literals
 from celery import task
 from games.eveonline.models import Token, EveCharacter
-from django.contrib.auth.models import User, Group
-from core.models import Profile, Guild
+from core.models import User, Group
+from core.models import Guild
 from esipy import App, EsiClient, EsiSecurity
 from django.conf import settings
 import logging, time
@@ -65,7 +65,6 @@ def sync_user(user):
     # Get user information
     user = User.objects.get(pk=user)
     logger.info("Syncing user %s for EVE Online..." % user.username)
-    profile = Profile.objects.get(user=user)
     if not EveCharacter.objects.filter(main=None, user=user):
         clear_eve_groups(user)
     else:
@@ -92,22 +91,18 @@ def sync_user(user):
                 user.groups.add(Group.objects.get(name=settings.EVE_ONLINE_GROUP))
                 time.sleep(1)
                 user.groups.add(Group.objects.get(name=settings.RECRUIT_GROUP))
-                profile.guilds.add(Guild.objects.get(group__name=settings.EVE_ONLINE_GROUP))
 
         if secondary_status:
                 user.groups.add(Group.objects.get(name=settings.EVE_ONLINE_GROUP))
                 time.sleep(1)
                 user.groups.add(Group.objects.get(name=settings.RECRUIT_GROUP))
-                profile.guilds.add(Guild.objects.get(group__name=settings.EVE_ONLINE_GROUP))
 
         if not main_status and not secondary_status:
             clear_eve_groups(user)
 
 def clear_eve_groups(user):
-    profile = Profile.objects.get(user=user)
     eve_groups = Group.objects.filter(name__contains="EVE")
     for group in eve_groups:
         time.sleep(1)
         if group in user.groups.all():
             user.groups.remove(group)
-    profile.guilds.remove(Guild.objects.get(group__name=settings.EVE_ONLINE_GROUP))

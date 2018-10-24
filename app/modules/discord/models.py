@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from core.models import User, Group, ModuleUser, ModuleGroup
 from core.exceptions import RateLimitException
+from modules.discord.client import DiscordClient
 import logging, requests, json
 logger = logging.getLogger(__name__)
 
@@ -17,17 +18,6 @@ class DiscordUser(ModuleUser):
     # REFERENCES
     groups = models.ManyToManyField("DiscordGroup")
 
-    def add_group(self, discord_group):
-        pass
-    def remove_group(self, discord_group):
-        pass
-
 class DiscordGroup(ModuleGroup):
-    # REFERENCES
-    group = models.OneToOneField(Group, on_delete=models.CASCADE, null=True)
-
-    def save(self, *args, **kwargs):
+    def get_users():
         pass
-
-    def delete(self, *args, **kwargs):
-        pass 

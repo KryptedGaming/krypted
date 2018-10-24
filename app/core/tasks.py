@@ -1,9 +1,9 @@
 from __future__ import absolute_import, unicode_literals
 from celery import task
-from django.contrib.auth.models import User, Group
+from core.models import User, Group
 from modules.discourse.models import DiscourseUser, DiscourseGroup
 from modules.discord.models import DiscordUser, DiscordGroup
-from modules.discourse.tasks import sync_discourse_user
+# from modules.discourse.tasks import sync_discourse_user
 from modules.discord.tasks import sync_discord_user
 from django.conf import settings
 import logging, time
