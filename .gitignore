@@ -108,6 +108,7 @@ db.sqlite3
 
 # hide collectstatic
 *static/admin*
+*static/django_extensions*
 app/static/admin
 app/static/global/ui
 app/log
