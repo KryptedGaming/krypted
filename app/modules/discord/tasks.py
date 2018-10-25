@@ -22,8 +22,17 @@ def sync_discord_user(user_id):
             remove_user_from_discord_group.apply_async(args=[user_id, discord_group.group.pk])
 
 @task()
-def send_discord_message(channel_id, message):
-    pass
+def send_discord_message(channel, message, **kwargs):
+    if kwargs.get('user'):
+        discord_user=DiscordUser.objects.get(user__id=kwargs.get('user'))
+        message = message + " <@%s>" % discord_user.external_id
+    elif kwargs.get('group'):
+        discord_group=DiscordGroup.objects.get(group__id=kwargs.get('group'))
+        message = message + " <@&%s>" % discord_group.external_id
+    else:
+        message = message
+    response = DiscordClient.send_message(channel, message)
+    # TODO: Handle response
 
 @task(bind=True)
 def add_discord_group(self, group_id):

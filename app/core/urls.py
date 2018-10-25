@@ -47,8 +47,6 @@ urlpatterns += [
 
 ## APPLICATIONS
 urlpatterns += [
-    # overrides
-    url(r'^applications/add/eve/$', applications.add_eve_application, name='hr-add-eve-application'),
     # base
     url(r'^applications/$', views.applications, name='hr-view-applications'),
     url(r'^applications/add/(?P<slug>\w+)/$', applications.add_application, name='hr-add-application'),

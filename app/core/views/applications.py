@@ -5,8 +5,9 @@ from django.contrib import messages
 from core.decorators import login_required, permission_required
 from core.models import *
 from games.eveonline.models import *
-# from modules.discord.models import DiscordUser
-# from modules.discord.tasks import send_discord_message
+from modules.discord.models import DiscordUser
+from modules.discord.tasks import send_discord_message
+from app.conf import discord as discord_settings
 import logging, datetime
 logger = logging.getLogger(__name__)
 
@@ -28,34 +29,11 @@ def view_application(request, pk):
     return render(request, 'applications/view_application.html', context)
 
 @login_required
-def add_eve_application(request, slug='eve'):
-    context = {}
-    if request.POST:
-        # notify_recruitment_channel(request.user, slug)
-        application = GuildApplication(
-                template=GuildApplicationTemplate.objects.get(guild=Guild.objects.get(slug=slug)),
-                request_user = request.user,
-                status = "PENDING",
-                )
-        application.save()
-
-        # Build responses
-        for question in application.template.questions.all():
-            response = GuildApplicationResponse(question=question, application=application)
-            response.response = request.POST.get(str(question.pk), "Response was not provided.")
-            response.save()
-
-        return redirect('dashboard')
-
-    template = GuildApplicationTemplate.objects.get(guild=Guild.objects.get(name="EVE Online"))
-    context['template'] = template
-    return render(request, 'applications/application_base.html', context)
-
-@login_required
 def add_application(request, slug):
     context = {}
     if request.POST:
-        # notify_recruitment_channel(request.user, slug)
+        notify_user(user=request.user, slug=slug, type="submit")
+        notify_recruitment_channel(request.user, slug, type="submit")
         application = GuildApplication(
                 template=GuildApplicationTemplate.objects.get(guild=Guild.objects.get(slug=slug)),
                 request_user = request.user,
@@ -71,7 +49,7 @@ def add_application(request, slug):
 
         return redirect('dashboard')
 
-    template = GuildApplicationTemplate.objects.get(guild=Guild.objects.get(name="EVE Online"))
+    template = GuildApplicationTemplate.objects.get(guild=Guild.objects.get(slug=slug))
     context['template'] = template
     return render(request, 'applications/application_base.html', context)
 
@@ -82,7 +60,7 @@ def approve_application(request, application):
     application.status = "ACCEPTED"
     application.response_user = request.user
     application.response_date = datetime.datetime.utcnow()
-    # notify_applicant_decision(application.user, slug=application.template.guild.slug, decision="ACCEPTED")
+    notify_user(user=application.request_user, slug=application.template.guild.slug, type="accepted")
     application.request_user.guilds.add(application.template.guild)
     application.save()
     return redirect('hr-view-applications')
@@ -94,7 +72,8 @@ def deny_application(request, application):
     application.status = "REJECTED"
     application.response_user = request.user
     application.response_date = datetime.datetime.utcnow()
-    # notify_applicant_decision(application.user, slug=application.template.guild.slug, decision="REJECTED")
+    notify_user(user=application.request_user, slug=application.template.guild.slug, type="rejected")
+    application.request_user.guilds.add(application.template.guild)
     application.save()
     return redirect('hr-view-applications')
 
@@ -103,49 +82,45 @@ def assign_application(request, application, user):
     application = GuildApplication.objects.get(pk=application)
     application.response_user = request.user
     application.status = "PENDING"
+    notify_user(user=User.objects.get(id=user), slug=application.template.guild.slug, type="assigned", recruiter=request.user)
     # notify_applicant_recruiter_assignment(application.user, application.template.guild.slug, user)
     application.save()
     return redirect('hr-view-applications')
 
 # HELPER FUNCTIONS
-# def notify_recruitment_channel(user, slug):
-#     try:
-#         guild_applying_to = Guild.objects.get(slug=slug)
-#         user_discord_user = DiscordUser.objects.get(user=user)
-#         if slug == 'eve':
-#             user_eve_character = EveCharacter.objects.get(user=user, main=None)
-#             message = "@%s has created an application to join EVE Online. @here" % user_discord_user.username
-#             channel = settings.DISCORD_CHANNEL_IDS['#hr-manager']
-#             send_discord_message(channel, message)
-#         elif slug == 'wow':
-#             message = "@%s has created an application to join World of Warcraft. @here" % user_discord_user.username
-#             channel = settings.DISCORD_CHANNEL_IDS['#hr-manager']
-#             send_discord_message(channel, message)
-#         else:
-#             message = "@%s has created an application to join %s." % (user_discord_user.username, guild_applying_to.name)
-#             channel = settings.DISCORD_CHANNEL_IDS['#hr-manager']
-#             send_discord_message(channel, message)
-#
-#     except Exception as e:
-#         logger.error("Fatal error in notify_recruitment_channel(). %s" % e)
-#
-# def notify_applicant_decision(user, slug, decision):
-#     try:
-#         guild_applying_to = Guild.objects.get(slug=slug)
-#         user_discord_user = DiscordUser.objects.get(user=user)
-#         channel = settings.DISCORD_CHANNEL_IDS['#recruitment']
-#         message = "<@%s>, your application to %s has been **%s**." % (user_discord_user.id, guild_applying_to.name, decision)
-#         send_discord_message(channel, message)
-#     except Exception as e:
-#         logger.error("Fatal error in notify_applicant_decision(). %s" % e)
-#
-# def notify_applicant_recruiter_assignment(user, slug, recruiter):
-#     try:
-#         guild_applying_to = Guild.objects.get(slug=slug)
-#         user_discord_user = DiscordUser.objects.get(user=user)
-#         recruiter_discord_user = DiscordUser.objects.get(user=recruiter)
-#         message = "<@%s>, your application to %s has been assigned to Recruiter <@%s>." % (user_discord_user.id, guild_applying_to.name, recruiter_discord_user.id)
-#         channel = settings.DISCORD_CHANNEL_IDS['#recruitment']
-#         send_discord_message(channel, message)
-#     except Exception as e:
-#         logger.error("Fatal error in notify_applicant_recruiter_assignment(). %s" % e)
+def notify_user(user, slug, type, **kwargs):
+    if type == "submit":
+        send_discord_message(
+        discord_settings.RECRUITMENT_CHANNEL,
+        "Thank you for submitting your %s application. Please wait up to 48 hours to be assigned a recruiter." % Guild.objects.get(slug=slug).name,
+        user=user.id
+        )
+    elif type == "accepted":
+        send_discord_message(
+        discord_settings.RECRUITMENT_CHANNEL,
+        "Congratulations, your application to %s has been **ACCEPTED.** Welcome aboard, DM your recruiter for the next step." % Guild.objects.get(slug=slug).name,
+        user=user.id
+        )
+    elif type == "rejected":
+        send_discord_message(
+        discord_settings.RECRUITMENT_CHANNEL,
+        "Sorry, your application to %s has been **REJECTED.** DM your recruiter for details." % Guild.objects.get(slug=slug).name,
+        user=user.id
+        )
+    elif type == "assigned":
+        recruiter = kwargs.get('recruiter')
+        send_discord_message(
+        discord_settings.RECRUITMENT_CHANNEL,
+        "Your application to %s has been assigned to **%s**. DM them if you have questions." % (Guild.objects.get(slug=slug).name, recruiter.discord),
+        user=user.id
+        )
+
+
+
+def notify_recruitment_channel(user, slug, type):
+    if type == "submit":
+        send_discord_message(
+        discord_settings.HR_CHANNEL,
+        "%s has submitted an %s application. Please add a :white_check_mark: if you intend on handling it." % (user.discord, Guild.objects.get(slug=slug).name),
+        group=Guild.objects.get(slug=slug).group.id
+        )

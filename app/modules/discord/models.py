@@ -18,6 +18,9 @@ class DiscordUser(ModuleUser):
     # REFERENCES
     groups = models.ManyToManyField("DiscordGroup")
 
+    def __str__(self):
+        return self.username
+
 class DiscordGroup(ModuleGroup):
     def get_users():
         pass
