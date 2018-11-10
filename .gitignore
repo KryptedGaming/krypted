@@ -115,3 +115,6 @@ app/celerybeat.pid
 
 # hide conf
 app/app/conf/
+
+# venv
+myvenv/
