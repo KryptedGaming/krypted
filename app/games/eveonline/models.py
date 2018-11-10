@@ -115,7 +115,7 @@ class EveCorporation(models.Model):
         self.save()
 
 class EveCharacter(models.Model):
-    character_name = models.CharField(max_length=255, primary_key=True)
+    character_name = models.CharField(max_length=255)
     character_portrait = models.URLField(max_length=255, blank=True, null=True)
     character_alt_type = models.CharField(max_length=255, choices=eve_settings.EVE_ALT_TYPES, null=True, blank=True)
     corporation = models.ForeignKey("EveCorporation", null=True, on_delete=models.SET_NULL)
