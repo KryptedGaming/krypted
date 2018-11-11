@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser, Group as DjangoGroup, PermissionsMixin
 from django.db import models
 from django.conf import settings
+import uuid
 
 """
 CORE MODELS
@@ -15,6 +16,7 @@ class User(AbstractUser):
     avatar = models.URLField(max_length=255, blank=True, null=True)
     biography = models.TextField(blank=True, null=True)
     region = models.CharField(max_length=2, choices=settings.REGIONS)
+    activation_key = models.UUIDField(default=uuid.uuid4, blank=True, null=True)
 
     # REFERENCES
     guilds = models.ManyToManyField("Guild", blank=True)

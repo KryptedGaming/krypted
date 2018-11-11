@@ -1,4 +1,4 @@
-from __future__ import unicode_literals
+
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
@@ -138,11 +138,11 @@ class EveCharacter(models.Model):
             logger.info("Character %s does not have a corporation. Updating." % self.character_name)
             # Pull the character information
             self.token.refresh()
-            esi_app = settings.ESI_APP
-            esi_security = settings.ESI_SECURITY
+            esi_app = eve_settings.ESI_APP
+            esi_security = eve_settings.ESI_SECURITY
             esi_security.update_token(self.token.populate())
             op = esi_app.op['get_characters_character_id'](character_id=self.token.character_id)
-            character = settings.ESI_CLIENT.request(op)
+            character = eve_settings.ESI_CLIENT.request(op)
             logger.info("Response: %s" % str(character.data))
             # Build the corporation if needed
             if EveCorporation.objects.filter(corporation_id=character.data['corporation_id']).exists():

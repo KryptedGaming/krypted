@@ -1,6 +1,5 @@
 from django.conf.urls import include, url
 from games.eveonline.views import eve, sso
-from games.eveonline.modules.fleet import views as fleet
 
 ## BASE
 urlpatterns = [
@@ -14,11 +13,11 @@ urlpatterns = [
 # ## MODULES
 # fleets
 urlpatterns += [
-    url(r'^fleets/', fleet.view_fleets, name='view-fleets'),
-    url(r'^fleets/create/', fleet.create_fleet, name='create-fleet'),
-    url(r'^fleets/view/(?P<fleet_id>\d+)', fleet.view_fleet, name='view-fleet'),
-    url(r'^fleets/edit/(?P<fleet_id>\d+)', fleet.edit_fleet, name='edit-fleet'),
-    url(r'^fleets/delete/(?P<fleet_id>\d+)', fleet.delete_fleet, name='delete-fleet')
+    # url(r'^fleets/', fleet.view_fleets, name='view-fleets'),
+    # url(r'^fleets/create/', fleet.create_fleet, name='create-fleet'),
+    # url(r'^fleets/view/(?P<fleet_id>\d+)', fleet.view_fleet, name='view-fleet'),
+    # url(r'^fleets/edit/(?P<fleet_id>\d+)', fleet.edit_fleet, name='edit-fleet'),
+    # url(r'^fleets/delete/(?P<fleet_id>\d+)', fleet.delete_fleet, name='delete-fleet')
 ]
 
 ## SSO

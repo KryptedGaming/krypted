@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login
 from core.models import User
 import logging
@@ -24,8 +25,6 @@ class LoginForm(forms.Form):
             return User.objects.get(email=username).username
         else:
             return username
-
-
 
 class RegisterForm(forms.Form):
     username = forms.CharField(max_length=64, required=True)
@@ -53,6 +52,10 @@ class RegisterForm(forms.Form):
                 self.add_error('password', 'Password must be 8 characters or more.')
 
         return input
+
+class CoreAuthenticationForm(AuthenticationForm):
+    def confirm_login_allowed(self, user):
+        pass
 
 class EventForm(forms.Form):
     pass

@@ -3,13 +3,12 @@ from games.eveonline.models import Token, EveCharacter
 from core.models import User, Group
 from core.models import Guild
 from core.decorators import login_required, tutorial_complete, permission_required
-from core.views.base import get_global_context
 from django.conf import settings
+from app.conf import eve as eve_settings
 from django.contrib import messages
 from django.http import HttpResponse
 from django.db.models import Q
 from django.conf import settings
-from games.eveonline.modules.audit.views import get_raw_character_data
 from operator import itemgetter
 import json, logging, datetime, time
 
@@ -20,7 +19,7 @@ logger = logging.getLogger(__name__)
 @tutorial_complete
 def dashboard(request):
     context = get_eve_context(request)
-    context['alt_types'] = settings.EVE_ALT_TYPES
+    context['alt_types'] = eve_settings.EVE_ALT_TYPES
     logger.info("User connected to the EVE dashboard.")
     return render(request, 'eveonline/dashboard.html', context)
 
@@ -101,8 +100,8 @@ def set_alt_character(request, character, alt_type):
 
 @login_required
 def get_eve_context(request):
-    context = get_global_context(request)
-    if Group.objects.get(name=settings.EVE_ONLINE_GROUP) in request.user.groups.all():
+    context = {}
+    if Guild.objects.get(slug='eve') in request.user.guilds.all():
         context['in_guild'] = True
     else:
         context['in_guild'] = False
@@ -117,7 +116,7 @@ def get_character_data(request, token):
     logger.info("Starting EVE Online Audit for Character: %s" % token.character_name)
     start = time.time()
     token.refresh()
-    settings.ESI_SECURITY.update_token(token.populate())
+    eve_settings.ESI_SECURITY.update_token(token.populate())
     name_scopes = {
                    'skills': 'get_characters_character_id_skills',
                    'mails': 'get_characters_character_id_mail',
@@ -129,8 +128,8 @@ def get_character_data(request, token):
     data = {}
     data['character_id'] = token.character_id
     for scope in name_scopes:
-        op = settings.ESI_APP.op[name_scopes[scope]](character_id=token.character_id)
-        response = settings.ESI_CLIENT.request(op)
+        op = eve_settings.ESI_APP.op[name_scopes[scope]](character_id=token.character_id)
+        response = eve_settings.ESI_CLIENT.request(op)
         if response.status == 200:
             data[scope] = response.data
         else:
@@ -173,8 +172,8 @@ def clean_character_journal(data):
                 query.append(entry.first_party_id)
             if 'second_party_id' in entry:
                 query.append(entry.second_party_id)
-        op = settings.ESI_APP.op['post_universe_names'](ids=query)
-        response = settings.ESI_CLIENT.request(op)
+        op = eve_settings.ESI_APP.op['post_universe_names'](ids=query)
+        response = eve_settings.ESI_CLIENT.request(op)
         if response.status == 200:
             counter1 = 0
             counter2 = 0
@@ -203,8 +202,8 @@ def clean_mail_results(data):
                 character_ids.add(recipient['recipient_id'])
     character_ids = list(character_ids)
 
-    op = settings.ESI_APP.op['post_universe_names'](ids=character_ids)
-    character_ids = settings.ESI_CLIENT.request(op).data
+    op = eve_settings.ESI_APP.op['post_universe_names'](ids=character_ids)
+    character_ids = eve_settings.ESI_CLIENT.request(op).data
     for character in character_ids:
         for mail in data['mails']:
             if str(mail['from']) == str(character['id']):
@@ -230,8 +229,8 @@ def clean_mail_results(data):
                 recipient['recipient_url'] = ""
     # Add mail data
     for mail in data['mails']:
-        op = settings.ESI_APP.op['get_characters_character_id_mail_mail_id'](character_id=data['character_id'], mail_id=mail['mail_id'])
-        mail_body = settings.ESI_CLIENT.request(op).data
+        op = eve_settings.ESI_APP.op['get_characters_character_id_mail_mail_id'](character_id=data['character_id'], mail_id=mail['mail_id'])
+        mail_body = eve_settings.ESI_CLIENT.request(op).data
         if 'body' in mail_body:
             mail['body'] = mail_body['body']
         else:
@@ -242,8 +241,8 @@ def clean_contacts(data):
     character_ids = []
     for contact in data['contacts']:
         character_ids.append(contact['contact_id'])
-    op = settings.ESI_APP.op['post_universe_names'](ids=character_ids)
-    character_ids = settings.ESI_CLIENT.request(op).data
+    op = eve_settings.ESI_APP.op['post_universe_names'](ids=character_ids)
+    character_ids = eve_settings.ESI_CLIENT.request(op).data
     for character in character_ids:
         for contact in data['contacts']:
             if contact['contact_id'] == character.id:
@@ -266,8 +265,8 @@ def clean_contracts(data):
             character_ids.append(contract['issuer_id'])
         if contract['acceptor_id'] != 0:
             character_ids.append(contract['acceptor_id'])
-    op = settings.ESI_APP.op['post_universe_names'](ids=character_ids)
-    character_ids = settings.ESI_CLIENT.request(op).data
+    op = eve_settings.ESI_APP.op['post_universe_names'](ids=character_ids)
+    character_ids = eve_settings.ESI_CLIENT.request(op).data
     for character in character_ids:
         for contract in data['contracts']:
             if contract['issuer_id'] == character.id:

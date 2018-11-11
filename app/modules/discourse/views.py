@@ -49,7 +49,7 @@ def sso(request):
         'email': request.user.email,
         'external_id': request.user.id,
         'username': request.user.username,
-        'require_activation': 'true',
+        'require_activation': 'false',
     }
 
     return_payload = base64.encodestring(bytes(urlparse.urlencode(params), 'utf-8'))

@@ -15,14 +15,8 @@ urlpatterns = [
 
 # GAMES
 urlpatterns += [
-    # url(r'^eve/', include('games.eveonline.urls')),
+    url(r'^eve/', include('games.eveonline.urls')),
     # url(r'^rust/', RedirectView.as_view(url='/applications/add/rust/')),
     # url(r'^dnd/', RedirectView.as_view(url='/applications/add/dnd/')),
     # url(r'^wow/', RedirectView.as_view(url='/applications/add/wow/'))
 ]
-
-# CONDITIONAL MODULES
-if apps.is_installed('modules.slack'):
-    urlpatterns += [
-    url(r'^slack/', include('modules.slack.urls')),
-    ]

@@ -5,6 +5,7 @@ from core.models import User, Group
 from core.models import Guild
 from esipy import App, EsiClient, EsiSecurity
 from django.conf import settings
+from app.conf import eve as eve_settings
 import logging, time
 
 logger = logging.getLogger(__name__)
@@ -25,16 +26,15 @@ def verify_sso_tokens():
 def sync_users():
     logger.info("Bulk updating all users for EVE Online roles")
     call_count = 0
-    for user in User.objects.filter(groups__name=settings.EVE_ONLINE_GROUP):
+    for user in User.objects.filter(groups__name=eve_settings.EVE_ONLINE_GROUP):
         logger.info("Syncing EVE Online permissions for %s" % user.username)
         if Token.objects.filter(user=user).count() > 0:
             sync_user.apply_async(args=[user.pk], countdown=call_count*10)
             call_count += 1
         else:
-            eve_guild = Guild.objects.get(group__name=settings.EVE_ONLINE_GROUP)
-            eve_group = Group.objects.get(name=settings.EVE_ONLINE_GROUP)
+            eve_guild = Guild.objects.get(slug="eve")
             try:
-                if eve_group in user.groups.all():
+                if eve_guild.group in user.groups.all():
                     sync_user.apply_async(args=[user.pk], countdown=call_count*10)
             except Exception as e:
                 logger.error("Error when syncing EVE user. %s" % e)
@@ -47,10 +47,10 @@ These tasks build the above tasks.
 def verify_sso_token(character_id):
     token = Token.objects.get(character_id=character_id)
     character = EveCharacter.objects.get(token=token)
-    settings.ESI_SECURITY.update_token(token.populate())
+    eve_settings.ESI_SECURITY.update_token(token.populate())
     logger.info("Syncing token for %s" % character.character_name)
     try:
-        settings.ESI_SECURITY.refresh()
+        eve_settings.ESI_SECURITY.refresh()
         character.update_corporation()
         sync_user.apply_async(args=[token.user.pk], countdown=10)
     except Exception as e:
@@ -64,45 +64,26 @@ def verify_sso_token(character_id):
 def sync_user(user):
     # Get user information
     user = User.objects.get(pk=user)
+    guild = Guild.objects.get(slug="eve")
     logger.info("Syncing user %s for EVE Online..." % user.username)
     if not EveCharacter.objects.filter(main=None, user=user):
         clear_eve_groups(user)
     else:
         main_character = EveCharacter.objects.get(main=None, user=user)
-        main_status = False
-        secondary_status = False
-        if settings.ALLIANCE_MODE:
-            if str(main_character.corporation.alliance_id) in settings.MAIN_ENTITY_ID:
-                main_status = True
-            elif str(main_character.corporation.alliance_id) in settings.SECONDARY_ENTITY_IDS:
-                secondary_status = True
-            else:
-                if Group.objects.get(name=settings.EVE_ONLINE_GROUP) in user.groups.all():
-                    user.groups.remove(Group.objects.get(name=settings.EVE_ONLINE_GROUP))
-        else:
-            if str(main_character.corporation.corporation_id) in settings.MAIN_ENTITY_ID:
-                main_status = True
-            elif str(main_character.corporation.corporation_id) in settings.SECONDARY_ENTITY_IDS:
-                secondary_status = True
+        in_main_corporation = str(main_character.corporation.corporation_id) in eve_settings.MAIN_ENTITY_ID
+        in_secondary_corporation = str(main_character.corporation.corporation_id) in eve_settings.SECONDARY_ENTITY_IDS
 
-        if main_status:
-                user.groups.add(Group.objects.get(name=settings.EVE_ONLINE_MAIN_GROUP))
-                time.sleep(1)
-                user.groups.add(Group.objects.get(name=settings.EVE_ONLINE_GROUP))
-                time.sleep(1)
-                user.groups.add(Group.objects.get(name=settings.RECRUIT_GROUP))
+        if in_main_corporation or in_secondary_corporation:
+            user.groups.add(guild.group)
 
-        if secondary_status:
-                user.groups.add(Group.objects.get(name=settings.EVE_ONLINE_GROUP))
-                time.sleep(1)
-                user.groups.add(Group.objects.get(name=settings.RECRUIT_GROUP))
-
-        if not main_status and not secondary_status:
+        if not in_main_corporation and not in_secondary_corporation:
             clear_eve_groups(user)
 
 def clear_eve_groups(user):
-    eve_groups = Group.objects.filter(name__contains="EVE")
-    for group in eve_groups:
-        time.sleep(1)
+    guild = Guild.objects.get(slug="eve")
+    guild_groups = Group.objects.filter(guild=guild)
+    for group in guild_groups:
         if group in user.groups.all():
             user.groups.remove(group)
+        time.sleep(1)
+    user.groups.remove(guild.group)

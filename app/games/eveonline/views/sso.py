@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect, get_object_or_404
 from esipy import App, EsiClient, EsiSecurity
 from django.conf import settings
+from app.conf import eve as eve_settings
 from games.eveonline.models import Token, EveCharacter
 from core.models import User
 from core.decorators import login_required
@@ -11,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 # Create your views here.
 def add_token(request):
-    return redirect(settings.ESI_URL_CACHE)
+    return redirect(eve_settings.ESI_URL_CACHE)
 
 @login_required
 def remove_token(request, character):
@@ -31,8 +32,8 @@ def receive_token(request):
     if request.user.is_authenticated:
         ## SSO PROCESS
         code = request.GET.get('code', None)
-        esi_token = settings.ESI_SECURITY.auth(code)
-        esi_verified = settings.ESI_SECURITY.verify()
+        esi_token = eve_settings.ESI_SECURITY.auth(code)
+        esi_verified = eve_settings.ESI_SECURITY.verify()
 
         ## CHECK IF TOKEN OF SAME CHARACTER EXISTS
         if Token.objects.filter(character_name=esi_verified['CharacterName']).count() > 0:
@@ -56,8 +57,8 @@ def receive_token(request):
         token.save()
 
         ## CREATE CHARACTER
-        op = settings.ESI_APP.op['get_characters_character_id_portrait'](character_id=token.character_id)
-        portrait = settings.ESI_CLIENT.request(op)
+        op = eve_settings.ESI_APP.op['get_characters_character_id_portrait'](character_id=token.character_id)
+        portrait = eve_settings.ESI_CLIENT.request(op)
 
         try:
             eve_main_character = EveCharacter.objects.get(main=None, user=request.user)
