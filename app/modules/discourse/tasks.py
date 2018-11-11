@@ -33,6 +33,9 @@ def update_external_id(self, user_id):
 def add_discourse_group(self, group_id):
     # pull objects from database
     group = Group.objects.get(pk=group_id)
+    # Check if exists
+    if DiscourseGroup.objects.filter(group=group).exists():
+        return True
     # call discourse client api
     response = DiscourseClient.add_group_to_discourse_server(group.name)
     # handle response

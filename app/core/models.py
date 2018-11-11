@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser, Group as DjangoGroup, PermissionsMixin
 from django.db import models
 from django.conf import settings
+from app.conf import groups as group_settings
 import uuid
 
 """
@@ -39,6 +40,25 @@ class User(AbstractUser):
     def has_group(self, group):
         return group in self.groups.all()
 
+    # FUNCTIONS
+    def in_staff_group(self):
+        try:
+            if Guild.objects.get(slug='admin').group in self.groups.all():
+                return True
+            else:
+                return False
+        except:
+            return False
+
+    def is_hr(self):
+        try:
+            if Group.objects.get(name=group_settings.HR_GROUP) in self.groups.all():
+                return True
+            else:
+                return False
+        except:
+            return False
+
 class Group(DjangoGroup):
     """
     Group model for Krypted Authentication.
@@ -57,8 +77,15 @@ class Group(DjangoGroup):
     type = models.CharField(max_length=12, choices=group_types)
 
     # REFERENCES
-    guild = models.OneToOneField("Guild", on_delete=models.SET_NULL, blank=True, null=True, related_name="group_guild")
+    guild = models.ForeignKey("Guild", on_delete=models.SET_NULL, blank=True, null=True, related_name="group_guild")
     managers = models.ManyToManyField("User", blank=True)
+
+    # META
+    class Meta:
+        permissions = (
+            ('manage_group_requests', u'Can manage group requests.'),
+            ('audit_group_requests', u'Can audit group requests.'),
+        )
 
 class Event(models.Model):
     """
@@ -114,7 +141,7 @@ class GroupRequest(models.Model):
     )
     # AUTHENTICATION
     request_user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="group_request_request_user")
-    request_group = models.OneToOneField("Group", on_delete=models.CASCADE)
+    request_group = models.ForeignKey("Group", on_delete=models.CASCADE)
     request_date = models.DateField(auto_now=True)
 
     # MANAGEMENT
@@ -151,12 +178,12 @@ class GuildApplicationQuestion(models.Model):
         ("MODAL", "Modal")
     )
     # BASIC INFORMATION
-    name = models.CharField(max_length=32)
-    help_text = models.TextField()
+    name = models.CharField(max_length=256)
+    help_text = models.TextField(blank=True, null=True)
     type = models.CharField(max_length=16, choices=question_type_fields)
 
     # OPTIONAL: MODAL
-    choices = models.CharField(max_length=256)
+    choices = models.CharField(max_length=256, blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -218,6 +245,12 @@ class ModuleGroup(models.Model):
     """
     external_id = models.BigIntegerField(blank=True, null=True)
     group = models.OneToOneField("core.Group", null=True, on_delete=models.SET_NULL)
+
+    def __str__(self):
+        if self.group:
+            return self.group.name
+        else:
+            return "None"
 
     class Meta:
         abstract=True

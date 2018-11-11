@@ -5,7 +5,7 @@
   <!-- Optionally, you can add icons to the links -->
   <li><a href="{% url 'dashboard' %}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
   <li><a href="{% url 'groups' %}"><i class="fa fa-users"></i> <span>Groups</span></a></li>
-  <li><a href="{% url 'guilds' %}"><i class="fa fa-gamepad"></i> <span>Games</span></a></li>
+  <li><a href="{% url 'guilds' %}"><i class="fa fa-gamepad"></i> <span>Branches</span></a></li>
 
   <li class="treeview">
     <a href="#"><i class="fa fa-twitter"></i> <span>Social</span>
@@ -23,21 +23,22 @@
   </li>
 
   <!-- ADMIN LINKS -->
+  {% if request.user.in_staff_group %}
   <li class="header">ADMIN</li>
   <!-- Optionally, you can add icons to the links -->
-  {% if perms.core.manage_guild_applications %}
+  {% if request.user.is_hr %}
   <li><a href="{% url 'hr-view-applications' %}"><i class="fa fa-paperclip"></i> <span>Applications</span></a></li>
   {% endif %}
-  <li><a href="{% url 'view-members' %}"><i class="fa fa-users"></i> <span>Members</span></a></li>
+  <!-- <li><a href="{% url 'view-members' %}"><i class="fa fa-users"></i> <span>Members</span></a></li> -->
   <li class="treeview">
-    <a href="#"><i class="fa fa-mouse-pointer"></i> <span>Actions</span>
+    <a href="#"><i class="fa fa-mouse-pointer"></i> <span>Extras</span>
       <span class="pull-right-container">
           <i class="fa fa-angle-left pull-right"></i>
         </span>
     </a>
     <ul class="treeview-menu">
-      <li><a href="/slack/add-slack-channel/">Create Slack channel</a></li>
       <li><a href="/admin/">Admin Panel</a></li>
     </ul>
   </li>
+  {% endif %}
 {% endblock %}

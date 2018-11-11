@@ -47,10 +47,11 @@ class Token(models.Model):
                 self.expiry = timezone.now() + datetime.timedelta(0, new_token['expires_in'])
                 self.save()
             except Exception as e:
+                print(e.response)
                 if e.response['error'] == 'invalid_token':
                     self.delete()
         else:
-            print("Token refresh not needed.")
+            logger.info("Token refresh not needed")
 
     def force_refresh(self):
         try:
@@ -131,6 +132,12 @@ class EveCharacter(models.Model):
 
     def __str__(self):
         return self.character_name
+
+    def is_member(self):
+        if self.corporation and (self.corporation.corporation_id == eve_settings.MAIN_ENTITY_ID or self.corporation.corporation_id in eve_settings.SECONDARY_ENTITY_IDS):
+            return True
+        else:
+            return False
 
     def update_corporation(self):
         logger.info("Updating Corporation for %s" % self.character_name)

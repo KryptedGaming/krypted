@@ -49,7 +49,6 @@
         <tbody>
           {% for group in groups %}
           <tr>
-            {{group.user_has_group}}
             <td>{{group.group.name|cleanGroupName}}</td>
             <td>{{group.group.description}}</td>
             <td>

@@ -38,6 +38,9 @@ def send_discord_message(channel, message, **kwargs):
 def add_discord_group(self, group_id):
     # Pull objects from database
     group = Group.objects.get(id=group_id)
+    # Check if exists
+    if DiscordGroup.objects.filter(group=group).exists():
+        return True
     # Call discord client
     response = DiscordClient.add_group_to_discord_server(group.name)
     # Handle response

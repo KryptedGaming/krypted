@@ -14,9 +14,9 @@
           <div style="padding: 5px 5px 5px 5px" class="card text-center">
                   <h4 class="text-center">Guilds</h4>
                   <hr>
-                  {% if profile.guilds.all %}
-                      {% for guild in profile.guilds.all %}
-                      <button onclick="location.href='/{{guild.slug}}/'" style="min-width: 75%;" class="btn btn-info btn-fill"><img style="float: left; width: 25px;" src="{{guild.image}}"/> {{guild.title}}</button>
+                  {% if request.user.guilds.all %}
+                      {% for guild in request.user.guilds.all %}
+                      <button onclick="location.href='/{{guild.slug}}/'" style="min-width: 75%;" class="btn btn-info btn-fill"><img style="float: left; width: 25px;" src="{{guild.image}}"/> {{guild.name}}</button>
                       <hr>
                       {% endfor %}
                   {% else %}
@@ -39,7 +39,7 @@
                   {% endif %}
                   <button onclick="location.href='{% url 'discord_index' %}'" style="min-width: 75%;" class="btn btn-{% if request.user.discord %}success{%else%}danger{%endif%}">Discord</button>
                   <hr>
-                  <button onclick="location.href='https://devforum.kryptedgaming.com'" style="min-width: 75%;" class="btn btn-{% if request.user.discourse %}success{%else%}danger{%endif%}">Forum</button>
+                  <button onclick="location.href='https://forum.kryptedgaming.com'" style="min-width: 75%;" class="btn btn-{% if request.user.discourse %}success{%else%}danger{%endif%}">Forum</button>
                   <hr>
                   <p>If a service has a red background, click on it to enable it.</p>
               </div>

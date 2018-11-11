@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
-from core.decorators import login_required, permission_required
+from core.decorators import login_required, staff_required 
 from core.models import *
 from games.eveonline.models import *
 from modules.discord.models import DiscordUser
@@ -13,13 +13,14 @@ logger = logging.getLogger(__name__)
 
 ## BASE
 @login_required
+@staff_required
 def dashboard(request):
     context = {}
     context['applications'] = GuildApplications.order_by(request_date)
     return render(request, 'applications/dashboard.html', context)
 
 @login_required
-@permission_required('core.manage_guild_applications')
+@staff_required
 def view_application(request, pk):
     context = {
         'application': GuildApplication.objects.get(pk=pk),
@@ -54,6 +55,7 @@ def add_application(request, slug):
     return render(request, 'applications/application_base.html', context)
 
 @login_required
+@staff_required
 def approve_application(request, application):
     application = GuildApplication.objects.get(pk=application)
     messages.add_message(request, messages.SUCCESS, 'Application accepted.')
@@ -66,6 +68,7 @@ def approve_application(request, application):
     return redirect('hr-view-applications')
 
 @login_required
+@staff_required
 def deny_application(request, application):
     application = GuildApplication.objects.get(pk=application)
     messages.add_message(request, messages.WARNING, 'Application rejected.')
@@ -78,6 +81,7 @@ def deny_application(request, application):
     return redirect('hr-view-applications')
 
 @login_required
+@staff_required
 def assign_application(request, application, user):
     application = GuildApplication.objects.get(pk=application)
     application.response_user = request.user

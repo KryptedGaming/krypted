@@ -7,7 +7,6 @@ from django.apps import apps
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include('core.urls')),
-    # url(r'^applications/', include('modules.hrapplications.urls')),
     url(r'^discord/', include('modules.discord.urls')),
     url(r'^discourse/', include('modules.discourse.urls')),
     url(r'^favicon.ico$', RedirectView.as_view(url=staticfiles_storage.url('favicon.ico')), name='favicon')

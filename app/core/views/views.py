@@ -6,7 +6,7 @@ from django.conf import settings
 from django.apps import apps
 # LOCAL IMPORTS
 from core.forms import LoginForm, RegisterForm, ProfileForm
-from core.decorators import login_required, services_required
+from core.decorators import login_required, services_required, staff_required
 from core.models import *
 # from core.utils import get_main_eve_character
 # # MODULE IMPORTS
@@ -34,6 +34,7 @@ def guilds(request):
 
 @login_required
 @services_required
+@staff_required
 def applications(request):
     context = {'applications': GuildApplication.objects.all()}
     return render(request, 'base/applications.html', context)
@@ -44,16 +45,22 @@ def groups(request, **kwargs):
     context = {}
     groups = []
     # PERMISSIONS
-    context['manage'] = request.user.has_perm('core.manage_group_requests')
-    context['audit'] = request.user.has_perm('core.audit_group_requests')
+    context['manage'] = request.user.in_staff_group()
+    context['audit'] = request.user.in_staff_group()
 
     # STANDARD GROUP VIEW
     for group in Group.objects.order_by('guild'):
-        if group.type == "PUBLIC":
-            groups.append({
-                'group': group,
-                'requested': request.user.has_group_request(group)
-            })
+        if group.type == "PUBLIC" :
+            if not group.guild:
+                groups.append({
+                    'group': group,
+                    'requested': request.user.has_group_request(group)
+                })
+            elif group.guild in request.user.guilds.all():
+                groups.append({
+                    'group': group,
+                    'requested': request.user.has_group_request(group)
+                })
         elif group.type == "PROTECTED":
             if group.guild in request.user.guilds.all():
                 groups.append({

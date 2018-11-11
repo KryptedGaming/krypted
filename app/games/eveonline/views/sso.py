@@ -5,7 +5,7 @@ from app.conf import eve as eve_settings
 from games.eveonline.models import Token, EveCharacter
 from core.models import User
 from core.decorators import login_required
-from games.eveonline.tasks import sync_user, verify_sso_token
+from games.eveonline.tasks import *
 
 import logging
 logger = logging.getLogger(__name__)
@@ -18,7 +18,7 @@ def add_token(request):
 def remove_token(request, character):
     eve_character = EveCharacter.objects.get(user=request.user, token__character_id=character)
     eve_character.token.delete()
-    sync_user.apply_async(args=[request.user.pk])
+    update_user_groups.apply_async(args=[request.user.pk])
     return redirect('eve-dashboard')
 
 @login_required
@@ -75,7 +75,7 @@ def receive_token(request):
 
         character.save()
         character.update_corporation()
-        sync_user.apply_async(args=[request.user.pk])
+        update_user_groups.apply_async(args=[request.user.pk])
         return redirect('/eve')
     else:
         return redirect('login')

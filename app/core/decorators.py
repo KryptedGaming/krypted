@@ -18,6 +18,16 @@ def login_required(function):
             return function(request, *args, **kw)
     return wrapper
 
+def staff_required(function):
+    def wrapper(request, *args, **kw):
+        if not request.user.in_staff_group():
+            messages.add_message(request, messages.WARNING, 'You do not have permission to view a staff area.')
+            return redirect('dashboard')
+        else:
+            return function(request, *args, **kw)
+    return wrapper
+
+
 def permission_required(permission, next='dashboard'):
     def decorator(function):
         def _wrapped_view(request, *args, **kwargs):
@@ -42,5 +52,9 @@ def no_user_profile(function):
 
 def services_required(function):
     def wrapper(request, *args, **kw):
-        return function(request, *args, **kw)
+        if request.user.discord and request.user.discourse:
+            return function(request, *args, **kw)
+        else:
+            messages.add_message(request, messages.WARNING, 'Please set up your services before proceeding.')
+            return ('dashboard')
     return wrapper
