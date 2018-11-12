@@ -1,5 +1,5 @@
 <h3>Characters</h3>
-{% if characters %}
+{% if application.request_user.eve_characters %}
 <table class="table table-striped">
   <thead>
     <tr>
@@ -9,7 +9,7 @@
     </tr>
   </thead>
   <tbody>
-  {% for character in characters %}
+  {% for character in application.request_user.eve_characters %}
     <tr>
       <td>
           <img style="width: 50px;" src="{{character.character_portrait}}"/>

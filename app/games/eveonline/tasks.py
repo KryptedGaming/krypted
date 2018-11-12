@@ -48,7 +48,6 @@ def update_eve_token(pk):
 @task()
 def update_eve_character(pk):
     eve_character=EveCharacter.objects.get(pk=pk)
-    eve_character.token.refresh()
     eve_character.update_corporation()
 
 @task()
@@ -56,7 +55,7 @@ def update_user_groups(pk):
     user = User.objects.get(pk=pk)
     guild = Guild.objects.get(slug='eve')
     if EveCharacter.objects.filter(user=user).count() < 1:
-        remove_eve_groups()
+        remove_eve_groups(user)
     else:
         eve_character = EveCharacter.objects.get(user=user, main=None)
         if eve_character.is_member():

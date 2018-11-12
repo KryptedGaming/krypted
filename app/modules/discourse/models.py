@@ -16,6 +16,9 @@ class DiscourseUser(ModuleUser):
     def remove_group(self, discourse_group):
         pass
 
+    def __str__(self):
+        return self.user.username
+
 class DiscourseGroup(ModuleGroup):
     def get_users():
         pass

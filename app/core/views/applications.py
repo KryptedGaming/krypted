@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
-from core.decorators import login_required, staff_required 
+from core.decorators import login_required, staff_required
 from core.models import *
 from games.eveonline.models import *
 from modules.discord.models import DiscordUser
@@ -25,13 +25,17 @@ def view_application(request, pk):
     context = {
         'application': GuildApplication.objects.get(pk=pk),
         'responses': GuildApplicationResponse.objects.filter(application_id=pk),
-        'characters': EveCharacter.objects.filter(user=request.user),
     }
     return render(request, 'applications/view_application.html', context)
 
 @login_required
 def add_application(request, slug):
     context = {}
+    if slug == 'eve':
+        if request.user.eve_characters.count() < 1:
+            messages.add_message(request, messages.WARNING, 'Please add all of your EVE characters, then click apply.')
+            return redirect('eve-dashboard')
+
     if request.POST:
         notify_user(user=request.user, slug=slug, type="submit")
         notify_recruitment_channel(request.user, slug, type="submit")

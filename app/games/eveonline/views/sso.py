@@ -18,14 +18,15 @@ def add_token(request):
 def remove_token(request, character):
     eve_character = EveCharacter.objects.get(user=request.user, token__character_id=character)
     eve_character.token.delete()
-    update_user_groups.apply_async(args=[request.user.pk])
+    update_user_groups(eve_character.user.pk)
     return redirect('eve-dashboard')
 
 @login_required
 def refresh_token(request, character):
     eve_character = EveCharacter.objects.get(user=request.user, token__character_id=character)
-    eve_character.token.refresh()
-    verify_sso_token.apply_async(args=[eve_character.token.character_id])
+    update_eve_token(eve_character.token.pk)
+    update_eve_character(eve_character.pk)
+    update_user_groups(eve_character.user.pk)
     return redirect('eve-dashboard')
 
 def receive_token(request):
@@ -75,7 +76,7 @@ def receive_token(request):
 
         character.save()
         character.update_corporation()
-        update_user_groups.apply_async(args=[request.user.pk])
+        update_user_groups(request.user.pk)
         return redirect('/eve')
     else:
         return redirect('login')

@@ -22,6 +22,34 @@ def sync_discord_user(user_id):
             remove_user_from_discord_group.apply_async(args=[user_id, discord_group.group.pk])
 
 @task()
+def update_discord_users():
+    for user in User.objects.all():
+        update_discord_user.apply_async(args=[user.id], countdown=user.id)
+@task()
+def update_discord_user(user_id):
+    # pull objects from database
+    user = User.objects.get(pk=user_id)
+    # break if not discord
+    if not user.discord:
+        return None
+    # call client
+    response = DiscordClient.get_discord_user(user.discord.external_id)
+    # update username
+    if response.status_code == 200:
+        discord = user.discord
+        if response.json()['nick'] != None:
+            discord.username = response.json()['nick'] + "#" + response.json()['user']['discriminator']
+            discord.save()
+        else:
+            discord.username = response.json()['user']['username'] + "#" + response.json()['user']['discriminator']
+            discord.save()
+    else:
+        if 'code' in response.json():
+            if response.json()['code'] == 10007:
+                discord = user.discord
+                discord.delete()
+
+@task()
 def send_discord_message(channel, message, **kwargs):
     if kwargs.get('user'):
         discord_user=DiscordUser.objects.get(user__id=kwargs.get('user'))

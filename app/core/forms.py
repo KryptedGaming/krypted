@@ -7,8 +7,8 @@ import logging
 logger = logging.getLogger(__name__)
 
 class LoginForm(forms.Form):
-    username = forms.CharField(max_length=32)
-    password = forms.CharField(max_length=32)
+    username = forms.CharField(max_length=32, required=True)
+    password = forms.CharField(max_length=32, required=True)
 
     def clean(self):
         input = self.cleaned_data

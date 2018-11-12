@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from games.eveonline.models import Token, EveCharacter
 from core.models import User, Group
 from core.models import Guild
-from core.decorators import login_required, tutorial_complete, permission_required
+from core.decorators import login_required, tutorial_complete, staff_required
 from django.conf import settings
 from app.conf import eve as eve_settings
 from django.contrib import messages
@@ -24,7 +24,7 @@ def dashboard(request):
     return render(request, 'eveonline/dashboard.html', context)
 
 @login_required
-@permission_required('hrapplications.audit_eve_application')
+@staff_required
 def view_character(request, character):
     context = get_eve_context(request)
     character = EveCharacter.objects.get(token__character_id=character)

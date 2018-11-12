@@ -35,15 +35,18 @@ def group_add_user(request, group_id, user_id):
     return redirect('groups')
 
 @login_required
-@staff_required
 def group_remove_user(request, group_id, user_id):
-    user = User.objects.get(id=user_id)
-    group_request = GroupRequest.objects.filter(request_user=user, request_group=Group.objects.get(id=group_id)).first()
-    user.groups.remove(group_request.request_group)
-    user.save()
-    group_request.delete()
-    notify_user(group_request, "REMOVED")
-    return redirect('groups')
+    if request.user.in_staff_group() or request.user.id == user_id:
+        user = User.objects.get(id=user_id)
+        user.groups.remove(Group.objects.get(pk=group_id))
+        user.save()
+        try:
+            group_request = GroupRequest.objects.filter(request_user=user, request_group=Group.objects.get(id=group_id)).first()
+            group_request.delete()
+        except Exception as e:
+            logger.error(e)
+        notify_user(group_request, "REMOVED")
+        return redirect('groups')
 
 # HELPERS
 def notify_discord_channel(group_request, guild):

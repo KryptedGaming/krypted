@@ -34,6 +34,16 @@ class User(AbstractUser):
         from modules.discourse.models import DiscourseUser
         return DiscourseUser.objects.filter(user=self).first()
 
+    @property
+    def eve_character(self):
+        from games.eveonline.models import EveCharacter
+        return EveCharacter.objects.filter(user=self, main=None).first()
+
+    @property
+    def eve_characters(self):
+        from games.eveonline.models import EveCharacter
+        return EveCharacter.objects.filter(user=self)
+
     def has_group_request(self, group):
         return GroupRequest.objects.filter(request_user=self, request_group=group, response_action="PENDING").exists()
 

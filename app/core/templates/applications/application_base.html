@@ -7,10 +7,6 @@
   </h1>
 {% endblock %}
 {% block content %}
-    {# GAME SPECIFIC #}
-    {% if template.name == 'EVE' %}
-    {% include "applications/games/eve_character_display.html" %}
-    {% endif %}
     <form class="form" method="POST">
         {% csrf_token %}
         {% for question in template.questions.all %}
