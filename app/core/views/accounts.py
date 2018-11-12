@@ -35,6 +35,9 @@ def login_user(request):
         else:
             if User.objects.filter(username=request.POST['username']).exists():
                 user = User.objects.get(username=request.POST['username'])
+            else:
+                messages.add_message(request, messages.ERROR, 'That user does not exist. %s' % request.POST['username'])
+                return redirect('login')
             username_invalid = not User.objects.filter(username=request.POST['username']).exists()
             email_invalid = not User.objects.filter(email=request.POST['username']).exists()
             if username_invalid and email_invalid:
@@ -80,6 +83,7 @@ def register_user(request):
                     email=request.POST['email'],
                     password=request.POST['password'],
                     region=request.POST['region'],
+                    age=request.POST['age'],
                     activation_key=uuid.uuid4(),
                     is_active=False
                     )

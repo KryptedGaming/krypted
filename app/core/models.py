@@ -18,6 +18,7 @@ class User(AbstractUser):
     biography = models.TextField(blank=True, null=True)
     region = models.CharField(max_length=2, choices=settings.REGIONS)
     activation_key = models.UUIDField(default=uuid.uuid4, blank=True, null=True)
+    age = models.IntegerField(null=True)
 
     # REFERENCES
     guilds = models.ManyToManyField("Guild", blank=True)
@@ -49,6 +50,12 @@ class User(AbstractUser):
 
     def has_group(self, group):
         return group in self.groups.all()
+
+    def get_tenure(self):
+        import datetime, pytz
+        tenure = datetime.datetime.now().replace(tzinfo=pytz.UTC) - self.date_joined
+        tenure = tenure.total_seconds() / 60 / 60 / 24 / 365
+        return tenure
 
     # FUNCTIONS
     def in_staff_group(self):

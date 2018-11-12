@@ -115,7 +115,7 @@ def remove_user_from_discourse_group(self, user_id, group_id):
     try:
         if response.status_code == 429:
             logger.warning("RATELIMIT - Removing Group [%s] from User [%s]" % (group_id, user_id))
-            self.apply_async(args=[user_ud, group_id], countdown=60)
+            self.apply_async(args=[user_id, group_id], countdown=60)
         elif response.status_code == 200:
             logger.info("SUCCESS - Removing Group [%s] from User [%s]" % (group_id, user_id))
             discourse_user.groups.remove(discourse_group)

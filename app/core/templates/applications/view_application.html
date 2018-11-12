@@ -2,7 +2,7 @@
 {% block brand %}
   <h1>
     View Application
-    <small>{{application.template.guild.name}} | {{user.username}}</small>
+    <small>{{application.template.guild.name}} | {{application.request_user.username}} (Age {{application.request_user.age}})</small>
   </h1>
 {% endblock %}
 {% block content %}
