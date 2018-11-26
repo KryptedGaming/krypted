@@ -45,7 +45,7 @@
                 <img style="width: 50px;" src="{{character.character_portrait}}"/>
             </td>
             <td>
-                <a href="/eve/character/{{character.token.character_id}}/">{{character.character_name}}</a>
+                <a href="/eve/character/{{character.character_id}}/">{{character.character_name}}</a>
             </td>
             <td>
                 {% if character.main == None %}
@@ -57,11 +57,11 @@
                   {{character.get_character_alt_type_display}}
                 </div>
                 {% else %}
-                <button data-toggle="modal" data-target="#selectModal{{character.token.character_id}}" class="btn btn-warning btn-fill pull-left"><i class="fa fa-pencil"></i></button>
+                <button data-toggle="modal" data-target="#selectModal{{character.character_id}}" class="btn btn-warning btn-fill pull-left"><i class="fa fa-pencil"></i></button>
                 {% endif %}
             <td>
-              <button onclick="location.href='/eve/remove-sso-token/{{character.token.character_id}}'" class="btn btn-danger btn-fill"><i class="fa fa-times"></i></button>
-              <button onclick="location.href='/eve/refresh-sso-token/{{character.token.character_id}}'" class="btn btn-warning btn-fill"><i class="fa fa-retweet"></i></button>
+              <button onclick="location.href='/eve/remove-sso-token/{{character.character_id}}'" class="btn btn-danger btn-fill"><i class="fa fa-times"></i></button>
+              <button onclick="location.href='/eve/refresh-sso-token/{{character.character_id}}'" class="btn btn-warning btn-fill"><i class="fa fa-retweet"></i></button>
             </td>
           </tr>
         {% endfor %}

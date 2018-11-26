@@ -4,7 +4,7 @@ from games.eveonline.models import *
 # Register your models here.
 @admin.register(Token)
 class TokenAdmin(admin.ModelAdmin):
-    list_display = ('character_id', 'character_name', 'access_token', 'expiry')
+    list_display = ('access_token', 'expiry')
 
 @admin.register(EveCharacter)
 class EveCharacterAdmin(admin.ModelAdmin):

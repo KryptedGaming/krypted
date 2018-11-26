@@ -27,7 +27,7 @@ def dashboard(request):
 @staff_required
 def view_character(request, character):
     context = get_eve_context(request)
-    character = EveCharacter.objects.get(token__character_id=character)
+    character = EveCharacter.objects.get(character_id=character)
     context['character'] = character
     token = character.token
     token.refresh()
@@ -78,8 +78,8 @@ def view_character(request, character):
 
 @login_required
 def set_main_character(request, character):
-    eve_character = EveCharacter.objects.get(token__character_id=character, user=request.user)
-    eve_alts = EveCharacter.objects.filter(~Q(token__character_id=character), user=request.user)
+    eve_character = EveCharacter.objects.get(character_id=character, user=request.user)
+    eve_alts = EveCharacter.objects.filter(~Q(character_id=character), user=request.user)
     eve_character.main = None
     eve_character.character_alt_type = None
     eve_character.save()
@@ -91,7 +91,7 @@ def set_main_character(request, character):
 
 @login_required
 def set_alt_character(request, character, alt_type):
-    eve_character = EveCharacter.objects.get(token__character_id=character, user=request.user)
+    eve_character = EveCharacter.objects.get(character_id=character, user=request.user)
     eve_character_main = EveCharacter.objects.get(user=request.user, main=None)
     eve_character.main = eve_character_main
     eve_character.character_alt_type = alt_type
@@ -113,7 +113,8 @@ Helper Functions
 Used for the above web calls
 """
 def get_character_data(request, token):
-    logger.info("Starting EVE Online Audit for Character: %s" % token.character_name)
+    eve_character = EveCharacter.objects.get(token=token)
+    logger.info("Starting EVE Online Audit for Character: %s" % eve_character.character_name)
     start = time.time()
     token.refresh()
     eve_settings.ESI_SECURITY.update_token(token.populate())
@@ -126,9 +127,9 @@ def get_character_data(request, token):
                    'wallet': 'get_characters_character_id_wallet'
                    }
     data = {}
-    data['character_id'] = token.character_id
+    data['character_id'] = eve_character.character_id
     for scope in name_scopes:
-        op = eve_settings.ESI_APP.op[name_scopes[scope]](character_id=token.character_id)
+        op = eve_settings.ESI_APP.op[name_scopes[scope]](character_id=eve_character.character_id)
         response = eve_settings.ESI_CLIENT.request(op)
         if response.status == 200:
             data[scope] = response.data
@@ -160,7 +161,7 @@ def get_character_data(request, token):
             data = clean_contacts(data)
         except Exception as e:
             logger.info("[AUDIT] Contacts failed to load with %s" % e)
-    logger.info("EVE Online audit for %s finished in %s seconds." % (token.character_name, str(time.time() - start)))
+    logger.info("EVE Online audit for %s finished in %s seconds." % (eve_character.character_name, str(time.time() - start)))
     return data
 
 def clean_character_journal(data):

@@ -11,23 +11,11 @@ logger = logging.getLogger(__name__)
 
 # Create your models here.
 class Token(models.Model):
-    ## EVE CHARACTER
-    character_id = models.IntegerField(blank=True, null=True)
-    character_owner_hash = models.CharField(max_length=255)
-    character_name = models.CharField(max_length=255)
-
-
     ## SSO
     access_token = models.CharField(max_length=255)
     refresh_token = models.TextField(blank=True, null=True)
     expires_in = models.IntegerField(default=0)
     expiry = models.DateTimeField(blank=True, null=False, auto_now_add=True)
-
-    ## User
-    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
-
-    def __str__(self):
-        return self.character_name
 
     def populate(self):
         data = {}
@@ -86,7 +74,7 @@ class EveCorporation(models.Model):
         self.member_count = response.data['member_count']
         self.tax_rate = response.data['tax_rate']
         try:
-            self.ceo = EveCharacter.objects.get(token__character_id=response.data['ceo_id'])
+            self.ceo = EveCharacter.objects.get(character_id=response.data['ceo_id'])
         except:
             logger.warning("CEO for Corporation %s is not registered" % self.corporation_id)
         try:
@@ -104,7 +92,7 @@ class EveCorporation(models.Model):
         self.ticker = corporation.data['ticker']
         self.member_count = corporation.data['member_count']
         try:
-            ceo = EveCharacter.objects.get(token__character_id = corporation.data['ceo'])
+            ceo = EveCharacter.objects.get(character_id = corporation.data['ceo'])
         except ObjectDoesNotExist:
             ceo = None
         self.ceo = ceo
@@ -149,7 +137,7 @@ class EveCharacter(models.Model):
             esi_app = eve_settings.ESI_APP
             esi_security = eve_settings.ESI_SECURITY
             esi_security.update_token(self.token.populate())
-            op = esi_app.op['get_characters_character_id'](character_id=self.token.character_id)
+            op = esi_app.op['get_characters_character_id'](character_id=self.character_id)
             character = eve_settings.ESI_CLIENT.request(op)
             logger.info("Response: %s" % str(character.data))
             # Build the corporation if needed
@@ -161,12 +149,12 @@ class EveCharacter(models.Model):
                 self.corporation = EveCorporation.objects.get(corporation_id=character.data['corporation_id'])
         else:
             self.token.refresh()
-            op = eve_settings.ESI_APP.op['get_characters_character_id'](character_id=self.token.character_id)
+            op = eve_settings.ESI_APP.op['get_characters_character_id'](character_id=self.character_id)
             character = eve_settings.ESI_CLIENT.request(op)
             if self.corporation.corporation_id != character.data['corporation_id']:
                 logger.info("Character %s has changed corporations. Updating." % self.character_name)
                 eve_settings.ESI_SECURITY.update_token(self.token.populate())
-                op = eve_settings.ESI_APP.op['get_characters_character_id'](character_id=self.token.character_id)
+                op = eve_settings.ESI_APP.op['get_characters_character_id'](character_id=self.character_id)
                 character = eve_settings.ESI_CLIENT.request(op)
                 if EveCorporation.objects.filter(corporation_id=character.data['corporation_id']).exists():
                     self.corporation = EveCorporation.objects.get(corporation_id=character.data['corporation_id'])
