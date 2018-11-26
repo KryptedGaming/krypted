@@ -45,8 +45,8 @@ def groups(request, **kwargs):
     context = {}
     groups = []
     # PERMISSIONS
-    context['manage'] = request.user.in_staff_group()
-    context['audit'] = request.user.in_staff_group()
+    context['manage'] = request.user.has_perm('core.manage_group_requests')
+    context['audit'] = request.user.has_perm('core.audit_group_requests')
 
     # STANDARD GROUP VIEW
     for group in Group.objects.order_by('guild'):

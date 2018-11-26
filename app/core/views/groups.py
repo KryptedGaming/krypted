@@ -36,7 +36,7 @@ def group_add_user(request, group_id, user_id):
 
 @login_required
 def group_remove_user(request, group_id, user_id):
-    if request.user.in_staff_group() or request.user.id == user_id:
+    if request.user.has_perm('core.delete_group_request') or request.user.id == user_id:
         user = User.objects.get(id=user_id)
         user.groups.remove(Group.objects.get(pk=group_id))
         user.save()
