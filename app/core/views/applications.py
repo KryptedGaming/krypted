@@ -66,7 +66,8 @@ def approve_application(request, application):
     application.status = "ACCEPTED"
     application.response_user = request.user
     application.response_date = datetime.datetime.utcnow()
-    notify_user(user=application.request_user, slug=application.template.guild.slug, type="accepted")
+    if application.request_user.discord:
+        notify_user(user=application.request_user, slug=application.template.guild.slug, type="accepted")
     application.request_user.guilds.add(application.template.guild)
     application.save()
     return redirect('hr-view-applications')
@@ -79,7 +80,8 @@ def deny_application(request, application):
     application.status = "REJECTED"
     application.response_user = request.user
     application.response_date = datetime.datetime.utcnow()
-    notify_user(user=application.request_user, slug=application.template.guild.slug, type="rejected")
+    if application.request_user.discord:
+        notify_user(user=application.request_user, slug=application.template.guild.slug, type="rejected")
     application.request_user.guilds.add(application.template.guild)
     application.save()
     return redirect('hr-view-applications')
@@ -90,7 +92,8 @@ def assign_application(request, application, user):
     application = GuildApplication.objects.get(pk=application)
     application.response_user = request.user
     application.status = "PENDING"
-    notify_user(user=User.objects.get(id=user), slug=application.template.guild.slug, type="assigned", recruiter=request.user)
+    if application.request_user.discord:
+        notify_user(user=application.request_user, slug=application.template.guild.slug, type="assigned", recruiter=request.user)
     # notify_applicant_recruiter_assignment(application.user, application.template.guild.slug, user)
     application.save()
     return redirect('hr-view-applications')

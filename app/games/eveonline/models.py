@@ -116,6 +116,7 @@ class EveCorporation(models.Model):
         self.save()
 
 class EveCharacter(models.Model):
+    character_id = models.IntegerField()
     character_name = models.CharField(max_length=255)
     character_portrait = models.URLField(max_length=255, blank=True, null=True)
     character_alt_type = models.CharField(max_length=255, choices=eve_settings.EVE_ALT_TYPES, null=True, blank=True)

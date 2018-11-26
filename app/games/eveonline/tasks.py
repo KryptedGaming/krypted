@@ -1,6 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 from celery import task
 from games.eveonline.models import Token, EveCharacter
+from games.eveonline.client import EveClient
 from core.models import User, Group
 from core.models import Guild
 from esipy import App, EsiClient, EsiSecurity
@@ -73,3 +74,20 @@ def remove_eve_groups(user):
         if group in user.groups.all():
             user.groups.remove(group)
         time.sleep(1)
+
+def audit_corporation_members():
+    response = []
+    missing = []
+    characters = EveClient.get_corporation_characters(eve_settings.MAIN_ENTITY_ID)
+    secondary_characters = EveClient.get_corporation_characters(eve_settings.SECONDARY_ENTITY_IDS[0])
+    for character in characters:
+        if not EveCharacter.objects.filter(character_id=character).exists():
+            missing.append(character)
+    for character in secondary_characters:
+        if not EveCharacter.objects.filter(character_id=character).exists():
+            missing.append(character)
+    op = eve_settings.ESI_APP.op['post_universe_names'](ids=missing)
+    character_names = eve_settings.ESI_CLIENT.request(op).data
+    for character_name in character_names:
+        response.append(character_name['name'])
+    return response
