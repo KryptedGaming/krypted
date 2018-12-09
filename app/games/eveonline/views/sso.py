@@ -50,6 +50,7 @@ def receive_token(request):
             access_token=esi_token['access_token'],
             refresh_token=esi_token['refresh_token'],
             expires_in=esi_token['expires_in'],
+            scopes=Token.format_scopes(eve_settings.ESI_SCOPES)
             )
     token.save()
 

@@ -16,6 +16,14 @@ class Token(models.Model):
     refresh_token = models.TextField(blank=True, null=True)
     expires_in = models.IntegerField(default=0)
     expiry = models.DateTimeField(blank=True, null=False, auto_now_add=True)
+    scopes = models.TextField(blank=True, null=True)
+
+    @staticmethod
+    def format_scopes(scopes):
+        if type(scopes) is str:
+            return scopes.split(",")
+        else:
+            return ",".join(scopes)
 
     def populate(self):
         data = {}
