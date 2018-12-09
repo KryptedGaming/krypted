@@ -66,43 +66,6 @@ class EveCorporation(models.Model):
     def __str__(self):
         return self.name
 
-    def save(self, *args, **kwargs):
-        op = eve_settings.ESI_APP.op['get_corporations_corporation_id'](corporation_id=self.corporation_id)
-        response = eve_settings.ESI_CLIENT.request(op)
-        self.name = response.data['name']
-        self.ticker = response.data['ticker']
-        self.member_count = response.data['member_count']
-        self.tax_rate = response.data['tax_rate']
-        try:
-            self.ceo = EveCharacter.objects.get(character_id=response.data['ceo_id'])
-        except:
-            logger.warning("CEO for Corporation %s is not registered" % self.corporation_id)
-        try:
-            self.alliance_id = response.data['alliance_id']
-        except:
-            logger.warning("Corporation %s is not in an alliance" % self.corporation_id)
-        super(EveCorporation, self).save(*args, **kwargs)
-
-    def update_corporation(self, corporation_id):
-        from django.core.exceptions import ObjectDoesNotExist
-        op = eve_settings.ESI_APP.op['get_corporations_corporation_id'](corporation_id=self.corporation_id)
-        op = eve_settings.ESI_CLIENT.request(op)
-        corporation = eve_settings.ESI_CLIENT.request(op)
-        self.name = corporation.data['name']
-        self.ticker = corporation.data['ticker']
-        self.member_count = corporation.data['member_count']
-        try:
-            ceo = EveCharacter.objects.get(character_id = corporation.data['ceo'])
-        except ObjectDoesNotExist:
-            ceo = None
-        self.ceo = ceo
-        try:
-            self.alliance_id = corporation.data['alliance_id']
-        except:
-            self.alliance_id = None
-        self.tax_rate = corporation.data['tax_rate']
-        self.save()
-
 class EveCharacter(models.Model):
     character_id = models.IntegerField()
     character_name = models.CharField(max_length=255)
@@ -127,42 +90,6 @@ class EveCharacter(models.Model):
             return True
         else:
             return False
-
-    def update_corporation(self):
-        logger.info("Updating Corporation for %s" % self.character_name)
-        if not self.corporation:
-            logger.info("Character %s does not have a corporation. Updating." % self.character_name)
-            # Pull the character information
-            self.token.refresh()
-            esi_app = eve_settings.ESI_APP
-            esi_security = eve_settings.ESI_SECURITY
-            esi_security.update_token(self.token.populate())
-            op = esi_app.op['get_characters_character_id'](character_id=self.character_id)
-            character = eve_settings.ESI_CLIENT.request(op)
-            logger.info("Response: %s" % str(character.data))
-            # Build the corporation if needed
-            if EveCorporation.objects.filter(corporation_id=character.data['corporation_id']).exists():
-                self.corporation = EveCorporation.objects.get(corporation_id=character.data['corporation_id'])
-                self.save()
-            else:
-                EveCorporation(corporation_id=character.data['corporation_id']).save()
-                self.corporation = EveCorporation.objects.get(corporation_id=character.data['corporation_id'])
-        else:
-            self.token.refresh()
-            op = eve_settings.ESI_APP.op['get_characters_character_id'](character_id=self.character_id)
-            character = eve_settings.ESI_CLIENT.request(op)
-            if self.corporation.corporation_id != character.data['corporation_id']:
-                logger.info("Character %s has changed corporations. Updating." % self.character_name)
-                eve_settings.ESI_SECURITY.update_token(self.token.populate())
-                op = eve_settings.ESI_APP.op['get_characters_character_id'](character_id=self.character_id)
-                character = eve_settings.ESI_CLIENT.request(op)
-                if EveCorporation.objects.filter(corporation_id=character.data['corporation_id']).exists():
-                    self.corporation = EveCorporation.objects.get(corporation_id=character.data['corporation_id'])
-                    self.save()
-                else:
-                    EveCorporation(corporation_id=character.data['corporation_id']).save()
-                    self.corporation = EveCorporation.objects.get(corporation_id=character.data['corporation_id'])
-                    self.save()
 
     def get_absolute(self):
         """
