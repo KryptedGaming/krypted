@@ -33,7 +33,7 @@ def update_users_groups():
     call_count = 0
     for user in User.objects.all():
         if guild in user.guilds.all():
-            if Token.objects.filter(user=user).count() > 0:
+            if EveCharacter.objects.filter(user=user).count() > 0:
                 update_user_groups.apply_async(args=[user.pk], coundown=call_count*5)
                 call_count += 1
             else:
