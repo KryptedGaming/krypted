@@ -99,3 +99,8 @@ class EveCharacter(models.Model):
             return self.main
         else:
             return self
+
+    class Meta:
+        permissions = (
+            ('audit_eve_character', u'Can audit an EVE character.'),
+        )

@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.contrib import messages
 from core.models import User, Group, GroupRequest
-from core.decorators import login_required, permission_required, services_required, staff_required
+from core.decorators import login_required, permission_required, services_required
 from app.conf import discord as discord_settings
 from modules.discord.tasks import send_discord_message
 import logging
@@ -23,7 +23,7 @@ def group_apply(request, group):
     return redirect('groups')
 
 @login_required
-@staff_required
+@permission_required('core.manage_group_requests')
 def group_add_user(request, group_id, user_id):
     user = User.objects.get(id=user_id)
     group_request = GroupRequest.objects.get(request_user=user, response_action="Pending", request_group=Group.objects.get(id=group_id))
@@ -35,6 +35,7 @@ def group_add_user(request, group_id, user_id):
     return redirect('groups')
 
 @login_required
+@permission_required('core.audit_group_requests')
 def group_remove_user(request, group_id, user_id):
     if request.user.has_perm('core.delete_group_request') or request.user.id == user_id:
         user = User.objects.get(id=user_id)
