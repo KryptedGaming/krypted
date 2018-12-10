@@ -10,6 +10,10 @@ urlpatterns = [
     # url(r'^apply/$', eve.apply, name='eve-apply'),
 ]
 
+## CHARACTERS
+urlpatterns += [
+    url(r'^characters/', eve.view_characters, name='eve-view-characters'),
+]
 # ## MODULES
 # fleets
 urlpatterns += [

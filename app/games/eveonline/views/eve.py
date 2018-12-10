@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from games.eveonline.models import Token, EveCharacter
 from core.models import User, Group
 from core.models import Guild
-from core.decorators import login_required, staff_required
+from core.decorators import login_required, staff_required, permission_required
 from django.conf import settings
 from app.conf import eve as eve_settings
 from django.contrib import messages
@@ -21,6 +21,18 @@ def dashboard(request):
     context['alt_types'] = eve_settings.EVE_ALT_TYPES
     logger.info("User connected to the EVE dashboard.")
     return render(request, 'eveonline/dashboard.html', context)
+
+@login_required
+@permission_required('eveonline.audit_eve_character')
+def view_characters(request):
+    context = get_eve_context(request)
+    active_eve_users = User.objects.filter(guilds__slug="eve")
+    context['mains'] = EveCharacter.objects.filter(main=None, user__in=active_eve_users)
+    context['dreads'] = EveCharacter.objects.filter(character_alt_type="dread_alt", user__in=active_eve_users)
+    context['carriers'] = EveCharacter.objects.filter(character_alt_type="carrier_alt", user__in=active_eve_users)
+    context['supers'] = EveCharacter.objects.filter(character_alt_type="super_alt", user__in=active_eve_users)
+    return render(request, 'eveonline/view_characters.html', context)
+
 
 @login_required
 @staff_required
