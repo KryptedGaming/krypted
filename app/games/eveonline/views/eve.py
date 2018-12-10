@@ -31,6 +31,7 @@ def view_characters(request):
     context['dreads'] = EveCharacter.objects.filter(character_alt_type="dread_alt", user__in=active_eve_users)
     context['carriers'] = EveCharacter.objects.filter(character_alt_type="carrier_alt", user__in=active_eve_users)
     context['supers'] = EveCharacter.objects.filter(character_alt_type="super_alt", user__in=active_eve_users)
+    context['faxes'] = EveCharacter.objects.filter(character_alt_type="fax_alt", user__in=active_eve_users)
     return render(request, 'eveonline/view_characters.html', context)
 
 
