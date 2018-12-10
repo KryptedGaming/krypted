@@ -37,11 +37,6 @@ def receive_token(request):
     esi_token = eve_settings.ESI_SECURITY.auth(code)
     esi_verified = eve_settings.ESI_SECURITY.verify()
 
-    ## CHECK IF TOKEN OF SAME CHARACTER EXISTS
-    if EveCharacter.objects.filter(character_name=esi_verified['CharacterName']).count() > 0:
-        eve_character = EveCharacter.objects.get(character_name=esi_verified['CharacterName'])
-        eve_character.delete()
-
     ## CREATE TOKEN
     logger.info(
             "Creating token...\n" +
@@ -54,19 +49,25 @@ def receive_token(request):
             )
     token.save()
 
-    try:
-        eve_main_character = EveCharacter.objects.get(main=None, user=request.user)
-    except:
+    # PULL MAIN CHARACTER
+    if EveCharacter.objects.filter(user=request.user, main=None).count() > 0:
+        eve_main_character = EveCharacter.objects.get(user=request.user, main=None)
+    else:
         eve_main_character = None
-
-    character = EveCharacter(
-            character_id=esi_verified['CharacterID'],
-            character_name=esi_verified['CharacterName'],
-            main=eve_main_character,
-            token=token,
-            user=request.user
-    )
+    ## CHECK IF TOKEN OF SAME CHARACTER EXISTS
+    if EveCharacter.objects.filter(character_name=esi_verified['CharacterName']).count() > 0:
+        character = EveCharacter.objects.get(character_name=esi_verified['CharacterName'])
+        character.token = token
+    else:
+        character = EveCharacter(
+                character_id=esi_verified['CharacterID'],
+                character_name=esi_verified['CharacterName'],
+                main=eve_main_character,
+                token=token,
+                user=request.user
+        )
 
     character.save()
     update_character_corporation.apply_async(args=[character.character_id])
+    update_character.apply_async(args=[character.character_id])
     return redirect('/eve')

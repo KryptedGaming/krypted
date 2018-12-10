@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.core.mail import send_mail
 from core.forms import LoginForm, RegisterForm, UserForm
+from core.decorators import login_required
 from core.models import User, Group
 from app.conf import discourse as discourse_settings
 import uuid
@@ -107,6 +108,7 @@ def register_user(request):
                 }
             )
 
+@login_required
 def edit_user(request):
     if request.method == 'POST':
         form = UserForm(request.POST)
