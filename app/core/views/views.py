@@ -6,7 +6,7 @@ from django.conf import settings
 from django.apps import apps
 # LOCAL IMPORTS
 from core.forms import LoginForm, RegisterForm, ProfileForm
-from core.decorators import login_required, services_required, staff_required
+from core.decorators import login_required, services_required, permission_required
 from core.models import *
 # from core.utils import get_main_eve_character
 # # MODULE IMPORTS
@@ -34,7 +34,7 @@ def guilds(request):
 
 @login_required
 @services_required
-@staff_required
+@permission_required('core.manage_guild_applications')
 def applications(request):
     context = {'applications': GuildApplication.objects.all()}
     return render(request, 'base/applications.html', context)

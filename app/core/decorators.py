@@ -40,21 +40,11 @@ def permission_required(permission, next='dashboard'):
         return _wrapped_view
     return decorator
 
-def tutorial_complete(function):
-    def wrapper(request, *args, **kwargs):
-        return function(request, *args, **kwargs)
-    return wrapper
-
-def no_user_profile(function):
-    def wrapper(request, *args, **kw):
-        return function(request, *args, **kw)
-    return wrapper
-
 def services_required(function):
     def wrapper(request, *args, **kw):
         if request.user.discord and request.user.discourse:
             return function(request, *args, **kw)
         else:
             messages.add_message(request, messages.WARNING, 'Please set up your services before proceeding.')
-            return ('dashboard')
+            return redirect('dashboard')
     return wrapper

@@ -1,0 +1,24 @@
+{% extends "base/base.html" %}
+{% block brand %}
+  <h1>
+    Edit User
+    <small>{{request.user.username}}</small>
+  </h1>
+{% endblock %}
+{% block content %}
+    <form class="form" method="POST">
+        {% csrf_token %}
+        <div class="input-group">
+            <span class="input-group-addon"><i class="glyphicon glyphicon-globe"></i></span>
+            <select id="region" name="region" class="form-control" required>
+              <option value="NA" {% if request.user.region == "NA" %}selected{% endif %}>North America</option>
+              <option value="EU"{% if request.user.region == "EU" %}selected{% endif %}>Europe</option>
+              <option value="OC"{% if request.user.region == "OC" %}selected{% endif %}>Oceania & Asias</option>
+            </select>
+        </div>
+
+        <br>
+        <button class="btn btn-lg btn-info btn-block btn-fill" type="submit">Submit</button>
+        {{form.errors}}
+    </form>
+{% endblock %}

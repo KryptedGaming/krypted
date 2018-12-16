@@ -13,10 +13,8 @@
 
 {% block content %}
 <script>
-  console.log("hi");
   $(document).ready(function() {
     $("sel1").change(function() {
-      console.log("bi");
     });
   });
 </script>
@@ -61,7 +59,10 @@
                 {% endif %}
             <td>
               <button onclick="location.href='/eve/remove-sso-token/{{character.character_id}}'" class="btn btn-danger btn-fill"><i class="fa fa-times"></i></button>
-              <button onclick="location.href='/eve/refresh-sso-token/{{character.character_id}}'" class="btn btn-warning btn-fill"><i class="fa fa-retweet"></i></button>
+              <button onclick="location.href='/eve/refresh-sso-token/{{character.character_id}}'" class="btn btn-success btn-fill"><i class="fa fa-retweet"></i></button>
+              {% if character.main != None %}
+              <button data-toggle="modal" data-target="#selectModal{{character.character_id}}" class="btn btn-warning btn-fill"><i class="fa fa-pencil"></i></button>
+              {% endif %}
             </td>
           </tr>
         {% endfor %}
@@ -84,7 +85,7 @@
 </div>
 
 {% for character in characters %}
-<div class="modal fade col-md-12" id="selectModal{{character.token.character_id}}" data-backdrop="false">
+<div class="modal fade col-md-12" id="selectModal{{character.character_id}}" data-backdrop="false">
   {% include "eveonline/alt_character_modal.html" %}
 </div>
 </div>

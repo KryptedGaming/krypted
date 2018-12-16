@@ -4,7 +4,8 @@ from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.core.mail import send_mail
-from core.forms import LoginForm, RegisterForm, ProfileForm
+from core.forms import LoginForm, RegisterForm, UserForm
+from core.decorators import login_required
 from core.models import User, Group
 from app.conf import discourse as discourse_settings
 import uuid
@@ -106,6 +107,18 @@ def register_user(request):
                 'form': form
                 }
             )
+
+@login_required
+def edit_user(request):
+    if request.method == 'POST':
+        form = UserForm(request.POST)
+        if form.is_valid():
+            user = request.user
+            user.region = request.POST['region']
+            user.save()
+    else:
+        form = UserForm()
+    return render(request, 'accounts/edit_user.html', context={'form': form})
 
 
 def logout_user(request):

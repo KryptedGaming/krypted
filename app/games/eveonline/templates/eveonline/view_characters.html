@@ -1,0 +1,202 @@
+{% extends "eveonline/base.html" %}
+{% load staticfiles %}
+{% load eve_filters %}
+
+{% block brand %}
+  <h1>
+    EVE Characters
+    <small>Characters in the EVE branch.</small>
+  </h1>
+{% endblock %}
+
+{% block includes %}
+<link rel="stylesheet" href="{% static 'global/ui/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="nav-tabs-custom">
+  <ul class="nav nav-tabs">
+    <li class="active">
+      <a data-toggle="tab" href="#mains">
+        Mains
+      </a>
+    </li>
+    <li>
+      <a data-toggle="tab" href="#dreads">
+        Dreads
+      </a>
+    </li>
+    <li>
+      <a data-toggle="tab" href="#carriers">
+        Carriers
+      </a>
+    </li>
+    <li>
+      <a data-toggle="tab" href="#faxes">
+        Faxes
+      </a>
+    </li>
+    <li>
+      <a data-toggle="tab" href="#supers">
+        Supers
+      </a>
+    </li>
+  </ul>
+</div>
+
+<div class="tab-content box">
+    <div id="mains" class="tab-pane fade in active box-body">
+  		<table class="table">
+  			<thead>
+  				<tr>
+  					<th scope="col">Character</th>
+            <th scope="col">Discord</th>
+  					<th scope="col">Audit</th>
+  				</tr>
+  			</thead>
+  			<tbody>
+          {% for character in mains %}
+  				<tr>
+            <td>
+              <img src="{{character.character_portrait}}" class="img-circle" width="20px" />
+              {{character.character_name}}
+            </td>
+            <td>@{{character.user.discord.username}}</td>
+            <td>Null</td>
+  				</tr>
+          {% endfor %}
+  			</tbody>
+  		</table>
+    </div>
+  <div id="dreads" class="tab-pane fade box-body">
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">Character</th>
+					<th scope="col">Main Character</th>
+          <th scope="col">Discord</th>
+					<th scope="col">Audit</th>
+				</tr>
+			</thead>
+			<tbody>
+        {% for character in dreads %}
+				<tr>
+          <td>
+            <img src="{{character.character_portrait}}" class="img-circle" width="20px" />
+            {{character.character_name}}
+          </td>
+          <td>
+            <img src="{{character.main.character_portrait}}" class="img-circle" width="20px" />
+            {{character.main.character_name}}
+          </td>
+          <td>@{{character.user.discord.username}}</td>
+          <td>Null</td>
+				</tr>
+        {% endfor %}
+			</tbody>
+		</table>
+  </div>
+  <div id="carriers" class="tab-pane fade box-body">
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">Character</th>
+					<th scope="col">Main Character</th>
+          <th scope="col">Discord</th>
+					<th scope="col">Audit</th>
+				</tr>
+			</thead>
+			<tbody>
+        {% for character in carriers %}
+				<tr>
+          <td>
+            <img src="{{character.character_portrait}}" class="img-circle" width="20px" />
+            {{character.character_name}}
+          </td>
+          <td>
+            <img src="{{character.main.character_portrait}}" class="img-circle" width="20px" />
+            {{character.main.character_name}}
+          </td>
+          <td>@{{character.user.discord.username}}</td>
+          <td>Null</td>
+				</tr>
+        {% endfor %}
+			</tbody>
+		</table>
+  </div>
+  <div id="faxes" class="tab-pane fade box-body">
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">
+            Character</th>
+					<th scope="col">Main Character</th>
+          <th scope="col">Discord</th>
+					<th scope="col">Audit</th>
+				</tr>
+			</thead>
+			<tbody>
+        {% for character in faxes %}
+				<tr>
+          <td>
+            <img src="{{character.character_portrait}}" class="img-circle" width="20px" />
+            {{character.character_name}}
+          </td>
+          <td>
+            <img src="{{character.main.character_portrait}}" class="img-circle" width="20px" />
+            {{character.main.character_name}}
+          </td>
+          <td>@{{character.user.discord.username}}</td>
+          <td>Null</td>
+				</tr>
+        {% endfor %}
+			</tbody>
+		</table>
+  </div>
+  <div id="supers" class="tab-pane fade box-body">
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">Character</th>
+					<th scope="col">Main Character</th>
+          <th scope="col">Discord</th>
+					<th scope="col">Audit</th>
+				</tr>
+			</thead>
+			<tbody>
+        {% for character in supers %}
+				<tr>
+          <td>
+            <img src="{{character.character_portrait}}" class="img-circle" width="20px" />
+            {{character.character_name}}
+          </td>
+          <td>
+            <img src="{{character.main.character_portrait}}" class="img-circle" width="20px" />
+            {{character.main.character_name}}
+          </td>
+          <td>@{{character.user.discord.username}}</td>
+          <td>Null</td>
+				</tr>
+        {% endfor %}
+			</tbody>
+		</table>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(function () {
+    $('table').DataTable({
+      'paging'      : false,
+      'lengthChange': false,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : false
+    })
+ })
+</script>
+<script src="{% static 'global/ui/bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'global/ui/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+{% endblock %}

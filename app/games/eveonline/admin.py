@@ -12,7 +12,10 @@ class EveCharacterAdmin(admin.ModelAdmin):
     list_display = ('character_name', 'get_username')
 
     def get_username(self, EveCharacter):
-        return EveCharacter.user.username
+        if EveCharacter.user:
+            return EveCharacter.user.username
+        else:
+            return None
 
 @admin.register(EveCorporation)
 class EveCorporationAdmin(admin.ModelAdmin):

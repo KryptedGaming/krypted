@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login
 from core.models import User
+from django.conf import settings
 import logging
 
 logger = logging.getLogger(__name__)
@@ -51,6 +52,13 @@ class RegisterForm(forms.Form):
             if len(password) < 8:
                 self.add_error('password', 'Password must be 8 characters or more.')
 
+        return input
+
+class UserForm(forms.Form):
+    region = forms.CharField(max_length=2, required=True)
+
+    def clean(self):
+        input = self.cleaned_data
         return input
 
 class CoreAuthenticationForm(AuthenticationForm):
