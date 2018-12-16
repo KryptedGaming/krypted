@@ -7,8 +7,8 @@ from core.models import *
 admin.site.unregister(DjangoGroup)
 admin.site.register(User, UserAdmin)
 
-class GroupAdmin(admin.ModelAdmin):
-    readonly_fields = ['name']
+# class GroupAdmin(admin.ModelAdmin):
+#     readonly_fields = ['name']
 admin.site.register(Group, GroupAdmin)
 admin.site.register(Event)
 admin.site.register(Guild)

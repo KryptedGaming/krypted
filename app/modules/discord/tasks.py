@@ -25,6 +25,7 @@ def sync_discord_user(user_id):
 def update_discord_users():
     for user in User.objects.all():
         update_discord_user.apply_async(args=[user.id], countdown=user.id)
+        
 @task()
 def update_discord_user(user_id):
     # pull objects from database
@@ -49,7 +50,7 @@ def update_discord_user(user_id):
                 discord = user.discord
                 discord.delete()
 
-@task()
+@task(rate_limit="2/s")
 def send_discord_message(channel, message, **kwargs):
     if kwargs.get('user'):
         discord_user=DiscordUser.objects.get(user__id=kwargs.get('user'))
@@ -62,7 +63,7 @@ def send_discord_message(channel, message, **kwargs):
     response = DiscordClient.send_message(channel, message)
     # TODO: Handle response
 
-@task(bind=True)
+@task(bind=True, rate_limit="2/s")
 def add_discord_group(self, group_id):
     # Pull objects from database
     group = Group.objects.get(id=group_id)
@@ -92,7 +93,7 @@ def add_discord_group(self, group_id):
         # FATAL
         logger.error("FATAL - Error with add_discord_group function. %s" % e)
 
-@task(bind=True, autoretry_for=(RateLimitException,), retry_backoff=True)
+@task(bind=True, rate_limit="2/s")
 def remove_discord_group(self, discord_group_external_id):
     discord_group = DiscordGroup.objects.get(external_id=discord_group_external_id)
     # Call discord client
@@ -114,7 +115,7 @@ def remove_discord_group(self, discord_group_external_id):
         # FATAL
         logger.error("FATAL - Error with remove_discord_group function. %s" % e)
 
-@task(bind=True, autoretry_for=(RateLimitException,), retry_backoff=True)
+@task(bind=True, rate_limit="2/s")
 def add_user_to_discord_group(self, user_id, group_id):
     # Pull objects from database
     discord_user = DiscordUser.objects.get(user__id=user_id)
@@ -138,7 +139,7 @@ def add_user_to_discord_group(self, user_id, group_id):
         # FATAL
         logger.error("FATAL - Error with add_group_to_discord_user function. %s" % e)
 
-@task(bind=True, autoretry_for=(RateLimitException,), retry_backoff=True)
+@task(bind=True, rate_limit="2/s")
 def remove_user_from_discord_group(self, user_id, group_id):
     # Pull objects from the database
     discord_user = DiscordUser.objects.get(user__id=user_id)

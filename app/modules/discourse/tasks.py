@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 def sync_discourse_user(user_id):
     pass
 
-@task(bind=True)
+@task(bind=True, rate_limit="60/m")
 def update_external_id(self, user_id):
     # pull objects from database
     discourse_user = DiscourseUser.objects.get(user__id=user_id)
@@ -29,7 +29,7 @@ def update_external_id(self, user_id):
     else:
         logger.error("FAILURE - Updating USERID for [%s]" % discourse_user.user.username)
 
-@task(bind=True)
+@task(bind=True, rate_limit="60/m")
 def add_discourse_group(self, group_id):
     # pull objects from database
     group = Group.objects.get(pk=group_id)
@@ -56,7 +56,7 @@ def add_discourse_group(self, group_id):
     except Exception as e:
         logger.error("FATAL - Error with add_discourse_group function. %s" % e)
 
-@task(bind=True)
+@task(bind=True, rate_limit="60/m")
 def remove_discourse_group(self, discourse_group_external_id):
     discourse_group = DiscourseGroup.objects.get(external_id=discourse_group_external_id)
     # call discourse client api
@@ -75,7 +75,7 @@ def remove_discourse_group(self, discourse_group_external_id):
         logger.error("FATAL - Error with remove_discourse_group function. %s" % e)
 
 
-@task(bind=True)
+@task(bind=True, rate_limit="60/m")
 def add_user_to_discourse_group(self, user_id, group_id):
     # pull objects from database
     discourse_user = DiscourseUser.objects.get(user__id=user_id)
@@ -101,7 +101,7 @@ def add_user_to_discourse_group(self, user_id, group_id):
         logger.error("FATAL - Error with add_user_to_discourse_group function. %s" % e)
 
 
-@task(bind=True)
+@task(bind=True, rate_limit="60/m")
 def remove_user_from_discourse_group(self, user_id, group_id):
     # pull objects from database
     discourse_user = DiscourseUser.objects.get(user__id=user_id)
