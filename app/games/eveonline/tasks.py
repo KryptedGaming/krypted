@@ -167,7 +167,8 @@ def audit_corporation_members():
     for character in secondary_characters:
         if not EveCharacter.objects.filter(character_id=character).exists():
             missing.append(character)
-    op = eve_settings.ESI_APP.op['post_universe_names'](ids=missing)
+    ESI_APP = App.create('https://esi.tech.ccp.is/latest/swagger.json?datasource=tranquility')
+    op = ESI_APP.op['post_universe_names'](ids=missing)
     character_names = eve_settings.ESI_CLIENT.request(op).data
     for character_name in character_names:
         response.append(character_name['name'])
