@@ -55,13 +55,13 @@ def receive_token(request):
     else:
         eve_main_character = None
     ## CHECK IF TOKEN OF SAME CHARACTER EXISTS
-    if EveCharacter.objects.filter(character_name=esi_verified['CharacterName']).count() > 0:
-        character = EveCharacter.objects.get(character_name=esi_verified['CharacterName'])
+    if EveCharacter.objects.filter(character_name=esi_verified['name']).count() > 0:
+        character = EveCharacter.objects.get(character_name=esi_verified['name'])
         character.token = token
     else:
         character = EveCharacter(
-                character_id=esi_verified['CharacterID'],
-                character_name=esi_verified['CharacterName'],
+                character_id=esi_verified['sub'].split(":")[-1],
+                character_name=esi_verified['name'],
                 main=eve_main_character,
                 token=token,
                 user=request.user

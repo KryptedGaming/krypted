@@ -6,6 +6,7 @@ from core.models import User, Group
 from app.conf import eve as eve_settings
 import datetime
 import logging
+import json
 
 logger = logging.getLogger(__name__)
 
@@ -38,13 +39,15 @@ class Token(models.Model):
             try:
                 eve_settings.ESI_SECURITY.update_token(self.populate())
                 new_token = eve_settings.ESI_SECURITY.refresh()
+                print(new_token)
                 self.access_token = new_token['access_token']
                 self.refresh_token = new_token['refresh_token']
                 self.expiry = timezone.now() + datetime.timedelta(0, new_token['expires_in'])
                 self.save()
             except Exception as e:
-                print(e.response)
-                if e.response['error'] == 'invalid_token':
+                response = json.loads(e.response.decode("utf-8"))
+                if response["error"] == 'invalid_token' or response["error"] == 'invalid_grant: Token is expired or invalid.':
+                    logger.warning("EVE token expired, deleting.")
                     self.delete()
         else:
             logger.info("Token refresh not needed")
