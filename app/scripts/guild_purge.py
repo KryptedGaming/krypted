@@ -2,10 +2,12 @@ from modules.discord.models import DiscordUser
 from core.models import User, Guild, Group
 from modules.discord.tasks import send_discord_message
 import time
-GUILD = "wow"
+GUILD = "rust"
 NAMES = "guild_purge.txt"
 
-for name in open('scripts/guild_purge.txt'):
+for line in open('scripts/guild_purge.txt'):
+    name = line.split(",")[0]
+    reason = line.split(",")[1]
     guild = Guild.objects.get(slug=GUILD)
     groups = Group.objects.filter(guild=guild)
     try:
@@ -19,7 +21,7 @@ for name in open('scripts/guild_purge.txt'):
         user.guilds.remove(guild)
         send_discord_message(
         "#bot",
-        "You have been purged from %s for reason: null. If this was a mistake, please contact the guild staff." % (guild.name),
+        "You have been purged from %s for reason: %s. Please contact guild staff if you have questions, feedback, or issues." % (guild.name, reason.strip()),
         user=user.id
         )
         time.sleep(5)

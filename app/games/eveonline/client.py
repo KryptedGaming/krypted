@@ -3,7 +3,7 @@ from games.eveonline.models import EveCorporation, EveCharacter
 from esipy import App
 import json
 
-ESI_APP = App.create('https://esi.tech.ccp.is/latest/swagger.json?datasource=tranquility')
+ESI_APP = App.create(eve_settings.ESI_APP_URL)
 
 class EveClient:
     def get_character(character_id):
