@@ -19,3 +19,9 @@ urlpatterns += [
     # url(r'^dnd/', RedirectView.as_view(url='/applications/add/dnd/')),
     # url(r'^wow/', RedirectView.as_view(url='/applications/add/wow/'))
 ]
+
+# DEVELOPMENT
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.conf import settings
+if settings.DEBUG == True:
+    urlpatterns += staticfiles_urlpatterns()
