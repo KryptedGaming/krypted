@@ -116,13 +116,16 @@ class Event(models.Model):
     # BASIC INFORMATION
     name = models.CharField(max_length=32)
     description = models.TextField()
-    date = models.DateField()
+    start_datetime = models.DateTimeField(auto_now=False)
     password = models.CharField(max_length=5)
-    value = models.DecimalField(max_digits=3, decimal_places=1)
+    value = models.DecimalField(max_digits=3, decimal_places=1, blank=True, null=True)
 
     # REFERENCES
     user = models.ForeignKey("User", on_delete=models.SET_NULL, blank=True, null=True)
     guild = models.ForeignKey("Guild", on_delete=models.SET_NULL, blank=True, null=True)
+
+    def get_absolute_url(self):
+        return "/event/%s" % self.pk
 
 class Guild(models.Model):
     """

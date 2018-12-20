@@ -34,6 +34,12 @@ def guilds(request):
 
 @login_required
 @services_required
+def events(request):
+    context = {}
+    return render(request, 'base/events.html', context)
+
+@login_required
+@services_required
 @permission_required('core.manage_guild_applications')
 def applications(request):
     context = {'applications': GuildApplication.objects.all()}

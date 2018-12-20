@@ -1,13 +1,74 @@
-# from django.shortcuts import render, redirect, get_object_or_404
-# from django.urls import reverse
-# from core.forms import EventForm
-# from django.contrib.auth.models import User
-# from django.contrib.auth import authenticate, login
-# from core.decorators import login_required
-# from core.models import Profile, Notification, Game, Event
-# from . import base
-# from datetime import datetime
-# from core.views.base import get_global_context
+from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
+from django.contrib.auth import authenticate, login
+from datetime import datetime
+from core.models import Event, Guild
+from core.decorators import login_required
+from django.views.generic.edit import CreateView
+from django.views.generic.edit import UpdateView
+from django.views.generic.edit import DeleteView
+from django.urls import reverse_lazy
+
+@login_required
+def dashboard(request):
+    user_guilds = request.user.guilds.all()
+    user_events = Event.objects.filter(guild__in=user_guilds);
+    context = {
+        'events' : user_events.union(Event.objects.filter(guild=None)),
+        'guilds' : user_guilds
+    }
+    return render(request, 'base/events.html', context)
+
+@login_required
+def view_event(request,pk):
+    pass
+
+class EventCreate(CreateView):
+    template_name='events/add_event.html'
+    model = Event
+    fields = ['guild','name','description','start_datetime','user'];
+
+@login_required
+def add_event(request):
+    return EventCreate.as_view()(request)
+
+    # if request.method == 'POST':
+    #     form = EventForm(request.POST)
+    #     if form.is_valid():
+    #         data = form.clean()
+    #         e = Event()
+    #         e.user = request.user
+    #         e.name = data.name;
+    #         e.guild = Guilds.objects.get(slug=data.game)
+    #         e.start_datetime = data.start_datetime
+    #         e.save()
+    #         return redirect('/')
+    # else:
+    #     context = {
+    #         'form' : EventForm()
+    #     }
+    #     return render(request, 'events/add_event.html', context)
+
+
+#@login_required
+class EventUpdate(UpdateView):
+    model = Event
+    fields = ['name', 'description', 'start_datetime', 'user', 'guild']
+    template_name = "events/edit_event.html"
+
+@login_required
+def edit_event(request,*args,**kwargs):
+    return EventUpdate.as_view()(request,*args,**kwargs)
+
+class EventDelete(DeleteView):
+    model = Event
+    success_url = reverse_lazy('all-events')
+    template_name = "events/delete_event.html"
+
+@login_required
+def remove_event(request,*args,**kwargs):
+    return EventDelete.as_view()(request,*args,**kwargs)
+
 #
 # ## EVENTS
 # @login_required

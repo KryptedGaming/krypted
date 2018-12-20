@@ -2,6 +2,7 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from core.views import views, accounts, events, groups, applications
+from core.views.events import EventUpdate
 
 ## BASE
 urlpatterns = [
@@ -37,14 +38,15 @@ urlpatterns += [
 ]
 
 ## EVENTS
-## THESE WILL BE IMPLEMENTED ON A PROJECT LEVEL FOR NOW
-# urlpatterns += [
-#     url(r'^events/view/all/$', events.all_events, name='all-events'),
-#     url(r'^events/view/(?P<pk>\d+)/$', events.view_event, name='view-event'),
-#     url(r'^events/modify/(?P<pk>\d+)/$', events.modify_event, name='modify-event'),
-#     url(r'^events/delete/(?P<pk>\d+)/$', events.delete_event, name='delete-event'),
-#     url(r'^events/create/$', events.create_event, name='create-event'),
-# ]
+from core.feeds import EventFeed
+urlpatterns += [
+    url(r'^events/view/all/$', events.dashboard, name='all-events'),
+    url(r'^events/view/(?P<pk>\d+)/$', events.view_event, name='view-event'),
+    url(r'^events/create/$', events.add_event, name='add-event'),
+    url(r'^events/modify/(?P<pk>\d+)/$', events.edit_event, name='edit-event'),
+    url(r'^events/delete/(?P<pk>\d+)/$', events.remove_event, name='remove-event'),
+    url(r'^latest/feed.ics$', EventFeed())
+]
 
 
 ## APPLICATIONS

@@ -1,0 +1,100 @@
+{% extends 'base/base.html' %}
+{% load staticfiles %}
+{% load core_filters %}
+
+{% block brand %}
+  <h1>
+    Events
+    <small>View events</small>
+  </h1>
+{% endblock %}
+
+{% block includes %}
+<link rel="stylesheet" href="{% static 'global/ui/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
+{% endblock %}
+{% block content %}
+<div class="nav-tabs-custom">
+  <ul class="nav nav-tabs">
+    <li class="active">
+      <a data-toggle="tab" href="#all_events">
+        All
+      </a>
+    </li>
+    {% for guild in guilds %}
+    <li class="">
+      <a data-toggle="tab" href="#guild_{{guild.pk}}">
+        {{ guild.name }}
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+
+<div class="tab-content box">
+    <div id="all_events" class="tab-pane fade in active box-body">
+      <table class="table">
+        <thead>
+          <th scope="col">Date</th>
+          <th scope="col">Name</th>
+          <th scope="col">Description</th>
+          <th scope="col">Guild</th>
+          <th scope="col">Action</th>
+        </thead>
+        <tbody>
+          {% for event in events %}
+          <tr>
+            <td>{{event.start_datetime}}</td>
+            <td>{{event.name}}</td>
+            <td>{{event.description}}</td>
+            <td>{{event.guild}}</td>
+            <td>TODO</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% for guild in guilds %}
+    <div id="guild_{{guild.pk}}" class="tab-pane fade in box-body">
+      <table class="table">
+        <thead>
+          <th scope="col">Date</th>
+          <th scope="col">Name</th>
+          <th scope="col">Description</th>
+          <th scope="col">Guild</th>
+          <th scope="col">Action</th>
+        </thead>
+        <tbody>
+          {% for event in events %}
+          {% if event.guild == guild %}
+          <tr>
+            <td>{{event.start_datetime}}</td>
+            <td>{{event.name}}</td>
+            <td>{{event.description}}</td>
+            <td>{{event.guild}}</td>
+            <td>TODO</td>
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(function () {
+    $('table').DataTable({
+      'paging'      : false,
+      'lengthChange': false,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : false
+    })
+ })
+</script>
+<script src="{% static 'global/ui/bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'global/ui/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+{% endblock %}
