@@ -1,13 +1,79 @@
+# DJANGO IMPORTS
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.contrib import messages
+# LOCAL IMPORTS
 from core.models import User, Group, GroupRequest
 from core.decorators import login_required, permission_required, services_required
 from app.conf import discord as discord_settings
+# EXTERNAL IMPORTS
 from modules.discord.tasks import send_discord_message
+# MISC
 import logging
 
 logger = logging.getLogger(__name__)
+
+@login_required
+@services_required
+def dashboard(request, **kwargs):
+    context = {}
+    groups = []
+    # PERMISSIONS
+    context['manage'] = request.user.has_perm('core.manage_group_requests')
+    context['audit'] = request.user.has_perm('core.audit_group_requests')
+
+    # STANDARD GROUP VIEW
+    for group in Group.objects.order_by('guild'):
+        if group.type == "PUBLIC" :
+            if not group.guild:
+                groups.append({
+                    'group': group,
+                    'requested': request.user.has_group_request(group)
+                })
+            elif group.guild in request.user.guilds.all():
+                groups.append({
+                    'group': group,
+                    'requested': request.user.has_group_request(group)
+                })
+        elif group.type == "PROTECTED":
+            if group.guild in request.user.guilds.all():
+                groups.append({
+                    'group': group,
+                    'user_has_group': (group in request.user.groups.all()),
+                    'requested': request.user.has_group_request(group)
+                })
+        elif group.type == "PRIVATE":
+            pass # hide private groups
+        else:
+            logger.error("Received group without defined types: %s" % group)
+    context['groups'] = groups
+
+    # PENDING VIEW
+    if context['manage']:
+        group_requests = []
+        for group_request in GroupRequest.objects.filter(response_action="Pending"):
+            if not group_request.request_group.managers.all() or request.user in group_request.request_group.managers.all():
+                permission = True
+            else:
+                permission = False
+            group_requests.append({
+                'request': group_request,
+                'permission': permission
+                })
+        context['group_requests'] = group_requests
+
+    # AUDIT VIEW
+    if context['audit']:
+        group_requests = []
+        for group_request in GroupRequest.objects.filter(response_action="Accepted"):
+            group_requests.append({
+                'request': group_request,
+                'permission': True
+                })
+        context['audit_requests'] = group_requests
+
+    return render(request, 'base/groups.html', context)
+
 @login_required
 @services_required
 def group_apply(request, group):

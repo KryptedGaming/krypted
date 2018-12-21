@@ -1,15 +1,12 @@
 from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
-from core.views import views, accounts, events, groups, applications
+from core.views import views, accounts, events, groups, applications, guilds
 from core.views.events import EventUpdate
 
 ## BASE
 urlpatterns = [
     url(r'^$', views.dashboard, name='dashboard'),
-    url(r'^guilds/$', views.guilds, name='guilds'),
-    url(r'^groups/$', views.groups, name='groups'),
-    url(r'^members/$', views.view_members, name='view-members'),
 ]
 
 ## USER AUTHENTICATION
@@ -21,8 +18,14 @@ urlpatterns += [
     url(r'^user/', accounts.edit_user, name='edit_user')
 ]
 
+# GUILDS
+urlpatterns += [
+    url(r'^guilds/$', guilds.dashboard, name='guilds'),
+]
+
 # GROUPS
 urlpatterns += [
+    url(r'^groups/$', groups.dashboard, name='groups'),
     url(r'^groups/apply/group=(?P<group>\d+)/$', groups.group_apply, name='group-apply'),
     url(r'^groups/adduser/group=(?P<group_id>\d+)/user=(?P<user_id>\d+)/$', groups.group_add_user, name='group-add-user'),
     url(r'^groups/removeuser/group=(?P<group_id>\d+)/user=(?P<user_id>\d+)/$', groups.group_remove_user, name='group-remove-user'),
@@ -52,7 +55,7 @@ urlpatterns += [
 ## APPLICATIONS
 urlpatterns += [
     # base
-    url(r'^applications/$', views.applications, name='hr-view-applications'),
+    url(r'^applications/$', applications.dashboard, name='hr-view-applications'),
     url(r'^applications/add/(?P<slug>\w+)/$', applications.add_application, name='hr-add-application'),
     url(r'^applications/view/(?P<pk>\w+)/$', applications.view_application, name='hr-view-application'),
     url(r'^applications/application/approve/(?P<application>\w+)/$', applications.approve_application, name='hr-approve-application'),

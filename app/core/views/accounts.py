@@ -1,13 +1,16 @@
+# DJANGO IMPORTS
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.core.mail import send_mail
+# LOCAL IMPORTS
 from core.forms import LoginForm, RegisterForm, UserForm
 from core.decorators import login_required
 from core.models import User, Group
 from app.conf import discourse as discourse_settings
+# MISC
 import uuid
 
 """
