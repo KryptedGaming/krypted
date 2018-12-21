@@ -54,17 +54,17 @@
             <td>{{event.guild}}</td>
             <td>
               {% if user in event.registrants.all %}
-              <button onclick="location.href='{% url 'edit-event-remove-registrant' event.pk %}'" class="btn btn-block btn-success">Unregister</button>
+              <button onclick="location.href='{% url 'edit-event-remove-registrant' event.pk %}'" class="btn btn-danger"><i class="fa fa-fw fa-times"></i></button>
               {% else %}
-              <button onclick="location.href='{% url 'edit-event-add-registrant' event.pk %}'" class="btn btn-block btn-success">Register</button>
+              <button onclick="location.href='{% url 'edit-event-add-registrant' event.pk %}'" class="btn btn-success"><i class="fa fa-fw fa-check"></i></button>
               {% endif %}
               {% if user not in event.participants.all %}
                 <button
-                  class="btn btn-block btn-success"
+                  class="btn btn-success"
                   data-toggle="modal"
                   data-target="#participationModal"
                   data-event-pk="{{ event.pk }}">
-                    Participation
+                    <i class="fa fa-fw fa-map-marker"></i>
                 </button>
               {% endif %}
             </td>
