@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractUser, Group as DjangoGroup, Permi
 from django.db import models
 from django.conf import settings
 from app.conf import groups as group_settings
-import uuid
+import uuid, random
 
 """
 CORE MODELS
@@ -117,15 +117,19 @@ class Event(models.Model):
     name = models.CharField(max_length=32)
     description = models.TextField()
     start_datetime = models.DateTimeField(auto_now=False)
-    password = models.CharField(max_length=5)
-    value = models.DecimalField(max_digits=3, decimal_places=1, blank=True, null=True)
-
-    # REFERENCES
+    end_datetime = models.DateTimeField(auto_now=False, blank=True, null=True)
     user = models.ForeignKey("User", on_delete=models.SET_NULL, blank=True, null=True)
     guild = models.ForeignKey("Guild", on_delete=models.SET_NULL, blank=True, null=True)
 
+    # ATTENDENCE
+    password = models.CharField(max_length=3, default=random.randint(100,999))
+    value = models.IntegerField(blank=True, null=True)
+    registrants = models.ManyToManyField("User", blank=True, related_name="registrants")
+    participants = models.ManyToManyField("User", blank=True, related_name="participants")
+
     def get_absolute_url(self):
         return "/event/%s" % self.pk
+
 
 class Guild(models.Model):
     """
