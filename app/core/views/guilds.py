@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.conf import settings
 from django.apps import apps
 # LOCAL IMPORTS
-from core.forms import LoginForm, RegisterForm, ProfileForm
+from core.forms import LoginForm, RegisterForm
 from core.decorators import login_required, services_required, permission_required
 from core.models import *
 # MISC
