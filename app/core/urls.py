@@ -45,9 +45,12 @@ from core.feeds import EventFeed
 urlpatterns += [
     url(r'^events/view/all/$', events.dashboard, name='all-events'),
     url(r'^events/view/(?P<pk>\d+)/$', events.view_event, name='view-event'),
-    url(r'^events/create/$', events.add_event, name='add-event'),
-    url(r'^events/modify/(?P<pk>\d+)/$', events.edit_event, name='edit-event'),
-    url(r'^events/delete/(?P<pk>\d+)/$', events.remove_event, name='remove-event'),
+    url(r'^events/add/$', events.add_event, name='add-event'),
+    url(r'^events/edit/(?P<pk>\d+)/$', events.edit_event, name='edit-event'),
+    url(r'^events/edit/(?P<event_pk>\d+)/add/registrant/$', events.add_event_registrant, name='edit-event-add-registrant'),
+    url(r'^events/edit/(?P<event_pk>\d+)/remove/registrant/$', events.remove_event_registrant, name='edit-event-remove-registrant'),
+    url(r'^events/edit/(?P<event_pk>\d+)/add/participant/$', events.add_event_participant, name='edit-event-add-participant'),
+    url(r'^events/remove/(?P<pk>\d+)/$', events.remove_event, name='remove-event'),
     url(r'^latest/feed.ics$', EventFeed())
 ]
 
