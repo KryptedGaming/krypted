@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from games.eveonline.models import Token, EveCharacter
 from core.models import User, Group
 from core.models import Guild
-from core.decorators import login_required, staff_required, permission_required
+from core.decorators import login_required, permission_required
 from django.conf import settings
 from app.conf import eve as eve_settings
 from django.contrib import messages
@@ -36,7 +36,7 @@ def view_characters(request):
 
 
 @login_required
-@staff_required
+@permission_required('eveonline.audit_eve_character')
 def view_character(request, character):
     context = get_eve_context(request)
     character = EveCharacter.objects.get(character_id=character)

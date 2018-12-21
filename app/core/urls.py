@@ -15,7 +15,7 @@ urlpatterns += [
     url(r'^logout/$', accounts.logout_user, name='logout'),
     url(r'^register/$', accounts.register_user, name='register'),
     url(r'^verify/confirmation/(?P<token>[0-9A-Za-z_\-]+)/$', accounts.verify_confirm, name='verify-confirm'),
-    url(r'^user/', accounts.edit_user, name='edit_user')
+    url(r'^user/(?P<pk>\d+)/$', accounts.edit_user, name='edit_user')
 ]
 
 # GUILDS
