@@ -21,12 +21,17 @@
       </a>
     </li>
     {% for guild in guilds %}
-    <li class="">
+    <li>
       <a data-toggle="tab" href="#guild_{{guild.pk}}">
         {{ guild.name }}
       </a>
     </li>
     {% endfor %}
+    <li>
+      <a data-toggle="tab" href="#guild_none">
+        No Guild
+      </a>
+    </li>
   </ul>
 </div>
 
@@ -47,7 +52,22 @@
             <td>{{event.name}}</td>
             <td>{{event.description}}</td>
             <td>{{event.guild}}</td>
-            <td>TODO</td>
+            <td>
+              {% if user in event.registrants.all %}
+              <button onclick="location.href='{% url 'edit-event-remove-registrant' event.pk %}'" class="btn btn-block btn-success">Unregister</button>
+              {% else %}
+              <button onclick="location.href='{% url 'edit-event-add-registrant' event.pk %}'" class="btn btn-block btn-success">Register</button>
+              {% endif %}
+              {% if user not in event.participants.all %}
+                <button
+                  class="btn btn-block btn-success"
+                  data-toggle="modal"
+                  data-target="#participationModal"
+                  data-event-pk="{{ event.pk }}">
+                    Participation
+                </button>
+              {% endif %}
+            </td>
           </tr>
           {% endfor %}
         </tbody>
@@ -71,7 +91,22 @@
             <td>{{event.name}}</td>
             <td>{{event.description}}</td>
             <td>{{event.guild}}</td>
-            <td>TODO</td>
+            <td>
+            {% if user in event.registrants.all %}
+            <button onclick="location.href='{% url 'edit-event-remove-registrant' event.pk %}'" class="btn btn-block btn-success">Unregister</button>
+            {% else %}
+            <button onclick="location.href='{% url 'edit-event-add-registrant' event.pk %}'" class="btn btn-block btn-success">Register</button>
+            {% endif %}
+            {% if user not in event.participants.all %}
+                <button
+                  class="btn btn-block btn-success"
+                  data-toggle="modal"
+                  data-target="#participationModal"
+                  data-event-pk="{{ event.pk }}">
+                  Participation
+              </button>
+            {% endif %}
+            </td>
           </tr>
           {% endif %}
           {% endfor %}
@@ -79,6 +114,70 @@
       </table>
     </div>
     {% endfor %}
+    <div id="guild_none" class="tab-pane fade in box-body">
+      <table class="table">
+        <thead>
+          <th scope="col">Date</th>
+          <th scope="col">Name</th>
+          <th scope="col">Description</th>
+          <th scope="col">Guild</th>
+          <th scope="col">Action</th>
+        </thead>
+        <tbody>
+          {% for event in events %}
+          {% if event.guild == None %}
+          <tr>
+            <td>{{event.start_datetime}}</td>
+            <td>{{event.name}}</td>
+            <td>{{event.description}}</td>
+            <td>{{event.guild}}</td>
+            <td>
+              {% if user in event.registrants.all %}
+              <button onclick="location.href='{% url 'edit-event-remove-registrant' event.pk %}'" class="btn btn-block btn-success">Unregister</button>
+              {% else %}
+              button onclick="location.href='{% url 'edit-event-add-registrant' event.pk %}'" class="btn btn-block btn-success">Register</button>
+              {% endif %}
+              {% if user not in event.participants.all %}
+                <button
+                  class="btn btn-block btn-success"
+                  data-toggle="modal"
+                  data-target="#participationModal"
+                  data-event-pk="{{ event.pk }}">
+                  Participation
+              </button>
+              {% endif %}
+            </td>
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="modal fade" id="participationModal" tabindex="-1" role="dialog" aria-labelledby="participationModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form method="get">
+              <div class="form-group">
+                <label for="password" class="col-form-label">Password:</label>
+                <input type="text" class="form-control" id="password" name="password">
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <input type="submit" class="btn btn-primary"></input>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
 </div>
 {% endblock %}
 
@@ -94,6 +193,18 @@ $(function () {
       'autoWidth'   : false
     })
  })
+  // When the dialog shows up we want to set the title and the action to user
+  // the Event's PK
+$(function () {
+  $('#participationModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget)
+    var event_pk = button.data('event-pk')
+    var modal = $(this)
+    modal.find('.modal-title').text('Enter Password')
+    modal.find('form').attr('action',`/events/edit/${event_pk}/add/participant/`)
+    console.log(modal.find('form')[0])
+  })
+})
 </script>
 <script src="{% static 'global/ui/bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'global/ui/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>

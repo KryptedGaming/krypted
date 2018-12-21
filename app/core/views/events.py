@@ -1,4 +1,5 @@
 # DJANGO IMPORTS
+import logging
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.contrib.auth import authenticate, login
@@ -16,6 +17,7 @@ def dashboard(request):
     user_guilds = request.user.guilds.all()
     user_events = Event.objects.filter(guild__in=user_guilds);
     context = {
+        'user'   : request.user,
         'events' : user_events.union(Event.objects.filter(guild=None)),
         'guilds' : user_guilds
     }
@@ -31,10 +33,12 @@ def add_event(request):
 
 @login_required
 def edit_event(request,*args,**kwargs):
+    # TODO: Only the owner or staff can edit an event
     return EventUpdate.as_view()(request,*args,**kwargs)
 
 @login_required
 def remove_event(request,*args,**kwargs):
+    # TODO: Only the owner or staff can remove an event
     return EventDelete.as_view()(request,*args,**kwargs)
 
 @login_required
@@ -47,7 +51,7 @@ def add_event_registrant(request, event_pk):
 @login_required
 def remove_event_registrant(request, event_pk):
     event = Event.objects.get(pk=event_pk)
-    event.registrants.add(request.user)
+    event.registrants.remove(request.user)
     messages.add_message(request, messages.ERROR, "You have unregistered for Event: %s" % event.name)
     return redirect('all-events')
 
