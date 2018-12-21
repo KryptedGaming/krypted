@@ -2,6 +2,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.contrib.auth import authenticate, login
+from django.contrib import messages
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 # LOCAL IMPORTS
 from core.models import Event, Guild
@@ -36,4 +37,33 @@ def edit_event(request,*args,**kwargs):
 def remove_event(request,*args,**kwargs):
     return EventDelete.as_view()(request,*args,**kwargs)
 
-#
+@login_required
+def add_event_registrant(request, event_pk):
+    event = Event.objects.get(pk=event_pk)
+    event.registrants.add(request.user)
+    messages.add_message(request, messages.SUCCESS, "You have registered for Event: %s" % event.name)
+    return redirect('all-events')
+
+@login_required
+def remove_event_registrant(request, event_pk):
+    event = Event.objects.get(pk=event_pk)
+    event.registrants.add(request.user)
+    messages.add_message(request, messages.ERROR, "You have unregistered for Event: %s" % event.name)
+    return redirect('all-events')
+
+@login_required
+def add_event_participant(request, event_pk):
+    """
+    Adds a user to event participants if given the correct password
+    Expects a GET parameter: password
+    Example: <input type="text" name="password"> where form action is GET
+    """
+    event = Event.objects.get(pk=event_pk)
+    if 'password' in request.GET:
+        event_password = request.GET['password']
+        if event_password == event.password:
+            event.participants.add(request.user)
+            messages.add_message(request, messages.SUCCESS, "Participation added for Event: %s" % event.name)
+            return redirect('all-events')
+    messages.add_message(request, messages.ERROR, "Incorrect Participation password for Event: %s" % event.name)
+    return redirect('all-events')
