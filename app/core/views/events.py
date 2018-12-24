@@ -33,13 +33,21 @@ def add_event(request):
 
 @login_required
 def edit_event(request,*args,**kwargs):
-    # TODO: Only the owner or staff can edit an event
-    return EventUpdate.as_view()(request,*args,**kwargs)
+    event = Event.objects.get(pk=kwargs['pk'])
+    if event.user == request.user or request.user.has_perm('core.manage_events'):
+        return EventUpdate.as_view()(request,*args,**kwargs)
+    else:
+        messages.add_message(request, messages.ERROR, "You do not have permission to edit that event.")
+        return redirect('all-events')
 
 @login_required
 def remove_event(request,*args,**kwargs):
-    # TODO: Only the owner or staff can remove an event
-    return EventDelete.as_view()(request,*args,**kwargs)
+    event = Event.objects.get(pk=kwargs['pk'])
+    if event.user == request.user or request.user.has_perm('core.manage_events'):
+        return EventDelete.as_view()(request,*args,**kwargs)
+    else:
+        messages.add_message(request, messages.ERROR, "You do not have permission to remove that event.")
+        return redirect('all-events')
 
 @login_required
 def add_event_registrant(request, event_pk):

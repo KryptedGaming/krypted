@@ -86,12 +86,20 @@ class UserUpdate(UpdateView):
 class EventCreate(CreateView):
     template_name='events/add_event.html'
     model = Event
-    fields = ['guild','name','description','start_datetime','user'];
+    fields = ['guild','name','description','start_datetime'];
+    success_url = reverse_lazy('all-events')
+
+    def form_valid(self,form):
+        # The user that creates the Event is the owner
+        user = self.request.user
+        form.instance.user = user
+        return super(EventCreate,self).form_valid(form)
 
 class EventUpdate(UpdateView):
     model = Event
-    fields = ['name', 'description', 'start_datetime', 'user', 'guild']
+    fields = ['name', 'description', 'start_datetime', 'guild']
     template_name = "events/edit_event.html"
+    success_url = reverse_lazy('all-events')
 
 class EventDelete(DeleteView):
     model = Event

@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="{% static 'global/ui/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
 {% endblock %}
 {% block content %}
+<button class="btn btn-dark" onclick="location.href='{% url 'add-event' %}'"><i class="fa fa-fw fa-plus-circle"></i>Add Event</button>
 <div class="nav-tabs-custom">
   <ul class="nav nav-tabs">
     <li class="active">
@@ -39,6 +40,7 @@
     <div id="all_events" class="tab-pane fade in active box-body">
       <table class="table">
         <thead>
+          <th scope="col"></th>
           <th scope="col">Date</th>
           <th scope="col">Name</th>
           <th scope="col">Description</th>
@@ -47,32 +49,12 @@
         </thead>
         <tbody>
           {% for event in events %}
-          <tr>
-            <td>{{event.start_datetime}}</td>
-            <td>{{event.name}}</td>
-            <td>{{event.description}}</td>
-            <td>{{event.guild}}</td>
-            <td>
-              {% if user in event.registrants.all %}
-              <button onclick="location.href='{% url 'edit-event-remove-registrant' event.pk %}'" class="btn btn-danger"><i class="fa fa-fw fa-times"></i></button>
-              {% else %}
-              <button onclick="location.href='{% url 'edit-event-add-registrant' event.pk %}'" class="btn btn-success"><i class="fa fa-fw fa-check"></i></button>
-              {% endif %}
-              {% if user not in event.participants.all %}
-                <button
-                  class="btn btn-success"
-                  data-toggle="modal"
-                  data-target="#participationModal"
-                  data-event-pk="{{ event.pk }}">
-                    <i class="fa fa-fw fa-map-marker"></i>
-                </button>
-              {% endif %}
-            </td>
-          </tr>
+          {% include 'events/event_row.html' %}
           {% endfor %}
         </tbody>
       </table>
     </div>
+
     {% for guild in guilds %}
     <div id="guild_{{guild.pk}}" class="tab-pane fade in box-body">
       <table class="table">
@@ -86,28 +68,7 @@
         <tbody>
           {% for event in events %}
           {% if event.guild == guild %}
-          <tr>
-            <td>{{event.start_datetime}}</td>
-            <td>{{event.name}}</td>
-            <td>{{event.description}}</td>
-            <td>{{event.guild}}</td>
-            <td>
-            {% if user in event.registrants.all %}
-            <button onclick="location.href='{% url 'edit-event-remove-registrant' event.pk %}'" class="btn btn-block btn-success">Unregister</button>
-            {% else %}
-            <button onclick="location.href='{% url 'edit-event-add-registrant' event.pk %}'" class="btn btn-block btn-success">Register</button>
-            {% endif %}
-            {% if user not in event.participants.all %}
-                <button
-                  class="btn btn-block btn-success"
-                  data-toggle="modal"
-                  data-target="#participationModal"
-                  data-event-pk="{{ event.pk }}">
-                  Participation
-              </button>
-            {% endif %}
-            </td>
-          </tr>
+          {% include 'events/event_row.html' %}
           {% endif %}
           {% endfor %}
         </tbody>
@@ -126,28 +87,7 @@
         <tbody>
           {% for event in events %}
           {% if event.guild == None %}
-          <tr>
-            <td>{{event.start_datetime}}</td>
-            <td>{{event.name}}</td>
-            <td>{{event.description}}</td>
-            <td>{{event.guild}}</td>
-            <td>
-              {% if user in event.registrants.all %}
-              <button onclick="location.href='{% url 'edit-event-remove-registrant' event.pk %}'" class="btn btn-block btn-success">Unregister</button>
-              {% else %}
-              button onclick="location.href='{% url 'edit-event-add-registrant' event.pk %}'" class="btn btn-block btn-success">Register</button>
-              {% endif %}
-              {% if user not in event.participants.all %}
-                <button
-                  class="btn btn-block btn-success"
-                  data-toggle="modal"
-                  data-target="#participationModal"
-                  data-event-pk="{{ event.pk }}">
-                  Participation
-              </button>
-              {% endif %}
-            </td>
-          </tr>
+          {% include 'events/event_row.html' %}
           {% endif %}
           {% endfor %}
         </tbody>
@@ -190,7 +130,11 @@ $(function () {
       'searching'   : true,
       'ordering'    : true,
       'info'        : true,
-      'autoWidth'   : false
+      'autoWidth'   : false,
+      'order' : [[ 1, 'desc' ]],
+      'columnDefs' : [
+        { 'orderable' : false, 'targets' : 0 }
+      ]
     })
  })
   // When the dialog shows up we want to set the title and the action to user
@@ -204,6 +148,8 @@ $(function () {
     modal.find('form').attr('action',`/events/edit/${event_pk}/add/participant/`)
     console.log(modal.find('form')[0])
   })
+
+  $('[data-toggle="tooltip"]').tooltip()
 })
 </script>
 <script src="{% static 'global/ui/bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
