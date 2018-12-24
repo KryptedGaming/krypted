@@ -15,7 +15,7 @@ from core.utils import username_or_email_resolver, send_activation_email
 # EXTERNAL IMPORTS
 from app.conf import discourse as discourse_settings
 # MISC
-import logging, datetime, pytz, uuid
+import logging, datetime, pytz, uuid, random
 
 logger = logging.getLogger(__name__)
 
@@ -93,11 +93,12 @@ class EventCreate(CreateView):
         # The user that creates the Event is the owner
         user = self.request.user
         form.instance.user = user
+        form.instance.password = random.randint(100,999)
         return super(EventCreate,self).form_valid(form)
 
 class EventUpdate(UpdateView):
     model = Event
-    fields = ['name', 'description', 'start_datetime', 'guild']
+    fields = ['name', 'description', 'start_datetime']
     template_name = "events/edit_event.html"
     success_url = reverse_lazy('all-events')
 
