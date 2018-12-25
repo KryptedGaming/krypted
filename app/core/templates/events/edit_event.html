@@ -11,11 +11,19 @@
 {% endblock %}
 
 {% block content %}
-<div>
-  <form method="post">
-    {% csrf_token %}
-    {{ form|crispy }}
-    <input type="submit" value="Modify Event">
-  </form>
+<div class="box box-primary">
+  {% crispy form %}
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'global/ui/bower_components/moment/moment.js' %}"></script>
+{# <script src="{% static 'global/ui/bower_components/bootstrap-datepicker/js/bootstrap-datepicker.js'%}"></script> #}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+<script>
+  $('.datetimeinput').parent().datetimepicker({
+    format: 'YYYY-MM-DD HH:mm'
+  });
+</script>
 {% endblock %}

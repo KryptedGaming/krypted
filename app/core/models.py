@@ -130,6 +130,9 @@ class Event(models.Model):
     def get_absolute_url(self):
         return "/event/%s" % self.pk
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         permissions = (
                 ('manage_events', u'Can manage events'),

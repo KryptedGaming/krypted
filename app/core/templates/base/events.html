@@ -42,6 +42,7 @@
         <thead>
           <th scope="col"></th>
           <th scope="col">Date</th>
+          <th scope="col">Organizer</th>
           <th scope="col">Name</th>
           <th scope="col">Description</th>
           <th scope="col">Guild</th>
@@ -59,7 +60,9 @@
     <div id="guild_{{guild.pk}}" class="tab-pane fade in box-body">
       <table class="table">
         <thead>
+          <th scope="col"></th>
           <th scope="col">Date</th>
+          <th scope="col">Organizer</th>
           <th scope="col">Name</th>
           <th scope="col">Description</th>
           <th scope="col">Guild</th>
@@ -78,7 +81,9 @@
     <div id="guild_none" class="tab-pane fade in box-body">
       <table class="table">
         <thead>
+          <th scope="col"></th>
           <th scope="col">Date</th>
+          <th scope="col">Organizer</th>
           <th scope="col">Name</th>
           <th scope="col">Description</th>
           <th scope="col">Guild</th>
@@ -148,9 +153,26 @@ $(function () {
     modal.find('form').attr('action',`/events/edit/${event_pk}/add/participant/`)
     console.log(modal.find('form')[0])
   })
-
   $('[data-toggle="tooltip"]').tooltip()
 })
+
+function copyStringToClipboard (str) {
+   // Create new element
+   var el = document.createElement('textarea');
+   // Set value (string to be copied)
+   el.value = str;
+   // Set non-editable to avoid focus and move outside of view
+   el.setAttribute('readonly', '');
+   el.style = {position: 'absolute', left: '-9999px'};
+   document.body.appendChild(el);
+   // Select text inside element
+   el.select();
+   // Copy text to clipboard
+   document.execCommand('copy');
+   // Remove temporary element
+   document.body.removeChild(el);
+}
+
 </script>
 <script src="{% static 'global/ui/bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'global/ui/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>

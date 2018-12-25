@@ -3,9 +3,11 @@
     {% if user == event.user or perms.core.manage_events %}
     <button onclick="location.href='{% url 'edit-event' event.pk %}'" class="btn btn-dark" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-fw fa-pencil"></i></button>
     <button onclick="location.href='{% url 'remove-event' event.pk %}'" class="btn btn-dark" data-toggle="tooltip" data-placement="top" title="Remove"><i class="fa fa-fw fa-minus-circle"></i></button>
+    <button onclick="copyStringToClipboard('{{ request.scheme }}://{{ request.META.HTTP_HOST }}{% url 'edit-event-add-participant' event.pk %}?password={{ event.password }}')" class="btn btn-dark" data-toggle="tooltip" data-placement="top" title="Copy Attendence Link"><i class="fa fa-fw fa-key"></i><span class="d-none">{{ event.password }}</span></button>
     {% endif %}
   </td>
   <td data-order="{{ event.start_datetime.isoformat }}">{{event.start_datetime}}</td>
+  <td>{{event.user}}</td>
   <td>{{event.name}}</td>
   <td>{{event.description}}</td>
   <td>{{event.guild}}</td>
@@ -20,9 +22,8 @@
         class="btn btn-success"
         data-toggle="modal"
         data-target="#participationModal"
-        data-event-pk="{{ event.pk }}"
-        data-toggle="tooltip" data-placement="top" title="Enter Participation Password">
-          <i class="fa fa-fw fa-map-marker"></i>
+        data-event-pk="{{ event.pk }}">
+          <i data-toggle="tooltip" data-placement="top" title="Enter Participation Password" class="fa fa-fw fa-map-marker"></i>
       </button>
     {% endif %}
   </td>

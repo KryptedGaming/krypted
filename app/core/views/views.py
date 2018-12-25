@@ -7,6 +7,10 @@ from django.apps import apps
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse_lazy
+# CRISPY FORMS IMPORTS
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Div, Field, Submit
+from crispy_forms.bootstrap import *
 # LOCAL IMPORTS
 from core.forms import LoginForm, RegisterForm
 from core.decorators import login_required, services_required, permission_required
@@ -96,11 +100,40 @@ class EventCreate(CreateView):
         form.instance.password = random.randint(100,999)
         return super(EventCreate,self).form_valid(form)
 
+    def get_form(self, form_class=None):
+        form = super(EventCreate, self).get_form(form_class)
+        form.helper = FormHelper()
+        form.helper.form_method = 'POST'
+        form.helper.layout = Layout(
+            'guild',
+            'name',
+            'description',
+            Field(
+                PrependedText('start_datetime','<span class="glyphicon glyphicon-calendar"></span>'),
+            ),
+            FormActions(Submit('Create Event','Create Event', css_class='btn-primary'))
+        )
+        form.fields['guild'].queryset = self.request.user.guilds.all()
+        return form
+
 class EventUpdate(UpdateView):
     model = Event
     fields = ['name', 'description', 'start_datetime']
     template_name = "events/edit_event.html"
     success_url = reverse_lazy('all-events')
+    def get_form(self, form_class=None):
+        form = super(EventUpdate, self).get_form(form_class)
+        form.helper = FormHelper()
+        form.helper.form_method = 'POST'
+        form.helper.layout = Layout(
+            'name',
+            'description',
+            Field(
+                PrependedText('start_datetime','<span class="glyphicon glyphicon-calendar"></span>'),
+            ),
+            FormActions(Submit('Edit Event','Edit Event', css_class='btn-primary'))
+        )
+        return form
 
 class EventDelete(DeleteView):
     model = Event
