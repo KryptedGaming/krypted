@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 # LOCAL IMPORTS
 from core.models import Event, Guild
-from core.decorators import login_required
+from core.decorators import login_required, permission_required
 from core.views.views import EventCreate, EventUpdate, EventDelete
 # MISC
 from datetime import datetime
@@ -28,10 +28,12 @@ def view_event(request,pk):
     pass
 
 @login_required
+@permission_required('core.add_event')
 def add_event(request):
     return EventCreate.as_view()(request)
 
 @login_required
+@permission_required('core.change_event')
 def edit_event(request,*args,**kwargs):
     event = Event.objects.get(pk=kwargs['pk'])
     if event.user == request.user or request.user.has_perm('core.manage_events'):
@@ -41,6 +43,7 @@ def edit_event(request,*args,**kwargs):
         return redirect('all-events')
 
 @login_required
+@permission_required('core.delete_event')
 def remove_event(request,*args,**kwargs):
     event = Event.objects.get(pk=kwargs['pk'])
     if event.user == request.user or request.user.has_perm('core.manage_events'):
