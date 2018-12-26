@@ -25,7 +25,9 @@ def dashboard(request):
 
 @login_required
 def view_event(request,pk):
-    pass
+    context = {}
+    context['event'] = Event.objects.get(pk=pk)
+    return render(request, 'events/view_event.html', context)
 
 @login_required
 @permission_required('core.add_event')

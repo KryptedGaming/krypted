@@ -13,9 +13,7 @@
 <link rel="stylesheet" href="{% static 'global/ui/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
 {% endblock %}
 {% block content %}
-{% if perms.core.add_event %}
-<button class="btn btn-dark" onclick="location.href='{% url 'add-event' %}'"><i class="fa fa-fw fa-plus-circle"></i>Add Event</button>
-{% endif %}
+
 <div class="nav-tabs-custom">
   <ul class="nav nav-tabs">
     <li class="active">
@@ -30,10 +28,10 @@
       </a>
     </li>
     {% endfor %}
-    <li>
-      <a data-toggle="tab" href="#guild_none">
-        No Guild
-      </a>
+    <li class="pull-right">
+      {% if perms.core.add_event %}
+      <button class="btn btn-success" onclick="location.href='{% url 'add-event' %}'">Add Event</button>
+      {% endif %}
     </li>
   </ul>
 </div>
@@ -42,13 +40,14 @@
     <div id="all_events" class="tab-pane fade in active box-body">
       <table class="table">
         <thead>
-          <th scope="col"></th>
           <th scope="col">Date</th>
           <th scope="col">Organizer</th>
           <th scope="col">Name</th>
-          <th scope="col">Description</th>
           <th scope="col">Guild</th>
-          <th scope="col">Action</th>
+          <th scope="col">User Actions</th>
+          {% if user == event.user or perms.core.manage_events %}
+          <th scope="col">Admin Actions</th>
+          {% endif %}
         </thead>
         <tbody>
           {% for event in events %}
@@ -62,13 +61,14 @@
     <div id="guild_{{guild.pk}}" class="tab-pane fade in box-body">
       <table class="table">
         <thead>
-          <th scope="col"></th>
           <th scope="col">Date</th>
           <th scope="col">Organizer</th>
           <th scope="col">Name</th>
-          <th scope="col">Description</th>
           <th scope="col">Guild</th>
-          <th scope="col">Action</th>
+          <th scope="col">User Actions</th>
+          {% if user == event.user or perms.core.manage_events %}
+          <th scope="col">Admin Actions</th>
+          {% endif %}
         </thead>
         <tbody>
           {% for event in events %}
@@ -80,26 +80,6 @@
       </table>
     </div>
     {% endfor %}
-    <div id="guild_none" class="tab-pane fade in box-body">
-      <table class="table">
-        <thead>
-          <th scope="col"></th>
-          <th scope="col">Date</th>
-          <th scope="col">Organizer</th>
-          <th scope="col">Name</th>
-          <th scope="col">Description</th>
-          <th scope="col">Guild</th>
-          <th scope="col">Action</th>
-        </thead>
-        <tbody>
-          {% for event in events %}
-          {% if event.guild == None %}
-          {% include 'events/event_row.html' %}
-          {% endif %}
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
 
     <div class="modal fade" id="participationModal" tabindex="-1" role="dialog" aria-labelledby="participationModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
@@ -125,6 +105,7 @@
         </div>
       </div>
     </div>
+
 </div>
 {% endblock %}
 
