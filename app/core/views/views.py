@@ -9,7 +9,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse_lazy
 # CRISPY FORMS IMPORTS
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Div, Field, Submit
+from crispy_forms.layout import Layout, Div, Field, Submit, Button
 from crispy_forms.bootstrap import *
 # LOCAL IMPORTS
 from core.forms import LoginForm, RegisterForm
@@ -87,6 +87,11 @@ class UserUpdate(UpdateView):
     model = User
     fields = ['first_name', 'age', 'region']
 
+class BoxedField(Field):
+    template='crispy_template/field.html'
+    def __init__(self,*args,**kwargs):
+        super(BoxedField,self).__init__(*args,**kwargs)
+
 class EventCreate(CreateView):
     template_name='events/add_event.html'
     model = Event
@@ -104,14 +109,13 @@ class EventCreate(CreateView):
         form = super(EventCreate, self).get_form(form_class)
         form.helper = FormHelper()
         form.helper.form_method = 'POST'
+        onclick = "location.href='%s'" % reverse_lazy('all-events')
         form.helper.layout = Layout(
-            'guild',
-            'name',
-            'description',
-            Field(
-                PrependedText('start_datetime','<span class="glyphicon glyphicon-calendar"></span>'),
-            ),
-            FormActions(Submit('Create Event','Create Event', css_class='btn-primary'))
+            *[BoxedField(f) for f in self.fields],
+            FormActions(
+                Submit('Create Event','Create Event', css_class='btn-success'),
+                Button('Cancel','Cancel', css_class='btn-danger', onclick=onclick)
+            )
         )
         form.fields['guild'].queryset = self.request.user.guilds.all()
         return form
@@ -125,13 +129,13 @@ class EventUpdate(UpdateView):
         form = super(EventUpdate, self).get_form(form_class)
         form.helper = FormHelper()
         form.helper.form_method = 'POST'
+        onclick = "location.href='%s'" % reverse_lazy('all-events')
         form.helper.layout = Layout(
-            'name',
-            'description',
-            Field(
-                PrependedText('start_datetime','<span class="glyphicon glyphicon-calendar"></span>'),
-            ),
-            FormActions(Submit('Edit Event','Edit Event', css_class='btn-primary'))
+            *[BoxedField(f) for f in self.fields],
+            FormActions(
+                Submit('Modify Event','Modify Event', css_class='btn-warning'),
+                Button('Cancel','Cancel', css_class='btn-danger', onclick=onclick)
+            )
         )
         return form
 
