@@ -1,14 +1,16 @@
-<tr>
+<tr class="event_row" {% if event.is_expired %} hidden {% endif %}>
   <td data-order="{{ event.start_datetime.isoformat }}">{{event.start_datetime |date:"M d, H:i e" }}</td>
   <td>@{{event.user.discord.username}}</td>
   <td>{{event.name}}</td>
   <td>{{event.guild}}</td>
   <td>
     <button onclick="location.href='{% url 'view-event' event.pk %}'" class="btn btn-info" data-toggle="tooltip" data-placement="top" title="View"><i class="fa fa-fw fa-eye"></i></button>
+    {% if not event.is_expired %}
     {% if user in event.registrants.all %}
     <button onclick="location.href='{% url 'edit-event-remove-registrant' event.pk %}'" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Unregister"><i class="fa fa-fw fa-times"></i></button>
     {% else %}
     <button onclick="location.href='{% url 'edit-event-add-registrant' event.pk %}'" class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Register"><i class="fa fa-fw fa-check"></i></button>
+    {% endif %}
     {% endif %}
     {% if user not in event.participants.all %}
       <button

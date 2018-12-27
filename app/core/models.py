@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractUser, Group as DjangoGroup, Permi
 from django.db import models
 from django.conf import settings
 from app.conf import groups as group_settings
-import uuid
+import uuid, pytz, datetime
 
 """
 CORE MODELS
@@ -126,6 +126,13 @@ class Event(models.Model):
     value = models.IntegerField(blank=True, null=True)
     registrants = models.ManyToManyField("User", blank=True, related_name="registrants")
     participants = models.ManyToManyField("User", blank=True, related_name="participants")
+
+    @property
+    def is_expired(self):
+        time_delta = self.start_datetime - datetime.datetime.utcnow().replace(tzinfo=pytz.utc)
+        if time_delta.total_seconds() < 3600:
+            return True
+        return False
 
     def get_absolute_url(self):
         return "/event/%s" % self.pk
