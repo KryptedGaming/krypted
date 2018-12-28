@@ -1,23 +1,27 @@
+# DJANGO IMPORTS
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
-from core.decorators import login_required, permission_required
+# LOCAL IMPORTS
+from app.conf import discord as discord_settings
+from core.decorators import login_required, permission_required, services_required
 from core.models import *
+# EXTERNAL IMPORTS
 from games.eveonline.models import *
 from modules.discord.models import DiscordUser
 from modules.discord.tasks import send_discord_message
-from app.conf import discord as discord_settings
+# MISC
 import logging, datetime
+
 logger = logging.getLogger(__name__)
 
-## BASE
 @login_required
+@services_required
 @permission_required('core.manage_guild_applications')
 def dashboard(request):
-    context = {}
-    context['applications'] = GuildApplications.order_by(request_date)
-    return render(request, 'applications/dashboard.html', context)
+    context = {'applications': GuildApplication.objects.all()}
+    return render(request, 'base/applications.html', context)
 
 @login_required
 @permission_required('core.manage_guild_applications')

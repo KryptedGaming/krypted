@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractUser, Group as DjangoGroup, Permi
 from django.db import models
 from django.conf import settings
 from app.conf import groups as group_settings
-import uuid
+import uuid, pytz, datetime
 
 """
 CORE MODELS
@@ -116,13 +116,35 @@ class Event(models.Model):
     # BASIC INFORMATION
     name = models.CharField(max_length=32)
     description = models.TextField()
-    date = models.DateField()
-    password = models.CharField(max_length=5)
-    value = models.DecimalField(max_digits=3, decimal_places=1)
-
-    # REFERENCES
+    start_datetime = models.DateTimeField(auto_now=False)
+    end_datetime = models.DateTimeField(auto_now=False, blank=True, null=True)
     user = models.ForeignKey("User", on_delete=models.SET_NULL, blank=True, null=True)
     guild = models.ForeignKey("Guild", on_delete=models.SET_NULL, blank=True, null=True)
+
+    # ATTENDENCE
+    password = models.CharField(max_length=3)
+    value = models.IntegerField(blank=True, null=True)
+    registrants = models.ManyToManyField("User", blank=True, related_name="registrants")
+    participants = models.ManyToManyField("User", blank=True, related_name="participants")
+
+    @property
+    def is_expired(self):
+        time_delta = self.start_datetime - datetime.datetime.utcnow().replace(tzinfo=pytz.utc)
+        if time_delta.total_seconds() < 3600:
+            return True
+        return False
+
+    def get_absolute_url(self):
+        return "/event/%s" % self.pk
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        permissions = (
+                ('manage_events', u'Can manage events'),
+        )
+
 
 class Guild(models.Model):
     """

@@ -1,125 +1,47 @@
+# DJANGO IMPORTS
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.core.mail import send_mail
-from core.forms import LoginForm, RegisterForm, UserForm
+# LOCAL IMPORTS
+from core.forms import LoginForm, RegisterForm
 from core.decorators import login_required
 from core.models import User, Group
+from core.utils import username_or_email_resolver
+from core.views.views import LoginView, RegisterView, UserUpdate
+# EXTERNAL IMPORTS
 from app.conf import discourse as discourse_settings
-import uuid
+# MISC
+import uuid, datetime
 
 """
 Views for User authentication
 Includes everything related to registration and logging in
 """
 def login_user(request):
-    try:
-        next = request.GET['next']
-    except:
-        next = None
-    if request.method == 'POST':
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            resolved_username = username_or_email_resolver(request.POST['username'])
-            user = authenticate(username=resolved_username,
-                    password = request.POST['password'])
-            if user is not None:
-                login(request, user)
-                if next:
-                    if "discourse" in next:
-                        return redirect(discourse_settings.DISCOURSE_BASE_URL)
-                    return redirect(next)
-                else:
-                    return redirect('dashboard')
+    # rate limit logins
+    if 'locked' in request.session:
+        time_delta = datetime.datetime.utcnow() - datetime.datetime.strptime(request.session['locked'], "%Y-%m-%d %H:%M:%S.%f")
+        time_delta = time_delta.total_seconds()
+        if time_delta < 300:
+            return render(request, 'base/locked.html', context={})
         else:
-            if User.objects.filter(username=request.POST['username']).exists():
-                user = User.objects.get(username=request.POST['username'])
-            else:
-                messages.add_message(request, messages.ERROR, 'That user does not exist. %s' % request.POST['username'])
-                return redirect('login')
-            username_invalid = not User.objects.filter(username=request.POST['username']).exists()
-            email_invalid = not User.objects.filter(email=request.POST['username']).exists()
-            if username_invalid and email_invalid:
-                messages.add_message(request, messages.ERROR, 'That user does not exist. %s' % request.POST['username'])
-            elif user and not user.is_active:
-                if 'emails' not in request.session:
-                    request.session['emails'] = 1
-                else:
-                    if request.session['emails'] > 3:
-                        messages.add_message(request, messages.WARNING, 'You have requested too many emails. Please contact an admin on Discord.')
-                        return redirect('login')
-                    request.session['emails'] += 1
-                user.activation_key = uuid.uuid4()
-                user.save()
-                messages.add_message(request, messages.WARNING, 'Please activate your account. And email has been sent.')
-                send_mail(
-                    'Verify your Krypted Account',
-                    'Welcome to Krypted Gaming. \n Please click the following link to verify your account. \n' + settings.SERVER_DOMAIN + '/verify/confirmation/' + str(user.activation_key),
-                    settings.DEFAULT_FROM_EMAIL,
-                    [user.email],
-                    fail_silently=False
-                )
-            else:
-                messages.add_message(request, messages.ERROR, 'Wrong username or password.')
-            return redirect('login')
-    else:
-        form = LoginForm()
-        return render(
-                request,
-                'accounts/login.html',
-                context={
-                    'form': form,
-                    'next': next
-                    }
-                )
+            request.session.pop('attempts', None)
+            request.session.pop('locked', None)
+    # redirect to form view
+    return LoginView.as_view()(request)
 
 def register_user(request):
-    if request.method =='POST':
-        form = RegisterForm(request.POST)
-        if form.is_valid():
-            user = User.objects.create_user(
-                    username=request.POST['username'],
-                    email=request.POST['email'],
-                    password=request.POST['password'],
-                    region=request.POST['region'],
-                    age=request.POST['age'],
-                    activation_key=uuid.uuid4(),
-                    is_active=False
-                    )
-            user.save()
-            send_mail(
-                'Verify your Krypted Account',
-                'Welcome to Krypted Gaming. \n Please click the following link to verify your account. \n' + settings.SERVER_DOMAIN + '/verify/confirmation/' + str(user.activation_key),
-                settings.DEFAULT_FROM_EMAIL,
-                [user.email],
-                fail_silently=False
-            )
-            messages.add_message(request, messages.INFO, 'Please check your email to activate your account. It may be in your spam folder.')
-            return redirect('login')
-    else:
-        form = RegisterForm()
-    return render(
-            request,
-            'accounts/register.html',
-            context={
-                'form': form
-                }
-            )
+    return RegisterView.as_view()(request)
 
 @login_required
-def edit_user(request):
-    if request.method == 'POST':
-        form = UserForm(request.POST)
-        if form.is_valid():
-            user = request.user
-            user.region = request.POST['region']
-            user.save()
-    else:
-        form = UserForm()
-    return render(request, 'accounts/edit_user.html', context={'form': form})
-
+def edit_user(request, *args, **kwargs):
+    if kwargs.get('pk') != str(request.user.pk):
+        messages.error(request, "Nice try, guy")
+        return redirect('dashboard')
+    return UserUpdate.as_view()(request, *args, **kwargs)
 
 def logout_user(request):
     logout(request)

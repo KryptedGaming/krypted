@@ -1,8 +1,12 @@
+# DJANGO
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login
-from core.models import User
 from django.conf import settings
+# INTERNAL
+from core.models import User
+from core.utils import send_activation_email
+# MISC
 import logging
 
 logger = logging.getLogger(__name__)
@@ -14,9 +18,22 @@ class LoginForm(forms.Form):
     def clean(self):
         input = self.cleaned_data
         username = self.resolve_username(input.get('username'))
+        password = input.get('password')
 
-        if not authenticate(username=username, password=input.get('password')):
+        # checks
+        user_exists = User.objects.filter(username=username).exists()
+        user_authenticated = authenticate(username=username, password=password)
+        if user_exists:
+            user_active = User.objects.get(username=username).is_active
+
+        # authenticate check
+        if not user_authenticated:
             self.add_error('username', 'Invalid credentials.')
+        if not user_exists:
+            self.add_error('username', 'User does not exist.')
+        if user_exists and not user_active:
+            self.activate_user(username)
+            self.add_error('username', 'Account not active, please check your email')
 
         return input
 
@@ -27,12 +44,17 @@ class LoginForm(forms.Form):
         else:
             return username
 
+    def activate_user(self, username):
+        user = User.objects.get(username=username)
+        send_activation_email(user)
+
 class RegisterForm(forms.Form):
     username = forms.CharField(max_length=64, required=True)
     email = forms.CharField(max_length=64, required=True)
     password = forms.CharField(max_length=32, required=True)
     vpassword = forms.CharField(max_length=32, required=True)
-    region = forms.CharField(max_length=2, required=True)
+    region = forms.ChoiceField(choices=settings.REGIONS, required=True)
+    age = forms.IntegerField()
 
     def clean(self):
         input = self.cleaned_data
@@ -53,26 +75,3 @@ class RegisterForm(forms.Form):
                 self.add_error('password', 'Password must be 8 characters or more.')
 
         return input
-
-class UserForm(forms.Form):
-    region = forms.CharField(max_length=2, required=True)
-
-    def clean(self):
-        input = self.cleaned_data
-        return input
-
-class CoreAuthenticationForm(AuthenticationForm):
-    def confirm_login_allowed(self, user):
-        pass
-
-class EventForm(forms.Form):
-    pass
-
-class ProfileForm(forms.Form):
-    pass
-
-class NotificationForm(forms.Form):
-    pass
-
-class GameForm(forms.Form):
-    pass
