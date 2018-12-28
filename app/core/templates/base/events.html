@@ -40,6 +40,7 @@
     <div id="all_events" class="tab-pane fade in active box-body">
       <table class="table">
         <thead>
+          <th scope="col">Countdown</th>
           <th scope="col">Date</th>
           <th scope="col">Organizer</th>
           <th scope="col">Name</th>
@@ -61,6 +62,7 @@
     <div id="guild_{{guild.pk}}" class="tab-pane fade in box-body">
       <table class="table">
         <thead>
+          <th scope="col">Countdown</th>
           <th scope="col">Date</th>
           <th scope="col">Organizer</th>
           <th scope="col">Name</th>
@@ -107,7 +109,8 @@
     </div>
 
 </div>
-<button onclick="unhideEvents()" class="btn btn-info pull-right" title="Show all events">Show hidden events</button>
+<button id="unhide_button" onclick="unhideEvents()" class="btn btn-info pull-right" title="Show all events">Show hidden events</button>
+<button id="hide_button" onclick="hideEvents()" class="btn btn-default pull-right" title="Hide expired events" style="display: none;">Hide expired events</button>
 {% endblock %}
 
 {% block scripts %}
@@ -120,7 +123,7 @@ $(function () {
       'ordering'    : true,
       'info'        : true,
       'autoWidth'   : false,
-      'order' : [[ 1, 'desc' ]],
+      'order' : [[ 2, 'desc' ]],
       'columnDefs' : [
         { 'orderable' : false, 'targets' : 0 }
       ]
@@ -162,7 +165,36 @@ function unhideEvents() {
   for (i=0; i<elements.length; i++) {
     elements[i].removeAttribute("hidden")
   }
+  document.getElementById("unhide_button").style.display = "none"
+  document.getElementById("hide_button").style.display = "block"
 }
+
+function hideEvents() {
+  elements = document.getElementsByClassName("expired")
+  for (i=0; i<elements.length; i++) {
+    elements[i].setAttribute("hidden", true)
+  }
+  document.getElementById("unhide_button").style.display = "block"
+  document.getElementById("hide_button").style.display = "none"
+}
+
+setInterval(function() {
+  var countdowns = document.getElementsByClassName('countdown')
+  for(i=0; i<countdowns.length; i++) {
+    // pull date
+    var elements = countdowns[i].getElementsByTagName('*')
+    var date = new Date(elements[0].innerText)
+    var now = new Date().getTime()
+    var distance = date - now
+    // calculate times
+    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    // display result
+    elements[1].innerHTML = days + "d " + hours + "h "+ minutes + "m " + seconds + "s ";
+  }
+}, 1000);
 </script>
 <script src="{% static 'global/ui/bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'global/ui/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>

@@ -38,34 +38,26 @@ def add_event(request):
 @permission_required('core.change_event')
 def edit_event(request,*args,**kwargs):
     event = Event.objects.get(pk=kwargs['pk'])
-    if event.user == request.user or request.user.has_perm('core.manage_events'):
-        return EventUpdate.as_view()(request,*args,**kwargs)
-    else:
-        messages.add_message(request, messages.ERROR, "You do not have permission to edit that event.")
-        return redirect('all-events')
+    return EventUpdate.as_view()(request,*args,**kwargs)
 
 @login_required
 @permission_required('core.delete_event')
 def remove_event(request,*args,**kwargs):
     event = Event.objects.get(pk=kwargs['pk'])
-    if event.user == request.user or request.user.has_perm('core.manage_events'):
-        return EventDelete.as_view()(request,*args,**kwargs)
-    else:
-        messages.add_message(request, messages.ERROR, "You do not have permission to remove that event.")
-        return redirect('all-events')
+    return EventDelete.as_view()(request,*args,**kwargs)
 
 @login_required
 def add_event_registrant(request, event_pk):
     event = Event.objects.get(pk=event_pk)
     event.registrants.add(request.user)
-    messages.add_message(request, messages.SUCCESS, "You have registered for Event: %s" % event.name)
+    messages.add_message(request, messages.SUCCESS, "Your registration for event '%s' has been recorded" % event.name)
     return redirect('all-events')
 
 @login_required
 def remove_event_registrant(request, event_pk):
     event = Event.objects.get(pk=event_pk)
     event.registrants.remove(request.user)
-    messages.add_message(request, messages.ERROR, "You have unregistered for Event: %s" % event.name)
+    messages.add_message(request, messages.ERROR, "Your unregristration for event '%s' has been recorded" % event.name)
     return redirect('all-events')
 
 @login_required
@@ -80,7 +72,7 @@ def add_event_participant(request, event_pk):
         event_password = request.GET['password']
         if event_password == event.password:
             event.participants.add(request.user)
-            messages.add_message(request, messages.SUCCESS, "Participation added for Event: %s" % event.name)
+            messages.add_message(request, messages.SUCCESS, "Participation registered for '%s'" % event.name)
             return redirect('all-events')
-    messages.add_message(request, messages.ERROR, "Incorrect Participation password for Event: %s" % event.name)
+    messages.add_message(request, messages.ERROR, "Incorrect password for '%s'" % event.name)
     return redirect('all-events')

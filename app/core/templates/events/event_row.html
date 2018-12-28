@@ -1,4 +1,10 @@
-<tr class="event_row" {% if event.is_expired %} hidden {% endif %}>
+<tr class="event_row {% if event.is_expired %} expired {% endif %}" {% if event.is_expired %} hidden {% endif %}>
+  <td>
+    <div id="{{event.pk}}" class="countdown">
+      <p class="date" hidden>{{event.start_datetime}}</p>
+      <p class="counter"></p>
+    </div>
+  </td>
   <td data-order="{{ event.start_datetime.isoformat }}">{{event.start_datetime |date:"M d, H:i e" }}</td>
   <td>@{{event.user.discord.username}}</td>
   <td>{{event.name}}</td>
