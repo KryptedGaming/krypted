@@ -51,7 +51,7 @@ urlpatterns += [
     url(r'^events/edit/(?P<event_pk>\d+)/remove/registrant/$', events.remove_event_registrant, name='edit-event-remove-registrant'),
     url(r'^events/edit/(?P<event_pk>\d+)/add/participant/$', events.add_event_participant, name='edit-event-add-participant'),
     url(r'^events/remove/(?P<pk>\d+)/$', events.remove_event, name='remove-event'),
-    url(r'^events/feed.ics$', EventFeed())
+    url(r'^events/calendar.ics$', EventFeed(), name='sync-events'),
 ]
 
 
