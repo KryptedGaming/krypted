@@ -95,7 +95,7 @@ class BoxedField(Field):
 class EventCreate(CreateView):
     template_name='events/add_event.html'
     model = Event
-    fields = ['guild','name','description','start_datetime'];
+    fields = ['guild','name','description','start_datetime', 'end_datetime'];
     success_url = reverse_lazy('all-events')
 
     def form_valid(self,form):
@@ -122,7 +122,7 @@ class EventCreate(CreateView):
 
 class EventUpdate(UpdateView):
     model = Event
-    fields = ['name', 'description', 'start_datetime']
+    fields = ['name', 'description', 'start_datetime', 'end_datetime']
     template_name = "events/edit_event.html"
     success_url = reverse_lazy('all-events')
     def get_form(self, form_class=None):
