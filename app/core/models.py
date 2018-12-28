@@ -14,6 +14,7 @@ class User(AbstractUser):
     Extended off of the Django base user, with additional fields and properties.
     """
     # BASIC FIELDS
+    secret = models.UUIDField(default=uuid.uuid4, editable=False)
     avatar = models.URLField(max_length=255, blank=True, null=True)
     biography = models.TextField(blank=True, null=True)
     region = models.CharField(max_length=2, choices=settings.REGIONS)

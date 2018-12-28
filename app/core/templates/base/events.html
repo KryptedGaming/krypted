@@ -109,7 +109,7 @@
     </div>
 
 </div>
-<button onclick="copyStringToClipboard('{{ request.scheme }}://{{ request.META.HTTP_HOST }}{% url 'sync-events' %}')" class="btn btn-success pull-left" data-toggle="tooltip" data-placement="top" title="Copy Calendar URL">Copy Calendar URL</button>
+<button onclick="copyStringToClipboard('{{ request.scheme }}://{{ request.META.HTTP_HOST }}{% url 'sync-events' %}?user={{request.user.pk}}&secret={{request.user.secret}}')" class="btn btn-success pull-left" data-toggle="tooltip" data-placement="top" title="Copy Calendar URL">Copy Calendar URL</button>
 <button id="unhide_button" onclick="unhideEvents()" class="btn btn-info pull-right" title="Show all events">Show hidden events</button>
 <button id="hide_button" onclick="hideEvents()" class="btn btn-default pull-right" title="Hide expired events" style="display: none;">Hide expired events</button>
 {% endblock %}

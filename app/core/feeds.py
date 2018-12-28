@@ -1,5 +1,5 @@
 from django_ical.views import ICalFeed
-from core.models import Event
+from core.models import Event, User
 
 class EventFeed(ICalFeed):
     """
@@ -14,8 +14,9 @@ class EventFeed(ICalFeed):
         return super(EventFeed, self).__call__(request, *args, **kwargs)
 
     def items(self):
-        if not self.request.user.is_anonymous:
-            user_guilds = self.request.user.guilds.all()
+        if 'secret' in self.request.GET and 'user' in self.request.GET:
+            user = User.objects.get(secret=self.request.GET['secret'], pk=self.request.GET['user'])
+            user_guilds = user.guilds.all()
             user_events = Event.objects.filter(guild__in=user_guilds);
         else:
             user_events = Event.objects.filter(guild=None)
