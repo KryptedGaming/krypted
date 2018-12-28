@@ -28,20 +28,20 @@
   <button
     onclick="location.href='{% url 'hr-approve-application' application=application.pk %}'"
     class="col-xs-2 col-xs-offset-2 btn btn-success btn-fill"
-    {% if not request.user.is_hr %}disabled{% endif %}>
+    {% if not perms.core.manage_guild_applications %}disabled{% endif %}>
     Approve
   </button>
   <button
     onclick="location.href='#'"
     class="col-xs-2 col-xs-offset-1 btn btn-warning btn-fill"
     title="Not implemented"
-    {% if not request.user.is_hr %}disabled{% endif %}>
+    {% if not perms.core.manage_guild_applications %}disabled{% endif %}>
     Delete
   </button>
   <button
     onclick="location.href='{% url 'hr-deny-application' application=application.pk %}'"
     class="col-xs-2 col-xs-offset-1 btn btn-danger btn-fill"
-    {% if not request.user.is_hr %}disabled{% endif %}>
+    {% if not perms.core.manage_guild_applications %}disabled{% endif %}>
     Reject
   </button>
 </div>
