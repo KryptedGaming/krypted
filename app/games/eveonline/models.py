@@ -39,7 +39,6 @@ class Token(models.Model):
             try:
                 eve_settings.ESI_SECURITY.update_token(self.populate())
                 new_token = eve_settings.ESI_SECURITY.refresh()
-                print(new_token)
                 self.access_token = new_token['access_token']
                 self.refresh_token = new_token['refresh_token']
                 self.expiry = timezone.now() + datetime.timedelta(0, new_token['expires_in'])
