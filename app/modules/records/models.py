@@ -9,7 +9,7 @@ class EventLog(models.Model):
     )
     type = models.CharField(max_length=32, choices=event_log_choices)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    date = models.DateTimeField(auto_now=True)
+    datetime = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 class GuildLog(models.Model):
@@ -19,5 +19,5 @@ class GuildLog(models.Model):
     )
     type = models.CharField(max_length=32, choices=guild_log_choices)
     guild = models.ForeignKey(Guild, on_delete=models.CASCADE)
-    date = models.DateTimeField(auto_now=True)
+    datetime = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
