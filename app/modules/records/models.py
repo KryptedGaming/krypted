@@ -26,6 +26,5 @@ class StatisticLog(models.Model):
     statistic_log_choices = (
         ("event_log", "Event Logs"),
     )
-    type = models.CharField(max_length=32, choices=statistic_log_choices)
+    type = models.CharField(max_length=32, choices=statistic_log_choices, unique=True)
     datetime = models.DateTimeField(auto_now=True)
-    
