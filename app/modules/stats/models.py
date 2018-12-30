@@ -3,7 +3,6 @@ from django.conf import settings
 # external imports
 from core.models import Guild
 
-# Create your models here.
 class UserStatistic(models.Model):
     # general statistics
     participation_points = models.DecimalField(default=0, decimal_places=2)
