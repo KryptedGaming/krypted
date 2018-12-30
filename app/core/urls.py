@@ -1,7 +1,7 @@
 from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
-from core.views import views, accounts, events, groups, applications, guilds
+from core.views import views, accounts, events, groups, applications, guilds, surveys
 from core.views.events import EventUpdate
 
 ## BASE
@@ -54,6 +54,13 @@ urlpatterns += [
     url(r'^events/calendar.ics$', EventFeed(), name='sync-events'),
 ]
 
+## SURVEYS
+urlpatterns += [
+    url(r'^surveys/view/all/$', surveys.dashboard, name='all-surveys'),
+    url(r'^surveys/view/(?P<pk>\d+)/$', surveys.view_survey, name='view-survey'),
+    url(r'^surveys/redirect/(?P<pk>\d+)/$', surveys.redirect_to_survey, name='redirect-survey'),
+    url(r'^surveys/complete/(?P<pk>\d+)/$', surveys.complete_survey, name='complete-survey'),
+]
 
 ## APPLICATIONS
 urlpatterns += [
