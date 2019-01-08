@@ -11,7 +11,7 @@ from core.models import User, Event, Guild
 import logging
 logger = logging.getLogger(__name__)
 
-# TODO: Should these be implemented in core? 
+# TODO: Should these be implemented in core?
 
 @receiver(m2m_changed, sender=Event.participants.through)
 def event_participants_change(sender, **kwargs):
@@ -23,7 +23,7 @@ def event_participants_change(sender, **kwargs):
     if action == "post_remove":
         for user in users:
             if EventLog.objects.filter(user__pk=user, event=event).exists():
-                logger.info("Deleting existing participation EventLog for %s(user_id_%s)" % event.name, user)
+                logger.info("Deleting existing participation EventLog for %s(user_id_%s)" % (event.name, user))
                 EventLog.objects.get(user__pk=user, event=event, type="participation").delete()
     elif action == "post_add":
         for user in users:
@@ -40,7 +40,7 @@ def event_registrants_change(sender, **kwargs):
     if action == "post_remove":
         for user in users:
             if EventLog.objects.filter(user__pk=user, event=event).exists():
-                logger.info("Deleting existing registration EventLog for %s(user_id_%s)" % event.name, user)
+                logger.info("Deleting existing registration EventLog for %s(user_id_%s)" % (event.name, user))
                 EventLog.objects.get(user__pk=user, event=event, type="registration").delete()
     elif action == "post_add":
         for user in users:
