@@ -31,8 +31,8 @@ class StatisticLog(models.Model):
 
 class SurveyLog(models.Model):
     event_log_choices = (
-        ("started_survey","Started Survey")
-        ("completed_survey","Completed Survey")
+        ("started_survey","Started Survey"),
+        ("completed_survey","Completed Survey"),
     )
     type = models.CharField(max_length=32, choices=event_log_choices)
     survey = models.ForeignKey(Survey, on_delete=models.CASCADE)
