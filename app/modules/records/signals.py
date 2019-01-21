@@ -11,8 +11,7 @@ from core.models import User, Event, Guild
 import logging
 logger = logging.getLogger(__name__)
 
-# TODO: Should these be implemented in core?
-
+# TODO: Should these be implemented in core? 
 @receiver(m2m_changed, sender=Event.participants.through)
 def event_participants_change(sender, **kwargs):
     event = kwargs.get('instance')
