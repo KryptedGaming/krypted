@@ -9,6 +9,7 @@ admin.site.register(User, UserAdmin)
 
 admin.site.register(Group, GroupAdmin)
 admin.site.register(Event)
+admin.site.register(Survey)
 admin.site.register(Guild)
 admin.site.register(GroupRequest)
 admin.site.register(GuildApplicationTemplate)

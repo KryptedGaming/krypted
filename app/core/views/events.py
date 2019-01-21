@@ -4,7 +4,6 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
 # LOCAL IMPORTS
 from core.models import Event, Guild
 from core.decorators import login_required, permission_required
