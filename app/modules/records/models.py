@@ -21,10 +21,3 @@ class GuildLog(models.Model):
     guild = models.ForeignKey(Guild, on_delete=models.CASCADE)
     datetime = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-class StatisticLog(models.Model):
-    statistic_log_choices = (
-        ("event_log", "Event Logs"),
-    )
-    type = models.CharField(max_length=32, choices=statistic_log_choices, unique=True)
-    datetime = models.DateTimeField(auto_now=True)
