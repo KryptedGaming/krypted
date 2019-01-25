@@ -8,7 +8,7 @@ from app.conf import discord as discord_settings
 from core.decorators import login_required, permission_required, services_required
 from core.models import *
 # EXTERNAL IMPORTS
-from games.eveonline.models import *
+from modules.eveonline.models import *
 from modules.discord.models import DiscordUser
 from modules.discord.tasks import send_discord_message
 # MISC

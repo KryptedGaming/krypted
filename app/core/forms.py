@@ -1,10 +1,9 @@
 # DJANGO
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate
 from django.conf import settings
+from django.contrib.auth.models import User
 # INTERNAL
-from core.models import User
 from core.utils import send_activation_email
 # MISC
 import logging

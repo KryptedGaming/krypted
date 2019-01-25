@@ -1,5 +1,6 @@
 # DJANGO IMPORTS
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.models import User, Group
 from django.contrib.auth import authenticate, login
 from django.urls import reverse
 from django.conf import settings
@@ -17,6 +18,7 @@ from core.decorators import login_required, services_required, permission_requir
 from core.models import *
 from core.utils import username_or_email_resolver, send_activation_email
 # EXTERNAL IMPORTS
+from modules.engagement.models import Event
 from app.conf import discourse as discourse_settings
 # MISC
 import logging, datetime, pytz, uuid, random

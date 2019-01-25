@@ -1,5 +1,7 @@
 from django.db import models
-from core.models import User, Event, Guild, Survey
+from django.contrib.auth.models import User
+from modules.engagement.models import Event, Survey
+from modules.guild.models import Guild
 
 # Create your models here.
 class EventLog(models.Model):

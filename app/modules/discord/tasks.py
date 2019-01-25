@@ -1,11 +1,12 @@
 from __future__ import absolute_import, unicode_literals
-from celery import task
+# DJANGO IMPORTS
+from django.contrib.auth.models import User, Group
+# INTERNAL IMPORTS
 from modules.discord.models import DiscordUser, DiscordGroup
 from modules.discord.client import DiscordClient
-from core.models import User, Group
-from django.conf import settings
-from core.exceptions import RateLimitException
-import logging, requests, json
+# MISC
+from celery import task
+import logging
 
 logger = logging.getLogger(__name__)
 

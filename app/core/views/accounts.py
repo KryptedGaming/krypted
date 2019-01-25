@@ -1,20 +1,13 @@
 # DJANGO IMPORTS
-from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse
-from django.conf import settings
-from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import render, redirect
+from django.contrib.auth import logout
 from django.contrib import messages
-from django.core.mail import send_mail
+from django.contrib.auth.models import User
 # LOCAL IMPORTS
-from core.forms import LoginForm, RegisterForm
 from core.decorators import login_required
-from core.models import User, Group
-from core.utils import username_or_email_resolver
 from core.views.views import LoginView, RegisterView, UserUpdate
-# EXTERNAL IMPORTS
-from app.conf import discourse as discourse_settings
 # MISC
-import uuid, datetime
+import datetime
 
 """
 Views for User authentication

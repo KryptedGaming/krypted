@@ -2,7 +2,7 @@ import json, django, datetime, time
 from core.models import User, Group, Guild
 from modules.discord.models import DiscordUser, DiscordGroup
 from modules.discourse.models import DiscourseUser, DiscourseGroup
-from games.eveonline.models import EveCharacter, Token
+from modules.eveonline.models import EveCharacter, Token
 
 enabled = [
         # stage 1, delete discord/discourse groups after

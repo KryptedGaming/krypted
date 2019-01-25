@@ -1,9 +1,8 @@
 # DJANGO IMPORTS
-from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse
-from django.contrib import messages
+from django.shortcuts import render, redirect
+from django.contrib.auth.models import User, Group
 # LOCAL IMPORTS
-from core.models import User, Group, GroupRequest
+from core.models import GroupRequest
 from core.decorators import login_required, permission_required, services_required
 from app.conf import discord as discord_settings
 # EXTERNAL IMPORTS

@@ -1,16 +1,13 @@
 # DJANGO IMPORTS
 import logging
-from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse
-from django.contrib.auth import authenticate, login
+from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 # LOCAL IMPORTS
-from core.models import Survey, Guild
 from modules.records.models import SurveyLog
 from core.decorators import login_required, permission_required
-# MISC
-from datetime import datetime
+# EXTERNAL IMPORTS
+from modules.engagement.models import Survey
 
 @login_required
 @permission_required('core.view_survey')

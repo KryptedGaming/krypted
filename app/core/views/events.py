@@ -1,15 +1,13 @@
 # DJANGO IMPORTS
 import logging
-from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse
-from django.contrib.auth import authenticate, login
+from django.shortcuts import render, redirect
 from django.contrib import messages
 # LOCAL IMPORTS
-from core.models import Event, Guild
 from core.decorators import login_required, permission_required
 from core.views.views import EventCreate, EventUpdate, EventDelete
-# MISC
-from datetime import datetime
+# EXTERNAL IMPORTS
+from modules.engagement.models import Event
+from modules.guild.models import Guild
 
 @login_required
 def dashboard(request):

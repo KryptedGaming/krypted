@@ -1,24 +1,27 @@
+# DJANGO IMPORTS
 from django.db import models
-from django.conf import settings
-from core.models import User, Group, ModuleUser, ModuleGroup
-from core.exceptions import RateLimitException
-import requests, json, logging
+from django.contrib.auth.models import User, Group
+# MISC
+import logging
 logger = logging.getLogger(__name__)
 
-# Create your models here.
-class DiscourseUser(ModuleUser):
-    # REFERENCES
+class DiscourseUser(models.Model):
+    external_id = models.BigIntegerField(blank=True, null=True)
+    user = models.OneToOneField(User, null=True, on_delete=models.SET_NULL, related_name="discourse_user")
     groups = models.ManyToManyField('DiscourseGroup')
 
-    def add_group(self, discourse_group):
-        pass
+    def __str__(self):
+        if self.user:
+            return self.user.username
+        else:
+            return "None"
 
-    def remove_group(self, discourse_group):
-        pass
+class DiscourseGroup(models.Model):
+    external_id = models.BigIntegerField(blank=True, null=True)
+    group = models.OneToOneField(Group, null=True, on_delete=models.SET_NULL, related_name="discourse_group")
 
     def __str__(self):
-        return self.user.username
-
-class DiscourseGroup(ModuleGroup):
-    def get_users():
-        pass
+        if self.group:
+            return self.group.name
+        else:
+            return "None"

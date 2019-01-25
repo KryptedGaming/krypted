@@ -1,5 +1,6 @@
 from django_ical.views import ICalFeed
-from core.models import Event, User
+from django.contrib.auth.models import User
+from modules.engagement.models import Event
 
 class EventFeed(ICalFeed):
     """

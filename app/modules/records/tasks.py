@@ -1,10 +1,12 @@
 from __future__ import absolute_import, unicode_literals
+# DJANGO IMPORTS
+from django.contrib.auth.models import User
 # LOCAL IMPORTS
 from modules.records.models import *
 # EXTERNAL IMPORTS
-from celery import task
-from core.models import User, Event
+from modules.engagement.models import Event
 # MISC
+from celery import task
 import logging
 
 logger = logging.getLogger(__name__)

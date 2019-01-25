@@ -14,8 +14,8 @@ class RecordsConfig(AppConfig):
     name = 'modules.records'
 
     def ready(self):
-        from core.models import User, Event
-        from modules.records.signals import event_registrants_change, event_participants_change, user_guilds_change
+        from modules.engagement.models import Event
+        from django.contrib.auth.models import User
+        from modules.records.signals import event_registrants_change, event_participants_change
         m2m_changed.connect(event_participants_change, sender=Event.participants.through)
         m2m_changed.connect(event_registrants_change, sender=Event.registrants.through)
-        m2m_changed.connect(user_guilds_change, sender=User.guilds.through)
