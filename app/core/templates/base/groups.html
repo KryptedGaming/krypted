@@ -43,30 +43,34 @@
         <thead>
           <th scope="col">Group</th>
           <th scope="col">Description</th>
+          {% if "modules.guild" in installed_apps %}
           <th scope="col">Guild</th>
+          {% endif %}
           <th scope="col">Action</th>
         </thead>
         <tbody>
           {% for group in groups %}
           <tr>
             <td>{{group.group.name|cleanGroupName}}</td>
-            <td>{{group.group.description}}</td>
+            <td>{{group.group.info.description}}</td>
+            {% if "modules.guild" in installed_apps %}
             <td>
-              {% if group.group.guild %}
-              {{group.group.guild.name}}
+              {% if group.group.guilds.all %}
+              {{group.group.guilds.all | join:" // " }}
               {% else %}
               Community
               {% endif %}
             </td>
+            {% endif %}
             {% if group.requested %}
             <td><button onclick="" class="btn btn-block btn-warning" disabled>Requested</button></td>
             {% elif group.group in request.user.groups.all %}
             <td><button onclick="location.href='{% url 'group-remove-user' group.group.id request.user.id %}'" class="btn btn-block btn-danger">Leave</button></td>
             {% else %}
-              {% if group.group.type == "PUBLIC" %}
+              {% if group.group.info.type == "PUBLIC" %}
               <td><button onclick="location.href='{% url 'group-apply' group.group.id %}'" class="btn btn-block btn-success">Join</button></td>
               {% else %}
-              <td><button onclick="location.href='{% url 'group-apply' group.group.id %}'" class="btn btn-block btn-success">Request</button></td>
+              <td><button onclick="location.href='{% url 'group-apply' group.group.id %}'" class="btn btn-block btn-info">Request</button></td>
               {% endif %}
             {% endif %}
           </tr>

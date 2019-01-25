@@ -8,9 +8,9 @@ from app.conf import discord as discord_settings
 from core.decorators import login_required, permission_required, services_required
 from core.models import *
 # EXTERNAL IMPORTS
-from modules.eveonline.models import *
-from modules.discord.models import DiscordUser
-from modules.discord.tasks import send_discord_message
+# from modules.eveonline.models import *
+# from modules.discord.models import DiscordUser
+# from modules.discord.tasks import send_discord_message
 # MISC
 import logging, datetime
 
@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 @permission_required('core.manage_guild_applications')
 def dashboard(request):
     context = {'applications': GuildApplication.objects.all()}
-    return render(request, 'base/applications.html', context)
+    return render(request, 'applications/applications.html', context)
 
 @login_required
 @permission_required('core.manage_guild_applications')

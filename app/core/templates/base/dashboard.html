@@ -33,15 +33,16 @@
             <div class="container-fluid">
                   <h4 class="text-center">Services</h4>
                   <hr>
-                  {% if slack_enabled %}
-                  <button onclick="location.href='{% url 'slack_resend' %}'" style="min-width: 75%;" class="btn btn-{% if slack_user %}success{%else%}danger{%endif%}">Slack</button>
-                  <hr>
-                  {% endif %}
+                  {% if "modules.discord" in installed_apps %}
                   <button onclick="location.href='{% url 'discord_index' %}'" style="min-width: 75%;" class="btn btn-{% if request.user.discord %}success{%else%}danger{%endif%}">Discord</button>
                   <hr>
+                  {% endif %}
+                  {% if "modules.discourse" in installed_apps %}
                   <button onclick="location.href='{{forum_url}}'" style="min-width: 75%;" class="btn btn-{% if request.user.discourse %}success{%else%}danger{%endif%}">Forum</button>
                   <hr>
-                  <p>If a service has a red background, click on it to enable it.</p>
+                  {% endif %}
+                  If a service has a red background, click on it to enable it.
+                  <hr>
               </div>
           </div>
       </div>

@@ -1,5 +1,4 @@
 # DJANGO IMPORTS
-import logging
 from django.shortcuts import render, redirect
 from django.contrib import messages
 # LOCAL IMPORTS
@@ -7,7 +6,6 @@ from core.decorators import login_required, permission_required
 from core.views.views import EventCreate, EventUpdate, EventDelete
 # EXTERNAL IMPORTS
 from modules.engagement.models import Event
-from modules.guild.models import Guild
 
 @login_required
 def dashboard(request):
@@ -18,7 +16,7 @@ def dashboard(request):
         'events' : user_events.union(Event.objects.filter(guild=None)),
         'guilds' : user_guilds
     }
-    return render(request, 'base/events.html', context)
+    return render(request, 'events/events.html', context)
 
 @login_required
 def view_event(request,pk):

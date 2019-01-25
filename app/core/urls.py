@@ -1,8 +1,6 @@
-from django.conf.urls import include, url
-from django.contrib import admin
+from django.conf.urls import url
 from django.contrib.auth import views as auth_views
-from core.views import views, accounts, events, groups, applications, guilds, surveys
-from core.views.events import EventUpdate
+from .views import views, accounts, groups
 
 ## BASE
 urlpatterns = [
@@ -16,11 +14,6 @@ urlpatterns += [
     url(r'^register/$', accounts.register_user, name='register'),
     url(r'^verify/confirmation/(?P<token>[0-9A-Za-z_\-]+)/$', accounts.verify_confirm, name='verify-confirm'),
     url(r'^user/(?P<pk>\d+)/$', accounts.edit_user, name='edit_user')
-]
-
-# GUILDS
-urlpatterns += [
-    url(r'^guilds/$', guilds.dashboard, name='guilds'),
 ]
 
 # GROUPS
@@ -40,35 +33,3 @@ urlpatterns += [
     url(r'^reset/done/$', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
 ]
 
-## EVENTS
-from core.feeds import EventFeed
-urlpatterns += [
-    url(r'^events/view/all/$', events.dashboard, name='all-events'),
-    url(r'^events/view/(?P<pk>\d+)/$', events.view_event, name='view-event'),
-    url(r'^events/add/$', events.add_event, name='add-event'),
-    url(r'^events/edit/(?P<pk>\d+)/$', events.edit_event, name='edit-event'),
-    url(r'^events/edit/(?P<event_pk>\d+)/add/registrant/$', events.add_event_registrant, name='edit-event-add-registrant'),
-    url(r'^events/edit/(?P<event_pk>\d+)/remove/registrant/$', events.remove_event_registrant, name='edit-event-remove-registrant'),
-    url(r'^events/edit/(?P<event_pk>\d+)/add/participant/$', events.add_event_participant, name='edit-event-add-participant'),
-    url(r'^events/remove/(?P<pk>\d+)/$', events.remove_event, name='remove-event'),
-    url(r'^events/calendar.ics$', EventFeed(), name='sync-events'),
-]
-
-## SURVEYS
-urlpatterns += [
-    url(r'^surveys/view/all/$', surveys.dashboard, name='all-surveys'),
-    url(r'^surveys/view/(?P<pk>\d+)/$', surveys.view_survey, name='view-survey'),
-    url(r'^surveys/redirect/(?P<pk>\d+)/$', surveys.redirect_to_survey, name='redirect-survey'),
-    url(r'^surveys/complete/(?P<pk>\d+)/$', surveys.complete_survey, name='complete-survey'),
-]
-
-## APPLICATIONS
-urlpatterns += [
-    # base
-    url(r'^applications/$', applications.dashboard, name='hr-view-applications'),
-    url(r'^applications/add/(?P<slug>\w+)/$', applications.add_application, name='hr-add-application'),
-    url(r'^applications/view/(?P<pk>\w+)/$', applications.view_application, name='hr-view-application'),
-    url(r'^applications/application/approve/(?P<application>\w+)/$', applications.approve_application, name='hr-approve-application'),
-    url(r'^applications/application/deny/(?P<application>\w+)/$', applications.deny_application, name='hr-deny-application'),
-    url(r'^applications/application/assign/(?P<application>\w+)/(?P<user>\w+)/$', applications.assign_application, name='hr-assign-application')
-]

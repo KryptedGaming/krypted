@@ -31,25 +31,25 @@ class UserInfo(models.Model):
     @property
     def discord(self):
         from modules.discord.models import DiscordUser
-        return DiscordUser.objects.filter(user=self).first()
+        return DiscordUser.objects.filter(user=self.user).first()
 
     @property
     def discourse(self):
         from modules.discourse.models import DiscourseUser
-        return DiscourseUser.objects.filter(user=self).first()
+        return DiscourseUser.objects.filter(user=self.user).first()
 
     @property
     def eve_character(self):
         from modules.eveonline.models import EveCharacter
-        return EveCharacter.objects.filter(user=self, main=None).first()
+        return EveCharacter.objects.filter(user=self.user, main=None).first()
 
     @property
     def eve_characters(self):
         from modules.eveonline.models import EveCharacter
-        return EveCharacter.objects.filter(user=self)
+        return EveCharacter.objects.filter(user=self.user)
 
     def has_group_request(self, group):
-        return GroupRequest.objects.filter(request_user=self, request_group=group, response_action="PENDING").exists()
+        return GroupRequest.objects.filter(request_user=self.user, request_group=group, response_action="Pending").exists()
 
     def has_group(self, group):
         return group in self.groups.all()
@@ -59,6 +59,10 @@ class UserInfo(models.Model):
         tenure = datetime.datetime.now().replace(tzinfo=pytz.UTC) - self.date_joined
         tenure = tenure.total_seconds() / 60 / 60 / 24 / 365
         return tenure
+
+    # FUNCTIONS
+    def __str__(self):
+        return self.user.username
 
 class GroupInfo(models.Model):
     """
@@ -73,7 +77,7 @@ class GroupInfo(models.Model):
     )
 
     # REFERENCES
-    models.OneToOneField(Group, on_delete=models.CASCADE, related_name="info")
+    group = models.OneToOneField(Group, on_delete=models.CASCADE, related_name="info")
 
     # BASIC INFORMATION
     description = models.TextField()
@@ -81,6 +85,9 @@ class GroupInfo(models.Model):
 
     # REFERENCES
     managers = models.ManyToManyField(User, blank=True)
+
+    def __str__(self):
+        return self.group.name
 
 class GroupRequest(models.Model):
     """

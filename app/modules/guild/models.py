@@ -12,7 +12,7 @@ class Guild(models.Model):
     image = models.URLField()
 
     # REFERENCES
-    group = models.OneToOneField(Group, on_delete=models.CASCADE, related_name="guild")
+    groups = models.ManyToManyField(Group, related_name="guilds")
     users = models.ManyToManyField(User, related_name="guilds_in")
     users_managing = models.ManyToManyField(User, related_name="guilds_managing")
 

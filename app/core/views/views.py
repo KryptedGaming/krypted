@@ -18,7 +18,6 @@ from core.decorators import login_required, services_required, permission_requir
 from core.models import *
 from core.utils import username_or_email_resolver, send_activation_email
 # EXTERNAL IMPORTS
-from modules.engagement.models import Event
 from app.conf import discourse as discourse_settings
 # MISC
 import logging, datetime, pytz, uuid, random
@@ -27,7 +26,11 @@ logger = logging.getLogger(__name__)
 
 @login_required
 def dashboard(request):
-    context = {'guilds': Guild.objects.all()}
+    context = {}
+    if apps.is_installed("modules.guild"):
+        from modules.guild.models import Guild
+        context['guilds'] = Guild.objects.all()
+
     context['forum_url'] = discourse_settings.DISCOURSE_BASE_URL
     return render(request, 'base/dashboard.html', context)
 
@@ -74,12 +77,16 @@ class RegisterView(FormView):
             username=form.cleaned_data['username'],
             email = form.cleaned_data['email'],
             password = form.cleaned_data['password'],
-            region = form.cleaned_data['region'],
-            age = form.cleaned_data['age'],
-            activation_key=uuid.uuid4(),
             is_active=False
         )
         user.save()
+        user_info = UserInfo(
+            user=user,
+            region = form.cleaned_data['region'],
+            age = form.cleaned_data['age'],
+            activation_key=uuid.uuid4(),
+        )
+        user_info.save()
         send_activation_email(User.objects.get(username=form.cleaned_data['username']))
         return redirect('login')
 
@@ -89,59 +96,3 @@ class UserUpdate(UpdateView):
     model = User
     fields = ['first_name', 'age', 'region']
 
-class BoxedField(Field):
-    template='crispy_template/field.html'
-    def __init__(self,*args,**kwargs):
-        super(BoxedField,self).__init__(*args,**kwargs)
-
-class EventCreate(CreateView):
-    template_name='events/add_event.html'
-    model = Event
-    fields = ['guild','name','description','start_datetime', 'end_datetime'];
-    success_url = reverse_lazy('all-events')
-
-    def form_valid(self,form):
-        # The user that creates the Event is the owner
-        user = self.request.user
-        form.instance.user = user
-        form.instance.password = random.randint(100,999)
-        return super(EventCreate,self).form_valid(form)
-
-    def get_form(self, form_class=None):
-        form = super(EventCreate, self).get_form(form_class)
-        form.helper = FormHelper()
-        form.helper.form_method = 'POST'
-        onclick = "location.href='%s'" % reverse_lazy('all-events')
-        form.helper.layout = Layout(
-            *[BoxedField(f) for f in self.fields],
-            FormActions(
-                Submit('Create Event','Create Event', css_class='btn-success'),
-                Button('Cancel','Cancel', css_class='btn-danger', onclick=onclick)
-            )
-        )
-        form.fields['guild'].queryset = self.request.user.guilds.all()
-        return form
-
-class EventUpdate(UpdateView):
-    model = Event
-    fields = ['name', 'description', 'start_datetime', 'end_datetime']
-    template_name = "events/edit_event.html"
-    success_url = reverse_lazy('all-events')
-    def get_form(self, form_class=None):
-        form = super(EventUpdate, self).get_form(form_class)
-        form.helper = FormHelper()
-        form.helper.form_method = 'POST'
-        onclick = "location.href='%s'" % reverse_lazy('all-events')
-        form.helper.layout = Layout(
-            *[BoxedField(f) for f in self.fields],
-            FormActions(
-                Submit('Modify Event','Modify Event', css_class='btn-warning'),
-                Button('Cancel','Cancel', css_class='btn-danger', onclick=onclick)
-            )
-        )
-        return form
-
-class EventDelete(DeleteView):
-    model = Event
-    success_url = reverse_lazy('all-events')
-    template_name = "events/delete_event.html"

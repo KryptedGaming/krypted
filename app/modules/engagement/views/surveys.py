@@ -18,7 +18,7 @@ def dashboard(request):
         'surveys' : surveys,
         'guilds' : guilds
     }
-    return render(request, 'base/surveys.html', context)
+    return render(request, 'surveys/surveys.html', context)
 
 @login_required
 @permission_required('core.view_survey')
