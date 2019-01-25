@@ -115,6 +115,7 @@ app/celerybeat.pid
 
 # hide conf
 app/app/conf/
+*/apps.py
 
 # venv
 myvenv/
