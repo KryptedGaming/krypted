@@ -190,12 +190,14 @@ setInterval(function() {
     var now = new Date().getTime()
     var distance = date - now
     // calculate times
+    sign = Math.sign(distance)
+    distance = Math.abs(distance)
     var days = Math.floor(distance / (1000 * 60 * 60 * 24));
     var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
     var seconds = Math.floor((distance % (1000 * 60)) / 1000);
     // display result
-    elements[1].innerHTML = days + "d " + hours + "h "+ minutes + "m " + seconds + "s ";
+    elements[1].innerHTML = (sign < 0 ? "-" : "") + days + "d " + hours + "h "+ minutes + "m " + seconds + "s ";
   }
 }, 1000);
 </script>
