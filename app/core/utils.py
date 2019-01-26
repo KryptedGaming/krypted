@@ -18,7 +18,7 @@ def send_activation_email(user):
     user.save()
     send_mail(
         'Verify your Krypted Account',
-        'Welcome to Krypted Gaming. \n Please click the following link to verify your account. \n' + settings.SERVER_DOMAIN + '/verify/confirmation/' + str(user.activation_key),
+        'Welcome to Krypted Gaming. \n Please click the following link to verify your account. \n' + settings.SERVER_DOMAIN + '/verify/confirmation/' + str(user.info.activation_key),
         settings.DEFAULT_FROM_EMAIL,
         [user.email],
         fail_silently=False
