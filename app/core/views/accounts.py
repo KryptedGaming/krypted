@@ -19,7 +19,7 @@ def login_user(request):
         time_delta = datetime.datetime.utcnow() - datetime.datetime.strptime(request.session['locked'], "%Y-%m-%d %H:%M:%S.%f")
         time_delta = time_delta.total_seconds()
         if time_delta < 300:
-            return render(request, 'base/locked.html', context={})
+            return render(request, 'misc/locked.html', context={})
         else:
             request.session.pop('attempts', None)
             request.session.pop('locked', None)
@@ -41,8 +41,8 @@ def logout_user(request):
     return redirect('login')
 
 def verify_confirm(request, token):
-    if User.objects.filter(activation_key=token).exists():
-        user=User.objects.get(activation_key=token)
+    if User.objects.filter(info__activation_key=token).exists():
+        user=User.objects.get(info__activation_key=token)
         user.is_active=True
         user.save()
         messages.add_message(request, messages.SUCCESS, 'Account verified. Please log in.')

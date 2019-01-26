@@ -88,7 +88,7 @@ def dashboard(request, **kwargs):
                 })
         context['audit_requests'] = group_requests
 
-    return render(request, 'base/groups.html', context)
+    return render(request, 'core/groups.html', context)
 
 @login_required
 @services_required

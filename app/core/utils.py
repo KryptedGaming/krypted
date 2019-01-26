@@ -14,7 +14,7 @@ def username_or_email_resolver(username):
     else:
         return username
 def send_activation_email(user):
-    user.activation_key = uuid.uuid4()
+    user.info.activation_key = uuid.uuid4()
     user.save()
     send_mail(
         'Verify your Krypted Account',

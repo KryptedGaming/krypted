@@ -32,7 +32,7 @@ def dashboard(request):
     if apps.is_installed('modules.discourse'):
         context['forum_url'] = apps.get_app_config('discourse').DISCOURSE_BASE_URL
 
-    return render(request, 'base/dashboard.html', context)
+    return render(request, 'core/dashboard.html', context)
 
 class LoginView(FormView):
     template_name = 'accounts/login.html'
