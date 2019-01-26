@@ -1,18 +1,18 @@
 from django.conf.urls import include, url
-from modules.eveonline.views import eve, sso
+from modules.eveonline.views import eve_online, sso
 
 ## BASE
 urlpatterns = [
-    url(r'^$', eve.dashboard, name='eve-dashboard'),
-    url(r'^character/(?P<character>\w+)/$', eve.view_character, name='eve-view-character'),
-    url(r'^character/set-main-character/(?P<character>\w+)/$', eve.set_main_character, name='eve-set-main-character'),
-    url(r'^character/set-alt-character/(?P<character>\w+)/(?P<alt_type>\w+)/$', eve.set_alt_character, name='eve-set-alt-character')
-    # url(r'^apply/$', eve.apply, name='eve-apply'),
+    url(r'^$', eve_online.dashboard, name='eve_online-dashboard'),
+    url(r'^character/(?P<character>\w+)/$', eve_online.view_character, name='eve_online-view-character'),
+    url(r'^character/set-main-character/(?P<character>\w+)/$', eve_online.set_main_character, name='eve_online-set-main-character'),
+    url(r'^character/set-alt-character/(?P<character>\w+)/(?P<alt_type>\w+)/$', eve_online.set_alt_character, name='eve_online-set-alt-character')
+    # url(r'^apply/$', eve_online.apply, name='eve_online-apply'),
 ]
 
 ## CHARACTERS
 urlpatterns += [
-    url(r'^characters/', eve.view_characters, name='eve-view-characters'),
+    url(r'^characters/', eve_online.view_characters, name='eve_online-view-characters'),
 ]
 # ## MODULES
 # fleets

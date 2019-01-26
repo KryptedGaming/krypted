@@ -8,7 +8,7 @@ from modules.eveonline.models import Token, EveCharacter, EveCorporation
 from modules.eveonline.client import EveClient
 # EXTERNAL IMPORTS
 # TODO: Remove dependency on Guild
-from modules.guild.models import Guild
+from modules.guilds.models import Guild
 # MISC
 from esipy import App
 from app.conf import eve as eve_settings

@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 # INTERNAL IMPORTS
 from modules.eveonline.models import Token, EveCharacter
 # EXTERNAL IMPORTS
-from modules.guild.models import Guild
+from modules.guilds.models import Guild
 from core.decorators import login_required, permission_required
 from app.conf import eve as eve_settings
 from operator import itemgetter
@@ -17,7 +17,6 @@ logger = logging.getLogger(__name__)
 # Create your views here.
 @login_required
 def dashboard(request):
-    context = get_eve_context(request)
     context['alt_types'] = eve_settings.EVE_ALT_TYPES
     logger.info("User connected to the EVE dashboard.")
     return render(request, 'eveonline/dashboard.html', context)
