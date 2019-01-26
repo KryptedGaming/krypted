@@ -1,4 +1,4 @@
-{% extends 'base/base.html' %}
+{% extends 'core/sidebar.html' %}
 {% load staticfiles %}
 {% load core_filters %}
 
@@ -44,7 +44,9 @@
           <th scope="col">Date</th>
           <th scope="col">Organizer</th>
           <th scope="col">Name</th>
+          {% if 'modules.guilds' in installed_apps %}
           <th scope="col">Guild</th>
+          {% endif %}
           <th scope="col">User Actions</th>
           {% if user == event.user or perms.core.manage_events %}
           <th scope="col">Admin Actions</th>

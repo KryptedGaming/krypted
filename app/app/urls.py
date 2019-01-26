@@ -33,6 +33,11 @@ if apps.is_installed("modules.eveonline"):
         url(r'^eve/', include('modules.eveonline.urls')),
     ]
 
+if apps.is_installed("modules.engagement"):
+    urlpatterns += [
+        url(r'^engagement/', include('modules.engagement.urls')),
+    ]
+
 # DEVELOPMENT
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf import settings

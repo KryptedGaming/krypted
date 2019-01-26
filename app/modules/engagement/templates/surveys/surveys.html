@@ -1,4 +1,4 @@
-{% extends 'base/base.html' %}
+{% extends 'core/sidebar.html' %}
 {% load staticfiles %}
 {% load core_filters %}
 
@@ -37,7 +37,9 @@
         <thead>
           <th scope="col">Date</th>
           <th scope="col">Name</th>
+          {% if "module.guilds" in installed_apps %}
           <th scope="col">Guild</th>
+          {% endif %}
           <th scope="col">Actions</th>
         </thead>
         <tbody>
@@ -45,7 +47,9 @@
           <tr class="survey_row {% if survey.is_expired %} expired {% endif %}" {% if survey.is_expired %} hidden {% endif %}>
             <td data-order="{{ survey.date_created.isoformat }}">{{ survey.date_created|date:"M d" }}</td>
             <td>{{survey.name}}</td>
+            {%if "module.guilds" in installed_apps %}
             <td>{{survey.guild}}</td>
+            {% endif %}
             <td>
               <button onclick="location.href='{% url 'view-survey' survey.pk %}'" class="btn btn-info" data-toggle="tooltip" data-placement="top" title="View"><i class="fa fa-fw fa-eye"></i></button>
               <button onclick="copyStringToClipboard('{{ request.scheme }}://{{ request.META.HTTP_HOST }}{% url 'redirect-survey' survey.pk %}')" class="btn btn-info" data-toggle="tooltip" data-placement="top" title="Copy Survey Link"><i class="fa fa-fw fa-user-circle"></i></button>

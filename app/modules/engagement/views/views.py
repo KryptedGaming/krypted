@@ -1,12 +1,13 @@
 # DJANGO IMPORTS
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
+from django.apps import apps
 # CRISPY FORMS IMPORTS
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Field, Submit, Button
 from crispy_forms.bootstrap import *
 # INTERAL IMPORTS
-from .models import Event, Survey
+from modules.engagement.models import Event, Survey
 # MISC
 import logging, datetime, pytz, uuid, random
 
@@ -19,7 +20,9 @@ class BoxedField(Field):
 class EventCreate(CreateView):
     template_name='events/add_event.html'
     model = Event
-    fields = ['guild','name','description','start_datetime', 'end_datetime'];
+    fields = ['name','description','start_datetime', 'end_datetime'];
+    if apps.is_installed("modules.guilds"):
+        fields = ['guild'] + fields
     success_url = reverse_lazy('all-events')
 
     def form_valid(self,form):
@@ -41,7 +44,8 @@ class EventCreate(CreateView):
                 Button('Cancel','Cancel', css_class='btn-danger', onclick=onclick)
             )
         )
-        form.fields['guild'].queryset = self.request.user.guilds.all()
+        if apps.is_installed("modules.guilds"):
+            form.fields['guild'].queryset = self.request.user.guilds_in.all()
         return form
 
 class EventUpdate(UpdateView):

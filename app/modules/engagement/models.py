@@ -2,9 +2,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 # EXTERNAL IMPORTS
-from modules.guild.models import Guild
+from django.apps import apps
 # MISC
 import uuid
+import datetime, pytz
 
 class Event(models.Model):
     """
@@ -21,7 +22,9 @@ class Event(models.Model):
     start_datetime = models.DateTimeField(auto_now=False)
     end_datetime = models.DateTimeField(auto_now=False, blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
-    guild = models.ForeignKey(Guild, on_delete=models.SET_NULL, blank=True, null=True)
+    if  apps.is_installed('modules.guilds'):
+        from modules.guilds.models import Guild
+        guild = models.ForeignKey(Guild, on_delete=models.SET_NULL, blank=True, null=True)
 
     # ATTENDENCE
     password = models.CharField(max_length=3)
@@ -31,10 +34,10 @@ class Event(models.Model):
 
     @property
     def is_expired(self):
-        time_delta = self.start_datetime - datetime.datetime.utcnow().replace(tzinfo=pytz.utc)
-        if time_delta.total_seconds() < 3600:
-            return True
-        return False
+        time_delta = datetime.datetime.utcnow().replace(tzinfo=pytz.utc) - self.start_datetime
+        if time_delta.total_seconds() < 0:
+            return False
+        return True
 
     def get_absolute_url(self):
         return "/event/%s" % self.pk
@@ -55,7 +58,9 @@ class Survey(models.Model):
 
     # BASIC INFORMATION
     name = models.CharField(max_length=32)
-    guild = models.ForeignKey(Guild, on_delete=models.SET_NULL, blank=True, null=True)
+    if apps.is_installed('modules.guilds'):
+        from modules.guilds.models import Guild
+        guild = models.ForeignKey(Guild, on_delete=models.SET_NULL, blank=True, null=True)
     description = models.TextField()
     date_created = models.DateField(auto_now=True)
     date_finished = models.DateField()

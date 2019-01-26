@@ -1,20 +1,30 @@
 # DJANGO IMPORTS
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.apps import apps
+from django.contrib.auth.decorators import login_required, permission_required
 # LOCAL IMPORTS
-from core.decorators import login_required, permission_required
-from core.views.views import EventCreate, EventUpdate, EventDelete
+from modules.engagement.views.views import EventCreate, EventUpdate, EventDelete
 # EXTERNAL IMPORTS
 from modules.engagement.models import Event
 
+
 @login_required
 def dashboard(request):
-    user_guilds = request.user.guilds.all()
-    user_events = Event.objects.filter(guild__in=user_guilds);
+    guilds_enabled = apps.is_installed("modules.guilds")
+    if guilds_enabled:
+        user_guilds = request.user.guilds_in.all()
+        user_events = Event.objects.filter(guild__in=user_guilds)
+        user_events = user_events.union(Event.objects.filter(guild=None))
+    else:
+        user_guilds = []
+        user_events = Event.objects.all()
+
     context = {
         'user'   : request.user,
-        'events' : user_events.union(Event.objects.filter(guild=None)),
-        'guilds' : user_guilds
+        'events' : user_events,
+        'guilds' : user_guilds,
+        'guilds_enabled' : guilds_enabled
     }
     return render(request, 'events/events.html', context)
 
