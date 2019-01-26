@@ -4,7 +4,6 @@ from django.urls import reverse
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 # LOCAL IMPORTS
-from app.conf import discord as discord_settings
 from core.decorators import login_required, permission_required, services_required
 from core.models import *
 # EXTERNAL IMPORTS

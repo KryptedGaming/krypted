@@ -17,8 +17,6 @@ from core.forms import LoginForm, RegisterForm
 from core.decorators import login_required, services_required, permission_required
 from core.models import *
 from core.utils import username_or_email_resolver, send_activation_email
-# EXTERNAL IMPORTS
-from app.conf import discourse as discourse_settings
 # MISC
 import logging, datetime, pytz, uuid, random
 
@@ -31,7 +29,9 @@ def dashboard(request):
         from modules.guild.models import Guild
         context['guilds'] = Guild.objects.all()
 
-    context['forum_url'] = discourse_settings.DISCOURSE_BASE_URL
+    if apps.is_installed('modules.discourse'):
+        context['forum_url'] = apps.get_app_config('discourse').DISCOURSE_BASE_URL
+
     return render(request, 'base/dashboard.html', context)
 
 class LoginView(FormView):
@@ -52,8 +52,9 @@ class LoginView(FormView):
         login(self.request, user)
         # redirect handling
         if next:
-            if "discourse" in next:
-                return redirect(discourse_settings.DISCOURSE_BASE_URL)
+            if apps.is_installed("modules.discourse"):
+                if "discourse" in next:
+                    return redirect(apps.get_app_config('discourse').DISCOURSE_BASE_URL)
             return redirect(next)
         else:
             return redirect('dashboard')
@@ -80,12 +81,10 @@ class RegisterView(FormView):
             is_active=False
         )
         user.save()
-        user_info = UserInfo(
-            user=user,
-            region = form.cleaned_data['region'],
-            age = form.cleaned_data['age'],
-            activation_key=uuid.uuid4(),
-        )
+        user_info = UserInfo.objects.get(user=user)
+        user_info.region = form.cleaned_data['region']
+        user_info.age = form.cleaned_data['age']
+        user_info.activation_key = uuid.uuid4()
         user_info.save()
         send_activation_email(User.objects.get(username=form.cleaned_data['username']))
         return redirect('login')
@@ -95,4 +94,3 @@ class UserUpdate(UpdateView):
     success_url = reverse_lazy('dashboard')
     model = User
     fields = ['first_name', 'age', 'region']
-
