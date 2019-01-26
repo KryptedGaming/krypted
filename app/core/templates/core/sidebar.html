@@ -8,8 +8,12 @@
   {% if "modules.engagement" in installed_apps %}
   <li><a href="{% url 'all-events' %}"><i class="fa fa-calendar"></i> <span>Events</span></a></li>
   {% endif %}
-  {% if "modules.guild" in installed_apps %}
-  <li><a href="{% url 'guilds' %}"><i class="fa fa-gamepad"></i> <span>Branches</span></a></li>
+  {% if "modules.guilds" in installed_apps %}
+  <li>
+    <a href="{% url 'guilds' %}"><i class="fa fa-gamepad"></i>
+      <span>{{application_verbose_names.guilds}}</span>
+    </a>
+  </li>
   {% endif %}
 
   <!-- MODULE LINKS -->
@@ -22,7 +26,7 @@
   {% if request.user.is_staff %}
   <li class="header">ADMIN</li>
   <!-- Optionally, you can add icons to the links -->
-  {% if "modules.guild" in installed_apps %}
+  {% if "modules.guilds" in installed_apps %}
   <li><a href="{% url 'hr-view-applications' %}"><i class="fa fa-paperclip"></i> <span>Applications</span></a></li>
   {% endif %}
   <li class="treeview">
