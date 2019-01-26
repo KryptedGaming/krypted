@@ -1,5 +1,6 @@
-from app.conf import discourse as discourse_settings
+from django.apps import apps
 import json, requests
+discourse_settings = apps.get_app_config('discourse')
 class DiscourseClient:
     """
     Discourse API Client
