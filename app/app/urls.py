@@ -16,9 +16,9 @@ urlpatterns = [
 ]
 
 # MODULES
-if apps.is_installed("modules.guild"):
+if apps.is_installed("modules.guilds"):
     urlpatterns += [
-        url(r'^guilds/', decorator_include(services_required, 'modules.guild.urls')),
+        url(r'^guilds/', decorator_include(services_required, 'modules.guilds.urls')),
     ]
 if apps.is_installed("modules.discord"):
     urlpatterns += [

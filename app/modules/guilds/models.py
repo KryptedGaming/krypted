@@ -12,9 +12,11 @@ class Guild(models.Model):
     image = models.URLField()
 
     # REFERENCES
-    groups = models.ManyToManyField(Group, related_name="guilds")
-    users = models.ManyToManyField(User, related_name="guilds_in")
-    users_managing = models.ManyToManyField(User, related_name="guilds_managing")
+    default_group = models.OneToOneField(Group, related_name="guild", on_delete=models.SET_NULL, null=True, blank=True)
+    staff_group = models.OneToOneField(Group, related_name="guild_staffing", on_delete=models.SET_NULL, null=True, blank=True)
+    groups = models.ManyToManyField(Group, related_name="guilds", blank=True)
+    users = models.ManyToManyField(User, related_name="guilds_in", blank=True)
+    users_managing = models.ManyToManyField(User, related_name="guilds_managing", blank=True)
 
 
     def __str__(self):
@@ -88,4 +90,3 @@ class GuildApplication(models.Model):
             ('manage_guild_applications', u'Can manage Guild applications'),
             ('audit_eve_applications', u'Can audit an EVE application'),
         )
-

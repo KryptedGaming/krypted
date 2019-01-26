@@ -11,3 +11,4 @@ class DiscordUserAdmin(admin.ModelAdmin):
     #     return DiscordUser.user.eve_character
 
 admin.site.register(DiscordGroup)
+admin.site.register(DiscordChannel)

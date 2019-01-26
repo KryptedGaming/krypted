@@ -1,7 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User, Group
+from django.apps import apps
 import logging
 logger = logging.getLogger(__name__)
+discord_settings = apps.get_app_config('discord')
 
 class DiscordUser(models.Model):
     # BASIC INFORMATION
@@ -29,3 +31,16 @@ class DiscordGroup(models.Model):
             return self.group.name
         else:
             return "None"
+
+class DiscordChannel(models.Model):
+    supported_channel_types = (
+        ("BOT", "BOT"),
+        ("HR", "HR"),
+    )
+
+    name = models.CharField(max_length=64)
+    type = models.CharField(max_length=32, choices=supported_channel_types)
+    external_id = models.BigIntegerField(blank=True, null=True)
+
+    def __str__(self):
+        return self.name

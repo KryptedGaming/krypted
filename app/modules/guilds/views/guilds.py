@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.conf import settings
 from django.apps import apps
 # INTERNAL IMPORTS
-from modules.guild.models import Guild
+from modules.guilds.models import Guild
 # MISC
 import logging
 logger = logging.getLogger(__name__)

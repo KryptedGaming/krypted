@@ -1,5 +1,5 @@
 from django.contrib import admin
-from modules.guild.models import *
+from modules.guilds.models import *
 
 admin.site.register(Guild)
 admin.site.register(GuildApplicationTemplate)
