@@ -118,7 +118,6 @@ def group_add_user(request, group_id, user_id):
     return redirect('groups')
 
 @login_required
-@permission_required('core.audit_group_requests')
 def group_remove_user(request, group_id, user_id):
     if request.user.has_perm('core.delete_group_request') or request.user.id == user_id:
         user = User.objects.get(id=user_id)

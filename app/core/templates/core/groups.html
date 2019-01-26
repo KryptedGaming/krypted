@@ -84,7 +84,9 @@
   			<thead>
   				<tr>
   					<th scope="col">Group</th>
+            {% if "modules.guild" in installed_apps %}
             <th scope="col">Guild</th>
+            {% endif %}
   					<th scope="col">User</th>
   					<th scope="col">Actions</th>
   				</tr>
@@ -93,7 +95,13 @@
           {% for group_request in group_requests %}
   				<tr>
             <td>{{group_request.request.request_group.name}}</td>
+            {% if "modules.guild" in installed_apps %}
+            {% if group_request.request.request_group.guild %}
             <td>{{group_request.request.request_group.guild.name}}</td>
+            {% else %}
+            <td>Community</td>
+            {% endif %}
+            {% endif %}
             <td>{{group_request.request.request_user.username}}</span></td>
             <td>
             {% if group_request.permission %}
@@ -113,7 +121,9 @@
   			<thead>
   				<tr>
   					<th scope="col">Group</th>
+            {% if "modules.guild" in installed_apps %}
   					<th scope="col">Guild</th>
+            {% endif %}
   					<th scope="col">User</th>
   					<th scope="col">Actions</th>
   				</tr>
@@ -122,7 +132,13 @@
           {% for group_request in audit_requests %}
   				<tr>
             <td>{{group_request.request.request_group.name}}</td>
+            {% if "modules.guild" in installed_apps %}
+            {% if group_request.request.request_group.guild %}
             <td>{{group_request.request.request_group.guild.name}}</td>
+            {% else %}
+            <td>Community</td>
+            {% endif %}
+            {% endif %}
             <td>{{group_request.request.request_user.username}}</span></td>
             {% if group_request.permission %}
             <td>

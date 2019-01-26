@@ -116,3 +116,14 @@ class GroupRequest(models.Model):
                 ('manage_group_requests', u'Can manage group requests.'),
                 ('audit_group_requests', u'Can view the group request audit log.')
         )
+
+class SocialMedia(models.Model):
+    """
+    Social media objects used for dynamic branding
+    """
+    name = models.CharField(max_length=32)
+    fa_icon = models.CharField(max_length=32)
+    link = models.URLField()
+
+    def __str__(self):
+        return self.name

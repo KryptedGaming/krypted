@@ -149,7 +149,9 @@
   <footer class="main-footer">
     <!-- To the right -->
     <div class="pull-right hidden-xs">
-      <i class="fa fa-github" onclick="location.href='https://github.com/porowns/kryptedauth'"></i>
+      {% for social_media in social_media_objects %}
+      <i class="fa {{social_media.fa_icon}}" onclick="location.href='{{social_media.link}}'"></i>
+      {% endfor %}
     </div>
     <!-- Default to the left -->
     Copyright &copy; 2018 <a href="#">Krypted Gaming</a>. All rights reserved.
