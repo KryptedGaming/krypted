@@ -35,7 +35,7 @@ class Event(models.Model):
     @property
     def is_expired(self):
         time_delta = datetime.datetime.utcnow().replace(tzinfo=pytz.utc) - self.start_datetime
-        if time_delta.total_seconds() < 0:
+        if time_delta.total_seconds() < 3600:
             return False
         return True
 
