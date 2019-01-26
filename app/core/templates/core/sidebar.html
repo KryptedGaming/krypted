@@ -8,8 +8,12 @@
   {% if "modules.engagement" in installed_apps %}
   <li><a href="{% url 'all-events' %}"><i class="fa fa-calendar"></i> <span>Events</span></a></li>
   {% endif %}
-  {% if "modules.guild" in installed_apps %}
-  <li><a href="{% url 'guilds' %}"><i class="fa fa-gamepad"></i> <span>Branches</span></a></li>
+  {% if "modules.guilds" in installed_apps %}
+  <li>
+    <a href="{% url 'guilds' %}"><i class="fa fa-gamepad"></i>
+      <span>{{application_verbose_names.guilds}}</span>
+    </a>
+  </li>
   {% endif %}
 
   <!-- MODULE LINKS -->
