@@ -1,8 +1,9 @@
-from app.conf import eve as eve_settings
+from django.apps import apps
 from modules.eveonline.models import EveCorporation, EveCharacter
 from esipy import App
 import json
 
+eve_settings = apps.get_app_config('eveonline')
 ESI_APP = App.create(eve_settings.ESI_APP_URL)
 
 class EveClient:

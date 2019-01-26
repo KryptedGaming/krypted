@@ -3,17 +3,18 @@ from celery import task
 # DJANGO IMPORTS
 from django.db.models import Q
 from django.contrib.auth.models import User, Group
+from django.apps import apps
 # INTERNAL IMPORTS
-from modules.eveonline.models import Token, EveCharacter, EveCorporation
+from modules.eveonline.models import EveToken, EveCharacter, EveCorporation
 from modules.eveonline.client import EveClient
 # EXTERNAL IMPORTS
 # TODO: Remove dependency on Guild
 from modules.guilds.models import Guild
 # MISC
 from esipy import App
-from app.conf import eve as eve_settings
 import logging, time
 
+eve_settings = apps.get_app_config('eveonline')
 logger = logging.getLogger(__name__)
 
 """
@@ -22,7 +23,7 @@ These tasks are periodically ran.
 """
 @task()
 def update_sso_tokens():
-    tokens = Token.objects.all()
+    tokens = EveToken.objects.all()
     for token in tokens:
         update_eve_token.apply_async(args=[token.pk])
 
@@ -131,7 +132,7 @@ def update_corporation(corporation_id):
 
 @task()
 def update_eve_token(pk):
-    eve_token = Token.objects.get(pk=pk)
+    eve_token = EveToken.objects.get(pk=pk)
     eve_token.refresh()
 
 @task()

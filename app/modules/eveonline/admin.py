@@ -2,7 +2,7 @@ from django.contrib import admin
 from modules.eveonline.models import *
 
 # Register your models here.
-@admin.register(Token)
+@admin.register(EveToken)
 class TokenAdmin(admin.ModelAdmin):
     list_display = ('access_token', 'expiry')
 

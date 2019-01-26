@@ -2,15 +2,15 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
-# EXTERNAL IMPORTS
-from app.conf import eve as eve_settings
+from django.apps import apps
 # MISC
 import datetime, logging, json
 
+eve_settings = apps.get_app_config('eveonline')
 logger = logging.getLogger(__name__)
 
 # Create your models here.
-class Token(models.Model):
+class EveToken(models.Model):
     ## SSO
     access_token = models.TextField(blank=True, null=True)
     refresh_token = models.TextField(blank=True, null=True)
@@ -65,12 +65,20 @@ class Token(models.Model):
 
 class EveCorporation(models.Model):
     corporation_id = models.IntegerField(primary_key=True)
+
+    # INFORMATION
     name = models.CharField(max_length=512)
     ticker = models.CharField(max_length=5)
     member_count = models.IntegerField()
-    ceo = models.ForeignKey("EveCharacter", blank=True, null=True, on_delete=models.SET_NULL) # optional if we dont have them yet
     alliance_id = models.IntegerField(null=True)
     tax_rate = models.FloatField()
+
+    # REFERENCES
+    ceo = models.ForeignKey("EveCharacter", blank=True, null=True, on_delete=models.SET_NULL) # optional if we dont have them yet
+
+    # INTEGRATIONS
+    primary_entity = models.BooleanField(default=False)
+    blue_entity = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
@@ -83,7 +91,7 @@ class EveCharacter(models.Model):
     corporation = models.ForeignKey("EveCorporation", null=True, on_delete=models.SET_NULL)
 
     ## SSO Token
-    token = models.OneToOneField("Token", null=True, on_delete=models.CASCADE)
+    token = models.OneToOneField("EveToken", null=True, on_delete=models.CASCADE)
 
     ## CORE
     user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)

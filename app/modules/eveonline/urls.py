@@ -3,7 +3,7 @@ from modules.eveonline.views import eve_online, sso
 
 ## BASE
 urlpatterns = [
-    url(r'^$', eve_online.dashboard, name='eve_online-dashboard'),
+    url(r'^$', eve_online.dashboard, name='eve-dashboard'),
     url(r'^character/(?P<character>\w+)/$', eve_online.view_character, name='eve_online-view-character'),
     url(r'^character/set-main-character/(?P<character>\w+)/$', eve_online.set_main_character, name='eve_online-set-main-character'),
     url(r'^character/set-alt-character/(?P<character>\w+)/(?P<alt_type>\w+)/$', eve_online.set_alt_character, name='eve_online-set-alt-character')

@@ -3,20 +3,21 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.db.models import Q
 from django.contrib.auth.models import User
+from django.apps import apps
 # INTERNAL IMPORTS
-from modules.eveonline.models import Token, EveCharacter
+from modules.eveonline.models import EveToken, EveCharacter
 # EXTERNAL IMPORTS
-from modules.guilds.models import Guild
 from core.decorators import login_required, permission_required
-from app.conf import eve as eve_settings
 from operator import itemgetter
 import logging, time
 
+eve_settings = apps.get_app_config('eveonline')
 logger = logging.getLogger(__name__)
 
 # Create your views here.
 @login_required
 def dashboard(request):
+    context = {}
     context['alt_types'] = eve_settings.EVE_ALT_TYPES
     logger.info("User connected to the EVE dashboard.")
     return render(request, 'eveonline/dashboard.html', context)
@@ -24,7 +25,7 @@ def dashboard(request):
 @login_required
 @permission_required('eveonline.audit_eve_character')
 def view_characters(request):
-    context = get_eve_context(request)
+    context = {}
     active_eve_users = User.objects.filter(guilds__slug="eve")
     context['mains'] = EveCharacter.objects.filter(main=None, user__in=active_eve_users)
     context['dreads'] = EveCharacter.objects.filter(character_alt_type="dread_alt", user__in=active_eve_users)
@@ -37,7 +38,7 @@ def view_characters(request):
 @login_required
 @permission_required('eveonline.audit_eve_character')
 def view_character(request, character):
-    context = get_eve_context(request)
+    context = {}
     character = EveCharacter.objects.get(character_id=character)
     context['character'] = character
     token = character.token
@@ -108,16 +109,6 @@ def set_alt_character(request, character, alt_type):
     eve_character.character_alt_type = alt_type
     eve_character.save()
     return redirect('eve-dashboard')
-
-@login_required
-def get_eve_context(request):
-    context = {}
-    if Guild.objects.get(slug='eve') in request.user.guilds.all():
-        context['in_guild'] = True
-    else:
-        context['in_guild'] = False
-    context['characters'] = EveCharacter.objects.filter(user=request.user)
-    return context
 
 """
 Helper Functions

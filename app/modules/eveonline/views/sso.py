@@ -1,12 +1,13 @@
 from django.shortcuts import redirect
-from app.conf import eve as eve_settings
+from django.apps import apps
 # INTERNAL IMPORTS
-from modules.eveonline.models import Token, EveCharacter
+from modules.eveonline.models import EveToken, EveCharacter
 from modules.eveonline.tasks import *
 # EXTERNAL IMPORTS
 from core.decorators import login_required
 
 import logging
+eve_settings = apps.get_app_config('eveonline')
 logger = logging.getLogger(__name__)
 
 # Create your views here.
@@ -40,11 +41,11 @@ def receive_token(request):
     logger.info(
             "Creating token...\n" +
             "Lengths: " + "R: " + str(len(str(esi_token['refresh_token']))))
-    token = Token(
+    token = EveToken(
             access_token=esi_token['access_token'],
             refresh_token=esi_token['refresh_token'],
             expires_in=esi_token['expires_in'],
-            scopes=Token.format_scopes(eve_settings.ESI_SCOPES)
+            scopes=EveToken.format_scopes(eve_settings.ESI_SCOPES)
             )
     token.save()
 
