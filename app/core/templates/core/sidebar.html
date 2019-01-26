@@ -26,7 +26,7 @@
   {% if request.user.is_staff %}
   <li class="header">ADMIN</li>
   <!-- Optionally, you can add icons to the links -->
-  {% if "modules.guild" in installed_apps %}
+  {% if "modules.guilds" in installed_apps %}
   <li><a href="{% url 'hr-view-applications' %}"><i class="fa fa-paperclip"></i> <span>Applications</span></a></li>
   {% endif %}
   <li class="treeview">

@@ -1,4 +1,4 @@
-{% extends 'base/base.html' %}
+{% extends 'core/sidebar.html' %}
 
 {% block brand %}
   <h1>
@@ -20,6 +20,7 @@
         <tr>
           <th>Icon</th>
           <th>Guild</th>
+          <th>Managers</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -27,12 +28,19 @@
       {% for guild in guilds %}
         <tr>
           <td><img style="width: 26px;" src="{{guild.image}}"/></td>
-          <td><a href="/{{guild.slug}}">{{guild.name}}</a></td>
           <td>
-              {% if guild not in request.user.guilds.all %}
-              <button onclick="location.href='/applications/add/{{guild.slug}}/'" class="guildbtn btn btn-success btn-fill">Apply</button>
+            {{guild.name}}
+          </td>
+          <td>
+            {{guild.users_managing.all | join:", " }}
+          </td>
+          <td>
+              {% if guild not in request.user.guilds_in.all %}
+              <button onclick="location.href='{% url 'hr-add-application' slug=guild.slug %}'" class="guildbtn btn btn-success btn-block" {% if not guild.application_template %} disabled {%endif%}>
+                Apply
+              </button>
               {% else %}
-              <button onclick="location.href='/{{guild.slug}}/'" class="guildbtn btn btn-info btn-fill">View</button>
+              <button onclick="location.href=''" class="guildbtn btn btn-danger btn-block" disabled>Leave</button>
               {% endif %}
           </td>
         </tr

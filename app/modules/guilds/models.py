@@ -28,7 +28,7 @@ class GuildApplicationTemplate(models.Model):
     Used to build Guild applications, which can be filled out by users and recorded as GuildApplication() objects
     """
     # REFERENCES
-    guild = models.OneToOneField("Guild", on_delete=models.CASCADE)
+    guild = models.OneToOneField("Guild", on_delete=models.CASCADE, related_name="application_template")
     questions = models.ManyToManyField("GuildApplicationQuestion", blank=True)
 
     def __str__(self):

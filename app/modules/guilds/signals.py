@@ -4,6 +4,7 @@ from django.dispatch import receiver
 from django.db.models.signals import m2m_changed, pre_delete, post_save
 from django.db import transaction
 from django.apps import apps
+from django.core.exceptions import ObjectDoesNotExist
 # INTERNAL IMPORTS
 from modules.guilds.models import Guild, GuildApplication
 # MISC
@@ -24,7 +25,11 @@ def user_guild_change_notify_discord(sender, **kwargs):
             from modules.discord.tasks import send_discord_channel_message
             from modules.discord.models import DiscordChannel
             message = "You have been removed from the following guild: **%s**." % guild.name
-            channel = DiscordChannel.objects.get(type="BOT").name
+            try:
+                channel = DiscordChannel.objects.get(type="BOT").name
+            except ObjectDoesNotExist:
+                logger.warning("Please specify a BOT discord channel for Guild notifications.")
+                return
             send_discord_channel_message.apply_async(
             args=[channel, message],
             kwargs={
@@ -38,7 +43,11 @@ def user_guild_change_notify_discord(sender, **kwargs):
             from modules.discord.tasks import send_discord_channel_message
             from modules.discord.models import DiscordChannel
             message = "You have been added to the following guild: **%s**. You can now see guild groups in the Groups section." % guild.name
-            channel = DiscordChannel.objects.get(type="BOT").name
+            try:
+                channel = DiscordChannel.objects.get(type="BOT").name
+            except ObjectDoesNotExist:
+                logger.warning("Please specify a BOT discord channel for Guild notifications.")
+                return
             send_discord_channel_message.apply_async(
             args=[channel, message],
             kwargs={
@@ -59,7 +68,11 @@ def user_guild_managing_change_notify_discord(sender, **kwargs):
             from modules.discord.tasks import send_discord_channel_message
             from modules.discord.models import DiscordChannel
             message = "You have been removed from the staff list for the following guild: **%s**" % guild.name
-            channel = DiscordChannel.objects.get(type="BOT").name
+            try:
+                channel = DiscordChannel.objects.get(type="BOT").name
+            except ObjectDoesNotExist:
+                logger.warning("Please specify a BOT discord channel for Guild notifications.")
+                return
             send_discord_channel_message.apply_async(
             args=[channel, message],
             kwargs={
@@ -73,7 +86,11 @@ def user_guild_managing_change_notify_discord(sender, **kwargs):
             from modules.discord.tasks import send_discord_channel_message
             from modules.discord.models import DiscordChannel
             message = "You have been added to the staff list for the following guild: **%s**" % guild.name
-            channel = DiscordChannel.objects.get(type="BOT").name
+            try:
+                channel = DiscordChannel.objects.get(type="BOT").name
+            except ObjectDoesNotExist:
+                logger.warning("Please specify a BOT discord channel for Guild notifications.")
+                return
             send_discord_channel_message.apply_async(
             args=[channel, message],
             kwargs={
