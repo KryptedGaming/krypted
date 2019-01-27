@@ -3,6 +3,7 @@ from django.contrib.auth.models import User, Group
 from django.dispatch import receiver
 from django.db.models.signals import m2m_changed, pre_delete, post_save
 from django.db import transaction
+from django.core.exceptions import ObjectDoesNotExist
 # LOCAL IMPOTRS
 from core.models import UserInfo, GroupInfo
 # MISC
@@ -37,8 +38,6 @@ def user_group_change_discord_notify(sender, **kwargs):
         group_pks.append(pk)
     if action == "post_remove":
         for group in group_pks:
-            from modules.discord.tasks import send_discord_channel_message
-            from modules.discord.models import DiscordChannel
             group = Group.objects.get(pk=group)
             message = "You have been removed from the following group: **%s**." % group.name
             try:

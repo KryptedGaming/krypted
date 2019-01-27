@@ -1,6 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 # DJANGO IMPORTS
 from django.contrib.auth.models import User, Group
+from django.core.exceptions import ObjectDoesNotExist
 # INTERNAL IMPORTS
 from modules.discord.models import DiscordUser, DiscordGroup, DiscordChannel
 from modules.discord.client import DiscordClient
@@ -119,7 +120,10 @@ def remove_discord_group(self, discord_group_external_id):
 @task(bind=True, rate_limit="1/s")
 def add_user_to_discord_group(self, user_id, group_id):
     # Pull objects from database
-    discord_user = DiscordUser.objects.get(user__id=user_id)
+    try:
+        discord_user = DiscordUser.objects.get(user__id=user_id)
+    except ObjectDoesNotExist:
+        return
     discord_group = DiscordGroup.objects.get(group__id=group_id)
     # Call discord client
     response = DiscordClient.add_group_to_discord_user(discord_user.external_id, discord_group.external_id)
@@ -143,7 +147,10 @@ def add_user_to_discord_group(self, user_id, group_id):
 @task(bind=True, rate_limit="1/s")
 def remove_user_from_discord_group(self, user_id, group_id):
     # Pull objects from the database
-    discord_user = DiscordUser.objects.get(user__id=user_id)
+    try:
+        discord_user = DiscordUser.objects.get(user__id=user_id)
+    except ObjectDoesNotExist:
+        return
     discord_group = DiscordGroup.objects.get(group__id=group_id)
     # Call discord client
     response = DiscordClient.remove_group_from_discord_user(discord_user.external_id, discord_group.external_id)
@@ -170,7 +177,10 @@ def send_discord_channel_message(self, discord_channel_name, message, **kwargs):
     discord_channel = DiscordChannel.objects.get(name=discord_channel_name)
     # process message
     if kwargs.get('user'):
-        discord_user=DiscordUser.objects.get(user__id=kwargs.get('user'))
+        try:
+            discord_user = DiscordUser.objects.get(user__id=kwargs.get('user'))
+        except ObjectDoesNotExist:
+            return
         processed_message = message + " <@%s>" % discord_user.external_id
     elif kwargs.get('group'):
         discord_group=DiscordGroup.objects.get(group__id=kwargs.get('group'))

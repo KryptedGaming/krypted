@@ -27,7 +27,7 @@ def refresh_token(request, character):
     update_eve_token.apply_async(args=[eve_character.token.pk])
     update_character.apply_async(args=[eve_character.character_id])
     update_character_corporation.apply(args=[eve_character.character_id])
-    update_user_groups.apply_async(args=[eve_character.user.pk], countdown=30)
+    update_user_groups.apply_async(args=[eve_character.user.pk])
     return redirect('eve-dashboard')
 
 @login_required
