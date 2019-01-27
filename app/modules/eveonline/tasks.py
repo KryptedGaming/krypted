@@ -138,28 +138,29 @@ def update_eve_token(pk):
 @task()
 def update_user_groups(pk):
     user = User.objects.get(pk=pk)
-    guild = Guild.objects.get(slug='eve')
-    if EveCharacter.objects.filter(user=user).count() < 1:
-        remove_eve_groups(user)
-    else:
-        eve_character = EveCharacter.objects.get(user=user, main=None)
+    eve_character = user.info.eve_character
+    if eve_character:
         if eve_character.is_member():
-            user.groups.add(guild.group)
-            user.guilds.add(guild)
+            user.groups.add(eve_settings.EVE_GROUP)
+            if apps.is_installed('modules.guilds'):
+                eve_settings.EVE_GUILD.users.add(user)
+        elif eve_character.is_blue():
+            user.groups.add(eve_settings.EVE_BLUE_GROUP)
         else:
-            remove_eve_groups(user)
+            purge_user_groups(user)
+    else:
+        purge_user_groups(user)
 
 # HELPERS
-def remove_eve_groups(user):
-    guild = Guild.objects.get(slug="eve")
-    guild_groups = Group.objects.filter(guild=guild)
-    if guild.group in user.groups.all():
-        user.groups.remove(guild.group)
-    for group in guild_groups:
+def purge_user_groups(user):
+    eve_groups = [eve_settings.EVE_GROUP, eve_settings.EVE_BLUE_GROUP]
+    if apps.is_installed('modules.guilds'):
+        for group in eve_settings.EVE_GUILD.groups.all():
+            eve_groups.append(group)
+        eve_settings.EVE_GUILD.users.remove(user)
+    for group in eve_groups:
         if group in user.groups.all():
             user.groups.remove(group)
-        time.sleep(1)
-    user.guilds.remove(guild)
 
 def audit_corporation_members():
     response = []

@@ -27,3 +27,45 @@ def global_group_add(sender, **kwargs):
         if (kwargs.get('created')):
             GroupInfo(group=group).save()
     transaction.on_commit(call)
+
+@receiver(m2m_changed, sender=User.groups.through)
+def user_group_change_discord_notify(sender, **kwargs):
+    user = kwargs.get('instance')
+    action = str(kwargs.get('action'))
+    group_pks = []
+    for pk in kwargs.get('pk_set'):
+        group_pks.append(pk)
+    if action == "post_remove":
+        for group in group_pks:
+            from modules.discord.tasks import send_discord_channel_message
+            from modules.discord.models import DiscordChannel
+            group = Group.objects.get(pk=group)
+            message = "You have been removed from the following group: **%s**." % group.name
+            try:
+                channel = DiscordChannel.objects.get(type="BOT").name
+            except ObjectDoesNotExist:
+                logger.warning("Please specify a BOT discord channel for Guild notifications.")
+                return
+            send_discord_channel_message.apply_async(
+                args=[channel, message],
+                kwargs={
+                    'user': user.id
+                }
+            )
+    elif action == "post_add":
+        for group in group_pks:
+            from modules.discord.tasks import send_discord_channel_message
+            from modules.discord.models import DiscordChannel
+            group = Group.objects.get(pk=group)
+            message = "You have been added to the following group: **%s**." % group.name
+            try:
+                channel = DiscordChannel.objects.get(type="BOT").name
+            except ObjectDoesNotExist:
+                logger.warning("Please specify a BOT discord channel for Guild notifications.")
+                return
+            send_discord_channel_message.apply_async(
+                args=[channel, message],
+                kwargs={
+                    'user': user.id
+                }
+            )

@@ -103,10 +103,19 @@ class EveCharacter(models.Model):
         return self.character_name
 
     def is_member(self):
-        if self.corporation and (self.corporation.corporation_id == eve_settings.MAIN_ENTITY_ID or self.corporation.corporation_id in eve_settings.SECONDARY_ENTITY_IDS):
+        character = self.get_absolute()
+        if character.corporation.primary_entity:
             return True
         else:
             return False
+
+    def is_blue(self):
+        character = self.get_absolute()
+        if character.corporation.blue_entity:
+            return True
+        else:
+            return False
+
 
     def get_absolute(self):
         """
