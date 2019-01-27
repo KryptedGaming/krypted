@@ -1,5 +1,9 @@
-from app.conf import discord as discord_settings
+from django.apps import apps
 import json, requests
+
+# GET DISCORD CONFIGURATION
+discord_settings = apps.get_app_config('discord')
+
 class DiscordClient:
     """
     Discord API Client class
@@ -71,9 +75,8 @@ class DiscordClient:
         return response
 
     @staticmethod
-    def send_message(discord_channel, message):
-        channel_id = discord_settings.DISCORD_CHANNEL_IDS[discord_channel]
-        url = discord_settings.DISCORD_API_ENDPOINT + "/channels/" + str(channel_id) + "/messages"
+    def send_channel_message(discord_channel_id, message):
+        url = discord_settings.DISCORD_API_ENDPOINT + "/channels/" + str(discord_channel_id) + "/messages"
         data=json.dumps({'content': message})
         response = requests.post(url,
             data=data,

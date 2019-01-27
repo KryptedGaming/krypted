@@ -1,12 +1,11 @@
 # DJANGO IMPORTS
 from django.dispatch import receiver
-from django.db.models.signals import m2m_changed, pre_delete, post_save
-from django.db import transaction
+from django.db.models.signals import m2m_changed
 # LOCAL IMPORTS
 from modules.records.models import EventLog, GuildLog
 from modules.records.tasks import *
 # EXTERNAL IMPORTS
-from core.models import User, Event, Guild
+from modules.engagement.models import Event
 
 import logging
 logger = logging.getLogger(__name__)
@@ -45,7 +44,3 @@ def event_registrants_change(sender, **kwargs):
         for user in users:
             logger.info("Adding registration EventLog for %s(user_id_%s)" % (event.name, user))
             record_event_registration.apply_async(args=[event.pk, user])
-
-@receiver(m2m_changed, sender=User.guilds.through)
-def user_guilds_change(sender, **kwargs):
-    pass

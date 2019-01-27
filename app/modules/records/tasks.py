@@ -1,10 +1,12 @@
 from __future__ import absolute_import, unicode_literals
+# DJANGO IMPORTS
+from django.contrib.auth.models import User
 # LOCAL IMPORTS
 from modules.records.models import *
 # EXTERNAL IMPORTS
-from celery import task
-from core.models import User, Event
+from modules.engagement.models import Event
 # MISC
+from celery import task
 import logging
 
 logger = logging.getLogger(__name__)
@@ -20,6 +22,18 @@ def record_event_participation(event_id, user_id):
     user = User.objects.get(pk=user_id)
     event = Event.objects.get(pk=event_id)
     EventLog(type="participation", user=user, event=event).save()
+
+@task()
+def record_survey_started(survey_id, user_id):
+    user = User.objects.get(pk=user_id)
+    survey = Survey.objects.get(pk=survey_id)
+    SurveyLog(type="started_survey", user=user, survey=survey).save()
+
+@task()
+def record_survey_completion(survey_id, user_id):
+    user = User.objects.get(pk=user_id)
+    survey = Survey.objects.get(pk=survey_id)
+    SurveyLog(type="completed_survey", user=user, survey=survey).save()
 
 @task()
 def record_guild_join(event_id, user_id):
