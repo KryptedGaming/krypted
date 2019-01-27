@@ -30,7 +30,7 @@ if apps.is_installed("modules.discourse"):
     ]
 if apps.is_installed("modules.eveonline"):
     urlpatterns += [
-        url(r'^eve/', include('modules.eveonline.urls')),
+        url(r'^eve/', decorator_include(services_required, 'modules.eveonline.urls')),
     ]
 
 if apps.is_installed("modules.engagement"):
