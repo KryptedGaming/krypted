@@ -29,15 +29,5 @@
   {% if "modules.guilds" in installed_apps %}
   <li><a href="{% url 'hr-view-applications' %}"><i class="fa fa-paperclip"></i> <span>Applications</span></a></li>
   {% endif %}
-  <li class="treeview">
-    <a href="#"><i class="fa fa-mouse-pointer"></i> <span>Extras</span>
-      <span class="pull-right-container">
-          <i class="fa fa-angle-left pull-right"></i>
-        </span>
-    </a>
-    <ul class="treeview-menu">
-      <li><a href="/admin/">Admin Panel</a></li>
-    </ul>
-  </li>
   {% endif %}
 {% endblock %}
