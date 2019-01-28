@@ -18,10 +18,10 @@ def assign_community_groups():
 @task()
 def update_user_community_groups(user_id):
     user = User.objects.get(pk=user_id)
-    if not user.discord:
+    if not user.discord_user:
         return None
-    tenure = user.get_tenure()
-    member = user.guilds.count() > 0
+    tenure = user.info.get_tenure()
+    member = user.guilds_in.count() > 0
     recruit_group = Group.objects.get(name=group_settings.RECRUIT_GROUP)
     member_group = Group.objects.get(name=group_settings.MINOR_GROUP)
     veteran_group = Group.objects.get(name=group_settings.MAIN_GROUP)

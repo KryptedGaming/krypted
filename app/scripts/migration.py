@@ -14,29 +14,29 @@ from modules.eveonline.models import EveToken, EveCharacter, EveCorporation
 
 enabled = [
         # stage 1, delete discord/discourse groups after
-        'core.user',
-        'core.group',
-        'core.event',
-        'core.guild',
-        'core.guildapplication',
-        'core.guildapplicationquestion',
-        'core.guildapplicationresponse',
-        'core.guildapplicationtemplate',
+        # 'core.user',
+        # 'core.group',
+        # 'core.event',
+        # 'core.guild',
+        # 'core.guildapplication',
+        # 'core.guildapplicationquestion',
+        # 'core.guildapplicationresponse',
+        # 'core.guildapplicationtemplate',
         # stage 2
-        #'discord.discorduser',
-        #'discord.discordgroup',
-        #'discourse.discourseuser',
-        #'discourse.discoursegroup',
-        #'eveonline.evecorporation',
-        #'eveonline.token',
+        # 'discord.discorduser',
+        # 'discord.discordgroup',
+        # 'discourse.discourseuser',
+        # 'discourse.discoursegroup',
+        # 'eveonline.evecorporation',
+        # 'eveonline.token',
         # 'eveonline.evecharacter'
         # stage 3
-        #'group.migration',
-        #'discord.group.migration',
-        # 'discourse.group.migration',
+        'group.migration',
+        'discord.group.migration',
+        'discourse.group.migration',
         # stage 4
-        #'password.filler',
-        #'guild.migration',
+        # 'password.filler',
+        # 'guild.migration',
         ]
 users = {}
 groups = {}
@@ -122,7 +122,7 @@ def run():
         if line['model'] == 'core.group' and 'core.group' in enabled:
             try:
                 pk = line['pk']
-                name = fields['name']
+                name = fields['description']
                 description = fields['description']
                 type = fields['type']
                 managers = fields['managers']
@@ -360,6 +360,28 @@ def run():
             except Exception as e:
                 print(line)
                 print(e)
+        # CORPORATION
+        if line['model'] == 'eveonline.evecorporation' and 'eveonline.evecorporation' in enabled:
+            try:
+                pk=line['pk']
+                name=fields['name']
+                member_count=fields['member_count']
+                tax_rate=fields['tax_rate']
+                ceo=None
+                ticker=fields['ticker']
+                alliance_id=fields['alliance_id']
+                EveCorporation(
+                    pk=pk,
+                    name=name,
+                    member_count=member_count,
+                    tax_rate=tax_rate,
+                    ceo=ceo,
+                    ticker=ticker,
+                    alliance_id=alliance_id
+                ).save()
+            except Exception as e:
+                print(line)
+                print(e)
         # EVEONLINE.EVECHARACTER
         if line['model'] == 'eveonline.evecharacter' and 'eveonline.evecharacter' in enabled:
             try:
@@ -389,27 +411,6 @@ def run():
                 print(line)
                 print(e)
                 raise e
-        if line['model'] == 'eveonline.evecorporation' and 'eveonline.evecorporation' in enabled:
-            try:
-                pk=line['pk']
-                name=fields['name']
-                member_count=fields['member_count']
-                tax_rate=fields['tax_rate']
-                ceo=fields['ceo']
-                ticker=fields['ticker']
-                alliance_id=fields['alliance_id']
-                EveCorporation(
-                    pk=pk,
-                    name=name,
-                    member_count=member_count,
-                    tax_rate=tax_rate,
-                    ceo=ceo,
-                    ticker=ticker,
-                    alliance_id=alliance_id
-                ).save()
-            except Exception as e:
-                print(line)
-                print(e)
         # GROUP MIGRATION
         #if line['model'] == 'core.user' and 'group.migration' in enabled:
         #    user_groups = fields['groups']

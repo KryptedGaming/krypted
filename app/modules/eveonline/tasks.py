@@ -36,9 +36,8 @@ def update_eve_character_corporations():
 
 @task()
 def update_users_groups():
-    guild = Guild.objects.get(slug='eve')
     call_count = 0
-    for user in User.objects.filter(guilds__name='EVE Online'):
+    for user in User.objects.filter(groups__in=[eve_settings.EVE_GROUP, eve_settings.EVE_BLUE_GROUP]):
         update_user_groups.apply_async(args=[user.pk], coundown=call_count*2)
         call_count += 1
 

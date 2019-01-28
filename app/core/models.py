@@ -56,7 +56,7 @@ class UserInfo(models.Model):
 
     def get_tenure(self):
         import datetime, pytz
-        tenure = datetime.datetime.now().replace(tzinfo=pytz.UTC) - self.date_joined
+        tenure = datetime.datetime.now().replace(tzinfo=pytz.UTC) - self.user.date_joined
         tenure = tenure.total_seconds() / 60 / 60 / 24 / 365
         return tenure
 

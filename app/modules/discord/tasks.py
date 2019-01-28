@@ -33,13 +33,13 @@ def update_discord_user(user_id):
     # pull objects from database
     user = User.objects.get(pk=user_id)
     # break if not discord
-    if not user.discord:
+    if not user.discord_user:
         return None
     # call client
-    response = DiscordClient.get_discord_user(user.discord.external_id)
+    response = DiscordClient.get_discord_user(user.discord_user.external_id)
     # update username
     if response.status_code == 200:
-        discord = user.discord
+        discord = user.discord_user
         if response.json()['nick'] != None:
             discord.username = response.json()['nick'] + "#" + response.json()['user']['discriminator']
             discord.save()
@@ -49,7 +49,7 @@ def update_discord_user(user_id):
     else:
         if 'code' in response.json():
             if response.json()['code'] == 10007:
-                discord = user.discord
+                discord = user.discord_user
                 discord.delete()
 
 @task(rate_limit="1/s")
