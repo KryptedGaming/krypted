@@ -4,7 +4,6 @@
   <li class="header">MAIN NAVIGATION</li>
   <!-- Optionally, you can add icons to the links -->
   <li><a href="{% url 'eve-dashboard' %}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
-  {% if in_guild %}
   <li class="treeview">
     <a href="#"><i class="fa fa-calendar"></i> <span>Fleets</span>
       <span class="pull-right-container">
@@ -28,10 +27,6 @@
       <li><a href="#">Helltrain</a></li>
     </ul>
   </li>
-  {% else %}
-  <li><a href="{% url 'guilds' %}"><i class="fa fa-paperclip"></i> <span>Apply</span></a></li>
-  {% endif %}
-
 
   <!-- ADMIN LINKS -->
   {% if admin %}

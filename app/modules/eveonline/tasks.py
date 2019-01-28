@@ -7,9 +7,6 @@ from django.apps import apps
 # INTERNAL IMPORTS
 from modules.eveonline.models import EveToken, EveCharacter, EveCorporation
 from modules.eveonline.client import EveClient
-# EXTERNAL IMPORTS
-# TODO: Remove dependency on Guild
-from modules.guilds.models import Guild
 # MISC
 from esipy import App
 import logging, time
@@ -157,7 +154,8 @@ def purge_user_groups(user):
     if apps.is_installed('modules.guilds'):
         for group in eve_settings.EVE_GUILD.groups.all():
             eve_groups.append(group)
-        eve_settings.EVE_GUILD.users.remove(user)
+        if eve_settings.EVE_GUILD in user.guilds_in.all():
+            eve_settings.EVE_GUILD.users.remove(user)
     for group in eve_groups:
         if group in user.groups.all():
             user.groups.remove(group)

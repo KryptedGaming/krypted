@@ -31,6 +31,8 @@ def global_group_add(sender, **kwargs):
 
 @receiver(m2m_changed, sender=User.groups.through)
 def user_group_change_discord_notify(sender, **kwargs):
+    from modules.discord.tasks import send_discord_channel_message
+    from modules.discord.models import DiscordChannel
     user = kwargs.get('instance')
     action = str(kwargs.get('action'))
     group_pks = []
@@ -53,8 +55,6 @@ def user_group_change_discord_notify(sender, **kwargs):
             )
     elif action == "post_add":
         for group in group_pks:
-            from modules.discord.tasks import send_discord_channel_message
-            from modules.discord.models import DiscordChannel
             group = Group.objects.get(pk=group)
             message = "You have been added to the following group: **%s**." % group.name
             try:
