@@ -20,9 +20,7 @@ class BoxedField(Field):
 class EventCreate(CreateView):
     template_name='events/add_event.html'
     model = Event
-    fields = ['name','description','start_datetime', 'end_datetime'];
-    if apps.is_installed("modules.guilds"):
-        fields = ['guild'] + fields
+    fields = ['name','group','description','start_datetime', 'end_datetime'];
     success_url = reverse_lazy('all-events')
 
     def form_valid(self,form):
@@ -44,8 +42,7 @@ class EventCreate(CreateView):
                 Button('Cancel','Cancel', css_class='btn-danger', onclick=onclick)
             )
         )
-        if apps.is_installed("modules.guilds"):
-            form.fields['guild'].queryset = self.request.user.guilds_in.all()
+        form.fields['group'].queryset = self.request.user.groups.all()
         return form
 
 class EventUpdate(UpdateView):
