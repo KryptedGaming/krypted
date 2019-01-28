@@ -2,8 +2,11 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User, Group
+from django.apps import apps
 # MISC
 import uuid
+
+core_settings = apps.get_app_config('core')
 
 class UserInfo(models.Model):
     """
@@ -15,7 +18,7 @@ class UserInfo(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="info")
 
     # DEMOGRAPHICS
-    region = models.CharField(max_length=2, choices=settings.REGIONS)
+    region = models.CharField(max_length=2, choices=core_settings.REGIONS)
     age = models.IntegerField(null=True)
 
     # PROFILE
