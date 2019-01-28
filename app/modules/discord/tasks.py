@@ -174,7 +174,7 @@ def remove_user_from_discord_group(self, user_id, group_id):
 @task(bind=True, rate_limit="1/s")
 def send_discord_channel_message(self, discord_channel_name, message, **kwargs):
     # pull objects from db
-    discord_channel = DiscordChannel.objects.get(name=discord_channel_name)
+    discord_channel = DiscordChannel.objects.filter(name=discord_channel_name).first()
     # process message
     if kwargs.get('user'):
         try:

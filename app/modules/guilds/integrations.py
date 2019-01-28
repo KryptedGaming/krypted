@@ -48,13 +48,18 @@ def discord_notify_recruitment_channel(user, slug, type):
     from modules.discord.tasks import send_discord_channel_message
     from django.core.exceptions import ObjectDoesNotExist
     try:
-        discord_channel = DiscordChannel.objects.get(type="HR").name
+        discord_channel = DiscordChannel.objects.get(type="HR")
+    except ObjectDoesNotExist:
+        logger.warning("Please specify a BOT discord channel for application user notifications.")
+        return
+    try:
+        discord_channel = DiscordChannel.objects.get(type="HR")
     except ObjectDoesNotExist:
         logger.warning("Please specify a HR discord channel for application user notifications.")
         return
     if type == "submit":
-        send_discord_message(
-        discord_settings.HR_CHANNEL,
-        "%s has submitted an %s application. Please add a :white_check_mark: if you intend on handling it." % (user.info.discord, Guild.objects.get(slug=slug).name),
-        group=Guild.objects.get(slug=slug).primary_group.id
+        send_discord_channel_message(
+        discord_channel.name,
+        "%s has submitted an %s application. Please add a :white_check_mark: if you intend on handling it." % (user.discord_user, Guild.objects.get(slug=slug).name),
+        group=Guild.objects.get(slug=slug).default_group.id
         )
