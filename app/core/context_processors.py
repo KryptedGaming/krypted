@@ -4,7 +4,7 @@ from core.models import SocialMedia
 
 def installed_apps(request):
     return {
-       'installed_apps' : settings.INSTALLED_APPS_WITH_CONFIGS + settings.INSTALLED_APPS
+       'installed_apps' : settings.INSTALLED_APPS
     }
 
 def social_media_objects(request):

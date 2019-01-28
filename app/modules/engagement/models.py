@@ -1,6 +1,6 @@
 # DJANGO IMPORTS
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 # EXTERNAL IMPORTS
 from django.apps import apps
 # MISC
@@ -22,9 +22,7 @@ class Event(models.Model):
     start_datetime = models.DateTimeField(auto_now=False)
     end_datetime = models.DateTimeField(auto_now=False, blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
-    if  apps.is_installed('modules.guilds'):
-        from modules.guilds.models import Guild
-        guild = models.ForeignKey(Guild, on_delete=models.SET_NULL, blank=True, null=True)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, blank=True, null=True)
 
     # ATTENDENCE
     password = models.CharField(max_length=3)
@@ -58,9 +56,7 @@ class Survey(models.Model):
 
     # BASIC INFORMATION
     name = models.CharField(max_length=32)
-    if apps.is_installed('modules.guilds'):
-        from modules.guilds.models import Guild
-        guild = models.ForeignKey(Guild, on_delete=models.SET_NULL, blank=True, null=True)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, blank=True, null=True)
     description = models.TextField()
     date_created = models.DateField(auto_now=True)
     date_finished = models.DateField()

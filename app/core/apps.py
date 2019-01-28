@@ -3,6 +3,12 @@ from django.db.models.signals import m2m_changed, pre_delete, post_save
 
 class CoreConfig(AppConfig):
     name = 'core'
+    
+    REGIONS = (
+        ("NA", "North America"),
+        ("EU", "Europe"),
+        ("OC", "Oceania & Asias")
+    )
 
     def ready(self):
         from django.contrib.auth.models import User, Group

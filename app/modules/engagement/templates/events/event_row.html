@@ -8,9 +8,7 @@
   <td data-order="{{ event.start_datetime.isoformat }}">{{event.start_datetime |date:"M d, H:i e" }}</td>
   <td>@{{event.user.discord.username}}</td>
   <td>{{event.name}}</td>
-  {% if guilds_enabled %}
-  <td>{{event.guild}}</td>
-  {% endif %}
+  <td>{{event.group}}</td>
   <td>
     <button onclick="location.href='{% url 'view-event' event.pk %}'" class="btn btn-info" data-toggle="tooltip" data-placement="top" title="View"><i class="fa fa-fw fa-eye"></i></button>
     {% if not event.is_expired %}

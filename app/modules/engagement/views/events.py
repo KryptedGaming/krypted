@@ -11,20 +11,12 @@ from modules.engagement.models import Event
 
 @login_required
 def dashboard(request):
-    guilds_enabled = apps.is_installed("modules.guilds")
-    if guilds_enabled:
-        user_guilds = request.user.guilds_in.all()
-        user_events = Event.objects.filter(guild__in=user_guilds)
-        user_events = user_events.union(Event.objects.filter(guild=None))
-    else:
-        user_guilds = []
-        user_events = Event.objects.all()
+    user_events = Event.objects.filter(group__in=request.user.groups.all())
+    user_events = user_events.union(Event.objects.filter(group=None))
 
     context = {
         'user'   : request.user,
         'events' : user_events,
-        'guilds' : user_guilds,
-        'guilds_enabled' : guilds_enabled
     }
     return render(request, 'events/events.html', context)
 

@@ -21,7 +21,7 @@
         All
       </a>
     </li>
-    {% for guild in guilds %}
+    {% for guild in request.user.guilds_in.all %}
     <li>
       <a data-toggle="tab" href="#guild_{{guild.pk}}">
         {{ guild.name }}
@@ -44,9 +44,7 @@
           <th scope="col">Date</th>
           <th scope="col">Organizer</th>
           <th scope="col">Name</th>
-          {% if 'modules.guilds' in installed_apps %}
-          <th scope="col">Guild</th>
-          {% endif %}
+          <th scope="col">Group</th>
           <th scope="col">User Actions</th>
           {% if user == event.user or perms.core.manage_events %}
           <th scope="col">Admin Actions</th>
@@ -60,7 +58,7 @@
       </table>
     </div>
 
-    {% for guild in guilds %}
+    {% for guild in request.user.guilds_in.all %}
     <div id="guild_{{guild.pk}}" class="tab-pane fade in box-body">
       <table class="table">
         <thead>
@@ -76,7 +74,7 @@
         </thead>
         <tbody>
           {% for event in events %}
-          {% if event.guild == guild %}
+          {% if event.group in guild.groups.all %}
           {% include 'events/event_row.html' %}
           {% endif %}
           {% endfor %}
