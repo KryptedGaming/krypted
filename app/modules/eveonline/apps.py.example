@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 
-from django.apps import AppConfig
+from django.apps import AppConfig, apps
 from django.conf import settings
 
 from esipy import App, EsiClient, EsiSecurity
@@ -68,7 +68,6 @@ class EveOnlineConfig(AppConfig):
 
     def ready(self):
         from django.contrib.auth.models import Group
-        self.ESI_URL_CACHE = ESI_SECURITY.get_auth_uri(scopes=ESI_SCOPES, state="jaiodfjasd8234has")
         self.ESI_APP = App.create(self.ESI_APP_URL)
         self.ESI_SECURITY = EsiSecurity(
             redirect_uri=self.ESI_CALLBACK_URL,
