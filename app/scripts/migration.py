@@ -382,7 +382,10 @@ def run():
                 token = fields['token']
                 character_name = fields['character_name']
                 character_portrait = fields['character_portrait']
-                user = users[fields['user']]
+                try:
+                    user = users[fields['user']]
+                except:
+                    pass
                 corporation = fields['corporation']
                 corporation_object = None
                 if corporation:
