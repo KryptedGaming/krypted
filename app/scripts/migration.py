@@ -396,7 +396,7 @@ def run():
                 EveCharacter(
                     pk=pk,
                     user=User.objects.get(username=user),
-                    token=EveToken.objects.get(pk=token),
+                    token=EveToken.objects.filter(pk=token).first(),
                     character_name=character_name,
                     corporation=corporation_object,
                     character_id=character_id,
