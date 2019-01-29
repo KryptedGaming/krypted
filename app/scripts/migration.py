@@ -135,41 +135,33 @@ def run():
                 print(e)
         # CORE.EVENT
         if line['model'] == 'core.event' and 'core.event' in enabled:
-            try:
-                pk = line['pk']
-                name = fields['name']
-                registrants = fields['registrants']
-                participants = fields['participants']
-                description = fields['description']
-                guild = fields['guild']
-                guild_object = None
-                if guild:
-                    guild_object = Guild.objects.get(pk=guild)
-                user = users[fields['user']]
-                start_datetime = fields['start_datetime']
-                end_datetime = fields['end_datetime']
-                password = fields['password']
-                value = fields['value']
-                e = Event(
-                    pk=pk,
-                    name=name,
-                    description=description,
-                    guild=guild_object,
-                    user=User.objects.get(username=user),
-                    password=password,
-                    start_datetime=start_datetime,
-                    end_datetime=end_datetime,
-                    value=value,
-                )
-                e.save()
-                if registrants:
-                    e.registrants.set([User.objects.get(pk=x) for x in registrants])
-                if participants:
-                    e.participants.set([User.objects.get(pk=x) for x in participants])
-                e.save()
-            except Exception as e:
-                print(line)
-                print(e)
+            pk = line['pk']
+            name = fields['name']
+            registrants = fields['registrants']
+            participants = fields['participants']
+            description = fields['description']
+            guild_object = None
+            user = users[fields['user']]
+            start_datetime = fields['start_datetime']
+            end_datetime = fields['end_datetime']
+            password = fields['password']
+            value = fields['value']
+            e = Event(
+                pk=pk,
+                name=name,
+                description=description,
+                user=User.objects.get(username=user),
+                password=password,
+                start_datetime=start_datetime,
+                end_datetime=end_datetime,
+                value=value,
+            )
+            e.save()
+            if registrants:
+                e.registrants.set([User.objects.get(pk=x) for x in registrants])
+            if participants:
+                e.participants.set([User.objects.get(pk=x) for x in participants])
+            e.save()
         # CORE.GUILD
         if line['model'] == 'core.guild' and 'core.guild' in enabled:
             try:
