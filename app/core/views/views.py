@@ -8,13 +8,14 @@ from django.apps import apps
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse_lazy
+from core.decorators import login_required
 # CRISPY FORMS IMPORTS
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Field, Submit, Button
 from crispy_forms.bootstrap import *
 # LOCAL IMPORTS
 from core.forms import LoginForm, RegisterForm
-from core.decorators import login_required, services_required, permission_required
+from core.decorators import services_required
 from core.models import *
 from core.utils import username_or_email_resolver, send_activation_email
 # MISC

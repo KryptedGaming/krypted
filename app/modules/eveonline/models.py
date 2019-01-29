@@ -70,7 +70,7 @@ class EveCorporation(models.Model):
     name = models.CharField(max_length=512)
     ticker = models.CharField(max_length=5)
     member_count = models.IntegerField()
-    alliance_id = models.IntegerField(null=True)
+    alliance_id = models.IntegerField(blank=True, null=True)
     tax_rate = models.FloatField()
 
     # REFERENCES

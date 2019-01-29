@@ -13,7 +13,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                {% for character in characters %}
+                {% for character in request.user.evecharacter_set.all %}
                   <tr>
                     <td>
                         <img style="width: 50px;" src="{{character.character_portrait}}"/>

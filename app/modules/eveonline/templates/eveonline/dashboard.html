@@ -84,7 +84,7 @@
   {% include "eveonline/main_character_modal.html" %}
 </div>
 
-{% for character in characters %}
+{% for character in request.user.evecharacter_set.all %}
 <div class="modal fade col-md-12" id="selectModal{{character.character_id}}" data-backdrop="false">
   {% include "eveonline/alt_character_modal.html" %}
 </div>

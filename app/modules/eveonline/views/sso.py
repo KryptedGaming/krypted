@@ -1,10 +1,9 @@
 from django.shortcuts import redirect
 from django.apps import apps
+from core.decorators import login_required
 # INTERNAL IMPORTS
 from modules.eveonline.models import EveToken, EveCharacter
 from modules.eveonline.tasks import *
-# EXTERNAL IMPORTS
-from core.decorators import login_required
 
 import logging
 eve_settings = apps.get_app_config('eveonline')

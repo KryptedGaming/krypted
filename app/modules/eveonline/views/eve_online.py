@@ -3,11 +3,11 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.db.models import Q
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import permission_required, login_required
 from django.apps import apps
 # INTERNAL IMPORTS
 from modules.eveonline.models import EveToken, EveCharacter
 # EXTERNAL IMPORTS
-from core.decorators import login_required, permission_required
 from operator import itemgetter
 import logging, time
 

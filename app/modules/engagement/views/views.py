@@ -47,7 +47,7 @@ class EventCreate(CreateView):
 
 class EventUpdate(UpdateView):
     model = Event
-    fields = ['name', 'description', 'start_datetime', 'end_datetime']
+    fields = ['name', 'group', 'description', 'start_datetime', 'end_datetime']
     template_name = "events/edit_event.html"
     success_url = reverse_lazy('all-events')
     def get_form(self, form_class=None):
@@ -62,6 +62,7 @@ class EventUpdate(UpdateView):
                 Button('Cancel','Cancel', css_class='btn-danger', onclick=onclick)
             )
         )
+        form.fields['group'].queryset = self.request.user.groups.all()
         return form
 
 class EventDelete(DeleteView):
