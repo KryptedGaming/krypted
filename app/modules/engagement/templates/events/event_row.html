@@ -6,7 +6,7 @@
     </div>
   </td>
   <td data-order="{{ event.start_datetime.isoformat }}">{{event.start_datetime |date:"M d, H:i e" }}</td>
-  <td>@{{event.user.discord.username}}</td>
+  <td>@{{event.user.discord_user.username}}</td>
   <td>{{event.name}}</td>
   <td>{{event.group}}</td>
   <td>
