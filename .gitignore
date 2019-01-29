@@ -122,5 +122,8 @@ app/app/conf/
 **/migrations/**
 *migrations
 
+# hide celery
+**/celery.py
+
 # venv
 myvenv/
