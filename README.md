@@ -1,4 +1,4 @@
-[![Documentation Status](https://readthedocs.org/projects/kryptedauth/badge/?version=latest)](https://readthedocs.org/projects/kryptedauth/badge/?version=latest)
+[![Documentation Status](https://kryptedauth.readthedocs.io/en/latest/?)](https://kryptedauth.readthedocs.io/en/latest/?)
 
 # Krypted Authentication
 Advanced authentication system for Krypted Gaming.
