@@ -1,15 +1,16 @@
 # DJANGO
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate
 from django.conf import settings
+from django.contrib.auth.models import User
+from django.apps import apps
 # INTERNAL
-from core.models import User
 from core.utils import send_activation_email
 # MISC
 import logging
 
 logger = logging.getLogger(__name__)
+core_settings = apps.get_app_config('core')
 
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=32, required=True)
@@ -53,7 +54,7 @@ class RegisterForm(forms.Form):
     email = forms.CharField(max_length=64, required=True)
     password = forms.CharField(max_length=32, required=True)
     vpassword = forms.CharField(max_length=32, required=True)
-    region = forms.ChoiceField(choices=settings.REGIONS, required=True)
+    region = forms.ChoiceField(choices=core_settings.REGIONS, required=True)
     age = forms.IntegerField()
 
     def clean(self):

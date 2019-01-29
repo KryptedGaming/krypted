@@ -1,0 +1,51 @@
+{% extends "core/sidebar.html" %}
+{% load staticfiles %}
+{% block brand %}
+      <h1>
+        Dashboard
+        <small>Summary</small>
+      </h1>
+{% endblock %}
+
+{% block content %}
+<div id="main">
+  <div class="col-md-6 ">
+      <div class="box box-widget">
+          <div style="padding: 5px 5px 5px 5px" class="card text-center">
+                  <h4 class="text-center">Guilds</h4>
+                  <hr>
+                  {% if request.user.guilds_in.all %}
+                      {% for guild in request.user.guilds_in.all %}
+                      <button onclick="location.href='/{{guild.slug}}/'" style="min-width: 75%;" class="btn btn-info btn-fill"><img style="float: left; width: 25px;" src="{{guild.image}}"/> {{guild.name}}</button>
+                      <hr>
+                      {% endfor %}
+                  {% else %}
+                  You are not a member of any guilds.
+                  <hr>
+                  {% endif %}
+          </div>
+      </div>
+  </div>
+
+  <div class="col-md-6 ">
+      <div class="box box-widget">
+          <div style="padding: 5px 5px 5px 5px" class="card text-center">
+            <div class="container-fluid">
+                  <h4 class="text-center">Services</h4>
+                  <hr>
+                  {% if "modules.discord" in installed_apps %}
+                  <button onclick="location.href='{% url 'discord_index' %}'" style="min-width: 75%;" class="btn btn-{% if request.user.info.discord %}success{%else%}danger{%endif%}">Discord</button>
+                  <hr>
+                  {% endif %}
+                  {% if "modules.discourse" in installed_apps %}
+                  <button onclick="location.href='{{forum_url}}'" style="min-width: 75%;" class="btn btn-{% if request.user.info.discourse %}success{%else%}danger{%endif%}">Forum</button>
+                  <hr>
+                  {% endif %}
+                  If a service has a red background, click on it to enable it.
+                  <hr>
+              </div>
+          </div>
+      </div>
+  </div>
+
+{% endblock %}

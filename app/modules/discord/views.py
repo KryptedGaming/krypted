@@ -2,13 +2,14 @@ from django.shortcuts import render, redirect
 from django.conf import settings
 from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
 from django.contrib import messages
+from django.apps import apps
 from requests_oauthlib import OAuth2Session
 from modules.discord.models import DiscordUser
-from app.conf import discord as discord_settings
 import logging
 import base64
 import requests
 
+discord_settings = apps.get_app_config('discord')
 logger = logging.getLogger(__name__)
 
 # Create your views here.

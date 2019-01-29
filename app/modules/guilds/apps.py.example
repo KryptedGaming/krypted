@@ -1,0 +1,18 @@
+from django.apps import AppConfig, apps
+from django.db.models.signals import m2m_changed, pre_delete, post_save
+from django.conf import settings
+import logging
+
+logger = logging.getLogger(__name__)
+
+
+class GuildsConfig(AppConfig):
+    name = 'modules.guilds'
+    verbose_name = 'Guilds'
+
+    def ready(self):
+        from modules.guilds.models import Guild
+        if apps.is_installed('modules.discord'):
+            from modules.guilds.signals import user_guild_change_notify_discord, user_guild_managing_change_notify_discord
+            m2m_changed.connect(user_guild_change_notify_discord, sender=Guild.users.through)
+            m2m_changed.connect(user_guild_managing_change_notify_discord, sender=Guild.users_managing.through)

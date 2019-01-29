@@ -115,6 +115,15 @@ app/celerybeat.pid
 
 # hide conf
 app/app/conf/
+**/apps.py
+*apps.py
+
+# hide migrations
+**/migrations/**
+*migrations
+
+# hide celery
+**/celery.py
 
 # venv
 myvenv/

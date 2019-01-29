@@ -1,0 +1,204 @@
+{% extends 'core/sidebar.html' %}
+{% load staticfiles %}
+{% load core_filters %}
+
+{% block brand %}
+  <h1>
+    Events
+    <small>View events</small>
+  </h1>
+{% endblock %}
+
+{% block includes %}
+<link rel="stylesheet" href="{% static 'global/ui/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
+{% endblock %}
+{% block content %}
+
+<div class="nav-tabs-custom">
+  <ul class="nav nav-tabs">
+    <li class="active">
+      <a data-toggle="tab" href="#all_events">
+        All
+      </a>
+    </li>
+    {% for guild in request.user.guilds_in.all %}
+    <li>
+      <a data-toggle="tab" href="#guild_{{guild.pk}}">
+        {{ guild.name }}
+      </a>
+    </li>
+    {% endfor %}
+    <li class="pull-right">
+      {% if perms.core.add_event %}
+      <button class="btn btn-success" onclick="location.href='{% url 'add-event' %}'">Add Event</button>
+      {% endif %}
+    </li>
+  </ul>
+</div>
+
+<div class="tab-content box">
+    <div id="all_events" class="tab-pane fade in active box-body">
+      <table class="table">
+        <thead>
+          <th scope="col">Countdown</th>
+          <th scope="col">Date</th>
+          <th scope="col">Organizer</th>
+          <th scope="col">Name</th>
+          <th scope="col">Group</th>
+          <th scope="col">User Actions</th>
+          {% if user == event.user or perms.core.manage_events %}
+          <th scope="col">Admin Actions</th>
+          {% endif %}
+        </thead>
+        <tbody>
+          {% for event in events %}
+          {% include 'events/event_row.html' %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    {% for guild in request.user.guilds_in.all %}
+    <div id="guild_{{guild.pk}}" class="tab-pane fade in box-body">
+      <table class="table">
+        <thead>
+          <th scope="col">Countdown</th>
+          <th scope="col">Date</th>
+          <th scope="col">Organizer</th>
+          <th scope="col">Name</th>
+          <th scope="col">Guild</th>
+          <th scope="col">User Actions</th>
+          {% if user == event.user or perms.core.manage_events %}
+          <th scope="col">Admin Actions</th>
+          {% endif %}
+        </thead>
+        <tbody>
+          {% for event in events %}
+          {% if event.group in guild.groups.all %}
+          {% include 'events/event_row.html' %}
+          {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endfor %}
+
+    <div class="modal fade" id="participationModal" tabindex="-1" role="dialog" aria-labelledby="participationModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form method="get">
+              <div class="form-group">
+                <label for="password" class="col-form-label">Password:</label>
+                <input type="text" class="form-control" id="password" name="password">
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <input type="submit" class="btn btn-primary"></input>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+</div>
+<button onclick="copyStringToClipboard('{{ request.scheme }}://{{ request.META.HTTP_HOST }}{% url 'sync-events' %}?user={{request.user.pk}}&secret={{request.user.secret}}')" class="btn btn-success pull-left" data-toggle="tooltip" data-placement="top" title="Copy Calendar URL">Copy Calendar URL</button>
+<button id="unhide_button" onclick="unhideEvents()" class="btn btn-info pull-right" title="Show all events">Show hidden events</button>
+<button id="hide_button" onclick="hideEvents()" class="btn btn-default pull-right" title="Hide expired events" style="display: none;">Hide expired events</button>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(function () {
+    $('table').DataTable({
+      'paging'      : false,
+      'lengthChange': false,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : false,
+      'autoWidth'   : false,
+      'order' : [[ 1, 'asc' ]],
+      'columnDefs' : [
+        { 'orderable' : false, 'targets' : 0 }
+      ]
+    })
+ })
+  // When the dialog shows up we want to set the title and the action to user
+  // the Event's PK
+$(function () {
+  $('#participationModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget)
+    var event_pk = button.data('event-pk')
+    var modal = $(this)
+    modal.find('.modal-title').text('Enter Password')
+    modal.find('form').attr('action',`/events/edit/${event_pk}/add/participant/`)
+    console.log(modal.find('form')[0])
+  })
+  $('[data-toggle="tooltip"]').tooltip()
+})
+
+function copyStringToClipboard (str) {
+   // Create new element
+   var el = document.createElement('textarea');
+   // Set value (string to be copied)
+   el.value = str;
+   // Set non-editable to avoid focus and move outside of view
+   el.setAttribute('readonly', '');
+   el.style = {position: 'absolute', left: '-9999px'};
+   document.body.appendChild(el);
+   // Select text inside element
+   el.select();
+   // Copy text to clipboard
+   document.execCommand('copy');
+   // Remove temporary element
+   document.body.removeChild(el);
+}
+
+function unhideEvents() {
+  elements = document.getElementsByClassName("event_row")
+  for (i=0; i<elements.length; i++) {
+    elements[i].removeAttribute("hidden")
+  }
+  document.getElementById("unhide_button").style.display = "none"
+  document.getElementById("hide_button").style.display = "block"
+}
+
+function hideEvents() {
+  elements = document.getElementsByClassName("expired")
+  for (i=0; i<elements.length; i++) {
+    elements[i].setAttribute("hidden", true)
+  }
+  document.getElementById("unhide_button").style.display = "block"
+  document.getElementById("hide_button").style.display = "none"
+}
+
+setInterval(function() {
+  var countdowns = document.getElementsByClassName('countdown')
+  for(i=0; i<countdowns.length; i++) {
+    // pull date
+    var elements = countdowns[i].getElementsByTagName('*')
+    var date = new Date(elements[0].innerText)
+    var now = new Date().getTime()
+    var distance = date - now
+    // calculate times
+    sign = Math.sign(distance)
+    distance = Math.abs(distance)
+    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    // display result
+    elements[1].innerHTML = (sign < 0 ? "-" : "") + days + "d " + hours + "h "+ minutes + "m " + seconds + "s ";
+  }
+}, 1000);
+</script>
+<script src="{% static 'global/ui/bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'global/ui/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+{% endblock %}

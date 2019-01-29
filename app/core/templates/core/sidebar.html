@@ -1,0 +1,33 @@
+{% extends 'global/base.html' %}
+{% block sidebar %}
+  <!-- CORE LINKS -->
+  <li class="header">MAIN NAVIGATION</li>
+  <!-- Optionally, you can add icons to the links -->
+  <li><a href="{% url 'dashboard' %}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
+  <li><a href="{% url 'groups' %}"><i class="fa fa-users"></i> <span>Groups</span></a></li>
+  {% if "modules.engagement" in installed_apps %}
+  <li><a href="{% url 'all-events' %}"><i class="fa fa-calendar"></i> <span>Events</span></a></li>
+  {% endif %}
+  {% if "modules.guilds" in installed_apps %}
+  <li>
+    <a href="{% url 'guilds' %}"><i class="fa fa-gamepad"></i>
+      <span>{{application_verbose_names.guilds}}</span>
+    </a>
+  </li>
+  {% endif %}
+
+  <!-- MODULE LINKS -->
+  {% if "modules.eveonline" in installed_apps %}
+  <li class="header">MODULES</li>
+  <li><a href="{% url 'eve-dashboard' %}"><i class="fa fa-arrow-circle-right"></i> <span>EVE Online</span></a></li>
+  {% endif %}
+
+  <!-- ADMIN LINKS -->
+  {% if request.user.is_staff %}
+  <li class="header">ADMIN</li>
+  <!-- Optionally, you can add icons to the links -->
+  {% if "modules.guilds" in installed_apps %}
+  <li><a href="{% url 'hr-view-applications' %}"><i class="fa fa-paperclip"></i> <span>Applications</span></a></li>
+  {% endif %}
+  {% endif %}
+{% endblock %}

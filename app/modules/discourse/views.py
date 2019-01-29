@@ -2,12 +2,14 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest, HttpResponseRedirect
 from django.conf import settings
-from app.conf import discourse as discourse_settings
+from django.apps import apps
 from modules.discourse.models import DiscourseUser
 from modules.discourse.tasks import update_external_id
 from urllib import parse as urlparse
 import logging, base64, hmac, hashlib
+
 logger = logging.getLogger(__name__)
+discourse_settings = apps.get_app_config('discourse')
 
 @login_required
 def index(request):

@@ -1,10 +1,6 @@
-from core.models import User
 from django.shortcuts import redirect
 from django.contrib import messages
-from django.contrib.auth.decorators import user_passes_test
-from django.contrib.auth import REDIRECT_FIELD_NAME
-from modules.discord.models import DiscordUser
-from modules.discourse.models import DiscourseUser
+from django.apps import apps
 import logging
 
 logger = logging.getLogger(__name__)
@@ -31,10 +27,13 @@ def permission_required(permission, next='dashboard'):
     return decorator
 
 def services_required(function):
-    def wrapper(request, *args, **kw):
-        if request.user.discord and request.user.discourse:
-            return function(request, *args, **kw)
-        else:
-            messages.add_message(request, messages.WARNING, 'Please set up your services before proceeding.')
+    def wrapper(request, *args, **kwargs):
+        if apps.is_installed("modules.discord") and not request.user.info.discord:
+            messages.add_message(request, messages.WARNING, 'Please set up Discord before proceeding.')
             return redirect('dashboard')
+        if apps.is_installed("modules.discourse") and not request.user.info.discourse:
+            messages.add_message(request, messages.WARNING, 'Please set up your Forum account before proceeding.')
+            return redirect('dashboard')
+        else:
+            return function(request, *args, **kwargs)
     return wrapper

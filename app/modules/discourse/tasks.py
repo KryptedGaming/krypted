@@ -1,11 +1,12 @@
 from __future__ import absolute_import, unicode_literals
 from celery import task
+# DJANGO IMPORTS
+from django.contrib.auth.models import Group
+# LOCAL IMPORTS
 from modules.discourse.models import DiscourseGroup, DiscourseUser
 from modules.discourse.client import DiscourseClient
-from core.models import Group, User
-from django.conf import settings
-from core.exceptions import RateLimitException
-import requests, json, logging
+# MISC
+import logging
 logger = logging.getLogger(__name__)
 
 @task()

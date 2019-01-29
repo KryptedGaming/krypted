@@ -3,22 +3,40 @@ from django.contrib.staticfiles.storage import staticfiles_storage
 from django.contrib import admin
 from django.views.generic.base import RedirectView
 from django.apps import apps
+# EXTERNAL IMPORTS
+from core.decorators import login_required, services_required
+# MISC
+from decorator_include import decorator_include
 
+# CORE
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
     url(r'^', include('core.urls')),
-    url(r'^discord/', include('modules.discord.urls')),
-    url(r'^discourse/', include('modules.discourse.urls')),
+    url(r'^admin/', admin.site.urls),
     url(r'^favicon.ico$', RedirectView.as_view(url=staticfiles_storage.url('favicon.ico')), name='favicon')
 ]
 
-# GAMES
-urlpatterns += [
-    url(r'^eve/', include('games.eveonline.urls')),
-    # url(r'^rust/', RedirectView.as_view(url='/applications/add/rust/')),
-    # url(r'^dnd/', RedirectView.as_view(url='/applications/add/dnd/')),
-    # url(r'^wow/', RedirectView.as_view(url='/applications/add/wow/'))
-]
+# MODULES
+if apps.is_installed("modules.guilds"):
+    urlpatterns += [
+        url(r'^guilds/', decorator_include(services_required, 'modules.guilds.urls')),
+    ]
+if apps.is_installed("modules.discord"):
+    urlpatterns += [
+        url(r'^discord/', include('modules.discord.urls')),
+    ]
+if apps.is_installed("modules.discourse"):
+    urlpatterns += [
+        url(r'^discourse/', include('modules.discourse.urls')),
+    ]
+if apps.is_installed("modules.eveonline"):
+    urlpatterns += [
+        url(r'^eve/', decorator_include(services_required, 'modules.eveonline.urls')),
+    ]
+
+if apps.is_installed("modules.engagement"):
+    urlpatterns += [
+        url(r'^engagement/', include('modules.engagement.urls')),
+    ]
 
 # DEVELOPMENT
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns

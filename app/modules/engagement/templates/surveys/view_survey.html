@@ -1,0 +1,51 @@
+{% extends 'core/sidebar.html' %}
+{% load staticfiles %}
+{% load core_filters %}
+{% load crispy_forms_tags %}
+
+{% block brand %}
+  <h1>
+    Surveys
+    <small>View survey</small>
+  </h1>
+{% endblock %}
+
+{% block content %}
+<div class="box box-primary">
+  <div class="box-header with-border">Name</div>
+  <div class="box-body">{{survey.name}}</div>
+</div>
+<div class="box box-primary">
+  <div class="box-header with-border">Description</div>
+  <div class="box-body">{{survey.description}}</div>
+</div>
+<div class="box box-primary">
+  <div class="box-header with-border">Survey URL</div>
+  <div class="box-body">
+    <a href="{{ request.scheme }}://{{ request.META.HTTP_HOST }}{% url 'redirect-survey' survey.pk %}">{{ request.scheme }}://{{ request.META.HTTP_HOST }}{% url 'redirect-survey' survey.pk %}</a><br>
+    <a href="{{survey.url}}">{{survey.url}}</a>
+  </div>
+</div>
+<div class="box box-primary">
+  <div class="box-header with-border">Completion URL</div>
+  <div class="box-body"><a href="{{ request.scheme }}://{{ request.META.HTTP_HOST }}{% url 'complete-survey' survey.pk %}?survey_key={{survey.survey_key}}">{{ request.scheme }}://{{ request.META.HTTP_HOST }}{% url 'complete-survey' survey.pk %}?survey_key={{survey.survey_key}}</a></div>
+</div>
+<div class="box box-primary">
+  <div class="box-header with-border">Started</div>
+  <div class="box-body">
+    {% for u in survey.users_started.all %}
+    <span class="badge">{{u.username}}</span>
+    {% endfor %}
+  </div>
+</div>
+<div class="box box-primary">
+  <div class="box-header with-border">Completed</div>
+  <div class="box-body">
+    {% for u in survey.users_completed.all %}
+    <span class="badge">{{u.username}}</span>
+    {% endfor %}
+  </div>
+</div>
+
+<button onclick="location.href='{% url 'all-surveys' %}'" class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="Back"><i class="fa fa-fw fa-arrow-left"></i></button>
+{% endblock %}
