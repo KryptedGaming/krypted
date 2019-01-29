@@ -1,10 +1,11 @@
 # DJANGO IMPORTS
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, Group
+from django.contrib.auth.decorators import permission_required, login_required
 from django.apps import apps
 # LOCAL IMPORTS
 from core.models import GroupRequest
-from core.decorators import login_required, permission_required, services_required
+from core.decorators import services_required
 # EXTERNAL IMPORTS
 # from modules.discord.tasks import send_discord_message
 # MISC
@@ -18,8 +19,8 @@ def dashboard(request, **kwargs):
     context = {}
     groups = []
     # PERMISSIONS
-    context['manage'] = request.user.has_perm('core.manage_group_requests')
-    context['audit'] = request.user.has_perm('core.audit_group_requests')
+    context['manage'] = request.user.has_perm('change_grouprequest')
+    context['audit'] = request.user.has_perm('change_grouprequest')
 
     if apps.is_installed("modules.guild"):
         for group in Group.objects.filter(guilds=None):
@@ -106,7 +107,7 @@ def group_apply(request, group):
     return redirect('groups')
 
 @login_required
-@permission_required('core.manage_group_requests')
+@permission_required('change_grouprequests')
 def group_add_user(request, group_id, user_id):
     user = User.objects.get(id=user_id)
     group_request = GroupRequest.objects.get(request_user=user, response_action="Pending", request_group=Group.objects.get(id=group_id))
@@ -119,7 +120,7 @@ def group_add_user(request, group_id, user_id):
 
 @login_required
 def group_remove_user(request, group_id, user_id):
-    if request.user.has_perm('core.delete_group_request') or request.user.id == user_id:
+    if request.user.has_perm('delete_grouprequests') or request.user.id == user_id:
         user = User.objects.get(id=user_id)
         user.groups.remove(Group.objects.get(pk=group_id))
         user.save()
@@ -129,7 +130,7 @@ def group_remove_user(request, group_id, user_id):
         except Exception as e:
             logger.error(e)
         # notify_user(group_request, "REMOVED")
-        return redirect('groups')
+    return redirect('groups')
 
 # HELPERS
 # def notify_discord_channel(group_request, guild):

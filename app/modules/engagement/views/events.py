@@ -27,18 +27,18 @@ def view_event(request,pk):
     return render(request, 'events/view_event.html', context)
 
 @login_required
-@permission_required('core.add_event')
+@permission_required('add_event')
 def add_event(request):
     return EventCreate.as_view()(request)
 
 @login_required
-@permission_required('core.change_event')
+@permission_required('change_event')
 def edit_event(request,*args,**kwargs):
     event = Event.objects.get(pk=kwargs['pk'])
     return EventUpdate.as_view()(request,*args,**kwargs)
 
 @login_required
-@permission_required('core.delete_event')
+@permission_required('delete_event')
 def remove_event(request,*args,**kwargs):
     event = Event.objects.get(pk=kwargs['pk'])
     return EventDelete.as_view()(request,*args,**kwargs)

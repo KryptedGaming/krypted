@@ -14,36 +14,29 @@ from modules.eveonline.models import EveToken, EveCharacter, EveCorporation
 
 enabled = [
         # stage 1, delete discord/discourse groups after
-        # 'core.user',
-        # 'core.group',
-        # 'core.event',
-        # 'core.guild',
-        # 'core.guildapplication',
-        # 'core.guildapplicationquestion',
-        # 'core.guildapplicationresponse',
-        # 'core.guildapplicationtemplate',
+        'core.user',
+        'core.group',
+        'core.event',
+        'core.guild',
+        'core.guildapplication',
+        'core.guildapplicationquestion',
+        'core.guildapplicationresponse',
+        'core.guildapplicationtemplate',
         # stage 2
-        # 'discord.discorduser',
-        # 'discord.discordgroup',
-        # 'discourse.discourseuser',
-        # 'discourse.discoursegroup',
-        # 'eveonline.evecorporation',
-        # 'eveonline.token',
-        # 'eveonline.evecharacter'
-        # stage 3
-        'group.migration',
-        'discord.group.migration',
-        'discourse.group.migration',
-        # stage 4
-        # 'password.filler',
-        # 'guild.migration',
+        'discord.discorduser',
+        'discord.discordgroup',
+        'discourse.discourseuser',
+        'discourse.discoursegroup',
+        'eveonline.evecorporation',
+        'eveonline.token',
+        'eveonline.evecharacter'
         ]
 users = {}
 groups = {}
 tokens = {}
 
 def run():
-    with open('/home/auth/development/kryptedauth/app/db.json') as f:
+    with open('/home/auth/development/config/db.json') as f:
         data = json.load(f)
 
     for line in data:

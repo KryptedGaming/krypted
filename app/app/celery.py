@@ -11,7 +11,7 @@ app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 
 # CONFIGURATION
 app.conf.broker_url='redis://localhost:6379/0'
-app.conf.task_default_queue='kryptedauth_development'
+app.conf.task_default_queue='development'
 app.conf.accept_content=['application/json']
 app.conf.result_serializer='json'
 app.conf.task_serializer='json'
@@ -23,7 +23,8 @@ When using multiple queues and workers, be sure to redirect properly.
 e.g ('modules.discord.tasks.*', {'queue': 'discord_development'}),
 """
 app.conf.routes=([
-    # ('', {'': ''}),
+    ('modules.discord.tasks.*', {'queue': 'discord_development'}),
+    ('modules.discourse.tasks.*', {'queue': 'discourse_development'}),
 ])
 
 """

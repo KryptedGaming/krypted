@@ -166,7 +166,7 @@ def remove_user_from_discord_group(self, user_id, group_id):
             discord_user.groups.remove(discord_group)
         else:
             # FAILURE
-            logger.error("FAILURE - Removing Group [%s] from [%s]" % (discord_group.group.name, discord_user.username))
+            logger.error("FAILURE - Removing Group [%s] from [%s]: % s" % (discord_group.group.name, discord_user.username, response.json()))
     except Exception as e:
         # FATAL
         logger.error("FATAL - Error with remove_group_from_discord_user function. %s" % e)

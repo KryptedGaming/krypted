@@ -23,7 +23,7 @@ def dashboard(request):
     return render(request, 'eveonline/dashboard.html', context)
 
 @login_required
-@permission_required('eveonline.audit_eve_character')
+@permission_required('audit_eve_character')
 def view_characters(request):
     context = {}
     active_eve_users = User.objects.filter(guilds__slug="eve")
@@ -36,7 +36,7 @@ def view_characters(request):
 
 
 @login_required
-@permission_required('eveonline.audit_eve_character')
+@permission_required('audit_eve_character')
 def view_character(request, character):
     context = {}
     character = EveCharacter.objects.get(character_id=character)

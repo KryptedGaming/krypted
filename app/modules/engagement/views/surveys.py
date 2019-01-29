@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from modules.engagement.models import Survey
 
 @login_required
-@permission_required('core.view_survey')
+@permission_required('view_survey')
 def dashboard(request):
     surveys = Survey.objects.all();
     if apps.is_installed('modules.guilds'):
@@ -23,7 +23,7 @@ def dashboard(request):
     return render(request, 'surveys/surveys.html', context)
 
 @login_required
-@permission_required('core.view_survey')
+@permission_required('view_survey')
 def view_survey(request,pk):
     context = {}
     context['survey'] = Survey.objects.get(pk=pk)

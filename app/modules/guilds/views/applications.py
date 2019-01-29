@@ -14,13 +14,13 @@ import logging, datetime
 logger = logging.getLogger(__name__)
 
 @login_required
-@permission_required('guilds.manage_guild_applications')
+@permission_required('change_guildapplication')
 def dashboard(request):
     context = {'applications': GuildApplication.objects.all()}
     return render(request, 'applications/applications.html', context)
 
 @login_required
-@permission_required('guilds.manage_guild_applications')
+@permission_required('change_guildapplication')
 def view_application(request, pk):
     context = {
         'application': GuildApplication.objects.get(pk=pk),
@@ -62,7 +62,7 @@ def add_application(request, slug):
     return render(request, 'applications/application_base.html', context)
 
 @login_required
-@permission_required('guilds.manage_guild_applications')
+@permission_required('change_guildapplication')
 def approve_application(request, application):
     application = GuildApplication.objects.get(pk=application)
     messages.add_message(request, messages.SUCCESS, 'Application accepted.')
@@ -79,7 +79,7 @@ def approve_application(request, application):
     return redirect('hr-view-applications')
 
 @login_required
-@permission_required('guilds.manage_guild_applications')
+@permission_required('change_guildapplication')
 def deny_application(request, application):
     application = GuildApplication.objects.get(pk=application)
     messages.add_message(request, messages.ERROR, 'Application rejected.')
@@ -97,7 +97,7 @@ def deny_application(request, application):
     return redirect('hr-view-applications')
 
 @login_required
-@permission_required('guilds.manage_guild_applications')
+@permission_required('change_guildapplication')
 def assign_application(request, application, user):
     application = GuildApplication.objects.get(pk=application)
     application.response_user = request.user
