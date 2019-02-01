@@ -29,7 +29,7 @@
     </li>
     {% endfor %}
     <li class="pull-right">
-      {% if perms.core.add_event %}
+      {% if perms.engagement.add_event %}
       <button class="btn btn-success" onclick="location.href='{% url 'add-event' %}'">Add Event</button>
       {% endif %}
     </li>
@@ -46,7 +46,7 @@
           <th scope="col">Name</th>
           <th scope="col">Group</th>
           <th scope="col">User Actions</th>
-          {% if user == event.user or perms.core.manage_events %}
+          {% if user_has_event or perms.engagement.manage_events %}
           <th scope="col">Admin Actions</th>
           {% endif %}
         </thead>
@@ -68,7 +68,7 @@
           <th scope="col">Name</th>
           <th scope="col">Guild</th>
           <th scope="col">User Actions</th>
-          {% if user == event.user or perms.core.manage_events %}
+          {% if user_has_event or perms.engagement.manage_events %}
           <th scope="col">Admin Actions</th>
           {% endif %}
         </thead>
