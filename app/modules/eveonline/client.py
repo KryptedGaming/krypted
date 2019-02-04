@@ -4,7 +4,7 @@ from esipy import App
 import json
 
 eve_settings = apps.get_app_config('eveonline')
-ESI_APP = App.create(eve_settings.ESI_APP_URL)
+ESI_APP = eve_settings.ESI_APP
 
 class EveClient:
     def get_character(character_id):
