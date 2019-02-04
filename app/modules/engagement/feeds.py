@@ -1,6 +1,7 @@
 from django_ical.views import ICalFeed
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from modules.engagement.models import Event
+from modules.guilds.models import Guild
 
 class EventFeed(ICalFeed):
     """
@@ -16,12 +17,12 @@ class EventFeed(ICalFeed):
 
     def items(self):
         if 'secret' in self.request.GET and 'user' in self.request.GET:
-            user = User.objects.get(secret=self.request.GET['secret'], pk=self.request.GET['user'])
-            user_guilds = user.guilds_in.all()
-            user_events = Event.objects.filter(guild__in=user_guilds);
+            user = User.objects.get(info__secret=self.request.GET['secret'], pk=self.request.GET['user'])
+            user_groups = Group.objects.all().filter(user__in=[user])
+            user_events = Event.objects.filter(group__in=user_groups);
         else:
-            user_events = Event.objects.filter(guild=None)
-        return user_events.union(Event.objects.filter(guild=None)).order_by('-start_datetime')
+            user_events = Event.objects.filter(group=None)
+        return user_events.union(Event.objects.filter(group=None)).order_by('-start_datetime')
 
     def item_title(self, item):
         return item.name

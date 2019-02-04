@@ -22,7 +22,7 @@ def dashboard(request, **kwargs):
     context['manage'] = request.user.has_perm('change_grouprequest')
     context['audit'] = request.user.has_perm('change_grouprequest')
 
-    if apps.is_installed("modules.guild"):
+    if apps.is_installed("modules.guilds"):
         for group in Group.objects.filter(guilds=None):
             if group.info.type == "PUBLIC":
                 groups.append({

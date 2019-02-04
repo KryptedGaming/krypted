@@ -17,6 +17,7 @@ def dashboard(request):
     context = {
         'user'   : request.user,
         'events' : user_events,
+        'user_has_event' : request.user in [x.user for x in user_events]
     }
     return render(request, 'events/events.html', context)
 
@@ -27,18 +28,18 @@ def view_event(request,pk):
     return render(request, 'events/view_event.html', context)
 
 @login_required
-@permission_required('add_event')
+@permission_required('engagement.add_event')
 def add_event(request):
     return EventCreate.as_view()(request)
 
 @login_required
-@permission_required('change_event')
+@permission_required('engagement.change_event')
 def edit_event(request,*args,**kwargs):
     event = Event.objects.get(pk=kwargs['pk'])
     return EventUpdate.as_view()(request,*args,**kwargs)
 
 @login_required
-@permission_required('delete_event')
+@permission_required('engagement.delete_event')
 def remove_event(request,*args,**kwargs):
     event = Event.objects.get(pk=kwargs['pk'])
     return EventDelete.as_view()(request,*args,**kwargs)
