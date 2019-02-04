@@ -33,6 +33,17 @@
   <!-- Google Font -->
   <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+  {% if GOOGLE_ANALYTICS_CODE %}
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id={{GOOGLE_ANALYTICS_CODE}}"></script>
+  <script>
+  window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+        gtag('config', '{{GOOGLE_ANALYTICS_CODE}}');
+  </script>
+  {% endif %}
   {% block includes %}
   {% endblock %}
 </head>

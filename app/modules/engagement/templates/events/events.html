@@ -29,7 +29,7 @@
     </li>
     {% endfor %}
     <li class="pull-right">
-      {% if perms.core.add_event %}
+      {% if perms.engagement.add_event %}
       <button class="btn btn-success" onclick="location.href='{% url 'add-event' %}'">Add Event</button>
       {% endif %}
     </li>
@@ -46,7 +46,7 @@
           <th scope="col">Name</th>
           <th scope="col">Group</th>
           <th scope="col">User Actions</th>
-          {% if user == event.user or perms.core.manage_events %}
+          {% if user_has_event or perms.engagement.manage_events %}
           <th scope="col">Admin Actions</th>
           {% endif %}
         </thead>
@@ -68,7 +68,7 @@
           <th scope="col">Name</th>
           <th scope="col">Guild</th>
           <th scope="col">User Actions</th>
-          {% if user == event.user or perms.core.manage_events %}
+          {% if user_has_event or perms.engagement.manage_events %}
           <th scope="col">Admin Actions</th>
           {% endif %}
         </thead>
@@ -109,7 +109,7 @@
     </div>
 
 </div>
-<button onclick="copyStringToClipboard('{{ request.scheme }}://{{ request.META.HTTP_HOST }}{% url 'sync-events' %}?user={{request.user.pk}}&secret={{request.user.secret}}')" class="btn btn-success pull-left" data-toggle="tooltip" data-placement="top" title="Copy Calendar URL">Copy Calendar URL</button>
+<button onclick="copyStringToClipboard('{{ request.scheme }}://{{ request.META.HTTP_HOST }}{% url 'sync-events' %}?user={{request.user.pk}}&secret={{request.user.info.secret}}')" class="btn btn-success pull-left" data-toggle="tooltip" data-placement="top" title="Copy Calendar URL">Copy Calendar URL</button>
 <button id="unhide_button" onclick="unhideEvents()" class="btn btn-info pull-right" title="Show all events">Show hidden events</button>
 <button id="hide_button" onclick="hideEvents()" class="btn btn-default pull-right" title="Hide expired events" style="display: none;">Hide expired events</button>
 {% endblock %}

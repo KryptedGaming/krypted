@@ -95,7 +95,8 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'core.context_processors.installed_apps',
                 'core.context_processors.social_media_objects',
-                'core.context_processors.get_application_verbose_names'
+                'core.context_processors.get_application_verbose_names',
+                'core.context_processors.get_google_analytics_code',
             ],
         },
     },

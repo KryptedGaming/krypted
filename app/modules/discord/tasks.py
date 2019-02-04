@@ -33,7 +33,9 @@ def update_discord_user(user_id):
     # pull objects from database
     user = User.objects.get(pk=user_id)
     # break if not discord
-    if not user.discord_user:
+    try:
+        discord_user = user.discord_user
+    except DiscordUser.DoesNotExist:
         return None
     # call client
     response = DiscordClient.get_discord_user(user.discord_user.external_id)

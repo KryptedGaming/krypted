@@ -2,6 +2,8 @@ from django.conf import settings
 from django.apps import apps
 from core.models import SocialMedia
 
+core_settings = apps.get_app_config('core')
+
 def installed_apps(request):
     return {
        'installed_apps' : settings.INSTALLED_APPS
@@ -18,4 +20,9 @@ def get_application_verbose_names(request):
         applications['guilds'] = apps.get_app_config('guilds').verbose_name
     return {
         'application_verbose_names': applications
+    }
+
+def get_google_analytics_code(request):
+    return {
+        'GOOGLE_ANALYTICS_CODE': core_settings.GOOGLE_ANALYTICS_CODE
     }

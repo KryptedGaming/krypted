@@ -89,15 +89,15 @@ def add_user_to_discourse_group(self, user_id, group_id):
     # handle response
     try:
         if response.status_code == 429:
-            logger.warning("RATELIMIT - Adding Group [%s] to User [%s]" % (group_id, user_id))
+            logger.warning("Rate limit adding Discourse group [%s] to user [%s]" % (discourse_group, discourse_user))
             self.apply_async(args=[user_id, group_id], countdown=60)
         elif response.status_code == 200:
-            logger.info("SUCCESS - Adding Group [%s] to User [%s]" % (group_id, user_id))
+            logger.info("Success adding Discourse group [%s] to user [%s]" % (discourse_group, discourse_user))
             discourse_user.groups.add(discourse_group)
         else:
             if "already a member" in response.json()['errors']:
                 pass
-            logger.error("FAILURE - Adding Group [%s] to User [%s]" % (group_id, user_id))
+            logger.error("Error adding Discourse group [%s] to user [%s]" % (discourse_group, discourse_user, response.json()))
     except Exception as e:
         logger.error("FATAL - Error with add_user_to_discourse_group function. %s" % e)
 
@@ -115,12 +115,12 @@ def remove_user_from_discourse_group(self, user_id, group_id):
     # handle response
     try:
         if response.status_code == 429:
-            logger.warning("RATELIMIT - Removing Group [%s] from User [%s]" % (group_id, user_id))
+            logger.warning("Rate limit removing Discourse group [%s] from user [%s]" % (discourse_group, discourse_user))
             self.apply_async(args=[user_id, group_id], countdown=60)
         elif response.status_code == 200:
-            logger.info("SUCCESS - Removing Group [%s] from User [%s]" % (group_id, user_id))
+            logger.info("Success removing Discourse group [%s] from user [%s]" % (discourse_group, discourse_user))
             discourse_user.groups.remove(discourse_group)
         else:
-            logger.error("FAILURE - Removing Group [%s] from User [%s]" % (group_id, user_id))
+            logger.error("Failure removing Discourse group [%s] from user [%s]" % (discourse_group, discourse_user))
     except Exception as e:
         logger.error("FATAL - Error with remove_user_from_discourse_group function. %s" % e)
