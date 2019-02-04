@@ -3,6 +3,8 @@ from django.db.models.signals import m2m_changed, pre_delete, post_save
 
 class CoreConfig(AppConfig):
     name = 'core'
+
+    GOOGLE_ANALYTICS_CODE = ''
     
     REGIONS = (
         ("NA", "North America"),
