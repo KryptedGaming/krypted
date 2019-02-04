@@ -14,7 +14,7 @@ These tasks are periodically ran.
 def clear_inactive_users():
     for user in User.objects.all():
         if not user.info.discord or not user.info.discourse:
-            clear_inactive_user.apply_async(args=[user.id], countdown=call_counter*2)
+            clear_inactive_user.apply_async(args=[user.id])
 
 @task()
 def clear_inactive_user(user_id):
