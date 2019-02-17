@@ -2,6 +2,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import permission_required, login_required
+from django.contrib import messages
 from django.apps import apps
 # LOCAL IMPORTS
 from core.models import GroupRequest
@@ -96,14 +97,26 @@ def dashboard(request, **kwargs):
 def group_apply(request, group):
     group = Group.objects.get(id=group)
     group_request = GroupRequest(request_user=request.user, response_action="Pending", request_group=group)
+    allowed = False
     if group.info.type == "PUBLIC":
         group_request.response_action = "Accepted"
         request.user.groups.add(group)
         request.user.save()
-    group_request.save()
-    if not group_request.request_group.info.type == "PUBLIC":
-        pass
+        allowed = True
+    elif apps.is_installed("modules.guilds"):
+        allowed = False
+        # Need to check if the user is allowed to apply
+        for guild in request.user.guilds_in.all():
+            if group in guild.groups.all():
+                allowed = True
+                break
+
+    if allowed:
+        group_request.save()
         # notify_discord_channel(group_request, group_request.request_group.guild)
+    else:
+        messages.add_message(request, messages.ERROR, "You are not allowed to apply to group '%s'." % group.name)
+
     return redirect('groups')
 
 @login_required
@@ -120,8 +133,8 @@ def group_add_user(request, group_id, user_id):
 
 @login_required
 def group_remove_user(request, group_id, user_id):
-    if request.user.has_perm('delete_grouprequests') or request.user.id == user_id:
-        user = User.objects.get(id=user_id)
+    user = User.objects.get(id=user_id)
+    if request.user.has_perm('delete_grouprequests') or request.user == user:
         user.groups.remove(Group.objects.get(pk=group_id))
         user.save()
         try:
