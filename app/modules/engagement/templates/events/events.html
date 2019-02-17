@@ -130,18 +130,40 @@ $(function () {
       ]
     })
  })
+
+  var tz_guess;
+  $(document).ready(function () {
+    tz_guess = moment.tz.guess();
+  }
+  function dateTimeInfo(element)
+  {
+    var elmt = document.createElement("I");
+    var isoTime = moment.utc(element.innerText);
+    var localTime = `${isoTime.tz(tz_guess).format('ddd, LL')}<br>${isoTime.tz(tz_guess).format('LT z')}`;
+    elmt.setAttribute('style','color: #0099FF');
+    elmt.setAttribute('data-toggle','tooltip');
+    elmt.setAttribute('class','fa fa-clock-o');
+    elmt.setAttribute('data-placement','top');
+    elmt.setAttribute('title',localTime);
+    element.innerText = isoTime.utc().format('MMM DD, HH:mm') + " UTC ";
+    $(element).after(elmt);
+  }
+
   // When the dialog shows up we want to set the title and the action to user
   // the Event's PK
-$(function () {
+  tz_guess = moment.tz.guess();
   $('#participationModal').on('show.bs.modal', function (event) {
-    var button = $(event.relatedTarget)
-    var event_pk = button.data('event-pk')
-    var modal = $(this)
-    modal.find('.modal-title').text('Enter Password')
-    modal.find('form').attr('action',`/events/edit/${event_pk}/add/participant/`)
-    console.log(modal.find('form')[0])
-  })
-  $('[data-toggle="tooltip"]').tooltip()
+    var button = $(event.relatedTarget);
+    var event_pk = button.data('event-pk');
+    var modal = $(this);
+    modal.find('.modal-title').text('Enter Password');
+    modal.find('form').attr('action',`/events/edit/${event_pk}/add/participant/`);
+    console.log(modal.find('form')[0]);
+  });
+  $('span.datetime').each( function(i,v) {
+      dateTimeInfo(v);
+  });
+  $('[data-toggle="tooltip"]').tooltip({html: true});
 })
 
 function copyStringToClipboard (str) {
@@ -201,4 +223,6 @@ setInterval(function() {
 </script>
 <script src="{% static 'global/ui/bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'global/ui/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+<script src="{% static 'global/ui/bower_components/moment/moment.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.23/moment-timezone-with-data.min.js"></script>
 {% endblock %}
