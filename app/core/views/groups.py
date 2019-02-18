@@ -97,21 +97,24 @@ def dashboard(request, **kwargs):
 def group_apply(request, group):
     group = Group.objects.get(id=group)
     group_request = GroupRequest(request_user=request.user, response_action="Pending", request_group=group)
+
+    # Is this user allowed to apply? 
+    # - If guilds is enabled verify that the group and user are both part of a common guild OR the group is not part of a guild.
+    # - If guilds is not enabled then any PUBLIC or PROTECTED group is fair game
     allowed = False
-    if group.info.type == "PUBLIC":
-        group_request.response_action = "Accepted"
-        request.user.groups.add(group)
-        request.user.save()
-        allowed = True
-    elif apps.is_installed("modules.guilds"):
-        allowed = False
-        # Need to check if the user is allowed to apply
-        for guild in request.user.guilds_in.all():
-            if group in guild.groups.all():
+    if group.info.type in ['PUBLIC','PROTECTED']:
+        if apps.is_installed("modules.guilds"):
+            group_guilds = group.guilds.all()
+            if not group_guilds or (request.user.guilds_in.all() & group_guilds):
                 allowed = True
-                break
+        else:
+            allowed = True
 
     if allowed:
+        if group.info.type == "PUBLIC":
+            group_request.response_action = "Accepted"
+            request.user.groups.add(group)
+            request.user.save()
         group_request.save()
         # notify_discord_channel(group_request, group_request.request_group.guild)
     else:
