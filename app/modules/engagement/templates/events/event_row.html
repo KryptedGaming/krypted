@@ -5,7 +5,11 @@
       <p class="counter"></p>
     </div>
   </td>
-  <td data-order="{{ event.start_datetime.isoformat }}">{{event.start_datetime |date:"M d, H:i e" }}</td>
+  <td data-order="{{ event.start_datetime.isoformat }}">
+    <p>
+    <span class="datetime">{{event.start_datetime.isoformat}}</span>
+    </p>
+  </td>
   <td>@{{event.user.discord_user.username}}</td>
   <td>{{event.name}}</td>
   <td>{{event.group}}</td>

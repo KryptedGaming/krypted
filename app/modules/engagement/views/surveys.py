@@ -12,13 +12,10 @@ from modules.engagement.models import Survey
 @permission_required('engagement.view_survey')
 def dashboard(request):
     surveys = Survey.objects.all();
-    if apps.is_installed('modules.guilds'):
-        guilds = set([survey.guild for survey in surveys if survey is not None])
-    else:
-        guilds = []
+    groups = set([survey.group for survey in surveys if survey is not None])
     context = {
         'surveys' : surveys,
-        'guilds' : guilds
+        'groups' : groups
     }
     return render(request, 'surveys/surveys.html', context)
 
