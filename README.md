@@ -11,4 +11,7 @@ Over the years of playing video games, Krypted Gaming has used many tools to int
 
 ![Dashboard](https://github.com/porowns/krypted-auth/blob/master/screenshots/dashboard.png)
 
+![Groups](https://github.com/porowns/krypted-auth/blob/master/screenshots/groups.png)
+
 ![EVE Online Integration](https://github.com/porowns/krypted-auth/blob/master/screenshots/game_integration.png)
+
