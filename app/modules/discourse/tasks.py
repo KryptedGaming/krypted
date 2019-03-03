@@ -11,7 +11,11 @@ logger = logging.getLogger(__name__)
 
 @task()
 def sync_discourse_user(user_id):
-    pass
+    user = User.objects.get(pk=user_id)
+    discourse_user = DiscourseUser.objects.get(user=user)
+    for discourse_group in discourse_user.groups.all():
+        if discourse_group.group not in user.groups.all():
+            remove_user_from_discourse_group.apply_async(args=[user_id, discourse_group.group.pk])
 
 @task(bind=True, rate_limit="60/m")
 def update_external_id(self, user_id):
