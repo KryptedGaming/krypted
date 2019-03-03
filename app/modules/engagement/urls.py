@@ -7,7 +7,7 @@ urlpatterns = []
 
 # EVENTS
 urlpatterns += [
-    url(r'^events/view/all/$', events.dashboard, name='all-events'),
+    url(r'^events/$', events.dashboard, name='events'),
     url(r'^events/view/(?P<pk>\d+)/$', events.view_event, name='view-event'),
     url(r'^events/add/$', events.add_event, name='add-event'),
     url(r'^events/edit/(?P<pk>\d+)/$', events.edit_event, name='edit-event'),
@@ -20,7 +20,7 @@ urlpatterns += [
 
 ## SURVEYS
 urlpatterns += [
-    url(r'^surveys/view/all/$', surveys.dashboard, name='all-surveys'),
+    url(r'^surveys/$', surveys.dashboard, name='surveys'),
     url(r'^surveys/view/(?P<pk>\d+)/$', surveys.view_survey, name='view-survey'),
     url(r'^surveys/redirect/(?P<pk>\d+)/$', surveys.redirect_to_survey, name='redirect-survey'),
     url(r'^surveys/complete/(?P<pk>\d+)/$', surveys.complete_survey, name='complete-survey'),

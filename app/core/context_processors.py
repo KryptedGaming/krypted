@@ -31,3 +31,17 @@ def get_site_logo(request):
     return {
         'SITE_LOGO': core_settings.SITE_LOGO
     }
+
+def get_breadcrumbs(request):
+    from django.urls import reverse, NoReverseMatch
+    identifiers = request.get_full_path().split("/")
+    breadcrumbs = []
+    for identifier in identifiers:
+        try:
+            reverse(identifier)
+            breadcrumbs.append(identifier)
+        except NoReverseMatch:
+            pass
+    return {
+        'breadcrumbs': breadcrumbs
+    }
