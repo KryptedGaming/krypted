@@ -26,3 +26,8 @@ def get_google_analytics_code(request):
     return {
         'GOOGLE_ANALYTICS_CODE': core_settings.GOOGLE_ANALYTICS_CODE
     }
+
+def get_site_logo(request):
+    return {
+        'SITE_LOGO': core_settings.SITE_LOGO
+    }

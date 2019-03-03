@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.apps import apps
 # LOCAL IMPORTS
 from modules.guilds.models import *
+from modules.guilds.tasks import remove_user_from_guild
 # EXTERNAL IMPORTS
 # MISC
 import logging, datetime
@@ -92,7 +93,7 @@ def deny_application(request, application):
             discord_notify_user(user=application.request_user, slug=application.template.guild.slug, type="rejected")
     if apps.is_installed('modules.guilds'):
         if request.user in application.template.guild.users.all():
-            application.template.guild.users.remove(application.request_user)
+            remove_user_from_guild.apply_async(args=[application.request_user.pk, application.template.guild.pk])
     application.save()
     return redirect('hr-view-applications')
 
