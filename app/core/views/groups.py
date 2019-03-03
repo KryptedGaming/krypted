@@ -2,6 +2,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import permission_required, login_required
+from django.contrib import messages
 from django.apps import apps
 # LOCAL IMPORTS
 from core.models import GroupRequest
@@ -96,14 +97,29 @@ def dashboard(request, **kwargs):
 def group_apply(request, group):
     group = Group.objects.get(id=group)
     group_request = GroupRequest(request_user=request.user, response_action="Pending", request_group=group)
-    if group.info.type == "PUBLIC":
-        group_request.response_action = "Accepted"
-        request.user.groups.add(group)
-        request.user.save()
-    group_request.save()
-    if not group_request.request_group.info.type == "PUBLIC":
-        pass
+
+    # Is this user allowed to apply? 
+    # - If guilds is enabled verify that the group and user are both part of a common guild OR the group is not part of a guild.
+    # - If guilds is not enabled then any PUBLIC or PROTECTED group is fair game
+    allowed = False
+    if group.info.type in ['PUBLIC','PROTECTED']:
+        if apps.is_installed("modules.guilds"):
+            group_guilds = group.guilds.all()
+            if not group_guilds or (request.user.guilds_in.all() & group_guilds):
+                allowed = True
+        else:
+            allowed = True
+
+    if allowed:
+        if group.info.type == "PUBLIC":
+            group_request.response_action = "Accepted"
+            request.user.groups.add(group)
+            request.user.save()
+        group_request.save()
         # notify_discord_channel(group_request, group_request.request_group.guild)
+    else:
+        messages.add_message(request, messages.ERROR, "You are not allowed to apply to group '%s'." % group.name)
+
     return redirect('groups')
 
 @login_required
@@ -120,8 +136,8 @@ def group_add_user(request, group_id, user_id):
 
 @login_required
 def group_remove_user(request, group_id, user_id):
-    if request.user.has_perm('delete_grouprequests') or request.user.id == user_id:
-        user = User.objects.get(id=user_id)
+    user = User.objects.get(id=user_id)
+    if request.user.has_perm('delete_grouprequests') or request.user == user:
         user.groups.remove(Group.objects.get(pk=group_id))
         user.save()
         try:

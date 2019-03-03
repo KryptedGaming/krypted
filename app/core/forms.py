@@ -65,6 +65,8 @@ class RegisterForm(forms.Form):
             self.add_error('username', "Username is taken.")
         elif User.objects.filter(email=input.get('email')).exists():
             self.add_error('username', "Email is already in use.")
+        elif len(input.get('username')) < 3:
+            self.add_error('username', "Usernames need to be over 3 characters, sorry DJ!")
         elif " " in input.get('username'):
             self.add_error('username', "Usernames cannot contain spaces")
         elif "@" in input.get('username'):

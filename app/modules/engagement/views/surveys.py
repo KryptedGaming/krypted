@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.apps import apps
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.models import User, Group
 # EXTERNAL IMPORTS
 from modules.engagement.models import Survey
 
@@ -12,13 +13,10 @@ from modules.engagement.models import Survey
 @permission_required('engagement.view_survey')
 def dashboard(request):
     surveys = Survey.objects.all();
-    if apps.is_installed('modules.guilds'):
-        guilds = set([survey.guild for survey in surveys if survey is not None])
-    else:
-        guilds = []
+    groups = set([survey.group for survey in surveys if survey is not None])
     context = {
         'surveys' : surveys,
-        'guilds' : guilds
+        'groups' : groups
     }
     return render(request, 'surveys/surveys.html', context)
 
@@ -26,7 +24,11 @@ def dashboard(request):
 @permission_required('engagement.view_survey')
 def view_survey(request,pk):
     context = {}
-    context['survey'] = Survey.objects.get(pk=pk)
+    s = Survey.objects.get(pk=pk)
+    group_users = User.objects.filter(groups=s.group)
+    context['survey'] = s
+    context['survey_users_missing'] = group_users.difference(s.users_completed.all())
+    context['total_users'] = len(group_users)
     return render(request, 'surveys/view_survey.html', context)
 
 @login_required
