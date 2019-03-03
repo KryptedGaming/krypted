@@ -1,5 +1,5 @@
 from django.apps import AppConfig, apps
-from django.db.models.signals import m2m_changed, pre_delete, post_save
+from django.db.models.signals import m2m_changed, pre_delete, post_save, post_migrate
 
 class CoreConfig(AppConfig):
     name = 'core'
