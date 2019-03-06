@@ -37,7 +37,6 @@ def callback(request):
 
     json = r.json()
     token = json['access_token']
-    print(json)
     me = requests.get('https://discordapp.com/api/users/@me', headers={'Authorization': "Bearer " + token}).json()
     join = requests.post(discord_settings.DISCORD_INVITE_LINK, headers={'Authorization': "Bearer " + token}).json()
     # Catch errors
