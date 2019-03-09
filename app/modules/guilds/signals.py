@@ -97,3 +97,17 @@ def user_guild_managing_change_notify_discord(sender, **kwargs):
                 'user': user.id
             }
             )
+
+@receiver(m2m_changed, sender=Guild.users.through)
+def user_guild_change_remove_groups(sender, **kwargs):
+    guild = kwargs.get('instance')
+    action = str(kwargs.get('action'))
+    user_ids = []
+    for pk in kwargs.get('pk_set'):
+        user_ids.append(pk)
+    if action == "post_remove":
+        for user_id in user_ids:
+            user = User.objects.get(pk=user_id)
+            for group in guild.groups.all():
+                if group in user.groups.all():
+                    user.groups.remove(group)

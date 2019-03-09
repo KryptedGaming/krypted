@@ -9,6 +9,7 @@ from django.apps import apps
 from modules.eveonline.models import EveToken, EveCharacter
 # EXTERNAL IMPORTS
 from operator import itemgetter
+from esipy import EsiApp, App
 import logging, time
 
 eve_settings = apps.get_app_config('eveonline')
@@ -115,6 +116,7 @@ Helper Functions
 Used for the above web calls
 """
 def get_character_data(request, token):
+    ESI_APP = EsiApp().get_latest_swagger
     eve_character = EveCharacter.objects.get(token=token)
     logger.info("Starting EVE Online Audit for Character: %s" % eve_character.character_name)
     start = time.time()
@@ -131,7 +133,7 @@ def get_character_data(request, token):
     data = {}
     data['character_id'] = eve_character.character_id
     for scope in name_scopes:
-        op = eve_settings.ESI_APP.op[name_scopes[scope]](character_id=eve_character.character_id)
+        op = ESI_APP.op[name_scopes[scope]](character_id=eve_character.character_id)
         response = eve_settings.ESI_CLIENT.request(op)
         if response.status == 200:
             data[scope] = response.data
@@ -169,13 +171,14 @@ def get_character_data(request, token):
 def clean_character_journal(data):
     query = []
     journal = data['journal']
+    ESI_APP = EsiApp().get_latest_swagger
     if journal:
         for entry in journal:
             if 'first_party_id' in entry:
                 query.append(entry.first_party_id)
             if 'second_party_id' in entry:
                 query.append(entry.second_party_id)
-        op = eve_settings.ESI_APP.op['post_universe_names'](ids=query)
+        op = ESI_APP.op['post_universe_names'](ids=query)
         response = eve_settings.ESI_CLIENT.request(op)
         if response.status == 200:
             counter1 = 0
@@ -195,6 +198,7 @@ def clean_character_journal(data):
     return data
 
 def clean_mail_results(data):
+    ESI_APP = EsiApp().get_latest_swagger
     # Clean up mail player ids
     character_ids = set()
     for mail in data['mails']:
@@ -205,7 +209,7 @@ def clean_mail_results(data):
                 character_ids.add(recipient['recipient_id'])
     character_ids = list(character_ids)
 
-    op = eve_settings.ESI_APP.op['post_universe_names'](ids=character_ids)
+    op = ESI_APP.op['post_universe_names'](ids=character_ids)
     character_ids = eve_settings.ESI_CLIENT.request(op).data
     for character in character_ids:
         for mail in data['mails']:
@@ -232,7 +236,7 @@ def clean_mail_results(data):
                 recipient['recipient_url'] = ""
     # Add mail data
     for mail in data['mails']:
-        op = eve_settings.ESI_APP.op['get_characters_character_id_mail_mail_id'](character_id=data['character_id'], mail_id=mail['mail_id'])
+        op = ESI_APP.op['get_characters_character_id_mail_mail_id'](character_id=data['character_id'], mail_id=mail['mail_id'])
         mail_body = eve_settings.ESI_CLIENT.request(op).data
         if 'body' in mail_body:
             mail['body'] = mail_body['body']
@@ -242,9 +246,10 @@ def clean_mail_results(data):
 
 def clean_contacts(data):
     character_ids = []
+    ESI_APP = EsiApp().get_latest_swagger
     for contact in data['contacts']:
         character_ids.append(contact['contact_id'])
-    op = eve_settings.ESI_APP.op['post_universe_names'](ids=character_ids)
+    op = ESI_APP.op['post_universe_names'](ids=character_ids)
     character_ids = eve_settings.ESI_CLIENT.request(op).data
     for character in character_ids:
         for contact in data['contacts']:
@@ -263,12 +268,13 @@ def clean_contacts(data):
 
 def clean_contracts(data):
     character_ids = []
+    ESI_APP = EsiApp().get_latest_swagger
     for contract in data['contracts']:
         if contract['issuer_id'] != 0:
             character_ids.append(contract['issuer_id'])
         if contract['acceptor_id'] != 0:
             character_ids.append(contract['acceptor_id'])
-    op = eve_settings.ESI_APP.op['post_universe_names'](ids=character_ids)
+    op = ESI_APP.op['post_universe_names'](ids=character_ids)
     character_ids = eve_settings.ESI_CLIENT.request(op).data
     for character in character_ids:
         for contract in data['contracts']:
