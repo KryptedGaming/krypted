@@ -4,15 +4,35 @@
   <li class="header">MAIN NAVIGATION</li>
   <!-- Optionally, you can add icons to the links -->
   <li><a href="{% url 'dashboard' %}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
-  <li><a href="{% url 'groups' %}"><i class="fa fa-users"></i> <span>Groups</span></a></li>
-  {% if "modules.engagement" in installed_apps %}
-  <li><a href="{% url 'all-events' %}"><i class="fa fa-calendar"></i> <span>Events</span></a></li>
-  {% endif %}
-  {% if "modules.guilds" in installed_apps %}
-  <li>
-    <a href="{% url 'guilds' %}"><i class="fa fa-gamepad"></i>
-      <span>{{application_verbose_names.guilds}}</span>
+  <li class="treeview">
+    <a href="#"><i class="fa fa-users"></i> <span>Community</span>
+      <span class="pull-right-container">
+          <i class="fa fa-angle-left pull-right"></i>
+        </span>
     </a>
+    <ul class="treeview-menu">
+      <li><a href="{% url 'groups' %}"><i class="fa fa-feed"></i> <span>Groups</span></a></li>
+      {% if "modules.guilds" in installed_apps %}
+      <li>
+        <a href="{% url 'guilds' %}"><i class="fa fa-gamepad"></i>
+          <span>{{application_verbose_names.guilds}}</span>
+        </a>
+      </li>
+      {% endif %}
+    </ul>
+  </li>
+
+  {% if "modules.engagement" in installed_apps %}
+  <li class="treeview">
+    <a href="#"><i class="fa fa-list-ul"></i> <span>Activities</span>
+      <span class="pull-right-container">
+          <i class="fa fa-angle-left pull-right"></i>
+        </span>
+    </a>
+    <ul class="treeview-menu">
+      <li><a href="{% url 'events' %}"><i class="fa fa-calendar"></i> <span>Events</span></a></li>
+      <li><a href="{% url 'surveys' %}"><i class="fa fa-pencil"></i> <span>Surveys</span></a></li>
+    </ul>
   </li>
   {% endif %}
 
@@ -21,13 +41,27 @@
   <li class="header">MODULES</li>
   <li><a href="{% url 'eve-dashboard' %}"><i class="fa fa-arrow-circle-right"></i> <span>EVE Online</span></a></li>
   {% endif %}
-
-  <!-- ADMIN LINKS -->
-  {% if request.user.is_staff %}
-  <li class="header">ADMIN</li>
-  <!-- Optionally, you can add icons to the links -->
   {% if "modules.guilds" in installed_apps %}
+  {% if perms.guilds.manage_guild_applications %}
   <li><a href="{% url 'hr-view-applications' %}"><i class="fa fa-paperclip"></i> <span>Applications</span></a></li>
   {% endif %}
   {% endif %}
+
+  <!-- ACTIONS -->
+  <li class="header">ACTIONS</li>
+  {% if "modules.guilds" in installed_apps %}
+      <li><a href="{% url 'guilds' %}"><i class="fa fa-pencil"></i> <span>Create Application</span></a></li>
+  {% endif %}
+
+  <li><a href="{% url 'groups' %}"><i class="fa fa-tag"></i> <span>Join a Group</span></a></li>
+
+  {% if perms.change_guild %}
+  <li>
+    <a href="{% url 'guild-users' %}"><i class="fa fa-users"></i>
+      <span>Manage Guild Members</span>
+    </a>
+  </li>
+  {% endif %}
+
+  
 {% endblock %}

@@ -126,10 +126,14 @@
     <section class="content-header">
       {% block brand %}
       {% endblock %}
+      {% if breadcrumbs %}
       <ol class="breadcrumb">
-        <li><a href="#"></i>Not</a></li>
-        <li class="active">Implemented</li>
+        <li><a href="{% url 'dashboard' %}"></i>Home</a></li>
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{% url breadcrumb %}"></i>{{breadcrumb | title}}</a></li>
+        {% endfor %}
       </ol>
+      {% endif %}
     </section>
 
     <!-- Main content -->

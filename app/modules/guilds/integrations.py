@@ -58,6 +58,10 @@ def discord_notify_recruitment_channel(user, slug, type):
         logger.warning("Please specify a HR discord channel for application user notifications.")
         return
     if type == "submit":
+        guild = Guild.objects.get(slug=slug)
+        if (guild.default_group == None):
+            logger.warning("Guild '%s' is improperly set up: set a default guild group." % guild)
+            return
         send_discord_channel_message(
         discord_channel.name,
         "%s has submitted an %s application. Please add a :white_check_mark: if you intend on handling it." % (user.discord_user, Guild.objects.get(slug=slug).name),

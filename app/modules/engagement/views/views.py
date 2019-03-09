@@ -21,7 +21,7 @@ class EventCreate(CreateView):
     template_name='events/add_event.html'
     model = Event
     fields = ['name','group','description','start_datetime', 'end_datetime'];
-    success_url = reverse_lazy('all-events')
+    success_url = reverse_lazy('events')
 
     def form_valid(self,form):
         # The user that creates the Event is the owner
@@ -34,7 +34,7 @@ class EventCreate(CreateView):
         form = super(EventCreate, self).get_form(form_class)
         form.helper = FormHelper()
         form.helper.form_method = 'POST'
-        onclick = "location.href='%s'" % reverse_lazy('all-events')
+        onclick = "location.href='%s'" % reverse_lazy('events')
         form.helper.layout = Layout(
             *[BoxedField(f) for f in self.fields],
             FormActions(
@@ -49,12 +49,12 @@ class EventUpdate(UpdateView):
     model = Event
     fields = ['name', 'group', 'description', 'start_datetime', 'end_datetime']
     template_name = "events/edit_event.html"
-    success_url = reverse_lazy('all-events')
+    success_url = reverse_lazy('events')
     def get_form(self, form_class=None):
         form = super(EventUpdate, self).get_form(form_class)
         form.helper = FormHelper()
         form.helper.form_method = 'POST'
-        onclick = "location.href='%s'" % reverse_lazy('all-events')
+        onclick = "location.href='%s'" % reverse_lazy('events')
         form.helper.layout = Layout(
             *[BoxedField(f) for f in self.fields],
             FormActions(
@@ -67,5 +67,5 @@ class EventUpdate(UpdateView):
 
 class EventDelete(DeleteView):
     model = Event
-    success_url = reverse_lazy('all-events')
+    success_url = reverse_lazy('events')
     template_name = "events/delete_event.html"

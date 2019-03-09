@@ -49,14 +49,14 @@ def add_event_registrant(request, event_pk):
     event = Event.objects.get(pk=event_pk)
     event.registrants.add(request.user)
     messages.add_message(request, messages.SUCCESS, "Your registration for event '%s' has been recorded" % event.name)
-    return redirect('all-events')
+    return redirect('events')
 
 @login_required
 def remove_event_registrant(request, event_pk):
     event = Event.objects.get(pk=event_pk)
     event.registrants.remove(request.user)
     messages.add_message(request, messages.ERROR, "Your unregristration for event '%s' has been recorded" % event.name)
-    return redirect('all-events')
+    return redirect('events')
 
 @login_required
 def add_event_participant(request, event_pk):
@@ -71,6 +71,6 @@ def add_event_participant(request, event_pk):
         if event_password == event.password:
             event.participants.add(request.user)
             messages.add_message(request, messages.SUCCESS, "Participation registered for '%s'" % event.name)
-            return redirect('all-events')
+            return redirect('events')
     messages.add_message(request, messages.ERROR, "Incorrect password for '%s'" % event.name)
-    return redirect('all-events')
+    return redirect('events')
