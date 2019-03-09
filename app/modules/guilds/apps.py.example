@@ -13,6 +13,7 @@ class GuildsConfig(AppConfig):
     def ready(self):
         from modules.guilds.models import Guild
         if apps.is_installed('modules.discord'):
-            from modules.guilds.signals import user_guild_change_notify_discord, user_guild_managing_change_notify_discord
+            from modules.guilds.signals import user_guild_change_notify_discord, user_guild_managing_change_notify_discord, user_guild_change_remove_groups
             m2m_changed.connect(user_guild_change_notify_discord, sender=Guild.users.through)
             m2m_changed.connect(user_guild_managing_change_notify_discord, sender=Guild.users_managing.through)
+        m2m_changed.connect(user_guild_change_remove_groups, sender=Guild.users.through)
