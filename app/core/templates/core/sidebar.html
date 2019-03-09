@@ -36,15 +36,6 @@
   </li>
   {% endif %}
 
-
-  <!-- ACTIONS -->
-  {% if "modules.guilds" in installed_apps %}
-    {% if user.guilds_in.all.count < 1 %}
-      <li class="header">ACTIONS</li>
-      <li><a href="{% url 'guilds' %}"><i class="fa fa-pencil"></i> <span>Create Application</span></a></li>
-    {% endif %}
-  {% endif %}
-
   <!-- MODULE LINKS -->
   {% if "modules.eveonline" in installed_apps %}
   <li class="header">MODULES</li>
@@ -55,4 +46,22 @@
   <li><a href="{% url 'hr-view-applications' %}"><i class="fa fa-paperclip"></i> <span>Applications</span></a></li>
   {% endif %}
   {% endif %}
+
+  <!-- ACTIONS -->
+  <li class="header">ACTIONS</li>
+  {% if "modules.guilds" in installed_apps %}
+      <li><a href="{% url 'guilds' %}"><i class="fa fa-pencil"></i> <span>Create Application</span></a></li>
+  {% endif %}
+
+  <li><a href="{% url 'groups' %}"><i class="fa fa-tag"></i> <span>Join a Group</span></a></li>
+
+  {% if perms.change_guild %}
+  <li>
+    <a href="{% url 'guild-users' %}"><i class="fa fa-users"></i>
+      <span>Manage Guild Members</span>
+    </a>
+  </li>
+  {% endif %}
+
+  
 {% endblock %}
