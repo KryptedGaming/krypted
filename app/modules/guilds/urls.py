@@ -6,6 +6,8 @@ urlpatterns = []
 # GUILDS
 urlpatterns += [
     url(r'^$', guilds.dashboard, name='guilds'),
+    url(r'^users/$', guilds.user_list, name='guild-users'),
+    url(r'^users/remove/(?P<guild_id>\w+)/(?P<user_id>\w+)', guilds.remove_guild_user, name='remove-guild-user')
 ]
 
 ## APPLICATIONS
