@@ -48,7 +48,7 @@ Small tasks
 @task()
 def update_character(character_id):
     # query ESI
-    response = EveClient.get_character(character_id)
+    response = EveClient().get_character(character_id)
     if response.status != 200:
         logger.warning("ESI Error: %s" % response.data)
         return
@@ -67,7 +67,7 @@ def update_character(character_id):
 @task()
 def update_character_corporation(character_id):
     # query ESI
-    response = EveClient.get_character(character_id)
+    response = EveClient().get_character(character_id)
     if response.status != 200:
         logger.warning("ESI Error: %s" % response.data)
         return
@@ -85,7 +85,7 @@ def update_character_corporation(character_id):
 @task()
 def update_corporation(corporation_id):
     # query ESI
-    response = EveClient.get_corporation(corporation_id)
+    response = EveClient().get_corporation(corporation_id)
     if response.status != 200:
         logger.warning("ESI Error: %s" % response.data)
         return
@@ -162,8 +162,8 @@ def purge_user_groups(user):
 def audit_corporation_members():
     response = []
     missing = []
-    characters = EveClient.get_corporation_characters(eve_settings.MAIN_ENTITY_ID)
-    secondary_characters = EveClient.get_corporation_characters(eve_settings.SECONDARY_ENTITY_IDS[0])
+    characters = EveClient().get_corporation_characters(eve_settings.MAIN_ENTITY_ID)
+    secondary_characters = EveClient().get_corporation_characters(eve_settings.SECONDARY_ENTITY_IDS[0])
     for character in characters:
         if not EveCharacter.objects.filter(character_id=character).exists():
             missing.append(character)
