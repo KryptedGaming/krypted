@@ -5,6 +5,7 @@ class CoreConfig(AppConfig):
     name = 'core'
 
     GOOGLE_ANALYTICS_CODE = ''
+    SITE_TITLE = ''
     SITE_LOGO = ''
 
     REGIONS = (

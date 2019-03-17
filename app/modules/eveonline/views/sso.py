@@ -1,6 +1,6 @@
 from django.shortcuts import redirect
 from django.apps import apps
-from core.decorators import login_required
+from django.contrib.auth.decorators import login_required
 # INTERNAL IMPORTS
 from modules.eveonline.models import EveToken, EveCharacter
 from modules.eveonline.tasks import *

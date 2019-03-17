@@ -13,11 +13,12 @@ from modules.guilds.models import Guild
 import logging
 logger = logging.getLogger(__name__)
 
-
+@login_required
 def dashboard(request):
     context = {'guilds': Guild.objects.all()}
     return render(request, 'guilds/guilds.html', context)
 
+@login_required
 def user_list(request):
     context = {'guilds': Guild.objects.all()}
     return render(request, 'guilds/guild_user_list.html', context)

@@ -2,9 +2,10 @@ from django.conf.urls import include, url, handler500
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.contrib import admin
 from django.views.generic.base import RedirectView
+from django.contrib.auth.decorators import permission_required, login_required
 from django.apps import apps
 # EXTERNAL IMPORTS
-from core.decorators import login_required, services_required
+from core.decorators import services_required
 # MISC
 from decorator_include import decorator_include
 

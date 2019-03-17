@@ -98,6 +98,7 @@ TEMPLATES = [
                 'core.context_processors.get_application_verbose_names',
                 'core.context_processors.get_google_analytics_code',
                 'core.context_processors.get_site_logo',
+                'core.context_processors.get_site_title',
                 'core.context_processors.get_breadcrumbs',
             ],
         },

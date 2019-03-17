@@ -8,7 +8,7 @@ from django.apps import apps
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse_lazy
-from core.decorators import login_required
+from django.contrib.auth.decorators import permission_required, login_required
 # CRISPY FORMS IMPORTS
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Field, Submit, Button
