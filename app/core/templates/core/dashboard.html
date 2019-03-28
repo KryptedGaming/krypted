@@ -15,8 +15,9 @@
                   <h4 class="text-center">Groups</h4>
                   <hr>
                   {% for group in request.user.groups.all %}
-                  {{group}}
+                  <span class="badge badge-secondary">{{group}}</span>
                   {% endfor %}
+                  <hr>
           </div>
       </div>
   </div>
