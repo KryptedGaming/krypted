@@ -3,8 +3,10 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import logout
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.apps import apps
 from django.contrib.auth.decorators import permission_required, login_required
 # LOCAL IMPORTS
+from core.decorators import services_required
 from core.views.views import LoginView, RegisterView, UserUpdate
 # MISC
 import datetime
@@ -27,6 +29,7 @@ def login_user(request):
     return LoginView.as_view()(request)
 
 def register_user(request):
+    request.session['new_user'] = True 
     return RegisterView.as_view()(request)
 
 @login_required
@@ -39,6 +42,20 @@ def edit_user(request, *args, **kwargs):
 def logout_user(request):
     logout(request)
     return redirect('login')
+
+@login_required
+def new_user(request):
+    request.session['eve_sso_redirect_override'] = "tutorial"
+    return render(request, 'accounts/new_user.html', context={})
+
+@login_required
+@services_required
+def new_user_complete(request): 
+    if 'new_user' in request.session:
+        request.session.pop('new_user')
+    if 'eve_sso_redirect_override' in request.session:
+        request.session.pop('eve_sso_redirect_override')
+    return redirect('dashboard')
 
 def verify_confirm(request, token):
     if User.objects.filter(info__activation_key=token).exists():

@@ -8,7 +8,7 @@
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <meta name="description" content="The authentication service for Krypted Gaming. This allows us to link in-game characters to our Discord, forum, and other user accounts.">
   <meta http-equiv="content-type" content="text/html;charset=UTF-8">
-  <title>Krypted Authentication v3</title>
+  <title>{{SITE_TITLE}}</title>
   <link rel="stylesheet" href="{% static 'global/ui/bower_components/bootstrap/dist/css/bootstrap.min.css' %}">
   <!-- Font Awesome -->
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
@@ -21,7 +21,7 @@
         page. However, you can choose any other skin. Make sure you
         apply the skin class to the body tag so the changes take effect. -->
   <link rel="stylesheet" href="{% static 'global/ui/dist/css/skins/skin-blue.min.css' %}">
-  <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
+  <link rel="shortcut icon" type="image/png" href="{{SITE_LOGO}}"/>
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -58,7 +58,7 @@
     <a href="/" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
       <span class="logo-mini">
-          <img style="width:25px" src="https://kryptedgaming.com/wp-content/uploads/2018/02/Krypted-Gaming-Logo.png"></img>
+          <img style="width:25px" src="{{SITE_LOGO}}"></img>
       </span>
       <!-- logo for regular state and mobile devices -->
       <span class="logo-lg">Authentication</span>

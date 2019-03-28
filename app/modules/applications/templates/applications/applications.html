@@ -3,7 +3,7 @@
 
 {% block brand %}
   <h1>
-    Guild Applications
+    Applications
     <small>Applications to the community</small>
   </h1>
 {% endblock %}
@@ -34,7 +34,7 @@
   			<thead>
   				<tr>
   					<th scope="col">Date Submitted</th>
-            <th scope="col">Guild</th>
+            <th scope="col">Group</th>
   					<th scope="col">User</th>
             <th scope="col">Recruiter</th>
   					<th scope="col">Actions</th>
@@ -45,19 +45,19 @@
           {% if application.status == "PENDING" %}
   				<tr>
             <td>{{application.request_date | date:"F d, Y"}} </td>
-            <td>{{application.template.guild.name}}</td>
+            <td>{{application.template.group.name}}</td>
             <td>{{application.request_user}}</td>
             <td>
               {% if application.response_user %}
               {{application.response_user}}
               {% else %}
-              <a href="{% url 'hr-assign-application' application=application.pk user=request.user.pk %}">
+              <a href="{% url 'assign-application' application=application.pk user=request.user.pk %}">
                 Assign self
               </a>
               {% endif %}
             </td>
             <td>
-              <button class="btn btn-info" onclick="location.href='{% url "hr-view-application" pk=application.id %}'"><i class="fa fa-eye"></i></button>
+              <button class="btn btn-info" onclick="location.href='{% url "view-application" pk=application.id %}'"><i class="fa fa-eye"></i></button>
             </td>
   				</tr>
           {% endif %}
@@ -72,7 +72,7 @@
 					<th scope="col">Date Submitted</th>
           <th scope="col">Action</th>
 					<th scope="col">User</th>
-					<th scope="col">Guild</th>
+					<th scope="col">Group</th>
           <th scope="col">Recruiter</th>
 					<th scope="col">Actions</th>
 				</tr>
@@ -92,18 +92,18 @@
             {% endif %}
           </td>
           <td>{{application.request_user}}</td>
-          <td>{{application.template.guild.name}}</td>
+          <td>{{application.template.group.name}}</td>
           <td>
             {% if application.response_user %}
             {{application.response_user}}
             {% else %}
-            <a href="{% url 'hr-assign-application' application=application.pk user=request.user.pk %}">
+            <a href="{% url 'assign-application' application=application.pk user=request.user.pk %}">
               Assign self
             </a>
             {% endif %}
           </td>
           <td>
-            <button class="btn btn-info" onclick="location.href='{% url "hr-view-application" pk=application.id %}'"><i class="fa fa-eye"></i></button>
+            <button class="btn btn-info" onclick="location.href='{% url "view-application" pk=application.id %}'"><i class="fa fa-eye"></i></button>
           </td>
 				</tr>
         {% endif %}

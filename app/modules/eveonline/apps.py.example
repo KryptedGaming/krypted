@@ -80,15 +80,3 @@ class EveOnlineConfig(AppConfig):
             headers={'User-Agent': 'Krypted Development 3.0'}
         )
         self.ESI_URL_CACHE = self.ESI_SECURITY.get_auth_uri(scopes=self.ESI_SCOPES, state="jaiodfjasd8234has")
-        try:
-            self.EVE_GROUP = Group.objects.get_or_create(name="EVE-ONLINE")[0]
-            self.EVE_BLUE_GROUP = Group.objects.get_or_create(name="EVE-ONLINE-BLUE")[0]
-            if apps.is_installed("modules.guilds"):
-                from modules.guilds.models import Guild
-                self.EVE_GUILD, created = Guild.objects.get_or_create(name="EVE Online", slug="eve")
-                if self.EVE_GROUP not in self.EVE_GUILD.groups.all():
-                    self.EVE_GUILD.groups.add(self.EVE_GROUP)
-                if self.EVE_BLUE_GROUP not in self.EVE_GUILD.groups.all():
-                    self.EVE_GUILD.groups.add(self.EVE_BLUE_GROUP)
-        except:
-            pass

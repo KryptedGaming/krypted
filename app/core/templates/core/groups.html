@@ -70,7 +70,13 @@
               {% if group.group.info.type == "PUBLIC" %}
               <td><button onclick="location.href='{% url 'group-apply' group.group.id %}'" class="btn btn-block btn-success">Join</button></td>
               {% else %}
-              <td><button onclick="location.href='{% url 'group-apply' group.group.id %}'" class="btn btn-block btn-info">Request</button></td>
+                {% if "modules.applications" in installed_apps %}
+                {% if group.group.application_template %}
+                <td><button onclick="location.href='{% url 'add-application' group.group.pk %}'" class="btn btn-block btn-warning">Apply</button></td>
+                {% endif %}
+                {% else %}
+                <td><button onclick="location.href='{% url 'group-apply' group.group.id %}'" class="btn btn-block btn-info">Request</button></td>
+                {% endif %}
               {% endif %}
             {% endif %}
           </tr>

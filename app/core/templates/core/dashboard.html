@@ -12,17 +12,11 @@
   <div class="col-md-6 ">
       <div class="box box-widget">
           <div style="padding: 5px 5px 5px 5px" class="card text-center">
-                  <h4 class="text-center">Guilds</h4>
+                  <h4 class="text-center">Groups</h4>
                   <hr>
-                  {% if request.user.guilds_in.all %}
-                      {% for guild in request.user.guilds_in.all %}
-                      <button onclick="location.href='/{{guild.slug}}/'" style="min-width: 75%;" class="btn btn-info btn-fill"><img style="float: left; width: 25px;" src="{{guild.image}}"/> {{guild.name}}</button>
-                      <hr>
-                      {% endfor %}
-                  {% else %}
-                  You are not a member of any guilds.
-                  <hr>
-                  {% endif %}
+                  {% for group in request.user.groups.all %}
+                  {{group}}
+                  {% endfor %}
           </div>
       </div>
   </div>
