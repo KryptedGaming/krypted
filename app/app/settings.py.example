@@ -61,9 +61,9 @@ INSTALLED_APPS = [
     'core',
     'modules.discord',
     'modules.discourse',
-    'modules.guilds',
     'modules.engagement',
     'modules.eveonline',
+    'modules.applications',
 ]
 
 # APPLCATION DEFINITION
