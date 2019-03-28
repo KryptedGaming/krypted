@@ -1,0 +1,43 @@
+{% extends "accounts/base.html" %}
+
+{% block heading %}
+<div class="panel-title text-center">Account Setup</div>
+{% endblock %}
+
+{% block fields %}
+<div class="container-fluid">
+
+    <h4 class="text-center" style="color: white;">Click on the boxes to link your services</h4>
+    <br>
+    {% if "modules.discord" in installed_apps %}
+    <button onclick="location.href='{% url 'discord_index' %}'" style="min-width: 100%;" class="btn btn-{% if request.user.info.discord %}success{%else%}danger{%endif%}">Discord</button>
+    <br><br>
+    {% endif %}
+    {% if "modules.discourse" in installed_apps %}
+    <button onclick="location.href='{{forum_url}}'" style="min-width: 100%;" class="btn btn-{% if request.user.info.discourse %}success{%else%}danger{%endif%}">Forum</button>
+    <br><br>
+    {% endif %}
+    {% if "modules.eveonline" in installed_apps %}
+    <button onclick="location.href='{% url 'add-sso-token' %}'" style="min-width: 100%;" class="btn btn-info">Add EVE Character</button>
+    <br><br>
+    {% endif %}
+    {% for character in request.user.evecharacter_set.all %}
+    <img src="{{character.character_portrait}}" class="img-circle" width="30px" title={{character.character_name}}/>   
+    {% endfor %}
+    <br><br>
+    <p class="text-center" style="color: white;">If applying to EVE Online, you must add <b>all</b> of your characters.</p>
+    <hr>
+    
+</div>
+{% endblock %}
+
+{% block submit %}
+<div class="form-group">
+    <div class="col-sm-12 controls login-btn">
+        <button type="submit" onclick="location.href='{% url 'tutorial-complete' %}'" style="min-width: 100%;" class="btn btn-success btn-log" 
+        {% if "modules.discord" in installed_apps and not request.user.discord_user or "modules.discourse" in installed_apps and not request.user.discourse_user %} disabled {% endif %}> 
+        Continue</button>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,6 +1,6 @@
 from django.shortcuts import redirect
 from django.apps import apps
-from core.decorators import login_required
+from django.contrib.auth.decorators import login_required
 # INTERNAL IMPORTS
 from modules.eveonline.models import EveToken, EveCharacter
 from modules.eveonline.tasks import *
@@ -17,7 +17,6 @@ def add_token(request):
 def remove_token(request, character):
     eve_character = EveCharacter.objects.get(user=request.user, character_id=character)
     eve_character.token.delete()
-    update_user_groups.apply_async(args=[eve_character.user.pk])
     return redirect('eve-dashboard')
 
 @login_required
@@ -26,7 +25,6 @@ def refresh_token(request, character):
     update_eve_token.apply_async(args=[eve_character.token.pk])
     update_character.apply_async(args=[eve_character.character_id])
     update_character_corporation.apply(args=[eve_character.character_id])
-    update_user_groups.apply_async(args=[eve_character.user.pk])
     return redirect('eve-dashboard')
 
 @login_required
@@ -69,4 +67,8 @@ def receive_token(request):
     character.save()
     update_character_corporation.apply_async(args=[character.character_id])
     update_character.apply_async(args=[character.character_id])
+    if 'eve_sso_redirect_override' in request.session:
+        override = request.session['eve_sso_redirect_override']
+        request.session.pop('eve_sso_redirect_override')
+        return redirect(override)
     return redirect('/eve')

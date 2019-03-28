@@ -32,6 +32,11 @@ def get_site_logo(request):
         'SITE_LOGO': core_settings.SITE_LOGO
     }
 
+def get_site_title(request):
+    return {
+        'SITE_TITLE': core_settings.SITE_TITLE
+    }
+
 def get_breadcrumbs(request):
     from django.urls import reverse, NoReverseMatch
     identifiers = request.get_full_path().split("/")
