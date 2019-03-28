@@ -21,6 +21,10 @@ if apps.is_installed("modules.guilds"):
     urlpatterns += [
         url(r'^guilds/', decorator_include(services_required, 'modules.guilds.urls')),
     ]
+if apps.is_installed("modules.applications"):
+    urlpatterns += [
+        url(r'^applications/', decorator_include(services_required, 'modules.applications.urls')),
+    ]
 if apps.is_installed("modules.discord"):
     urlpatterns += [
         url(r'^discord/', include('modules.discord.urls')),

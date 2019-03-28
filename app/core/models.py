@@ -91,6 +91,16 @@ class GroupInfo(models.Model):
 
     def __str__(self):
         return self.group.name
+    
+    def is_dependent(self):
+        if self.group.dependent_on.all().count() > 0:
+            if self.group.dependent_on.all()[0].group != self:
+                return True 
+        return False 
+    
+    def get_dependency(self):
+        if self.is_dependent():
+                return self.group.dependent_on.all()[0].group
 
 class GroupRequest(models.Model):
     """
@@ -119,6 +129,24 @@ class GroupRequest(models.Model):
                 ('manage_group_requests', u'Can manage group requests.'),
                 ('audit_group_requests', u'Can view the group request audit log.')
         )
+
+class GroupIntegration(models.Model):
+    group_integrations = (
+        ("EVE_ONLINE_PRIMARY", "EVE Online Primary Group"),
+        ("EVE_ONLINE_BLUE", "EVE Online Blue Group"),
+    )
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    type = models.CharField(max_length=32, choices=group_integrations)
+
+class GroupDependencyList(models.Model):
+    group = models.OneToOneField(Group, on_delete=models.CASCADE, related_name="dependency_list")
+    groups = models.ManyToManyField(Group, related_name="dependent_on")
+    
+    def __str__(self):
+        return self.group.name
+
+    def get_dependents(self):
+        return self.groups.all()
 
 class SocialMedia(models.Model):
     """

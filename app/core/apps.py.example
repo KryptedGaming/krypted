@@ -16,14 +16,9 @@ class CoreConfig(AppConfig):
 
     def ready(self):
         from django.contrib.auth.models import User, Group
-        from core.signals import global_user_add, global_group_add, user_group_change_discord_notify
+        from core.signals import global_user_add, global_group_add, user_group_change_discord_notify, user_group_change_check_dependent_groups
         post_save.connect(global_user_add, sender=User)
         post_save.connect(global_group_add, sender=Group)
-        post_migrate.connect(self.group_region_migration, sender=self)
+        m2m_changed.connect(user_group_change_check_dependent_groups, sender=User.groups.through)
         if apps.is_installed('modules.discord'):
             m2m_changed.connect(user_group_change_discord_notify, sender=User.groups.through)
-
-    def group_region_migration(self, **kwargs):
-        from django.contrib.auth.models import Group
-        for region in self.REGIONS:
-            Group.objects.get_or_create(name=region[0])

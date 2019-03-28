@@ -34,13 +34,6 @@ def update_eve_character_corporations():
     for character in EveCharacter.objects.filter(~Q(token=None)):
         update_character_corporation.apply_async(args=[character.character_id])
 
-@task()
-def update_users_groups():
-    call_count = 0
-    for user in User.objects.filter(groups__in=[eve_settings.EVE_GROUP, eve_settings.EVE_BLUE_GROUP]):
-        update_user_groups.apply_async(args=[user.pk], coundown=call_count*2)
-        call_count += 1
-
 """
 MINOR TASKS
 Small tasks
@@ -130,34 +123,6 @@ def update_corporation(corporation_id):
 def update_eve_token(pk):
     eve_token = EveToken.objects.get(pk=pk)
     eve_token.refresh()
-
-@task()
-def update_user_groups(pk):
-    user = User.objects.get(pk=pk)
-    eve_character = user.info.eve_character
-    if eve_character:
-        if eve_character.is_member():
-            user.groups.add(eve_settings.EVE_GROUP)
-            if apps.is_installed('modules.guilds'):
-                eve_settings.EVE_GUILD.users.add(user)
-        elif eve_character.is_blue():
-            user.groups.add(eve_settings.EVE_BLUE_GROUP)
-        else:
-            purge_user_groups(user)
-    else:
-        purge_user_groups(user)
-
-# HELPERS
-def purge_user_groups(user):
-    eve_groups = [eve_settings.EVE_GROUP, eve_settings.EVE_BLUE_GROUP]
-    if apps.is_installed('modules.guilds'):
-        for group in eve_settings.EVE_GUILD.groups.all():
-            eve_groups.append(group)
-        if eve_settings.EVE_GUILD in user.guilds_in.all():
-            eve_settings.EVE_GUILD.users.remove(user)
-    for group in eve_groups:
-        if group in user.groups.all():
-            user.groups.remove(group)
 
 def audit_corporation_members():
     response = []

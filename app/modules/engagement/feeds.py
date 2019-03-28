@@ -1,7 +1,6 @@
 from django_ical.views import ICalFeed
 from django.contrib.auth.models import User, Group
 from modules.engagement.models import Event
-from modules.guilds.models import Guild
 
 class EventFeed(ICalFeed):
     """

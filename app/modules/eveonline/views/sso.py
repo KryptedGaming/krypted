@@ -17,7 +17,6 @@ def add_token(request):
 def remove_token(request, character):
     eve_character = EveCharacter.objects.get(user=request.user, character_id=character)
     eve_character.token.delete()
-    update_user_groups.apply_async(args=[eve_character.user.pk])
     return redirect('eve-dashboard')
 
 @login_required
@@ -26,7 +25,6 @@ def refresh_token(request, character):
     update_eve_token.apply_async(args=[eve_character.token.pk])
     update_character.apply_async(args=[eve_character.character_id])
     update_character_corporation.apply(args=[eve_character.character_id])
-    update_user_groups.apply_async(args=[eve_character.user.pk])
     return redirect('eve-dashboard')
 
 @login_required

@@ -23,22 +23,10 @@ def dashboard(request, **kwargs):
     context['manage'] = request.user.has_perm('change_grouprequest')
     context['audit'] = request.user.has_perm('change_grouprequest')
 
-    if apps.is_installed("modules.guilds"):
-        for group in Group.objects.filter(guilds=None):
-            if group.info.type == "PUBLIC":
-                groups.append({
-                    'group': group,
-                    'requested': request.user.info.has_group_request(group)
-                })
-            elif group.info.type == "PROTECTED":
-                groups.append({
-                    'group': group,
-                    'user_has_group': (group in request.user.groups.all()),
-                    'requested': request.user.info.has_group_request(group)
-                })
-
-        for guild in request.user.guilds_in.all():
-            for group in guild.groups.all():
+    
+    for group in Group.objects.all():
+        if group.info.is_dependent():
+            if group.info.get_dependency() in request.user.groups.all():
                 if group.info.type == "PUBLIC":
                     groups.append({
                         'group': group,
@@ -50,8 +38,7 @@ def dashboard(request, **kwargs):
                         'user_has_group': (group in request.user.groups.all()),
                         'requested': request.user.info.has_group_request(group)
                     })
-    else:
-        for group in Group.objects.all():
+        else:
             if group.info.type == "PUBLIC":
                 groups.append({
                     'group': group,
@@ -103,9 +90,8 @@ def group_apply(request, group):
     # - If guilds is not enabled then any PUBLIC or PROTECTED group is fair game
     allowed = False
     if group.info.type in ['PUBLIC','PROTECTED']:
-        if apps.is_installed("modules.guilds"):
-            group_guilds = group.guilds.all()
-            if not group_guilds or (request.user.guilds_in.all() & group_guilds):
+        if group.info.is_dependent():
+            if group.info.get_dependency() in request.user.groups.all():
                 allowed = True
         else:
             allowed = True
@@ -147,25 +133,3 @@ def group_remove_user(request, group_id, user_id):
             logger.error(e)
         # notify_user(group_request, "REMOVED")
     return redirect('groups')
-
-# HELPERS
-# def notify_discord_channel(group_request, guild):
-#     if guild and guild.slug in discord_settings.GUILD_ADMIN_CHANNELS:
-#         channel = discord_settings.GUILD_ADMIN_CHANNELS[guild.slug]
-#         send_discord_message(
-#         channel,
-#         "%s (%s) has applied to %s. https://auth.kryptedgaming.com/groups/" % (group_request.request_user.discord, group_request.request_user, group_request.request_group)
-#         )
-#
-# def notify_user(group_request, type):
-#     try:
-#         channel = "#bot"
-#         send_discord_message(
-#         channel,
-#         "Your group request to %s has been %s." % (group_request.request_group, type),
-#         user=group_request.request_user.id
-#         )
-#     except KeyError:
-#         logger.warning("Please define a #bot channel to notify users of group updates.")
-#     except Exception as e:
-#         logger.warning(e)
