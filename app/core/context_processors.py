@@ -50,3 +50,8 @@ def get_breadcrumbs(request):
     return {
         'breadcrumbs': breadcrumbs
     }
+
+def get_forum_url(request):
+    return {
+        'forum_url': apps.get_app_config('discourse').DISCOURSE_BASE_URL
+    } 

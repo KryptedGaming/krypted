@@ -68,9 +68,13 @@ def audit_eve_groups_for_user(user_id, eve_online_primary_exists, eve_online_blu
     if is_primary:
         if primary_group and primary_group not in user.groups.all():
             user.groups.add(primary_group)
+        if blue_group and blue_group in user.groups.all():
+            user.groups.remove(blue_group)
     elif is_blue:
         if blue_group and blue_group not in user.groups.all():
             user.groups.add(blue_group)
+        if primary_group and primary_group in user.groups.all():
+            user.groups.remove(primary_group)
     else:
         if primary_group and primary_group in user.groups.all():
             user.groups.remove(primary_group)

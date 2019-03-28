@@ -100,6 +100,7 @@ TEMPLATES = [
                 'core.context_processors.get_site_logo',
                 'core.context_processors.get_site_title',
                 'core.context_processors.get_breadcrumbs',
+		'core.context_processors.get_forum_url',
             ],
         },
     },

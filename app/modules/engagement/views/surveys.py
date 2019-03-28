@@ -12,7 +12,7 @@ from modules.engagement.models import Survey
 @login_required
 @permission_required('engagement.view_survey')
 def dashboard(request):
-    surveys = Survey.objects.all();
+    surveys = Survey.objects.all()
     groups = set([survey.group for survey in surveys if survey is not None])
     context = {
         'surveys' : surveys,
