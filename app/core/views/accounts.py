@@ -20,7 +20,7 @@ def login_user(request):
     if 'locked' in request.session:
         time_delta = datetime.datetime.utcnow() - datetime.datetime.strptime(request.session['locked'], "%Y-%m-%d %H:%M:%S.%f")
         time_delta = time_delta.total_seconds()
-        if time_delta < 300:
+        if time_delta < 60:
             return render(request, 'misc/locked.html', context={})
         else:
             request.session.pop('attempts', None)
@@ -55,7 +55,7 @@ def new_user_complete(request):
         request.session.pop('new_user')
     if 'eve_sso_redirect_override' in request.session:
         request.session.pop('eve_sso_redirect_override')
-    return redirect('dashboard')
+    return redirect('groups')
 
 def verify_confirm(request, token):
     if User.objects.filter(info__activation_key=token).exists():
