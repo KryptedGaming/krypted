@@ -48,4 +48,8 @@ app.conf.beat_schedule = {
         'task': 'modules.discord.tasks.update_discord_users',
         'schedule': 60.0
     },
+    'audit_eve_groups': {
+        'task': 'modules.core.tasks.audit_eve_groups',
+        'schedule': 60.0
+    }
 }

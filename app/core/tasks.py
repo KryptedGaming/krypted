@@ -22,6 +22,7 @@ def clear_inactive_users():
 
 @task()
 def audit_eve_groups():
+    logger.debug("Starting EVE group audit")
     eve_online_primary = GroupIntegration.objects.filter(type="EVE_ONLINE_PRIMARY").exists()
     eve_online_blue = GroupIntegration.objects.filter(type="EVE_ONLINE_BLUE").exists()
     for user in User.objects.all():
@@ -46,8 +47,12 @@ def audit_eve_groups_for_user(user_id, eve_online_primary_exists, eve_online_blu
         return 
     if eve_online_primary_exists:
         primary_group = GroupIntegration.objects.get(type="EVE_ONLINE_PRIMARY").group 
+    else:
+        primary_group = None
     if eve_online_blue_exists:
         blue_group = GroupIntegration.objects.get(type="EVE_ONLINE_BLUE").group
+    else:
+        blue_group = None 
 
     is_primary = False 
     is_blue = False 
