@@ -67,4 +67,8 @@ def receive_token(request):
     character.save()
     update_character_corporation.apply_async(args=[character.character_id])
     update_character.apply_async(args=[character.character_id])
+    if 'eve_sso_redirect_override' in request.session:
+        override = request.session['eve_sso_redirect_override']
+        request.session.pop('eve_sso_redirect_override')
+        return redirect(override)
     return redirect('/eve')

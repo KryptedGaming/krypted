@@ -15,7 +15,7 @@ from crispy_forms.layout import Layout, Div, Field, Submit, Button
 from crispy_forms.bootstrap import *
 # LOCAL IMPORTS
 from core.forms import LoginForm, RegisterForm
-from core.decorators import services_required
+from core.decorators import services_required, new_user
 from core.models import *
 from core.utils import username_or_email_resolver, send_activation_email
 # MISC
@@ -24,6 +24,7 @@ import logging, datetime, pytz, uuid, random
 logger = logging.getLogger(__name__)
 
 @login_required
+@new_user
 def dashboard(request):
     context = {}
     if apps.is_installed("modules.guild"):
