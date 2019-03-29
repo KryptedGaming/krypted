@@ -95,4 +95,10 @@ class UserUpdate(UpdateView):
     template_name='accounts/edit_user.html'
     success_url = reverse_lazy('dashboard')
     model = User
-    fields = ['first_name', 'age', 'region']
+    fields = ['first_name', 'last_name', 'email']
+
+class UserInfoUpdate(UpdateView):
+    template_name='accounts/edit_user_info.html'
+    success_url = reverse_lazy('dashboard')
+    model = UserInfo
+    fields = ['region', 'age', 'avatar', 'biography']
