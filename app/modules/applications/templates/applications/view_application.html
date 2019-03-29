@@ -7,7 +7,7 @@
 {% endblock %}
 {% block content %}
 <!-- Game Specific -->
-{% if application.template.guild.name == 'EVE Online' %}
+{% if application.request_user.evecharacter_set.all %}
 <div class="box">
   <div class="box-body">
     {% include 'applications/games/eve_character_display.html' %}
