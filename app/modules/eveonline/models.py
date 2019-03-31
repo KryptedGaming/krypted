@@ -83,6 +83,9 @@ class EveCorporation(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def get_main_characters(self):
+        return EveCharacter.objects.filter(corporation=self)
 
 class EveCharacter(models.Model):
     character_id = models.IntegerField()
@@ -98,7 +101,7 @@ class EveCharacter(models.Model):
     user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
 
     ## ALTERNATE CHARACTER
-    main = models.ForeignKey("EveCharacter", blank=True, null=True, on_delete=models.CASCADE)
+    main = models.ForeignKey("EveCharacter", blank=True, null=True, on_delete=models.CASCADE, related_name="alts")
 
     def __str__(self):
         return self.character_name

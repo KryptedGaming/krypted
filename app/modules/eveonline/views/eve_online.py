@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import permission_required, login_required
 from django.apps import apps
 # INTERNAL IMPORTS
-from modules.eveonline.models import EveToken, EveCharacter
+from modules.eveonline.models import EveToken, EveCharacter, EveCorporation
 # EXTERNAL IMPORTS
 from operator import itemgetter
 from esipy import EsiApp, App
@@ -27,14 +27,8 @@ def dashboard(request):
 @permission_required('audit_eve_character')
 def view_characters(request):
     context = {}
-    active_eve_users = User.objects.filter(guilds__slug="eve")
-    context['mains'] = EveCharacter.objects.filter(main=None, user__in=active_eve_users)
-    context['dreads'] = EveCharacter.objects.filter(character_alt_type="dread_alt", user__in=active_eve_users)
-    context['carriers'] = EveCharacter.objects.filter(character_alt_type="carrier_alt", user__in=active_eve_users)
-    context['supers'] = EveCharacter.objects.filter(character_alt_type="super_alt", user__in=active_eve_users)
-    context['faxes'] = EveCharacter.objects.filter(character_alt_type="fax_alt", user__in=active_eve_users)
+    context['corporations'] = EveCorporation.objects.filter(primary_entity=True) | EveCorporation.objects.filter(blue_entity=True)
     return render(request, 'eveonline/view_characters.html', context)
-
 
 @login_required
 @permission_required('audit_eve_character')
