@@ -40,53 +40,7 @@ def view_characters(request):
 @permission_required('audit_eve_character')
 def view_character(request, character):
     context = {}
-    character = EveCharacter.objects.get(character_id=character)
-    context['character'] = character
-    token = character.token
-    token.refresh()
-    try:
-        try:
-            data = get_character_data(request, token)
-        except Exception as e:
-            messages.add_message(request, messages.ERROR, 'Failed to load, refresh. If this persists, pass it on to Bear. Exception: %s' % e)
-        try:
-            context['wallet'] = data['journal']
-        except:
-            context['wallet'] = None
-            messages.add_message(request, messages.ERROR, 'Wallet failed to load.')
-        try:
-            context['net_worth'] = '{:20,}'.format(int(data['wallet']))
-        except:
-            context['net_worth'] = None
-            messages.add_message(request, messages.ERROR, 'Net worth failed to load.')
-        try:
-            context['mails'] = data['mails']
-        except:
-            messages.add_message(request, messages.ERROR, 'Mails failed to load.')
-            context['mails'] = None
-        try:
-            context['contacts'] = data['contacts']
-        except:
-            messages.add_message(request, messages.ERROR, 'Contacts failed to load.')
-            context['contacts'] = None
-        try:
-            context['contracts'] = data['contracts']
-        except:
-            messages.add_message(request, messages.ERROR, 'Contracts failed to load.')
-            context['contracts'] = None
-
-        try:
-            # context['skill_tree'] = data['skill_tree']
-            context['sp'] = '{:20,}'.format(int(data['sp']))
-        except:
-            messages.add_message(request, messages.ERROR, 'Skills failed to load.')
-            # context['skill_tree'] = None
-            context['sp'] = None
-    except Exception as e:
-        messages.add_message(request, messages.ERROR, 'Could not load character. ' + str(e))
-        return redirect('eve-dashboard')
-
-
+    context['character'] = eve_character = EveCharacter.objects.get(character_id=character, user=request.user)
     return render(request, 'eveonline/view_character.html', context)
 
 @login_required

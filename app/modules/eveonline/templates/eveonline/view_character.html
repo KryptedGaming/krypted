@@ -1,6 +1,7 @@
 {% extends "eveonline/base.html" %}
 {% load staticfiles %}
 {% load eve_filters %}
+{% load humanize %}
 {% block brand %}
   <h1>
     Character Audit
@@ -20,26 +21,48 @@
       <div class="col-sm-4 border-right">
         <img style="padding-right: 20px;" class="img-rounded pull-left" src="{{character.character_portrait}}"></img>
         {{character.character_name}}<br>
-        {{net_worth}} ISK<br>
-        {{sp}} SP
-      </div>
-      <div class="col-sm-4 border-right">
-        Skill Summary
-      </div>
-      <div class="col-sm-4">
-        Dangers
+        {{character.data.total_isk | floatformat:"0" | intcomma}} ISK<br>
+        {{character.data.total_skillpoints | intcomma}} SP
       </div>
     </div>
     <hr>
     <!-- AUDIT PANE -->
     <div class="well">
         <ul class="nav nav-tabs">
+          <li><a href="#assets" data-toggle="tab">Assets</a> </li>
           <li><a href="#contracts" data-toggle="tab">Contracts</a></li>
           <li><a href="#contacts" data-toggle="tab">Contacts</a></li>
           <li><a href="#journal" data-toggle="tab">Journal</a></li>
           <li><a href="#mail" data-toggle="tab">Mail</a></li>
         </ul>
-        <div class="tab-content">
+        
+      <div class="tab-content">
+          <div class="tab-pane fade" id="assets">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Location</th>
+                    <th>Item</th>
+                    <th>Type</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for asset in character.data.assets %}
+                  <tr>
+                      <td>
+                        {{asset.location}}
+                      </td>
+                      <td>
+                        {{asset.item_name}}
+                      </td>
+                      <td>
+                        {{asset.market_group_name}}
+                      </td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+          </div>
           <div class="tab-pane fade" id="contracts">
               <table class="table table-striped">
                 <thead>
@@ -47,23 +70,27 @@
                     <th>Date</th>
                     <th>Issued By</th>
                     <th>Accepted By</th>
+                    <th>Price</th>
                   </tr>
                 </thead>
                 <tbody>
-                {% for contract in contracts %}
+                {% for contract in character.data.contracts %}
                   <tr>
                       <td>
-                          {{contract.timestamp}}
+                          {{contract.date_issued}}
                       </td>
                       <td>
-                          {{contract.issuer_id}}
+                          {{contract.issuer}}
                       </td>
                       <td>
                           {% if contract.acceptor_id != 0 %}
-                          {{contract.acceptor_id}}
+                          {{contract.assigned}}
                           {% else %}
                           Outstanding
                           {% endif %}
+                      </td>
+                      <td>
+                        {{contract.price |intcomma}} ISK
                       </td>
                   </tr>
                 {% endfor %}
@@ -79,10 +106,10 @@
                   </tr>
                 </thead>
                 <tbody>
-                {% for contact in contacts %}
+                {% for contact in character.data.contacts %}
                   <tr>
                       <td>
-                          <a href="{{contact.contact_url}}">{{contact.contact_id}}</a>
+                          {{contact.name}}
                       </td>
                       <td>
                           {{contact.standing}}
@@ -96,34 +123,27 @@
               <table class="table table-striped">
                 <thead>
                   <tr>
-                    <th>Type</th>
+                    <th>Date</th>
                     <th>Amount</th>
                     <th>From</th>
                     <th>To</th>
                   </tr>
                 </thead>
                 <tbody>
-                {% for transaction in wallet %}
+                {% for transaction in character.data.journal %}
                   <tr {%if "player" in transaction.ref_type %} style="background-color:#efe483;"{%endif%}>
-                    {% if "market" not in transaction.ref_type and "transaction" not in transaction.ref_type and "contract" not in transaction.ref_type %}
-                    <td>{{transaction.ref_type | cleanTypes}}</td>
+                    <td>{{transaction.date}}</td>
                     {% if transaction.amount > 0 %}
-                    <td style="color: green;">{{transaction.amount}}</td>
+                    <td style="color: green;">{{transaction.amount|intcomma}}</td>
                     {% else %}
-                    <td style="color: red;">{{transaction.amount}}</td>
+                    <td style="color: red;">{{transaction.amount|intcomma}}</td>
                     {% endif %}
                     <td>{{transaction.second_party_id}}</td>
                     <td>{{transaction.first_party_id}}</td>
-                    {% endif %}
-                </tr>
+                  </tr>
                 {% endfor %}
-                <!-- Bottom Divider -->
-                <tr><td></td><td></td><td></td></tr>
                 </tbody>
               </table>
-              {% if wallet == None %}
-              <h3 class="text-center">Wallet failed to load</h3>
-              {% endif %}
           </div>
           <div class="tab-pane fade" id="mail">
               <table class="table">
@@ -137,7 +157,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                {% for mail in mails %}
+                {% for mail in character.data.mails %}
                   <tr>
                       <td>
                           {{mail.timestamp}}
@@ -168,7 +188,7 @@
     </div>
   </div>
 </div>
-{% for mail in mails %}
+{% for mail in character.data.mails %}
 <div class="modal fade col-md-12" id="selectModal{{mail.mail_id}}" data-backdrop="false">
   {% include "eveonline/mail_modal.html" %}
 </div>

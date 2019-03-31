@@ -20,3 +20,9 @@ class EveCharacterAdmin(admin.ModelAdmin):
 @admin.register(EveCorporation)
 class EveCorporationAdmin(admin.ModelAdmin):
     list_display = ('name', 'ceo')
+
+@admin.register(EveCharacterData)
+class EveCharacterdata(admin.ModelAdmin):
+    list_display = ['get_character_name']
+    def get_character_name(self, EveCharacterData):
+        return EveCharacterData.character.character_name

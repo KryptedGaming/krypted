@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.apps import apps
 # MISC
 import datetime, logging, json
+from django_mysql.models import JSONField
 
 eve_settings = apps.get_app_config('eveonline')
 logger = logging.getLogger(__name__)
@@ -130,3 +131,18 @@ class EveCharacter(models.Model):
         permissions = (
             ('audit_eve_character', u'Can audit an EVE character.'),
         )
+
+class EveCharacterData(models.Model):
+    character = models.OneToOneField(EveCharacter, on_delete=models.CASCADE, related_name="data")
+    total_skillpoints = models.BigIntegerField()
+    total_isk = models.FloatField()
+    last_updated = models.DateField(auto_now=True)
+    corporation_history = JSONField()
+    clones = JSONField()
+    contracts = JSONField()
+    skill_tree = JSONField()
+    skills = JSONField()
+    journal = JSONField()
+    contacts = JSONField()
+    assets = JSONField()
+    mails = JSONField()
