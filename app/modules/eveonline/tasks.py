@@ -5,7 +5,7 @@ from django.db.models import Q
 from django.contrib.auth.models import User, Group
 from django.apps import apps
 # INTERNAL IMPORTS
-from modules.eveonline.models import EveToken, EveCharacter, EveCorporation, EveCharacterData
+from modules.eveonline.models import EveToken, EveCharacter, EveCorporation
 from modules.eveonline.client import EveClient
 # MISC
 from esipy import App
@@ -33,12 +33,7 @@ def update_eve_characters():
 def update_eve_character_corporations():
     for character in EveCharacter.objects.filter(~Q(token=None)):
         update_character_corporation.apply_async(args=[character.character_id])
-
-@task()
-def update_eve_characters_data():
-    for character in EveCharacter.objects.filter(~Q(token=None)):
-        if character.is_member() or character.is_blue():
-            update_character_data.apply_async(args=[character.character_id])
+        
 """
 MINOR TASKS
 Small tasks
@@ -146,45 +141,3 @@ def audit_corporation_members():
     for character_name in character_names:
         response.append(character_name['name'])
     return response
-
-@task()
-def update_character_data(character_id):
-    eve_client = EveClient()
-    eve_character = EveCharacter.objects.get(character_id=character_id)
-    logger.info("Updating Character Data for %s")
-    eve_character_data = EveCharacterData.objects.get_or_create(character=eve_character)[0]
-    # update skillpoints
-    skillpoints = EveClient().get_character_skill_points(character_id)
-    if skillpoints:
-        eve_character_data.total_skillpoints = skillpoints
-    # update wallet balance
-    balance = EveClient().get_character_wallet_balance(character_id)
-    if balance:
-        eve_character_data.total_isk = balance
-    # update contracts
-    contracts = EveClient().get_character_contracts(character_id)
-    if contracts:
-        eve_character_data.contracts = contracts
-    # update skill tree 
-    skill_tree = EveClient().get_character_skill_tree(character_id)
-    if skill_tree:
-        eve_character_data.skill_tree = skill_tree
-    # update journal 
-    journal = EveClient().get_character_journal(character_id)
-    if journal:
-        eve_character_data.journal = journal
-    # update contacts
-    contacts = EveClient().get_character_contacts(character_id)
-    if contacts:
-        eve_character_data.contacts = contacts
-    # update mails 
-    mails = EveClient().get_character_mails(character_id)
-    if mails:
-        eve_character_data.mails = mails
-    # update hangar assets
-    hangar_assets = EveClient().get_character_hangar_assets(character_id)
-    if hangar_assets:
-        eve_character_data.assets = hangar_assets
-
-    eve_character_data.save()
-    

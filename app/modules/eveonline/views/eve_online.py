@@ -24,17 +24,20 @@ def dashboard(request):
     return render(request, 'eveonline/dashboard.html', context)
 
 @login_required
-@permission_required('audit_eve_character')
+@permission_required('view_evecharacter')
 def view_characters(request):
     context = {}
     context['corporations'] = EveCorporation.objects.filter(primary_entity=True) | EveCorporation.objects.filter(blue_entity=True)
     return render(request, 'eveonline/view_characters.html', context)
 
 @login_required
-@permission_required('audit_eve_character')
+@permission_required('view_evecharacter')
 def view_character(request, character):
     context = {}
     context['character'] = eve_character = EveCharacter.objects.get(character_id=character, user=request.user)
+    if not apps.is_installed('modules.eveonline.extensions.eveaudit'):
+        messages.add_message(request, messages.ERROR, 'EVE Online audit module is not enabled')
+        return redirect('eve-dashboard')
     return render(request, 'eveonline/view_character.html', context)
 
 @login_required

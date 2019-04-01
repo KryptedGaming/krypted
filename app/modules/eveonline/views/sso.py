@@ -65,8 +65,11 @@ def receive_token(request):
         )
 
     character.save()
-    update_character_corporation.apply_async(args=[character.character_id])
     update_character.apply_async(args=[character.character_id])
+    update_character_corporation.apply_async(args=[character.character_id])
+    if apps.is_installed('modules.eveonline.extensions.eveaudit'):
+        from modules.eveonline.extensions.eveaudit.tasks import update_character_data
+        update_character_data.apply_async(args=[character.character_id])
     if 'eve_sso_redirect_override' in request.session:
         override = request.session['eve_sso_redirect_override']
         request.session.pop('eve_sso_redirect_override')

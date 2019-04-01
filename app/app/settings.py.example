@@ -67,6 +67,13 @@ INSTALLED_APPS = [
     'modules.applications',
 ]
 
+# EXTENSIONS
+# Warning: Extensions are difficult to disable and re-enable, it requires dropping SQL tables and rerunning migrations.
+# This is because they create dependencies because they rely on other modules. 
+INSTALLED_APPS += [
+    # 'modules.eveonline.extensions.eveaudit',
+]
+
 # APPLCATION DEFINITION
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
