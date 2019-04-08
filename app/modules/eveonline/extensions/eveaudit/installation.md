@@ -13,5 +13,5 @@ Due to dependencies the and relations it makes to the EVE Online module, you mus
 # Re-enabling
 Since we dropped the table from last time, it's a bit more involved to re-enable.
 
-1. Undo the migration `python3 manage.py migrate eveaudit zero`
+1. Undo the migration `python3 manage.py migrate eveaudit zero --fake`
 2. Reapply the migration `python3 manage.py migrate`

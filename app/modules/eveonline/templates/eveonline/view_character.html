@@ -14,16 +14,32 @@
 {% endblock %}
 
 {% block content %}
-<div class="box">
+<div class="box container">
   <div class="box-body">
     <!-- TOP PANE -->
     <div class="row">
-      <div class="col-sm-4 border-right">
+      <div class="col-sm-12">
+        <div class="pull-right">
+            <i onclick="location.href='{% url 'eveaudit-update-character' character.character_id %}'" class="fa btn btn-success fa-refresh pull-right"></i>
+            <br><br>
+            Updated: {{character.data.last_updated}}
+        </div>
+        
         <img style="padding-right: 20px;" class="img-rounded pull-left" src="{{character.character_portrait}}"></img>
         {{character.character_name}}<br>
+        {% if character.data.total_isk %}
         {{character.data.total_isk | floatformat:"0" | intcomma}} ISK<br>
+        {% else %}
+        ?? ISK <br>
+        {% endif %}
+        {% if character.data.total_skillpoints %}
         {{character.data.total_skillpoints | intcomma}} SP
+        {% else %}
+        ?? SP 
+        {% endif %}
+        
       </div>
+      
     </div>
     <hr>
     <!-- AUDIT PANE -->

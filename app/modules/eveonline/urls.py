@@ -1,5 +1,6 @@
 from django.conf.urls import include, url
 from modules.eveonline.views import eve_online, sso
+from django.apps import apps
 
 ## BASE
 urlpatterns = [
@@ -22,3 +23,9 @@ urlpatterns += [
     url(r'^refresh-sso-token/(?P<character>\w+)/$', sso.refresh_token, name='refresh-sso-token'),
     url(r'^sso/callback/$', sso.receive_token, name='receive-sso-token'),
 ]
+
+# AUDIT 
+if apps.is_installed("modules.eveonline.extensions.eveaudit"):
+    urlpatterns += [
+        url(r'^audit/', include('modules.eveonline.extensions.eveaudit.urls')),
+    ]
