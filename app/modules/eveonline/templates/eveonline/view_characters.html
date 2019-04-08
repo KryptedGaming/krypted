@@ -18,7 +18,7 @@
   <ul class="nav nav-tabs">
     {% for corporation in corporations %}
     <li>
-      <a data-toggle="tab" href="#{{corporation.id}}">
+      <a data-toggle="tab" href="#{{corporation.corporation_id}}">
         {{corporation.name}}
       </a>
     </li>
@@ -26,9 +26,10 @@
   </ul>
 </div>
 
+
 <div class="tab-content box">
-  {% for corporation in corporations %}
-    <div id="mains" class="tab-pane fade in active box-body">
+    {% for corporation in corporations %}
+    <div id="{{corporation.corporation_id}}" class="tab-pane fade in box-body">
   		<table class="table">
   			<thead>
   				<tr>
