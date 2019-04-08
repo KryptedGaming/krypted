@@ -34,7 +34,7 @@ def view_characters(request):
 @permission_required('view_evecharacter')
 def view_character(request, character):
     context = {}
-    context['character'] = eve_character = EveCharacter.objects.get(character_id=character, user=request.user)
+    context['character'] = eve_character = EveCharacter.objects.get(character_id=character)
     if not apps.is_installed('modules.eveonline.extensions.eveaudit'):
         messages.add_message(request, messages.ERROR, 'EVE Online audit module is not enabled')
         return redirect('eve-dashboard')
