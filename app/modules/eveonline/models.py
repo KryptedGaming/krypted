@@ -85,7 +85,7 @@ class EveCorporation(models.Model):
         return self.name
     
     def get_main_characters(self):
-        return EveCharacter.objects.filter(corporation=self)
+        return EveCharacter.objects.filter(corporation=self, main=None)
 
 class EveCharacter(models.Model):
     character_id = models.IntegerField()
