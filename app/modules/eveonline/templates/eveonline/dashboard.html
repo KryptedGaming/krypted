@@ -40,7 +40,11 @@
         {% for character in request.user.info.eve_characters %}
           <tr>
             <td>
+                {% if character.character_portrait %}
                 <img style="width: 50px;" src="{{character.character_portrait}}"/>
+                {% else %}
+                <i class="fa fa-spinner fa-spin"></i> Please refresh in 10 seconds
+                {% endif %}
             </td>
             <td>
                 <a href="/eve/character/{{character.character_id}}/">{{character.character_name}}</a>

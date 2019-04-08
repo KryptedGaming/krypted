@@ -16,171 +16,47 @@
 {% block content %}
 <div class="nav-tabs-custom">
   <ul class="nav nav-tabs">
-    <li class="active">
-      <a data-toggle="tab" href="#mains">
-        Mains
-      </a>
-    </li>
+    {% for corporation in corporations %}
     <li>
-      <a data-toggle="tab" href="#dreads">
-        Dreads
+      <a data-toggle="tab" href="#{{corporation.id}}">
+        {{corporation.name}}
       </a>
     </li>
-    <li>
-      <a data-toggle="tab" href="#carriers">
-        Carriers
-      </a>
-    </li>
-    <li>
-      <a data-toggle="tab" href="#faxes">
-        Faxes
-      </a>
-    </li>
-    <li>
-      <a data-toggle="tab" href="#supers">
-        Supers
-      </a>
-    </li>
+    {% endfor %}
   </ul>
 </div>
 
 <div class="tab-content box">
+  {% for corporation in corporations %}
     <div id="mains" class="tab-pane fade in active box-body">
   		<table class="table">
   			<thead>
   				<tr>
   					<th scope="col">Character</th>
             <th scope="col">Discord</th>
-  					<th scope="col">Audit</th>
+  					<th scope="col">Alts</th>
   				</tr>
   			</thead>
   			<tbody>
-          {% for character in mains %}
+          {% for character in corporation.get_main_characters %}
   				<tr>
             <td>
-              <img src="{{character.character_portrait}}" class="img-circle" width="20px" />
+              <a href="{% url 'eve_online-view-character' character.character_id %}"><img src="{{character.character_portrait}}" class="img-circle" width="20px" /></a>
               {{character.character_name}}
             </td>
-            <td>@{{character.user.discord.username}}</td>
-            <td>Null</td>
+            <td>@{{character.user.discord_user.username}}</td>
+            <td>
+              {% for alt in character.alts.all %}
+              <a href="{% url 'eve_online-view-character' alt.character_id %}"><img src="{{alt.character_portrait}}" class="img-circle" width="20px" title="{{alt.character_name}}" /></a>
+              <p hidden>{{alt.character_name}}</p>
+              {% endfor %}
+            </td>
   				</tr>
           {% endfor %}
   			</tbody>
   		</table>
     </div>
-  <div id="dreads" class="tab-pane fade box-body">
-		<table class="table">
-			<thead>
-				<tr>
-					<th scope="col">Character</th>
-					<th scope="col">Main Character</th>
-          <th scope="col">Discord</th>
-					<th scope="col">Audit</th>
-				</tr>
-			</thead>
-			<tbody>
-        {% for character in dreads %}
-				<tr>
-          <td>
-            <img src="{{character.character_portrait}}" class="img-circle" width="20px" />
-            {{character.character_name}}
-          </td>
-          <td>
-            <img src="{{character.main.character_portrait}}" class="img-circle" width="20px" />
-            {{character.main.character_name}}
-          </td>
-          <td>@{{character.user.discord.username}}</td>
-          <td>Null</td>
-				</tr>
-        {% endfor %}
-			</tbody>
-		</table>
-  </div>
-  <div id="carriers" class="tab-pane fade box-body">
-		<table class="table">
-			<thead>
-				<tr>
-					<th scope="col">Character</th>
-					<th scope="col">Main Character</th>
-          <th scope="col">Discord</th>
-					<th scope="col">Audit</th>
-				</tr>
-			</thead>
-			<tbody>
-        {% for character in carriers %}
-				<tr>
-          <td>
-            <img src="{{character.character_portrait}}" class="img-circle" width="20px" />
-            {{character.character_name}}
-          </td>
-          <td>
-            <img src="{{character.main.character_portrait}}" class="img-circle" width="20px" />
-            {{character.main.character_name}}
-          </td>
-          <td>@{{character.user.discord.username}}</td>
-          <td>Null</td>
-				</tr>
-        {% endfor %}
-			</tbody>
-		</table>
-  </div>
-  <div id="faxes" class="tab-pane fade box-body">
-		<table class="table">
-			<thead>
-				<tr>
-					<th scope="col">
-            Character</th>
-					<th scope="col">Main Character</th>
-          <th scope="col">Discord</th>
-					<th scope="col">Audit</th>
-				</tr>
-			</thead>
-			<tbody>
-        {% for character in faxes %}
-				<tr>
-          <td>
-            <img src="{{character.character_portrait}}" class="img-circle" width="20px" />
-            {{character.character_name}}
-          </td>
-          <td>
-            <img src="{{character.main.character_portrait}}" class="img-circle" width="20px" />
-            {{character.main.character_name}}
-          </td>
-          <td>@{{character.user.discord.username}}</td>
-          <td>Null</td>
-				</tr>
-        {% endfor %}
-			</tbody>
-		</table>
-  </div>
-  <div id="supers" class="tab-pane fade box-body">
-		<table class="table">
-			<thead>
-				<tr>
-					<th scope="col">Character</th>
-					<th scope="col">Main Character</th>
-          <th scope="col">Discord</th>
-					<th scope="col">Audit</th>
-				</tr>
-			</thead>
-			<tbody>
-        {% for character in supers %}
-				<tr>
-          <td>
-            <img src="{{character.character_portrait}}" class="img-circle" width="20px" />
-            {{character.character_name}}
-          </td>
-          <td>
-            <img src="{{character.main.character_portrait}}" class="img-circle" width="20px" />
-            {{character.main.character_name}}
-          </td>
-          <td>@{{character.user.discord.username}}</td>
-          <td>Null</td>
-				</tr>
-        {% endfor %}
-			</tbody>
-		</table>
-  </div>
+    {% endfor %}
 </div>
 {% endblock %}
 

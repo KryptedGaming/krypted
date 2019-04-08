@@ -130,14 +130,6 @@ class GroupRequest(models.Model):
                 ('audit_group_requests', u'Can view the group request audit log.')
         )
 
-class GroupIntegration(models.Model):
-    group_integrations = (
-        ("EVE_ONLINE_PRIMARY", "EVE Online Primary Group"),
-        ("EVE_ONLINE_BLUE", "EVE Online Blue Group"),
-    )
-    group = models.ForeignKey(Group, on_delete=models.CASCADE)
-    type = models.CharField(max_length=32, choices=group_integrations)
-
 class GroupDependencyList(models.Model):
     group = models.OneToOneField(Group, on_delete=models.CASCADE, related_name="dependency_list")
     groups = models.ManyToManyField(Group, related_name="dependent_on")

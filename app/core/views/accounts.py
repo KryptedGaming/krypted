@@ -7,7 +7,7 @@ from django.apps import apps
 from django.contrib.auth.decorators import permission_required, login_required
 # LOCAL IMPORTS
 from core.decorators import services_required
-from core.views.views import LoginView, RegisterView, UserUpdate
+from core.views.views import LoginView, RegisterView, UserUpdate, UserInfoUpdate
 # MISC
 import datetime
 
@@ -38,6 +38,13 @@ def edit_user(request, *args, **kwargs):
         messages.error(request, "Nice try, guy")
         return redirect('dashboard')
     return UserUpdate.as_view()(request, *args, **kwargs)
+
+@login_required
+def edit_user_info(request, *args, **kwargs):
+    if kwargs.get('pk') != str(request.user.pk):
+        messages.error(request, "Nice try, guy")
+        return redirect('dashboard')
+    return UserInfoUpdate.as_view()(request, *args, **kwargs)
 
 def logout_user(request):
     logout(request)
