@@ -75,8 +75,8 @@ def user_group_change_check_dependent_groups(sender, **kwargs):
     action = str(kwargs.get('action'))
     group_pks = []
     for pk in kwargs.get('pk_set'):
-        logger.debug("Changed groups for user: %s" % group_pks)
         group_pks.append(pk)
+    logger.debug("[SIGNAL] Changed group_pks for user: %s" % group_pks)
     if action == "post_remove":
         for group in group_pks:
             logger.debug("Checking group %s for dependent groups" % group)

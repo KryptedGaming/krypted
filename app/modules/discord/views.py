@@ -44,9 +44,9 @@ def callback(request):
         messages.add_message(request, messages.ERROR, 'Could not find an email on your Discord profile. Please make sure your not signed in as a Guest Discord user.')
         return redirect('dashboard')
     # Delete old token if exists
-    if DiscordUser.objects.filter(external_id=me['id']).count() > 0:
-        token = DiscordUser.objects.get(external_id=me['id'])
-        token.delete()
+    if request.user.discord_user:
+        discord_user = request.user.discord_user 
+        discord_user.delete()
     # Create new token
     token = DiscordUser(
         access_token = json['access_token'],

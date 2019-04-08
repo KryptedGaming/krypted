@@ -7,9 +7,13 @@ from esipy import App, EsiClient, EsiSecurity
 
 class EveOnlineConfig(AppConfig):
     name = 'modules.eveonline'
+    static_database = ''
 
     # APP CONFIG
     ALLIANCE_MODE = False
+
+    # ESI STATIC VARIABLE
+    ESI_APP = None # set at runtime
 
     # ESI INFORMATION
     ESI_APP_URL = "https://esi.evetech.net/latest/swagger.json?datasource=tranquility"
