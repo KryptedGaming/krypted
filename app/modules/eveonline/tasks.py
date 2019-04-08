@@ -5,7 +5,7 @@ from django.db.models import Q
 from django.contrib.auth.models import User, Group
 from django.apps import apps
 # INTERNAL IMPORTS
-from modules.eveonline.models import EveToken, EveCharacter, EveCorporation
+from modules.eveonline.models import EveToken, EveCharacter, EveCorporation, EveGroupIntegration
 from modules.eveonline.client import EveClient
 # MISC
 from esipy import App
@@ -34,6 +34,11 @@ def update_eve_character_corporations():
     for character in EveCharacter.objects.filter(~Q(token=None)):
         update_character_corporation.apply_async(args=[character.character_id])
         
+@task()
+def audit_eve_group_integrations():
+    for user in User.objects.all():
+        audit_user_eve_group_integrations.apply_async(args=[user.pk])
+
 """
 MINOR TASKS
 Small tasks
@@ -124,20 +129,14 @@ def update_eve_token(pk):
     eve_token = EveToken.objects.get(pk=pk)
     eve_token.refresh()
 
-def audit_corporation_members():
-    response = []
-    missing = []
-    characters = EveClient().get_corporation_characters(eve_settings.MAIN_ENTITY_ID)
-    secondary_characters = EveClient().get_corporation_characters(eve_settings.SECONDARY_ENTITY_IDS[0])
-    for character in characters:
-        if not EveCharacter.objects.filter(character_id=character).exists():
-            missing.append(character)
-    for character in secondary_characters:
-        if not EveCharacter.objects.filter(character_id=character).exists():
-            missing.append(character)
-    ESI_APP = App.create('https://esi.tech.ccp.is/latest/swagger.json?datasource=tranquility')
-    op = ESI_APP.op['post_universe_names'](ids=missing)
-    character_names = eve_settings.ESI_CLIENT.request(op).data
-    for character_name in character_names:
-        response.append(character_name['name'])
-    return response
+@task()
+def audit_user_eve_group_integrations(user_id):
+    user = User.objects.get(pk=user_id)
+    for eve_group_integration in EveGroupIntegration.objects.all():
+        group = eve_group_integration.group 
+        if eve_group_integration.audit_user(user):
+            if group not in user.groups.all():
+                user.groups.add(group)
+        else:
+            if group in user.groups.all():
+                user.groups.remove(group)

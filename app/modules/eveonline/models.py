@@ -1,7 +1,7 @@
 # DJANGO IMPORTS
 from django.db import models
 from django.utils import timezone
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.apps import apps
 # MISC
 import datetime, logging, json
@@ -110,6 +110,8 @@ class EveCharacter(models.Model):
         character = self.get_absolute()
         if character.corporation.primary_entity:
             return True
+        elif self.corporation.primary_entity:
+            return True 
         else:
             return False
 
@@ -120,7 +122,6 @@ class EveCharacter(models.Model):
         else:
             return False
 
-
     def get_absolute(self):
         """
         Ensures that we return the main character
@@ -129,4 +130,59 @@ class EveCharacter(models.Model):
             return self.main
         else:
             return self
+
+    @staticmethod
+    def get_eve_character(user):
+        return EveCharacter.objects.filter(user=user, main=None).first()
+
+class EveGroupIntegration(models.Model):
+    character_status_choices = (
+        ("PRIMARY", "PRIMARY"),
+        ("BLUE", "BLUE"),
+    )
+    group = models.OneToOneField(Group, on_delete=models.CASCADE)
+    status = models.CharField(max_length=255, choices=character_status_choices, null=True, blank=True)
+    corporations = models.ManyToManyField("EveCorporation", blank=True)
+    character_alt_type = models.CharField(max_length=255, choices=eve_settings.EVE_ALT_TYPES, null=True, blank=True)
+    
+    def __str__(self):
+        return self.group.name
+
+    def audit_user(self, user):
+        logger.debug("Auditing Group Integration %s for user %s" % (self, user))
+        if user.evecharacter_set.all().count() < 1:
+            logger.debug("Failed EVE group integration: NO_EVE_CHARACTERS")
+            return False 
+        if self.status:
+            if self.status == "PRIMARY":
+                primary_check = False 
+                for eve_character in user.evecharacter_set.all():
+                    if eve_character.is_member():
+                        logger.debug("Failed EVE group integration: NOT_MEMBER")
+                        primary_check=True 
+                if not primary_check:
+                    return False 
+            if self.status == "BLUE":
+                blue_check = False
+                for eve_character in user.evecharacter_set.all():
+                    if eve_character.is_blue():
+                        logger.debug("Failed EVE group integration: NOT_BLUE")
+                        blue_check = True 
+                if not blue_check:
+                    return False 
+        if self.corporations.all():
+            corporation_check = False 
+            for eve_character in user.evecharacter_set.all():
+                if eve_character.corporation in self.corporations.all():
+                    logger.debug("Failed EVE group integration: NOT_IN_CORPORATION")
+                    corporation_check = True 
+            if not corporation_check:
+                return False 
+        if self.character_alt_type:
+            if not EveCharacter.objects.filter(user=user, character_alt_type=self.character_alt_type).first():
+                logger.debug("Failed EVE group integration: NOT_ALT_TYPE")
+                return False 
+        return True 
+        
+
 

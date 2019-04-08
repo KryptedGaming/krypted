@@ -20,3 +20,5 @@ class EveCharacterAdmin(admin.ModelAdmin):
 @admin.register(EveCorporation)
 class EveCorporationAdmin(admin.ModelAdmin):
     list_display = ('name', 'ceo')
+
+admin.site.register(EveGroupIntegration)
