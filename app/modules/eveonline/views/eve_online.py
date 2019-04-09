@@ -24,14 +24,14 @@ def dashboard(request):
     return render(request, 'eveonline/dashboard.html', context)
 
 @login_required
-@permission_required('view_evecharacter')
+@permission_required('eveonline.view_evecorporation', raise_exception=True)
 def view_characters(request):
     context = {}
     context['corporations'] = EveCorporation.objects.filter(primary_entity=True) | EveCorporation.objects.filter(blue_entity=True)
     return render(request, 'eveonline/view_characters.html', context)
 
 @login_required
-@permission_required('view_evecharacter')
+@permission_required('eveonline.view_evecharacter', raise_exception=True)
 def view_character(request, character):
     context = {}
     context['character'] = eve_character = EveCharacter.objects.get(character_id=character)

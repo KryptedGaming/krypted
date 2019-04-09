@@ -20,14 +20,14 @@
         Request
       </a>
     </li>
-    {% if manage %}
+    {% if perms.core.change_grouprequest %}
     <li>
       <a data-toggle="tab" href="#pending">
         Pending
       </a>
     </li>
     {% endif %}
-    {% if audit %}
+    {% if perms.core.view_grouprequest %}
     <li>
       <a data-toggle="tab" href="#log">
         Log
@@ -100,19 +100,13 @@
   			<tbody>
           {% for group_request in group_requests %}
   				<tr>
-            <td>{{group_request.request.request_group.name}}</td>
-            {% if "modules.guild" in installed_apps %}
-            {% if group_request.request.request_group.guild %}
-            <td>{{group_request.request.request_group.guild.name}}</td>
-            {% else %}
-            <td>Community</td>
-            {% endif %}
-            {% endif %}
-            <td>{{group_request.request.request_user.username}}</span></td>
+            <td>{{group_request.request_group.name}}</td>
+            <td>{{group_request.request_user.username}}</span></td>
             <td>
-            {% if group_request.permission %}
-              <button class="btn btn-success" onclick="location.href='{% url 'group-add-user' group_request.request.request_group.id group_request.request.request_user.id %}'"><i class="fa fa-check"></i></button>
-              <button class="btn btn-danger" onclick="location.href='{% url 'group-remove-user' group_request.request.request_group.id group_request.request.request_user.id %}'"><i class="fa fa-times"></i></button>
+            
+            {% if request.user in group_request.request_group.info.managers.all %}
+              <button class="btn btn-success" onclick="location.href='{% url 'group-add-user' group_request.request_group.id group_request.request_user.id %}'"><i class="fa fa-check"></i></button>
+              <button class="btn btn-danger" onclick="location.href='{% url 'group-remove-user' group_request.request_group.id group_request.request_user.id %}'"><i class="fa fa-times"></i></button>
             {% else %}
             No access.
             {% endif %}
@@ -137,18 +131,11 @@
   			<tbody>
           {% for group_request in audit_requests %}
   				<tr>
-            <td>{{group_request.request.request_group.name}}</td>
-            {% if "modules.guild" in installed_apps %}
-            {% if group_request.request.request_group.guild %}
-            <td>{{group_request.request.request_group.guild.name}}</td>
-            {% else %}
-            <td>Community</td>
-            {% endif %}
-            {% endif %}
-            <td>{{group_request.request.request_user.username}}</span></td>
-            {% if group_request.permission %}
+            <td>{{group_request.request_group.name}}</td>
+            <td>{{group_request.request_user.username}}</span></td>
+            {% if request.user in group_request.request_group.info.managers.all %}
             <td>
-              <button class="btn btn-danger" onclick="location.href='{% url 'group-remove-user' group_request.request.request_group.pk group_request.request.request_user.pk %}'"><i class="fa fa-times"></i></button>
+              <button class="btn btn-danger" onclick="location.href='{% url 'group-remove-user' group_request.request_group.pk group_request.request_user.pk %}'"><i class="fa fa-times"></i></button>
             </td>
             {% endif %}
   				</tr>
