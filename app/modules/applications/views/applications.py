@@ -14,13 +14,13 @@ import logging, datetime
 logger = logging.getLogger(__name__)
 
 @login_required
-@permission_required('applications.change_application')
+@permission_required('applications.view_application', raise_exception=True)
 def dashboard(request):
     context = {'applications': Application.objects.all()}
     return render(request, 'applications/applications.html', context)
 
 @login_required
-@permission_required('applications.change_application')
+@permission_required('applications.view_application', raise_exception=True)
 def view_application(request, pk):
     context = {
         'application': Application.objects.get(pk=pk),
@@ -58,7 +58,7 @@ def add_application(request, group_id):
     return render(request, 'applications/application_base.html', context)
 
 @login_required
-@permission_required('applications.change_application')
+@permission_required('applications.change_application', raise_exception=True)
 def approve_application(request, application):
     application = Application.objects.get(pk=application)
     messages.add_message(request, messages.SUCCESS, 'Application accepted.')
@@ -78,7 +78,7 @@ def approve_application(request, application):
     return redirect('view-applications')
 
 @login_required
-@permission_required('applications.change_application')
+@permission_required('applications.change_application', raise_exception=True)
 def deny_application(request, application):
     application = Application.objects.get(pk=application)
     messages.add_message(request, messages.ERROR, 'Application rejected.')
@@ -99,7 +99,7 @@ def deny_application(request, application):
     return redirect('view-applications')
 
 @login_required
-@permission_required('applications.change_guildapplication')
+@permission_required('applications.change_application', raise_exception=True)
 def assign_application(request, application, user):
     application = Application.objects.get(pk=application)
     application.response_user = request.user

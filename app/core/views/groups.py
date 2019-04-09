@@ -19,11 +19,7 @@ logger = logging.getLogger(__name__)
 def dashboard(request, **kwargs):
     context = {}
     groups = []
-    # PERMISSIONS
-    context['manage'] = request.user.has_perm('change_grouprequest')
-    context['audit'] = request.user.has_perm('change_grouprequest')
-
-    
+ 
     for group in Group.objects.all():
         if group.info.is_dependent():
             if group.info.get_dependency() in request.user.groups.all():
@@ -54,28 +50,12 @@ def dashboard(request, **kwargs):
     context['groups'] = groups
 
     # PENDING VIEW
-    if context['manage']:
-        group_requests = []
-        for group_request in GroupRequest.objects.filter(response_action="Pending"):
-            if not group_request.request_group.info.managers.all() or request.user in group_request.request_group.info.managers.all():
-                permission = True
-            else:
-                permission = False
-            group_requests.append({
-                'request': group_request,
-                'permission': permission
-                })
-        context['group_requests'] = group_requests
+    if request.user.has_perm('core.change_grouprequest'):
+        context['group_requests'] = GroupRequest.objects.filter(response_action="Pending")
 
     # AUDIT VIEW
-    if context['audit']:
-        group_requests = []
-        for group_request in GroupRequest.objects.filter(response_action="Accepted"):
-            group_requests.append({
-                'request': group_request,
-                'permission': True
-                })
-        context['audit_requests'] = group_requests
+    if request.user.has_perm('core.view_grouprequest'):
+        context['audit_requests'] = GroupRequest.objects.filter(response_action="Accepted")
 
     return render(request, 'core/groups.html', context)
 
@@ -109,7 +89,7 @@ def group_apply(request, group):
     return redirect('groups')
 
 @login_required
-@permission_required('change_grouprequests')
+@permission_required('core.change_grouprequest', raise_exception=True)
 def group_add_user(request, group_id, user_id):
     user = User.objects.get(id=user_id)
     group_request = GroupRequest.objects.get(request_user=user, response_action="Pending", request_group=Group.objects.get(id=group_id))

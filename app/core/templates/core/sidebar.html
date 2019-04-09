@@ -20,7 +20,7 @@
   <li><a href="{% url 'eve-dashboard' %}"><i class="fa fa-arrow-circle-right"></i> <span>EVE Online</span></a></li>
   {% endif %}
   {% if "modules.applications" in installed_apps %}
-  {% if perms.applications.change_application %}
+  {% if perms.applications.view_application %}
   <li><a href="{% url 'view-applications' %}"><i class="fa fa-paperclip"></i> <span>Applications</span></a></li>
   {% endif %}
   {% endif %}

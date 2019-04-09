@@ -124,12 +124,6 @@ class GroupRequest(models.Model):
     response_action = models.CharField(max_length=32, choices=response_action_fields)
     response_date = models.DateField(blank=True, null=True)
 
-    class Meta:
-        permissions = (
-                ('manage_group_requests', u'Can manage group requests.'),
-                ('audit_group_requests', u'Can view the group request audit log.')
-        )
-
 class GroupDependencyList(models.Model):
     group = models.OneToOneField(Group, on_delete=models.CASCADE, related_name="dependency_list")
     groups = models.ManyToManyField(Group, related_name="dependent_on")

@@ -34,22 +34,22 @@ Task schedules go here.
 app.conf.beat_schedule = {
     'update_sso_tokens' : {
         'task': 'modules.eveonline.tasks.update_sso_tokens',
-        'schedule': 60.0
+        'schedule': 3600.0
     },
     'update_eve_characters': {
         'task': 'modules.eveonline.tasks.update_eve_characters',
-        'schedule': 60.0
+        'schedule': 3600.0
     },
-    'update_users_groups': {
-        'task': 'modules.eveonline.tasks.update_users_groups',
-        'schedule': 60.0
+    'update_eve_character_corporations': {
+        'task': 'modules.eveonline.tasks.update_eve_character_corporations',
+        'schedule': 3600.0
     },
     'update_discord_users': {
         'task': 'modules.discord.tasks.update_discord_users',
-        'schedule': 60.0
+        'schedule': 3600.0
     },
-    'audit_eve_groups': {
-        'task': 'modules.core.tasks.audit_eve_groups',
-        'schedule': 60.0
+    'audit_eve_group_integrations': {
+        'task': 'modules.eveonline.tasks.audit_eve_group_integrations',
+        'schedule': 3600.0
     }
 }
