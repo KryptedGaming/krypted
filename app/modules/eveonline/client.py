@@ -252,7 +252,7 @@ class EveClient:
 
         if response.status == 200:
             logger.info('Successfully retrieved contracts for EVE Character: %s' % character_id)
-            ids_to_resolve = []
+            ids_to_resolve = [95465499, 30000142]
             for entry in response.data:
                 if 'date_expired' in entry: 
                     entry['date_expired'] = str(entry['date_expired']).split("T")[0]
@@ -303,7 +303,7 @@ class EveClient:
 
         if response.status == 200:
             logger.info('Successfully retrieved contacts for EVE Character: %s' % character_id)
-            ids_to_resolve = []
+            ids_to_resolve = [95465499, 30000142]
             for entry in response.data:
                 ids_to_resolve.append(entry['contact_id'])
             # resolve ids 

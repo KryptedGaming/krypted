@@ -2,6 +2,7 @@ from __future__ import absolute_import, unicode_literals
 from celery import task
 # DJANGO IMPORTS
 from django.apps import apps
+from django.db.models import Q
 # INTERNAL IMPORTS
 from modules.eveonline.models import EveCharacter
 from modules.eveonline.client import EveClient
