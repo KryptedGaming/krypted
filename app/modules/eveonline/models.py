@@ -45,7 +45,7 @@ class EveToken(models.Model):
                 self.save()
             except Exception as e:
                 response = json.loads(e.response.decode("utf-8"))
-                if response["error"] == 'invalid_token' or response["error"] == 'invalid_grant: Token is expired or invalid.':
+                if response["error"] == 'invalid_token' or response["error"] == 'invalid_grant':
                     logger.warning("EVE token expired, deleting.")
                     self.delete()
         else:
@@ -80,12 +80,18 @@ class EveCorporation(models.Model):
     # INTEGRATIONS
     primary_entity = models.BooleanField(default=False)
     blue_entity = models.BooleanField(default=False)
+    tracked = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
     
     def get_main_characters(self):
         return EveCharacter.objects.filter(corporation=self, main=None)
+
+class EveAlliance(models.Model):
+    name = models.CharField(max_length=64)
+    ticker = models.CharField(max_length=5)
+    executor = models.OneToOneField(EveCorporation, on_delete=models.SET_NULL, null=True)
 
 class EveCharacter(models.Model):
     character_id = models.IntegerField()

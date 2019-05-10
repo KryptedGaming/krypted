@@ -97,7 +97,6 @@ class EveClient:
             logger.warning("%s" % response.status)
             return None
     
-
     def get_character_skill_tree(self, character_id):
 
         if (not self.update_esi_security(character_id)):
@@ -194,6 +193,7 @@ class EveClient:
         else:
             logger.warning("Bad response retrieving mail for %s" % character_id)
             logger.warning("%s" % response.status)
+            logger.warning("%s" % response.data)
             return None
 
     def get_character_journal(self, character_id):
@@ -318,7 +318,6 @@ class EveClient:
             logger.warning("%s" % response.status)
             return None
     
-    
     def get_character_hangar_assets(self, character_id):
         untrackable_assets = (
             "Advanced Planetary Materials",
@@ -363,6 +362,46 @@ class EveClient:
             logger.warning("%s" % response.status)
             return None
     
+    def get_corporations_journal(self, corporation_id):
+        if (not self.update_esi_security(character_id)):
+            return None 
+
+        op = self.ESI_APP.op['get_corporations_corporation_id_wallet_journal'](
+            character_id=character_id)
+        
+        response = eve_settings.ESI_CLIENT.request(op)
+
+        if (response.status == 200):
+            character_ids = []
+            # collect character IDs
+            for entry in response.data:
+                if 'first_party_id' in entry:
+                    character_ids.append(entry['first_party_id'])
+                if 'second_party_id' in entry:
+                    character_ids.append(entry['second_party_id'])
+                if 'date' in entry: 
+                    entry['date'] = str(entry['date']).split("T")[0]
+            # return None if no entries
+            if (not character_ids):
+                return None 
+            # resolve character IDs
+            resolved_character_ids = self.resolve_ids(character_ids).data
+            # convert to dict
+            resolved_character_ids = {str(character['id']):character for character in resolved_character_ids}
+            # add resolved character IDs
+            for entry in response.data:
+                if 'first_party_id' in entry:
+                    character_id = str(entry['first_party_id'])
+                    entry['first_party_id'] = resolved_character_ids[character_id]['name']
+                if 'second_party_id' in entry:
+                    character_id = str(entry['second_party_id'])
+                    entry['second_party_id'] = resolved_character_ids[character_id]['name']
+
+            return response.data
+        else: 
+            logger.warning("Bad response retrieving journal for %s" % character_id)
+            logger.warning("%s" % response.status)
+            return None
     # HELPERS
     def update_esi_security(self, character_id):
         try:
@@ -388,7 +427,26 @@ class EveClient:
         except ConnectionDoesNotExist as e:
             logger.error("EVE static database needs to be installed")
             return "err_no_static_database"
+        except Exception as e:
+            logger.error("Error resolving EVE type_id(%s) to type_name: %s" % (type_id, e))
+            return "Unknown"
     
+    @staticmethod
+    def resolve_type_name_to_type_id(type_name):
+        print("Resolving ID for type name: %s" % type_name)
+        from django.db.utils import ConnectionDoesNotExist
+        try:
+            with connections[eve_settings.static_database].cursor() as cursor:
+                cursor.execute("select typeID from invTypes where typeName = '%s'" % type_name)
+                row = str(cursor.fetchone()[0])
+            return row
+        except ConnectionDoesNotExist as e:
+            logger.error("EVE static database needs to be installed")
+            return "err_no_static_database"
+        except Exception as e:
+            logger.error(e)
+            return None
+
     @staticmethod
     def resolve_type_id_to_market_group_id(type_id):
         from django.db.utils import ConnectionDoesNotExist
@@ -400,6 +458,9 @@ class EveClient:
         except ConnectionDoesNotExist as e:
             logger.error("EVE static database needs to be installed")
             return "err_no_static_database"
+        except Exception as e:
+            logger.error("Error resolving EVE type_id(%s) to marketGroup: %s" % (type_id, e))
+            return "Unknown"
 
     @staticmethod
     def resolve_market_group_id_to_market_group_name(market_group_id):
