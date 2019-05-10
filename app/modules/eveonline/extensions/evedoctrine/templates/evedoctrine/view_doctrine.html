@@ -25,6 +25,7 @@
                 </thead>
                 <tbody>
                 {% for fitting in doctrine.fittings.all %}
+                {% if fitting.group == group %}
                     <tr>
                         <td>
                             
@@ -66,6 +67,7 @@
                             <p style="opacity: .01; height:0; position:absolute; z-index: -1;" id="fit_{{fitting.pk}}_copy_effective_skills">{{fitting.skill_plan.effective_skills}}</p>
                         </td>
                     </tr>
+                {% endif %}
                 {% endfor %}
                 </tbody>
             </table>

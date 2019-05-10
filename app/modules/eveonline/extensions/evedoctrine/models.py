@@ -21,7 +21,7 @@ class EveFitting(models.Model):
         ("TACKLE", "TACKLE"),
         ("DPS", "DPS"),
         ("ANTI-TACKLE", "ANTI_TACKLE"),
-        ("FORCE MULTIPLIER", "FORCE MULTIPLIER"),
+        ("SUPPORT", "SUPPORT"),
         ("LOGISTICS", "LOGISTICS"),
     )
     name = models.CharField(max_length=32)
