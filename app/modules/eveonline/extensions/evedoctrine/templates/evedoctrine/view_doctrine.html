@@ -70,9 +70,9 @@
                                 class="btn btn-success btn-fill btn-block">
                                 <i class="fa fa-clipboard"> Copy Effective Skills</i>
                             </button>
-                            <p style="opacity: .01; height:0; position:absolute; z-index: -1;" id="fit_{{fitting.pk}}_copy">{{fitting.fitting}}</p>
-                            <p style="opacity: .01; height:0; position:absolute; z-index: -1;" id="fit_{{fitting.pk}}_copy_minimum_skills">{{fitting.skill_plan.minimum_skills}}</p>
-                            <p style="opacity: .01; height:0; position:absolute; z-index: -1;" id="fit_{{fitting.pk}}_copy_effective_skills">{{fitting.skill_plan.effective_skills}}</p>
+                            <textarea style="opacity: .01; height:0; position:absolute; z-index: -1;" id="fit_{{fitting.pk}}_copy">{{fitting.fitting}}</textarea>
+                            <textarea style="opacity: .01; height:0; position:absolute; z-index: -1;" id="fit_{{fitting.pk}}_copy_minimum_skills">{{fitting.skill_plan.minimum_skills}}</textarea>
+                            <textarea style="opacity: .01; height:0; position:absolute; z-index: -1;" id="fit_{{fitting.pk}}_copy_effective_skills">{{fitting.skill_plan.effective_skills}}</textarea>
                         </td>
                     </tr>
                 {% endif %}
