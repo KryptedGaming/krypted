@@ -71,7 +71,8 @@ INSTALLED_APPS = [
 # Warning: Extensions are difficult to disable and re-enable, it requires dropping SQL tables and rerunning migrations.
 # This is because they create dependencies because they rely on other modules. 
 INSTALLED_APPS += [
-    # 'modules.eveonline.extensions.eveaudit',
+    'modules.eveonline.extensions.eveaudit',
+    'modules.eveonline.extensions.evedoctrine',
 ]
 
 # APPLCATION DEFINITION
