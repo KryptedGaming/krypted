@@ -29,3 +29,9 @@ if apps.is_installed("modules.eveonline.extensions.eveaudit"):
     urlpatterns += [
         url(r'^audit/', include('modules.eveonline.extensions.eveaudit.urls')),
     ]
+
+# DOCTRINE
+if apps.is_installed("modules.eveonline.extensions.evedoctrine"):
+    urlpatterns += [
+        url(r'doctrines/', include('modules.eveonline.extensions.evedoctrine.urls')),
+    ]

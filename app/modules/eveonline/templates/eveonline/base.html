@@ -4,8 +4,11 @@
   <li class="header">MAIN NAVIGATION</li>
   <!-- Optionally, you can add icons to the links -->
   <li><a href="{% url 'eve-dashboard' %}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
+  <li><a href="{% url 'eve-dashboard' %}"><i class="fa fa-user"></i> <span>Characters</span></a></li>
+  
   <!-- CORE LINKS -->
-  <li class="header">CORPORATION MANAGEMENT</li>
+  <li class="header">CORPORATION</li>
   <!-- Optionally, you can add icons to the links -->
   <li><a href="{% url 'eve-online-characters' %}"><i class="fa fa-user"></i> <span>Characters</span></a></li>
+  <li><a href="{% url 'eve-online-doctrines' %}"><i class="fa fa-crosshairs"></i> <span>Doctrines</span></a></li>
 {% endblock %}

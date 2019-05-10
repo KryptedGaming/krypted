@@ -1,0 +1,112 @@
+{% extends 'eveonline/base.html' %}
+{% load staticfiles %}
+
+{% block brand %}
+  <h1>
+    Doctrine
+    <small>{{doctrine.name}}</small>
+  </h1>
+{% endblock %}
+
+
+{% block content %}
+{% for group in groups %}
+<div class="box box-primary">
+    <div class="box-header with-border">
+        <h4 class="box-title">{{group | title}}</h3>
+    </div>
+    <div class="box-body">
+        <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Ship</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for fitting in doctrine.fittings.all %}
+                    <tr>
+                        <td>
+                            
+                            <img src="http://imageserver.eveonline.com/Type/{{fitting.get_ship_id}}_64.png">
+                            <br><br>
+                            <p style="display: inline; font-size: 16px;">
+                                <b>{{fitting.get_ship_name}}</b>, <i>{{fitting.name}}</i>
+                            </p>
+                            {% if fitting.new_player_friendly %}
+                            <i title="New Player Friendly" style="color:green;" class="fa fa-lightbulb-o"></i>
+                            {% endif %}
+                            
+                            
+                        </td>
+                        <td>
+                            <button 
+                                onclick="CopyToClipboard('fit_{{fitting.pk}}_copy')" 
+                                class="btn btn-warning btn-fill btn-block">
+                                <i class="fa fa-clipboard"> Copy Fitting</i>
+                            </button>
+                            <button 
+                                {% if not fitting.skill_plan %}
+                                disabled
+                                {% endif %}
+                                onclick="CopyToClipboard('fit_{{fitting.pk}}_copy_minimum_skills')" 
+                                class="btn btn-default btn-fill btn-block">
+                                <i class="fa fa-clipboard"> Copy Minimum Skills</i>
+                            </button>
+                            <button 
+                                {% if not fitting.skill_plan %}
+                                disabled
+                                {% endif %}
+                                onclick="CopyToClipboard('fit_{{fitting.pk}}_copy_effective_skills')" 
+                                class="btn btn-success btn-fill btn-block">
+                                <i class="fa fa-clipboard"> Copy Effective Skills</i>
+                            </button>
+                            <p style="opacity: .01; height:0; position:absolute; z-index: -1;" id="fit_{{fitting.pk}}_copy">{{fitting.fitting}}</p>
+                            <p style="opacity: .01; height:0; position:absolute; z-index: -1;" id="fit_{{fitting.pk}}_copy_minimum_skills">{{fitting.skill_plan.minimum_skills}}</p>
+                            <p style="opacity: .01; height:0; position:absolute; z-index: -1;" id="fit_{{fitting.pk}}_copy_effective_skills">{{fitting.skill_plan.effective_skills}}</p>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+    </div>
+    {% for fitting in doctrine.fittings.all %}
+    <div class="modal fade col-md-12" id="selectModal{{fitting.pk}}" data-backdrop="false">
+            <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4>Copy Fitting </h4>
+                        </div>
+                        <div class="modal-body" style="white-space: pre-wrap;">
+                            <p>{{fitting.fitting}}</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            
+    </div>
+    {% endfor %}
+</div>
+{% endfor %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+function CopyToClipboard(containerid) {
+if (document.selection) { 
+    var range = document.body.createTextRange();
+    range.moveToElementText(document.getElementById(containerid));
+    range.select().createTextRange();
+    document.execCommand("copy"); 
+
+} else if (window.getSelection) {
+    var range = document.createRange();
+     range.selectNode(document.getElementById(containerid));
+     window.getSelection().addRange(range);
+     document.execCommand("copy");
+     alert("Copied to Clipboard") 
+}} 
+</script>
+{% endblock %}
