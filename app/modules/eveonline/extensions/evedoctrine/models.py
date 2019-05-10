@@ -46,7 +46,7 @@ class EveFitting(models.Model):
     def get_ship_name(self):
          fitting = self.fitting.splitlines()
          line = fitting[0]
-         return line[1:-1].split(',')[1].strip()
+         return line[1:-1].split(',')[0].strip()
         
     def get_ship_id(self):
         return self.mod_array(self.get_ship_name())
