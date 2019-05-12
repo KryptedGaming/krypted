@@ -433,7 +433,6 @@ class EveClient:
     
     @staticmethod
     def resolve_type_name_to_type_id(type_name):
-        print("Resolving ID for type name: %s" % type_name)
         from django.db.utils import ConnectionDoesNotExist
         try:
             with connections[eve_settings.static_database].cursor() as cursor:

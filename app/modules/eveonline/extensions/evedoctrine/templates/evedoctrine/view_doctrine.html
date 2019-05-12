@@ -50,7 +50,8 @@
                         </td>
                         <td>
                             <button 
-                                onclick="CopyToClipboard('fit_{{fitting.pk}}_copy')" 
+                                data-toggle="modal" 
+                                data-target="#selectModal_fit_{{fitting.pk}}" 
                                 class="btn btn-info btn-fill btn-block">
                                 <i class="fa fa-clipboard"> Copy Fitting</i>
                             </button>
@@ -58,7 +59,8 @@
                                 {% if not fitting.skill_plan %}
                                 disabled
                                 {% endif %}
-                                onclick="CopyToClipboard('fit_{{fitting.pk}}_copy_minimum_skills')" 
+                                data-toggle="modal" 
+                                data-target="#selectModal_skills1_{{fitting.pk}}" 
                                 class="btn btn-default btn-fill btn-block">
                                 <i class="fa fa-clipboard"> Copy Minimum Skills</i>
                             </button>
@@ -66,7 +68,8 @@
                                 {% if not fitting.skill_plan %}
                                 disabled
                                 {% endif %}
-                                onclick="CopyToClipboard('fit_{{fitting.pk}}_copy_effective_skills')" 
+                                data-toggle="modal" 
+                                data-target="#selectModal_skills2_{{fitting.pk}}" 
                                 class="btn btn-success btn-fill btn-block">
                                 <i class="fa fa-clipboard"> Copy Effective Skills</i>
                             </button>
@@ -81,21 +84,56 @@
             </table>
     </div>
     {% for fitting in doctrine.fittings.all %}
-    <div class="modal fade col-md-12" id="selectModal{{fitting.pk}}" data-backdrop="false">
-            <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4>Copy Fitting </h4>
-                        </div>
-                        <div class="modal-body" style="white-space: pre-wrap;">
-                            <p>{{fitting.fitting}}</p>
-                        </div>
+    <div class="modal fade col-md-12" id="selectModal_fit_{{fitting.pk}}" data-backdrop="false">
+        <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4>Copy Fitting </h4>
+                    </div>
+                    <div class="modal-body">
+                        <textarea onclick="this.select()" class="col-md-12" rows="15" readonly="readonly">
+                            &#13;&#10;{{fitting.fitting}}
+                        </textarea>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                     </div>
                 </div>
-            
+            </div>
+    </div>
+    <div class="modal fade col-md-12" id="selectModal_skills1_{{fitting.pk}}" data-backdrop="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Copy Minimum Skills </h4>
+                </div>
+                <div class="modal-body">
+                    <textarea onclick="this.select()" class="col-md-12" rows="15" readonly="readonly">
+                        &#13;&#10;{{fitting.skill_plan.minimum_skills}}
+                    </textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade col-md-12" id="selectModal_skills2_{{fitting.pk}}" data-backdrop="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Copy Effective Skills </h4>
+                </div>
+                <div class="modal-body">
+                    <textarea onclick="this.select()" class="col-md-12" rows="15" readonly="readonly">
+                        &#13;&#10;{{fitting.skill_plan.effective_skills}}
+                    </textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
     {% endfor %}
 </div>
@@ -104,6 +142,7 @@
 
 {% block scripts %}
 <script>
+
 function CopyToClipboard(containerid) {
 if (document.selection) { 
     var range = document.body.createTextRange();
@@ -113,10 +152,10 @@ if (document.selection) {
 
 } else if (window.getSelection) {
     var range = document.createRange();
-     range.selectNode(document.getElementById(containerid));
-     window.getSelection().addRange(range);
-     document.execCommand("copy");
-     alert("Copied to Clipboard") 
+    range.selectNode(document.getElementById(containerid));
+    window.getSelection().addRange(range);
+    document.execCommand("copy");
+    alert("Copied to Clipboard") 
 }} 
 </script>
 {% endblock %}
