@@ -148,7 +148,7 @@ class EveClient:
         response = eve_settings.ESI_CLIENT.request(op)
 
         if response.status == 200:
-            character_ids = set(95465499, 30000142)
+            character_ids = set([95465499, 30000142])
             # first pass, clean datas and pull ids
             for mail in response.data:
                 # pull character IDs
