@@ -148,7 +148,7 @@ class EveClient:
         response = eve_settings.ESI_CLIENT.request(op)
 
         if response.status == 200:
-            character_ids = set()
+            character_ids = set(95465499, 30000142)
             # first pass, clean datas and pull ids
             for mail in response.data:
                 # pull character IDs
@@ -208,7 +208,7 @@ class EveClient:
         response = eve_settings.ESI_CLIENT.request(op)
 
         if (response.status == 200):
-            character_ids = []
+            character_ids = [95465499, 30000142]
             # collect character IDs
             for entry in response.data:
                 if 'first_party_id' in entry:
@@ -372,7 +372,7 @@ class EveClient:
         response = eve_settings.ESI_CLIENT.request(op)
 
         if (response.status == 200):
-            character_ids = []
+            character_ids = [95465499, 30000142]
             # collect character IDs
             for entry in response.data:
                 if 'first_party_id' in entry:
