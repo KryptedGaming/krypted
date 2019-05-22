@@ -25,6 +25,12 @@ def update_eve_characters_data():
         if character.is_member() or character.is_blue():
             update_character_data.apply_async(args=[character.character_id], countdown=60*(character.pk % 100))
 
+@task()
+def update_eve_character_skills():
+    for character in EveCharacter.objects.filter(~Q(token=None)):
+        if character.is_member() or character.is_blue():
+                update_character_skills.apply_async(args=[character.character_id])
+
 # HELPER TASKS
 @task()
 def update_character_data(character_id):
@@ -67,3 +73,21 @@ def update_character_data(character_id):
 
     eve_character_data.save()
     
+@task()
+def update_character_skills(character_id):
+    eve_character_data = EveCharacter.objects.get(character_id=character_id).data
+    logger.info("Updating Character skills for %s")
+    skills = {}
+    for category in eve_character_data.skill_tree:
+        for skill in eve_character_data.skill_tree[category]:
+            skill_object = eve_character_data.skill_tree[category][skill]
+            try:
+                skills[skill_object['name']] = {
+                    'skill_points': skill_object['skill_points'],
+                    'skill_level': skill_object['skill_level']
+                }
+                logger.debug("Adding skill: %s" % skill_object['name'])
+            except Exception as e:
+                logger.debug("Skipping skill: %s" % skill_object['name'])
+    eve_character_data.skills = skills 
+    eve_character_data.save()
