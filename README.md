@@ -1,4 +1,4 @@
-[![Documentation Status](https://readthedocs.org/projects/kryptedauth/badge/?version=latest)](https://kryptedauth.readthedocs.io/en/latest/?)
+[![Discord Chat](https://img.shields.io/discord/235260768579223552.svg)](https://discord.gg/y3gVdhJ) [![Documentation Status](https://readthedocs.org/projects/kryptedauth/badge/?version=latest)](https://kryptedauth.readthedocs.io/en/latest/?) [![Donate](https://img.shields.io/badge/$-support-12a0df.svg?style=flat)](https://www.patreon.com/kryptedgaming)
 
 # Krypted Authentication
 Advanced authentication system for Krypted Gaming.
