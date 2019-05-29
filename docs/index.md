@@ -1,20 +1,15 @@
-.. Krypted Authentication documentation master file, created by
-   sphinx-quickstart on Sun Mar  3 03:45:38 2019.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+# Welcome
+This is the documentation for [Krypted Authentication](https://github.com/KryptedGaming/kryptedauth). 
 
-Welcome to Krypted Authentication's documentation!
-==================================================
-
+If you find any issues, please [contact us](https://kryptedgaming.com/).  
+```eval_rst
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+    :maxdepth: 3
+    :caption: Contents
 
+    overview/index
+    installation/index
+    modules/index
+    contributing/index
+```
 
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
