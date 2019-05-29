@@ -1,3 +1,4 @@
+import os
 # -*- coding: utf-8 -*-
 #
 # Configuration file for the Sphinx documentation builder.
@@ -20,8 +21,8 @@
 # -- Project information -----------------------------------------------------
 
 project = 'Krypted Authentication'
-copyright = '2019, Porowns, Zahren'
-author = 'Porowns, Zahren'
+copyright = '2019, Krypted Gaming'
+author = 'Porowns (BearThatCares), Zahren (Deshal Jouhinen)'
 
 # The short X.Y version
 version = ''
@@ -31,6 +32,8 @@ release = '3.0'
 
 # -- General configuration ---------------------------------------------------
 
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+
 # If your documentation needs a minimal Sphinx version, state it here.
 #
 # needs_sphinx = '1.0'
@@ -39,6 +42,7 @@ release = '3.0'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+        'recommonmark',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -48,7 +52,7 @@ templates_path = ['_templates']
 # You can specify multiple suffix as a list of string:
 #
 # source_suffix = ['.rst', '.md']
-source_suffix = '.md'
+source_suffix = ['.md', '.rst']
 
 # The master toctree document.
 master_doc = 'index'
@@ -74,7 +78,7 @@ pygments_style = None
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'alabaster'
+html_theme = "sphinx_rtd_theme"
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -171,3 +175,16 @@ epub_title = project
 
 # A list of files that should not be packed into the epub file.
 epub_exclude_files = ['search.html']
+
+# Markdown 
+import recommonmark
+
+from recommonmark.parser import CommonMarkParser
+from recommonmark.transform import AutoStructify
+
+def setup(app):
+    app.add_config_value('recommonmark_config', {
+            'auto_toc_tree_section': 'Contents',
+            }, True)
+    app.add_transform(AutoStructify)
+
