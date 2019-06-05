@@ -118,7 +118,51 @@
     <section class="sidebar">
       <ul class="sidebar-menu" data-widget="tree">
         {% block sidebar %}
-        {% endblock %}
+          <!-- CORE LINKS -->
+          <li class="header">MAIN NAVIGATION</li>
+          <!-- Optionally, you can add icons to the links -->
+          <li><a href="{% url 'dashboard' %}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
+          <li><a href="{% url 'groups' %}"><i class="fa fa-feed"></i> <span>Groups</span></a></li>
+          
+          
+          <li class="header">COMMUNITY</li>
+          {% if "modules.engagement" in installed_apps %}
+            <li><a href="{% url 'events' %}"><i class="fa fa-calendar"></i> <span>Calendar</span></a></li>
+            {% if perms.engagement.view_survey %}
+            <li><a href="{% url 'surveys' %}"><i class="fa fa-pencil"></i> <span>Surveys</span></a></li>
+            {% endif %}
+          {% endif %}
+
+          {% if "modules.applications" in installed_apps %}
+          {% if perms.applications.view_application %}
+          <li><a href="{% url 'view-applications' %}"><i class="fa fa-paperclip"></i> <span>Applications</span></a></li>
+          {% endif %}
+          {% endif %}
+
+          <!-- EVE ONLINE -->
+          {% if "modules.eveonline" in installed_apps %}
+          <li class="header">EVE ONLINE</li>
+          <li><a href="{% url 'eve-dashboard' %}"><i class="fa fa-user"></i> <span>Characters</span></a></li>
+          <li class="treeview">
+            <a href="#"><i class="fa fa-fighter-jet"></i> <span>Strategic</span> <i class="fa fa-angle-left pull-right"></i></a>
+            <ul class="treeview-menu">
+              <li><a href="#"><i class="fa fa-users"></i> <span>Fleets</span></a></li>
+              <li><a href="#"><i class="fa fa-clock-o"></i> <span>Timers</span></a></li>
+              <li><a href="#"><i class="fa fa-crosshairs"></i> <span>Doctrines</span></a></li>
+              <li><a href="#"><i class="fa fa-money"></i> <span>SRP</span></a></li>
+            </ul>
+          </li>
+          <li class="treeview">
+            <a href="#"><i class="fa fa-building"></i> <span>Corporation</span> <i class="fa fa-angle-left pull-right"></i></a>
+            <ul class="treeview-menu">
+              <li><a href="#"><i class="fa fa-users"></i> <span>Roster</span></a></li>
+              <li><a href="#"><i class="fa fa-money"></i> <span>Taxes</span></a></li>
+              <li><a href="#"><i class="fa fa-pie-chart"></i> <span>Leaderboard</span></a></li>
+            </ul>
+          </li>
+          {% endif %}
+          
+      {% endblock %}
       </ul>
     </section>
   </aside>
