@@ -23,7 +23,7 @@ run_start() {
 }
 
 run_stop() {
-        docker-compose down -d
+        docker-compose down
 }
 
 run_build() {
