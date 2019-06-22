@@ -39,10 +39,10 @@ STATICFILES_DIRS = [
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': '',
-        'USER': os.environ.get('AA_DB_DEFAULT_USER', ''),
-        'PASSWORD': os.environ.get('AA_DB_DEFAULT_PASSWORD', ''),
-        'HOST': os.environ.get('AA_DB_DEFAULT_HOST', '127.0.0.1'),
+        'NAME': 'auth',
+        'USER': os.environ.get('AA_DB_DEFAULT_USER', 'auth'),
+        'PASSWORD': os.environ.get('AA_DB_DEFAULT_PASSWORD', 'somepassword'),
+        'HOST': os.environ.get('AA_DB_DEFAULT_HOST', 'db'),
         'PORT': os.environ.get('AA_DB_DEFAULT_PORT', '3306'),
     },
 }
@@ -137,7 +137,7 @@ These configuration values are from libraries that require settings.py values.
 """
 # SMTP
 EMAIL_HOST = ''
-EMAIL_PORT =
+EMAIL_PORT = ''
 EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = True
