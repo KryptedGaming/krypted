@@ -7,7 +7,7 @@ usage () {
   echo "    stop:        Stop the container"
   echo "    restart:     Restart a container"
   echo "    rebuild:     Rebuild the container"
-  echo "    enter:       Open a shell to run commands inside the container"
+  echo "    enter <service>: Open a shell to run commands inside the container"
   echo "    logs:        View the Docker logs for a container"
 }
 
@@ -23,11 +23,19 @@ run_start() {
 }
 
 run_stop() {
-        docker-compose down -d
+        docker-compose down
 }
 
 run_build() {
         docker-compose build --no-cache
+}
+
+run_logs() {
+        docker-compose logs
+}
+
+run_enter() {
+        docker-compose exec ${1} /bin/bash --login
 }
 
 case "$command" in 
@@ -55,4 +63,13 @@ case "$command" in
         run_build
         run_start
         echo "Container rebuilt and restarted"
+        ;;
+
+  enter)
+        run_enter ${2}
+        ;;
+
+    logs)
+        run_logs
+        ;;
 esac
