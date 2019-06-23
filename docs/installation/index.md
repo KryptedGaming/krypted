@@ -47,3 +47,13 @@ This is only required if you've enabled `modules.discourse`
 1. [OPTIONAL] Input `GOOGLE_ANALYTICS_CODE` 
 2. Input `SITE_TITLE`
 3. Input `SITE_LOGO` (url format)
+
+## Installation
+1. Run the docker container (`sudo ./launcher start`)
+2. Enter the MYSQL container (e.g `docker exec -it {container} /bin/bash`)
+3. Create the MYSQL database for static (e.g `mysql -u root -p` and then `CREATE DATABASE STATIC;`
+4. Exit MYSQL (e.g `EXIT;`)
+5. Unzip the static export (e.g `gunzip /tmp/static.sql.gz`)
+6. Import the static dump (e.g `mysql -u root -p static < /tmp/static.sql`)
+
+You should be good to go!
