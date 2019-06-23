@@ -1,4 +1,5 @@
-# Installation
+# Production Installation
+
 ## Prerequisites 
 1. Install Docker (`apt-get install docker docker-compose`)
 2. Install Nginx or preferred webserver (`apt-get install nginx`)
@@ -48,7 +49,7 @@ This is only required if you've enabled `modules.discourse`
 2. Input `SITE_TITLE`
 3. Input `SITE_LOGO` (url format)
 
-## Installation
+## Setup
 1. Run the docker container (`sudo ./launcher start`)
 2. Enter the MYSQL container (e.g `docker exec -it {container} /bin/bash`)
 3. Create the MYSQL database for static (e.g `mysql -u root -p` and then `CREATE DATABASE STATIC;`
@@ -56,4 +57,4 @@ This is only required if you've enabled `modules.discourse`
 5. Unzip the static export (e.g `gunzip /tmp/static.sql.gz`)
 6. Import the static dump (e.g `mysql -u root -p static < /tmp/static.sql`)
 
-You should be good to go!
+# Development Installation
