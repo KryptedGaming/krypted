@@ -1,7 +1,9 @@
 FROM python:3.6
 
 RUN apt-get update && \
-    apt-get install -y
+    apt-get install -y \
+    rabbitmq-server \
+    supervisor
 
 # COPY APPLICATION
 COPY ./app /opt/app/
@@ -11,6 +13,7 @@ COPY ./install /opt/app/install/
 COPY ./install/configuration/settings.py /opt/app/app/settings.py
 COPY ./install/configuration/celery.py /opt/app/app/celery.py
 COPY ./install/configuration/core.py /opt/app/core/apps.py
+COPY ./install/supervisor.conf /etc/supervisor/conf.d/kryptedauth.conf
 
 # COPY MODULE CONFIGURATION
 COPY ./install/configuration/eveonline.py /opt/app/modules/eveonline/apps.py
