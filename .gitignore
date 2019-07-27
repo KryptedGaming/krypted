@@ -127,3 +127,6 @@ app/app/conf/
 
 # venv
 myvenv/
+
+# hide old
+old/
