@@ -16,15 +16,15 @@ Including another URLconf
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf import settings
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from django.contrib.auth import views as auth_views
 from . import views
 
 urlpatterns = [
     path('', views.dashboard, name="app-dashboard"),
-    path('accounts/register/', views.UserRegister.as_view(),
-         name="app-user-register"),
-    path('accounts/login/', views.UserLogin.as_view(), name="app-user-login"),
     path('admin/', admin.site.urls),
+    path('accounts/', include('accounts.urls')),
+
 ]
 
 # DEVELOPMENT

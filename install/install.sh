@@ -24,4 +24,4 @@ tar -xvf install/AdminLTE-2.4.15.tar.gz -C ./app/app/static/
 
 # Install AccountStylingV2
 echo "Installing Accounts Styling in app/static/accounts"
-tar -xvf install/Accounts-2.tar.gz -C ./app/app/static/
+tar -xvf install/Accounts_v12.tar.gz -C ./app/app/static/
