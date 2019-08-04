@@ -111,6 +111,7 @@ app/static/admin/
 app/static/adminlte/
 app/app/static/accounts/
 app/app/static/adminlte/
+app/accounts/static/
 
 # hide conf
 app/app/conf/

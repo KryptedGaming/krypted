@@ -2,6 +2,8 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django_countries.fields import CountryField
+from accounts.utilities import send_activation_email, username_or_email_resolver
+from accounts.models import UserInfo
 import logging
 logger = logging.getLogger(__name__)
 
@@ -44,7 +46,7 @@ class UserLoginForm(forms.Form):
     password = forms.CharField(min_length=8, max_length=32, required=True)
 
     def clean(self):
-        username = self.cleaned_data['username']
+        username = username_or_email_resolver(self.cleaned_data['username'])
         password = self.cleaned_data['password']
 
         # checks

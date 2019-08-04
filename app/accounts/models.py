@@ -5,7 +5,8 @@ from django_countries.fields import CountryField
 
 
 class UserInfo(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    country = CountryField()
-    age = models.IntegerField()
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name="info")
+    country = CountryField(default="US")
+    age = models.IntegerField(default=18)
     secret = models.UUIDField(default=uuid.uuid4)

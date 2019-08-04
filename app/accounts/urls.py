@@ -17,4 +17,7 @@ urlpatterns = [
             auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(),
          name='password_reset_complete'),
+    re_path(r'^activate/(?P<token>[0-9A-Za-z_\-]+)/$',
+            views.activate_account, name='accounts-activate'),
+
 ]

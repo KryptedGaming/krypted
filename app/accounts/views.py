@@ -1,7 +1,7 @@
 # DJANGO IMPORTS
 from django.shortcuts import render, redirect
 from django.conf import settings
-from django.contrib.auth import logout
+from django.contrib.auth import logout, login, authenticate
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.apps import apps
@@ -11,6 +11,21 @@ from django.views.generic.edit import FormView
 from django.contrib.auth.views import PasswordResetConfirmView
 from accounts.forms import UserRegisterForm, UserLoginForm
 from accounts.models import UserInfo
+from accounts.utilities import username_or_email_resolver
+
+
+def activate_account(request, token):
+    user = User.objects.filter(info__secret=token).first()
+    if user:
+        user.is_active = True
+        user.save()
+        messages.add_message(request, messages.SUCCESS,
+                             'Account activated. Please log in.')
+        return redirect('accounts-login')
+    else:
+        messages.add_message(request, messages.ERROR,
+                             'Unable to activate account. Contact support.')
+        return redirect('accounts-login')
 
 
 class UserRegister(FormView):
@@ -32,7 +47,7 @@ class UserRegister(FormView):
             age=form.cleaned_data['age'],
             country=form.cleaned_data['country']
         )
-        user_profile.save()
+        user_info.save()
         return super().form_valid(form)
 
 
@@ -41,8 +56,19 @@ class UserLogin(FormView):
     form_class = UserLoginForm
     success_url = reverse_lazy('accounts-login')
 
+    def get_success_url(self):
+        if 'next' in self.request.GET:
+            return request.GET['next']
+        return reverse_lazy('app-dashboard')
+
     def form_valid(self, form):
         # resolve username from email if needed
+        username = username_or_email_resolver(form.cleaned_data['username'])
+        # authenticate
+        user = authenticate(username=username,
+                            password=form.cleaned_data['password'])
+        # login
+        login(self.request, user)
 
         # resolve next url if redirect
         return super().form_valid(form)
