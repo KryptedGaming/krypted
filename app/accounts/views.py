@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.apps import apps
 from django.contrib.auth.decorators import permission_required, login_required
 from django.urls import reverse_lazy
+from django.views.generic import View
 from django.views.generic.edit import FormView
 from django.contrib.auth.views import PasswordResetConfirmView
 from accounts.forms import UserRegisterForm, UserLoginForm
@@ -72,3 +73,25 @@ class UserLogin(FormView):
 
         # resolve next url if redirect
         return super().form_valid(form)
+
+
+class UserView(View):
+    def get(self, request, username):
+        context = {}
+        context['user'] = User.objects.get(username=username)
+        return render(request, context=context, template_name='accounts/user_view.html')
+
+    def put(self, request, username):
+        pass
+
+    def delete(self, request, username):
+        user = User.objects.get(username=username)
+        if request.user == user:
+            messages.add_message(request, messages.SUCCESS,
+                                 'Account succesfully deleted, sorry to see you go!')
+            user.delete()
+        else:
+            messages.add_message(request, messages.DANGER,
+                                 'Nice try, but that is not your account.')
+
+        return redirect('app-register')
