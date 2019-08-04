@@ -11,3 +11,7 @@ from django.views.generic.edit import FormView
 
 def dashboard(request):
     return render(request, 'app/index.html', context={})
+
+
+def handler500(request):
+    return render(request, '500.html', status=505)

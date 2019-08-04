@@ -61,7 +61,7 @@
                 <!-- mini logo for sidebar mini 50x50 pixels -->
                 <span class="logo-mini"><img src="{% static 'app/images/logo_16x16.png' %}"></span>
                 <!-- logo for regular state and mobile devices -->
-                <span class="logo-lg"><b>Krypted</b>MP</span>
+                <span class="logo-lg">Krypted Platform
             </a>
             <!-- Header Navbar: style can be found in header.less -->
             <nav class="navbar navbar-static-top">
@@ -72,37 +72,6 @@
 
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">
-                        <!-- Messages: style can be found in dropdown.less-->
-                        <li class="dropdown messages-menu">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <i class="fa fa-envelope-o"></i>
-                                <span class="label label-success">4</span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li class="header">You have 4 messages</li>
-                                <li>
-                                    <!-- inner menu: contains the actual data -->
-                                    <ul class="menu">
-                                        <li>
-                                            <!-- start message -->
-                                            <a href="#">
-                                                <div class="pull-left">
-                                                    <img src="{% static 'adminlte/dist/img/user2-160x160.jpg' %}"
-                                                        class="img-circle" alt="User Image">
-                                                </div>
-                                                <h4>
-                                                    Support Team
-                                                    <small><i class="fa fa-clock-o"></i> 5 mins</small>
-                                                </h4>
-                                                <p>Why not buy a new awesome theme?</p>
-                                            </a>
-                                        </li>
-                                        <!-- end message -->
-                                    </ul>
-                                </li>
-                                <li class="footer"><a href="#">Clear Messages</a></li>
-                            </ul>
-                        </li>
                         <!-- Notifications: style can be found in dropdown.less -->
                         <li class="dropdown notifications-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -127,19 +96,19 @@
                         <!-- User Account: style can be found in dropdown.less -->
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <img src="https://api.adorable.io/avatars/160/user.png" class="user-image"
-                                    alt="User Image">
-                                <span class="hidden-xs">Alexander Pierce</span>
+                                <img src="https://api.adorable.io/avatars/160/{{request.user.username}}.png"
+                                    class="user-image" alt="User Image">
+                                <span class="hidden-xs">{{request.user.username | title}}</span>
                             </a>
                             <ul class="dropdown-menu">
                                 <!-- User image -->
                                 <li class="user-header">
-                                    <img src="https://api.adorable.io/avatars/160/user.png" class="img-circle"
-                                        alt="User Image">
+                                    <img src="https://api.adorable.io/avatars/160/{{request.user.username}}.png"
+                                        class="img-circle" alt="User Image">
 
                                     <p>
-                                        Alexander Pierce - Web Developer
-                                        <small>Member since Nov. 2012</small>
+                                        {{request.user.username | title}} - User
+                                        <small>Member since {{user.date_joined |date:"F j, Y"}}</small>
                                     </p>
                                 </li>
                                 <!-- Menu Footer-->
