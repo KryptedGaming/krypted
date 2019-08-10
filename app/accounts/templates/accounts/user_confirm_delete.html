@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block header %}
+User
+{% endblock %}
+
+{% block description %}
+Delete User: {{user}}
+{% endblock %}
+
+{% block content %}
+
+<p>Are you sure you would like to delete this account? This cannot be undone.</p>
+<form action="" method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Delete Account</button>
+</form>
+{% endblock %}

@@ -57,7 +57,7 @@
 
         <header class="main-header">
             <!-- Logo -->
-            <a href="" class="logo">
+            <a href="{% url 'app-dashboard' %}" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
                 <span class="logo-mini"><img src="{% static 'app/images/logo_16x16.png' %}"></span>
                 <!-- logo for regular state and mobile devices -->
@@ -114,10 +114,12 @@
                                 <!-- Menu Footer-->
                                 <li class="user-footer">
                                     <div class="pull-left">
-                                        <a href="#" class="btn btn-default btn-flat">Profile</a>
+                                        <a href="{% url 'accounts-user' request.user.username %}"
+                                            class="btn btn-default btn-flat">Profile</a>
                                     </div>
                                     <div class="pull-right">
-                                        <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                                        <a href="{% url 'accounts-logout' %}" class="btn btn-default btn-flat">Sign
+                                            out</a>
                                     </div>
                                 </li>
                             </ul>
@@ -133,7 +135,7 @@
                 <!-- sidebar menu: : style can be found in sidebar.less -->
                 <ul class="sidebar-menu" data-widget="tree">
                     <li class="header">MAIN NAVIGATION</li>
-                    <li class="treeview">
+                    <li>
                         <a href="{% url 'app-dashboard' %}">
                             <i class="fa fa-dashboard"></i> <span>Dashboard</span>
                         </a>
@@ -209,6 +211,19 @@
 
             <!-- Main content -->
             <section class="content">
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert
+                        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %} alert-danger {% endif %}
+                        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %} alert-success {% endif %}
+                        {% if message.level == DEFAULT_MESSAGE_LEVELS.WARNING %} alert-warning {% endif %}
+                        {% if message.level == DEFAULT_MESSAGE_LEVELS.INFO %} alert-info {% endif %}
+                        alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    {{message}}
+                </div>
+                {% endfor %}
+                {% endif %}
                 {% block content %}
 
                 {% endblock %}

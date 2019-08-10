@@ -8,9 +8,9 @@ from django.apps import apps
 from django.contrib.auth.decorators import permission_required, login_required
 from django.urls import reverse_lazy
 from django.views.generic import View
-from django.views.generic.edit import FormView
-from django.contrib.auth.views import PasswordResetConfirmView
-from accounts.forms import UserRegisterForm, UserLoginForm
+from django.views.generic.edit import FormView, DeleteView
+from django.contrib.auth.views import PasswordResetConfirmView, LogoutView
+from accounts.forms import UserRegisterForm, UserLoginForm, UserUpdateForm
 from accounts.models import UserInfo
 from accounts.utilities import username_or_email_resolver
 
@@ -75,23 +75,62 @@ class UserLogin(FormView):
         return super().form_valid(form)
 
 
+class UserLogout(LogoutView):
+    next_page = reverse_lazy('accounts-login')
+
+
 class UserView(View):
     def get(self, request, username):
         context = {}
         context['user'] = User.objects.get(username=username)
         return render(request, context=context, template_name='accounts/user_view.html')
 
-    def put(self, request, username):
-        pass
-
-    def delete(self, request, username):
+    def post(self, request, username):
+        request_data = request.POST.copy()
         user = User.objects.get(username=username)
-        if request.user == user:
-            messages.add_message(request, messages.SUCCESS,
-                                 'Account succesfully deleted, sorry to see you go!')
-            user.delete()
-        else:
-            messages.add_message(request, messages.DANGER,
-                                 'Nice try, but that is not your account.')
+        if not request.user == user:
+            messages.add_message(self.request, messages.WARNING,
+                                 "Nice try, but that is not your account.")
 
-        return redirect('app-register')
+        if 'username' in request_data and request_data['username'] == request.user.username:
+            request_data.pop('username')
+
+        if 'email' in request_data and request_data['email'] == request.user.username:
+            request_data.pop('email')
+
+        form = UserUpdateForm(request_data)
+        if form.is_valid():
+            if form.cleaned_data['username']:
+                user.username = form.cleaned_data['username']
+            if form.cleaned_data['email']:
+                user.email = form.cleaned_data['email']
+            user.save()
+            messages.add_message(self.request, messages.SUCCESS,
+                                 "Account successfully updated.")
+            return redirect('accounts-user', user.username)
+        else:
+            messages.add_message(self.request, messages.WARNING,
+                                 "Failed to update account information.")
+
+        # Fill context
+        context = {}
+        context['form'] = form
+
+        return render(request, context=context, template_name='accounts/user_view.html')
+
+
+class UserDelete(DeleteView):
+    model = User
+    success_url = reverse_lazy('accounts-login')
+    template_name = 'accounts/user_confirm_delete.html'
+
+    def delete(self, rqeuest, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object == self.request.user:
+            success_url = self.get_success_url()
+            self.object.delete()
+            return redirect(success_url)
+        else:
+            messages.add_message(self.request, messages.ERROR,
+                                 'Nice try, but that is not your account.')
+            return redirect('app-dashboard')

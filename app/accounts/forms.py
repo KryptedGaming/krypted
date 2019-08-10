@@ -70,11 +70,8 @@ class UserLoginForm(forms.Form):
 
 
 class UserUpdateForm(forms.Form):
-    username = forms.CharField(min_length=3, max_length=32, required=True)
-    password = forms.CharField(min_length=8, max_length=32, required=True)
-    email = forms.CharField(max_length=64, required=True)
-    country = CountryField().formfield(required=True)
-    age = forms.IntegerField(required=True)
+    username = forms.CharField(min_length=3, max_length=32, required=False)
+    email = forms.CharField(max_length=64, required=False)
 
     def clean(self):
         # Display error for existing usersnames
@@ -91,11 +88,5 @@ class UserUpdateForm(forms.Form):
         if "@" in str(self.cleaned_data.get('username')):
             self.add_error('username',
                            "Usernames cannot contain @ symbols")
-        # Display errors for mismatched passwords
-        if self.cleaned_data.get('password') != self.cleaned_data.get('v_password'):
-            self.add_error('password', 'Passwords do not match')
-        # Display errors for underage users
-        if self.cleaned_data.get('age') < 18:
-            self.add_error('age', 'Sorry, this community is 18+ only.')
 
         return self.cleaned_data

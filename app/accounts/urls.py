@@ -9,6 +9,7 @@ urlpatterns = [
     path('register/', views.UserRegister.as_view(),
          name="accounts-register"),
     path('login/', views.UserLogin.as_view(), name="accounts-login"),
+    path('logout/', views.UserLogout.as_view(), name="accounts-logout"),
     path('password/reset/', auth_views.PasswordResetView.as_view(),
          name='accounts-password-reset'),
     path('password/reset/done/', auth_views.PasswordResetDoneView.as_view(),
@@ -21,5 +22,7 @@ urlpatterns = [
             views.activate_account, name='accounts-activate'),
     re_path(r'^user/(?P<username>[0-9A-Za-z_\-]+)/$',
             views.UserView.as_view(), name='accounts-user'),
+    path('user/delete/<int:pk>/', views.UserDelete.as_view(),
+         name='accounts-user-delete'),
 
 ]
