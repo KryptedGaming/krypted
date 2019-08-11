@@ -20,4 +20,5 @@ install:
 - ls
 
 script:
+- ls
 - python3 manage.py test
