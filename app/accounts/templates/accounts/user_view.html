@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    {% block header %}
+    User
+    {% endblock %}
+
+    {% block description %}
+    {{user}}
+    {% endblock %}
+
+    <!-- Main content -->
+    {% block content %}
+    {% if form.errors %}
+    {% for field in form %}
+    {% for error in field.errors %}
+    <div class="wrap-input100 alert alert-danger m-b-10">
+        <span class="badge badge-secondary">{{field.label}}</span>
+        <strong>{{ error|escape }}</strong>
+    </div>
+    {% endfor %}
+    {% endfor %}
+    {% endif %}
+    <div class="row">
+        <div class="col-md-3">
+
+            <!-- Profile Image -->
+            <div class="box box-primary">
+                <div class="box-body box-profile">
+                    <img class="profile-user-img img-responsive img-circle"
+                        src="https://api.adorable.io/avatars/160/{{user.username}}.png" alt="User profile picture">
+
+                    <h3 class="profile-username text-center">{{user.username | title }}</h3>
+
+                    <p class="text-muted text-center">User</p>
+
+                    <ul class="list-group list-group-unbordered">
+                        <li class="list-group-item">
+                            <b>Discord</b>
+                            {% if user.eve_character.character_name %}
+                            <p class="pull-right">{{user.discord.username}}</p>
+                            {% else %}
+                            <p class="pull-right"><i>None</i></p>
+                            {% endif %}
+                        </li>
+                        <li class="list-group-item">
+                            <b>EVE Character</b>
+                            {% if user.eve_character.character_name %}
+                            <p class="pull-right">{{user.eve_character.character_name}}</p>
+                            {% else %}
+                            <p class="pull-right"><i>None</i></p>
+                            {% endif %}
+                        </li>
+                        <li class="list-group-item">
+                            <b>Joined</b>
+                            <p class="pull-right">{{user.date_joined |date:"F j, Y"}}</p>
+                        </li>
+                    </ul>
+
+                    <a class="btn btn-danger btn-block" data-confirm="Are you sure?" data-method="delete"
+                        href="{% url 'accounts-user-delete' user.pk %}" rel="nofollow">Delete Account</a>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+
+            <!-- About Me Box -->
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Information</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+
+                    <strong><i class="fa fa-map-marker margin-r-5"></i> Country</strong>
+
+                    <p class="text-muted">{{user.info.country.name}}</p>
+
+                    <hr>
+
+                    <strong><i class="fa fa-pencil margin-r-5"></i> Groups</strong>
+
+                    <p>
+                        {% if user.groups.all %}
+                        {% for group in user.groups.all %}
+                        <span class=" label label-info">{{group.name}}</span>
+                        {% endfor %}
+                        {% else %}
+                        <span class="label label-default">None</span>
+                        {% endif %}
+                    </p>
+
+                    <hr>
+
+                    <strong><i class="fa fa-file-text-o margin-r-5"></i> Notes</strong>
+
+                    <p>There are no notes for this user.</p>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+        <div class="col-md-9">
+            <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#timeline" data-toggle="tab">Timeline</a></li>
+                    {% if request.user == user %}
+                    <li><a href="#settings" data-toggle="tab">Settings</a></li>
+                    {% endif %}
+                </ul>
+                <div class="tab-content">
+                    <div class="active tab-pane" id="timeline">
+                        <!-- The timeline -->
+                        <ul class="timeline timeline-inverse">
+                            <!-- timeline time label -->
+                            <li class="time-label">
+                                <span class="bg-green">
+                                    {% now "F j, Y" %}
+                                </span>
+                            </li>
+                            <!-- /.timeline-label -->
+
+                            <!-- timeline item -->
+                            <li>
+                                <i class="fa fa-user bg-aqua"></i>
+
+                                <div class="timeline-item">
+                                    <span class="time"><i class="fa fa-clock-o"></i>
+                                        {{user.date_joined |date:"F j, Y"}}</span>
+
+                                    <h3 class="timeline-header no-border"><b>{{user.username | title}}</b> joined the
+                                        community
+                                    </h3>
+                                </div>
+                            </li>
+                            <!-- END timeline item -->
+                            <!-- END timeline item -->
+                            <li>
+                                <i class="fa fa-clock-o bg-gray"></i>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- /.tab-pane -->
+                    {% if request.user == user %}
+                    <div class="tab-pane" id="settings">
+                        <form class="form-horizontal" method="POST" action="{% url 'accounts-user' user.username %}">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="inputName" class="col-sm-2 control-label">Username</label>
+
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="inputName" placeholder="Name"
+                                        name="username" value="{{user.username}}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputEmail" class="col-sm-2 control-label">Email</label>
+
+                                <div class="col-sm-10">
+                                    <input type="email" class="form-control" id="inputEmail" placeholder="Email"
+                                        value={{user.email}} name="email">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <button type="submit" class="btn btn-warning">Submit</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    {% endif %}
+                    <!-- /.tab-pane -->
+                </div>
+                <!-- /.tab-content -->
+            </div>
+            <!-- /.nav-tabs-custom -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+
+    {% endblock %}
+    <!-- /.content -->
+</div>

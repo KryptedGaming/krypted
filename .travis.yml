@@ -1,0 +1,28 @@
+language: python
+
+python:
+- "3.5.2"
+
+env: 
+  global: 
+    - DJANGO_VERSION=2.2.3
+
+before_install:
+- export DJANGO_SETTINGS_MODULE=app.settings
+
+install:
+- pip3 install -r install/requirements.txt
+- pip3 install coverage
+- pip3 install python-coveralls
+- cp app/app/settings.py.example app/app/settings.py
+- cd app/
+- python3 manage.py collectstatic
+- python3 manage.py makemigrations
+- python3 manage.py makemigrations accounts
+- python3 manage.py migrate
+
+script:
+- coverage run --source=. manage.py test --noinput --settings=app.settings
+
+after_success:
+- coveralls

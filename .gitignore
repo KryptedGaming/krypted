@@ -107,11 +107,9 @@ db.sqlite3
 .DS_Store
 
 # hide collectstatic
-app/static/django_extensions
-app/static/admin
-app/static/global/ui
-app/log
-app/celerybeat.pid
+app/static/
+app/app/static/adminlte/
+app/accounts/static/accounts/
 
 # hide conf
 app/app/conf/
@@ -124,6 +122,13 @@ app/app/conf/
 
 # hide celery
 **/celery.py
+app/celerybeat.pid
 
 # venv
 myvenv/
+
+# hide old
+old/
+
+# vscode
+.vscode/
