@@ -13,6 +13,7 @@ before_install:
 install:
 - pip3 install -r install/requirements.txt
 - pip3 install coverage
+- pip3 install python-coveralls
 - cp app/app/settings.py.example app/app/settings.py
 - cd app/
 - python3 manage.py collectstatic
