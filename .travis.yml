@@ -13,6 +13,11 @@ before_install:
 install:
 - pip install -r install/requirements.txt
 - cp app/app/settings.py.example app/app/settings.py
+- cd app/
+- python3 manage.py collectstatic
+- python3 manage.py makemigrations
+- python3 manage.py migrate
 
 script:
+- cd app/
 - python3 manage.py test
