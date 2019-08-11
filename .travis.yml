@@ -19,5 +19,4 @@ install:
 - python3 manage.py migrate
 
 script:
-- cd app/
 - python3 manage.py test
