@@ -5,7 +5,7 @@ from accounts.models import UserInfo
 from accounts.forms import UserLoginForm, UserRegisterForm, UserUpdateForm
 
 
-class UserRegisterFormTestCase(TestCase):
+class UserRegisterFormTestCase(TestCase):        
     def test_valid_form(self):
         """
         Test a valid form with standard input.
