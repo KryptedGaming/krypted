@@ -16,9 +16,8 @@ install:
 - cd app/
 - python3 manage.py collectstatic
 - python3 manage.py makemigrations
+- python3 manage.py makemigrations accounts
 - python3 manage.py migrate
-- ls
 
 script:
-- ls
 - python3 manage.py test

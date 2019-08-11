@@ -9,6 +9,7 @@ from django.urls import reverse_lazy
 from django.views.generic.edit import FormView
 
 
+@login_required
 def dashboard(request):
     return render(request, 'app/index.html', context={})
 
