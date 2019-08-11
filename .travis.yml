@@ -1,0 +1,18 @@
+language: python
+
+python:
+- "3.5.2"
+
+env: 
+  global: 
+    - DJANGO_VERSION=2.2.3
+
+before_install:
+- export DJANGO_SETTINGS_MODULE=krypted.settings
+
+install:
+- pip install -r install/requirements.txt
+- cp app/app/settings.py.example app/app/settings.py
+
+script:
+- python3 manage.py test
