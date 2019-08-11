@@ -124,7 +124,7 @@ class UserDelete(DeleteView):
     success_url = reverse_lazy('accounts-login')
     template_name = 'accounts/user_confirm_delete.html'
 
-    def delete(self, rqeuest, *args, **kwargs):
+    def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
         if self.object == self.request.user:
             success_url = self.get_success_url()
