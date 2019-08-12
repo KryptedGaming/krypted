@@ -1,0 +1,48 @@
+#!/bin/bash
+
+usage () {
+  echo "Usage: launcher COMMAND CONFIG [--skip-prereqs] [--docker-args STRING]"
+  echo "Commands:"
+  echo "    env:       Create a Python virtual environment"
+  echo "    install:   Run the installation script"
+  echo "    test:      Run tests with coverage"
+}
+
+command=$1
+
+if [ -z "$command" ]; then
+    usage
+    exit 1
+fi
+
+run_env() {
+    python3 -m venv myvenv
+}
+
+run_install() {
+    ./install/install.sh
+}
+
+run_test() {
+    cd ./app
+    coverage run --omit=**/tests.py,./install/*,./launcher --source=. ./manage.py test --noinput --settings=app.settings 
+    cd ../
+}
+
+case "$command" in 
+    env)
+        run_env
+        echo "Virtual Environment created"
+        exit 0
+        ;;
+    
+    install)
+        run_install
+        exit 0
+        ;;
+
+    test)
+    run_test
+    exit 0
+    ;;
+esac
