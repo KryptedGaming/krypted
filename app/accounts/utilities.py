@@ -17,5 +17,4 @@ def send_activation_email(user):
             settings.SITE_TITLE, settings.SITE_DOMAIN, user.info.secret),
         settings.DEFAULT_FROM_EMAIL,
         [user.email],
-        fail_silently=False
-    )
+        fail_silently=False)
