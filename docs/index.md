@@ -1,15 +1,11 @@
-# Welcome
-This is the documentation for [Krypted Authentication](https://github.com/KryptedGaming/kryptedauth). 
-
-If you find any issues, please [contact us](https://kryptedgaming.com/).  
+# Welcome 
 ```eval_rst
 .. toctree::
-    :maxdepth: 3
+    :maxdepth: 4
     :caption: Contents
 
     overview/index
-    installation/index
-    modules/index
-    contributing/index
+    features/index
+    user_guide/index
+    developer_guide/index
 ```
-
