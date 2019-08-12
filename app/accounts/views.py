@@ -38,16 +38,18 @@ class UserRegister(FormView):
         user = User.objects.create_user(
             username=form.cleaned_data['username'],
             email=form.cleaned_data['email'],
-            password=form.cleaned_data['password'],
-            is_active=False
-        )
+            password=form.cleaned_data['password'])
+        # Check if email activation is enabled
+        if not settings.EMAIL_HOST:
+            user.is_active = True
+        else:
+            user.is_active = False
         user.save()
 
         user_info = UserInfo(
             user=user,
             age=form.cleaned_data['age'],
-            country=form.cleaned_data['country']
-        )
+            country=form.cleaned_data['country'])
         user_info.save()
         return super().form_valid(form)
 
@@ -59,7 +61,7 @@ class UserLogin(FormView):
 
     def get_success_url(self):
         if 'next' in self.request.GET:
-            return request.GET['next']
+            return self.request.GET['next']
         return reverse_lazy('app-dashboard')
 
     def form_valid(self, form):
@@ -68,6 +70,7 @@ class UserLogin(FormView):
         # authenticate
         user = authenticate(username=username,
                             password=form.cleaned_data['password'])
+
         # login
         login(self.request, user)
 

@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth import authenticate
+from django.conf import settings
 from django.contrib.auth.models import User
 from django_countries.fields import CountryField
 from accounts.utilities import send_activation_email, username_or_email_resolver
@@ -54,19 +55,22 @@ class UserLoginForm(forms.Form):
         user_exists = User.objects.filter(username=username).exists()
         user_authenticated = authenticate(username=username, password=password)
         if user_exists:
-            user_active = User.objects.get(username=username).is_active
+            user = User.objects.get(username=username)
+            user_info = UserInfo.objects.get_or_create(user=user)
+            user_active = user.is_active
 
         # authenticate check
-        if not user_authenticated:
-            self.add_error('password', 'Invalid credentials.')
         if not user_exists:
             self.add_error('username', 'User does not exist.')
+            return self.cleaned_data
+        if not user_authenticated:
+            self.add_error('password', 'Invalid credentials.')
+            return self.cleaned_data
         if user_exists and not user_active:
             send_activation_email(User.objects.get(username=username))
             self.add_error(
                 'username', 'Account not active, please check your email or reset password')
-
-        return self.cleaned_data
+            return self.cleaned_data
 
 
 class UserUpdateForm(forms.Form):
