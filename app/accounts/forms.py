@@ -22,7 +22,7 @@ class UserRegisterForm(forms.Form):
         if User.objects.filter(username=self.cleaned_data.get('username')).exists():
             self.add_error('username', 'Username is already taken')
         # Display errors for existing emails
-        if User.objects.filter(username=self.cleaned_data.get('email')).exists():
+        if User.objects.filter(email=self.cleaned_data.get('email')).exists():
             self.add_error('email', 'Email is already taken')
         # Display errors for usernames with spaces
         if " " in str(self.cleaned_data.get('username')):
@@ -65,12 +65,12 @@ class UserLoginForm(forms.Form):
             return self.cleaned_data
         if not user_authenticated:
             self.add_error('password', 'Invalid credentials.')
-            return self.cleaned_data
         if user_exists and not user_active:
             send_activation_email(User.objects.get(username=username))
             self.add_error(
                 'username', 'Account not active, please check your email or reset password')
-            return self.cleaned_data
+
+        return self.cleaned_data
 
 
 class UserUpdateForm(forms.Form):
@@ -82,7 +82,7 @@ class UserUpdateForm(forms.Form):
         if User.objects.filter(username=self.cleaned_data.get('username')).exists():
             self.add_error('username', 'Username is already taken')
         # Display errors for existing emails
-        if User.objects.filter(username=self.cleaned_data.get('email')).exists():
+        if User.objects.filter(email=self.cleaned_data.get('email')).exists():
             self.add_error('email', 'Email is already taken')
         # Display errors for usernames with spaces
         if " " in str(self.cleaned_data.get('username')):

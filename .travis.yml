@@ -23,7 +23,7 @@ install:
 - python3 manage.py migrate
 
 script:
-- coverage run --omit=**/tests.py,./install/*,./launcher --source=. ./manage.py test --noinput --settings=app.settings 
+- coverage run --omit=**/tests.py,./install/*,./launcher,**/wsgi.py,**/manage.py --source=. ./manage.py test --noinput --settings=app.settings 
 
 after_success:
 - coveralls

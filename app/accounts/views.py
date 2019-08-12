@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.apps import apps
 from django.contrib.auth.decorators import permission_required, login_required
+from django.utils.decorators import method_decorator
 from django.urls import reverse_lazy
 from django.views.generic import View
 from django.views.generic.edit import FormView, DeleteView
@@ -62,7 +63,8 @@ class UserLogin(FormView):
     def get_success_url(self):
         if 'next' in self.request.GET:
             return self.request.GET['next']
-        return reverse_lazy('app-dashboard')
+
+        return "/"
 
     def form_valid(self, form):
         # resolve username from email if needed
@@ -82,10 +84,16 @@ class UserLogout(LogoutView):
     next_page = reverse_lazy('accounts-login')
 
 
+@method_decorator(login_required, name='dispatch')
 class UserView(View):
     def get(self, request, username):
         context = {}
-        context['user'] = User.objects.get(username=username)
+        try:
+            context['user'] = User.objects.get(username=username)
+        except User.DoesNotExist:
+            messages.add_message(
+                self.request, messages.ERROR, "User does not exist.")
+            return redirect("/")
         return render(request, context=context, template_name='accounts/user_view.html')
 
     def post(self, request, username):
@@ -94,11 +102,12 @@ class UserView(View):
         if not request.user == user:
             messages.add_message(self.request, messages.WARNING,
                                  "Nice try, but that is not your account.")
+            return redirect('accounts-user', user.username)
 
         if 'username' in request_data and request_data['username'] == request.user.username:
             request_data.pop('username')
 
-        if 'email' in request_data and request_data['email'] == request.user.username:
+        if 'email' in request_data and request_data['email'] == request.user.email:
             request_data.pop('email')
 
         form = UserUpdateForm(request_data)
@@ -136,4 +145,4 @@ class UserDelete(DeleteView):
         else:
             messages.add_message(self.request, messages.ERROR,
                                  'Nice try, but that is not your account.')
-            return redirect('app-dashboard')
+            return redirect("/")
