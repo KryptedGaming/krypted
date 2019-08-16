@@ -1,13 +1,37 @@
 #!/bin/bash
+usage () {
+    echo "Usage: $0 [dev]"
+    echo "Commands:"
+    echo "    dev:        Install development packages."
+}
+
 echo "Installing the Krypted Platform developer environment"
 if [ ! -d "./app" ]; then
     echo "Please run in the root project directory"
     exit 1
 fi
 
+command=$1
+
+if [ -n "$command" ]; then
+    case "$command" in 
+        dev)
+        DEV_MODE=true
+        ;;
+        *)
+        usage
+        exit 1
+        ;;
+    esac
+fi
+
 # Install python requirements
 echo "Installing Python Requirements"
 pip3 install -r ./install/requirements.txt
+if [ $DEV_MODE ]; then
+    echo "Installing Python Development Requirements"
+    pip3 install -r ./install/requirements_dev.txt
+fi
 
 # Set up the Django project
 echo "Setting up the Django Project"
