@@ -29,6 +29,21 @@ run_test() {
     cd ../
 }
 
+run_server() {
+    cd ./app/
+    python3 manage.py runserver
+}
+
+run_celery() {
+    cd ./app/
+    celery -A app worker --beat --scheduler django_celery_beat.schedulers:DatabaseScheduler --loglevel=debug
+}
+
+run_celery_flower() {
+    cd ./app/
+    celery flower -A app --address=127.0.0.1 --port=5555
+}
+
 case "$command" in 
     env)
         run_env
@@ -43,6 +58,18 @@ case "$command" in
     test)
         run_test
         exit 0
+        ;;
+    run)
+        run_server 
+        exit 0
+        ;;
+    celery)
+        run_celery 
+        exit 0 
+        ;;
+    flower)
+        run_celery_flower 
+        exit 0 
         ;;
     *)
         usage
