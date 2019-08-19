@@ -6,6 +6,9 @@ usage () {
   echo "    env:       Create a Python virtual environment"
   echo "    install:   Run the installation script"
   echo "    test:      Run tests with coverage"
+  echo "    run:       Runs Django webserver"
+  echo "    celery:    Runs celery worker and beat"
+  echo "    flower:    Runs celery flower"
 }
 
 command=$1

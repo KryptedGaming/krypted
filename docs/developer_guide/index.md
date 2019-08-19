@@ -6,6 +6,7 @@
     :caption: Contents
 
     installation
+    launcher
     running
     contributing
 ```
