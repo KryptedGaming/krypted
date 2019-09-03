@@ -7,8 +7,11 @@ usage () {
   echo "    install:   Run the installation script"
   echo "    test:      Run tests with coverage"
   echo "    run:       Runs Django webserver"
+  echo "    start:     Runs the Django webserver"
+  echo "    migrate:   Runs the Django migrations"
   echo "    celery:    Runs celery worker and beat"
   echo "    flower:    Runs celery flower"
+  echo "    shell:     Runs the django shell"
 }
 
 command=$1
@@ -35,6 +38,18 @@ run_test() {
 run_server() {
     cd ./app/
     python3 manage.py runserver
+}
+
+run_shell() {
+    cd ./app/
+    python3 manage.py shell
+}
+
+run_migrate() {
+    cd ./app/
+    python3 manage.py makemigrations
+    python3 manage.py migrate 
+    cd ..
 }
 
 run_celery() {
@@ -66,12 +81,24 @@ case "$command" in
         run_server 
         exit 0
         ;;
+    start)
+        run_server 
+        exit 0
+        ;;
     celery)
         run_celery 
         exit 0 
         ;;
     flower)
         run_celery_flower 
+        exit 0 
+        ;;
+    shell)
+        run_shell 
+        exit 0 
+        ;;
+    migrate) 
+        run_migrate 
         exit 0 
         ;;
     *)

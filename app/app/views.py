@@ -11,7 +11,7 @@ from django.views.generic.edit import FormView
 
 @login_required
 def dashboard(request):
-    return render(request, 'app/index.html', context={})
+    return redirect('accounts-user', username=request.user.username)
 
 
 def handler500(request):

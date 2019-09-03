@@ -96,18 +96,27 @@
                         <!-- User Account: style can be found in dropdown.less -->
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                {% if "django_eveonline_connector" in INSTALLED_APPS and user.evetoken_set.all.0.get_primary_token %}
+                                <img src="https://imageserver.eveonline.com/Character/{{user.evetoken_set.all.0.get_primary_token.character.external_id}}_128.jpg"
+                                    class="user-image" alt="User Image">
+                                {% else %}
                                 <img src="https://api.adorable.io/avatars/160/{{request.user.username}}.png"
                                     class="user-image" alt="User Image">
+                                {% endif %}
                                 <span class="hidden-xs">{{request.user.username | title}}</span>
                             </a>
                             <ul class="dropdown-menu">
                                 <!-- User image -->
                                 <li class="user-header">
+                                    {% if "django_eveonline_connector" in INSTALLED_APPS and user.evetoken_set.all.0.get_primary_token %}
+                                    <img src="https://imageserver.eveonline.com/Character/{{user.evetoken_set.all.0.get_primary_token.character.external_id}}_128.jpg"
+                                        class="img-circle" alt="User Image">
+                                    {% else %}
                                     <img src="https://api.adorable.io/avatars/160/{{request.user.username}}.png"
                                         class="img-circle" alt="User Image">
-
+                                    {% endif %}
                                     <p>
-                                        {{request.user.username | title}} - User
+                                        {{request.user.username | title}}
                                         <small>Member since {{user.date_joined |date:"F j, Y"}}</small>
                                     </p>
                                 </li>
@@ -137,12 +146,12 @@
                     <li class="header">MAIN NAVIGATION</li>
                     <li>
                         <a href="{% url 'app-dashboard' %}">
-                            <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+                            <i class="fa fa-home"></i> <span>Home</span>
                         </a>
                     </li>
                     <li class="treeview">
                         <a href="{% url 'app-dashboard' %}">
-                            <i class="fa fa-users"></i> <span>Groups</span>
+                            <i class="fa fa-user"></i> <span>Groups</span>
                         </a>
                     </li>
                     <li class="header">EXTENSIONS</li>
@@ -203,10 +212,6 @@
                         {% endblock %}
                     </small>
                 </h1>
-                <ol class="breadcrumb">
-                    <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-                    <li class="active">Dashboard</li>
-                </ol>
             </section>
 
             <!-- Main content -->

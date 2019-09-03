@@ -1,14 +1,18 @@
 {% extends "base.html" %}
 
+{% block title %}
+Home
+{% endblock %}
+
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     {% block header %}
-    User
+    View User
     {% endblock %}
 
     {% block description %}
-    {{user}}
+    {{user | title}}
     {% endblock %}
 
     <!-- Main content -->
@@ -29,36 +33,78 @@
             <!-- Profile Image -->
             <div class="box box-primary">
                 <div class="box-body box-profile">
+                    {% if "django_eveonline_connector" in INSTALLED_APPS and user.evetoken_set.all.0.get_primary_token %}
+                    <img class="profile-user-img img-responsive img-circle"
+                        src="https://imageserver.eveonline.com/Character/{{user.evetoken_set.all.0.get_primary_token.character.external_id}}_128.jpg" alt="User profile picture">
+                    {% else %}
                     <img class="profile-user-img img-responsive img-circle"
                         src="https://api.adorable.io/avatars/160/{{user.username}}.png" alt="User profile picture">
-
+                    {% endif %}
                     <h3 class="profile-username text-center">{{user.username | title }}</h3>
 
-                    <p class="text-muted text-center">User</p>
+                    <p class="text-muted text-center">{{user.info.country.name}}</p>
+                    <div class="text-center">
+                        {% if request.user.groups.all %}
+                        {% for group in request.user.groups.all %}
+                        <span class="label label-info">{{group.name}}</span>
+                        {% endfor %}
+                        {% else %}
+                        <span class="label label-default">None</span>
+                        {% endif %}
+                    </div>
+                    <br>
 
                     <ul class="list-group list-group-unbordered">
+                        {% if "django_discord_connector" in INSTALLED_APPS %}
                         <li class="list-group-item">
                             <b>Discord</b>
-                            {% if user.eve_character.character_name %}
-                            <p class="pull-right">{{user.discord.username}}</p>
+                            {% if user.discord_token %}
+                            <p class="pull-right">
+                                {{user.discord_token.discord_user.nickname}}
+                                <a class="text-danger" href="{% url 'django-discord-connector-sso-token-remove' user.discord_token.pk %}"><i class="fa fa-times pull-right"></i></a>
+                            </p>
+                            {% elif request.user == user %}
+                            <p class="pull-right"><b><a href="{% url 'django-discord-connector-sso-token-add' %}">Link Discord Account</a></b></p>
                             {% else %}
                             <p class="pull-right"><i>None</i></p>
                             {% endif %}
                         </li>
+                        {% endif %}
+                        {% if "django_discourse_connector" in INSTALLED_APPS %}
                         <li class="list-group-item">
-                            <b>EVE Character</b>
-                            {% if user.eve_character.character_name %}
-                            <p class="pull-right">{{user.eve_character.character_name}}</p>
+                            <b>Forum</b>
+                            {% if user.discourse_token %}
+                            <p class="pull-right">{{user.discourse_token.discourse_user.username}}</p>
+                            {% elif request.user == user %}
+                            <p class="pull-right"><b><a href="#">Create Forum Account</a></b></p>
                             {% else %}
                             <p class="pull-right"><i>None</i></p>
+                            {% endif %}
+                        </li>
+                        {% endif %}
+                        {% if "django_eveonline_connector" in INSTALLED_APPS %}
+                        <li class="list-group-item">
+                            <b>EVE Character</b>
+                            {% if user.evetoken_set.all and user.evetoken_set.all.0.get_primary_token %}
+                            <p class="pull-right">
+                                {{user.evetoken_set.all.0.get_primary_token.character.name}}
+                                <a class="text-danger" href="{% url 'django-eveonline-connector-sso-token-remove' user.evetoken_set.all.0.get_primary_token.pk %}"><i class="fa fa-times pull-right"></i></a>
+                            </p>
+                            {% else %}
+                            <p class="pull-right"><b><a href="{% url 'django-eveonline-connector-sso-token-add' %}">Add Main Character</a></b></p>
                             {% endif %}
                         </li>
                         <li class="list-group-item">
                             <b>Joined</b>
                             <p class="pull-right">{{user.date_joined |date:"F j, Y"}}</p>
                         </li>
+                        {% endif %}
                     </ul>
 
+                    {% if "django_eveonline_connector" in INSTALLED_APPS %}
+                    <a class="btn btn-success btn-block" href="'{% url 'django-eveonline-connector-sso-token-add' %}">Add Character</a>
+                    <a class="btn btn-info btn-block" href="'{% url 'django-eveonline-connector-sso-token-add' %}">Set Main Character</a>
+                    {% endif %}
                     <a class="btn btn-danger btn-block" data-confirm="Are you sure?" data-method="delete"
                         href="{% url 'accounts-user-delete' user.pk %}" rel="nofollow">Delete Account</a>
                 </div>
@@ -66,82 +112,20 @@
             </div>
             <!-- /.box -->
 
-            <!-- About Me Box -->
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
-                </div>
-                <!-- /.box-header -->
-                <div class="box-body">
-
-                    <strong><i class="fa fa-map-marker margin-r-5"></i> Country</strong>
-
-                    <p class="text-muted">{{user.info.country.name}}</p>
-
-                    <hr>
-
-                    <strong><i class="fa fa-pencil margin-r-5"></i> Groups</strong>
-
-                    <p>
-                        {% if user.groups.all %}
-                        {% for group in user.groups.all %}
-                        <span class=" label label-info">{{group.name}}</span>
-                        {% endfor %}
-                        {% else %}
-                        <span class="label label-default">None</span>
-                        {% endif %}
-                    </p>
-
-                    <hr>
-
-                    <strong><i class="fa fa-file-text-o margin-r-5"></i> Notes</strong>
-
-                    <p>There are no notes for this user.</p>
-                </div>
-                <!-- /.box-body -->
-            </div>
-            <!-- /.box -->
         </div>
+
         <!-- /.col -->
         <div class="col-md-9">
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
-                    <li class="active"><a href="#timeline" data-toggle="tab">Timeline</a></li>
+                    <li class=""><a href="#timeline" data-toggle="tab">Character Management</a></li>
                     {% if request.user == user %}
-                    <li><a href="#settings" data-toggle="tab">Settings</a></li>
+                    <li><a href="#settings" data-toggle="tab">Account Settings</a></li>
                     {% endif %}
                 </ul>
                 <div class="tab-content">
-                    <div class="active tab-pane" id="timeline">
-                        <!-- The timeline -->
-                        <ul class="timeline timeline-inverse">
-                            <!-- timeline time label -->
-                            <li class="time-label">
-                                <span class="bg-green">
-                                    {% now "F j, Y" %}
-                                </span>
-                            </li>
-                            <!-- /.timeline-label -->
-
-                            <!-- timeline item -->
-                            <li>
-                                <i class="fa fa-user bg-aqua"></i>
-
-                                <div class="timeline-item">
-                                    <span class="time"><i class="fa fa-clock-o"></i>
-                                        {{user.date_joined |date:"F j, Y"}}</span>
-
-                                    <h3 class="timeline-header no-border"><b>{{user.username | title}}</b> joined the
-                                        community
-                                    </h3>
-                                </div>
-                            </li>
-                            <!-- END timeline item -->
-                            <!-- END timeline item -->
-                            <li>
-                                <i class="fa fa-clock-o bg-gray"></i>
-                            </li>
-                        </ul>
+                    <div class="tab-pane" id="timeline">
+                        {% include "django_eveonline_connector/adminlte/character_dashboard_snippet.html" %}
                     </div>
                     <!-- /.tab-pane -->
                     {% if request.user == user %}
@@ -175,8 +159,8 @@
                     <!-- /.tab-pane -->
                 </div>
                 <!-- /.tab-content -->
-            </div>
             <!-- /.nav-tabs-custom -->
+            </div>
         </div>
         <!-- /.col -->
     </div>
