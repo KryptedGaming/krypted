@@ -27,6 +27,8 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),
     path('discord/', include('django_discord_connector.urls')),
     path('eveonline/', include('django_eveonline_connector.urls')),
+    path('eveonline/', include('django_eveonline_timerboard.urls')),
+    path('discourse/', include('django_discourse_connector.urls')),
     path('500/', server_error)
 ]
 
