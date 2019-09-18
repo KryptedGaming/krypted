@@ -35,7 +35,8 @@ Home
                 <div class="box-body box-profile">
                     {% if "django_eveonline_connector" in INSTALLED_APPS and user.evetoken_set.all.0.get_primary_token %}
                     <img class="profile-user-img img-responsive img-circle"
-                        src="https://imageserver.eveonline.com/Character/{{user.evetoken_set.all.0.get_primary_token.character.external_id}}_128.jpg" alt="User profile picture">
+                        src="https://imageserver.eveonline.com/Character/{{user.evetoken_set.all.0.get_primary_token.character.external_id}}_128.jpg"
+                        alt="User profile picture">
                     {% else %}
                     <img class="profile-user-img img-responsive img-circle"
                         src="https://api.adorable.io/avatars/160/{{user.username}}.png" alt="User profile picture">
@@ -61,10 +62,13 @@ Home
                             {% if user.discord_token %}
                             <p class="pull-right">
                                 {{user.discord_token.discord_user.nickname}}
-                                <a class="text-danger" href="{% url 'django-discord-connector-sso-token-remove' user.discord_token.pk %}"><i class="fa fa-times pull-right"></i></a>
+                                <a class="text-danger"
+                                    href="{% url 'django-discord-connector-sso-token-remove' user.discord_token.pk %}"><i
+                                        class="fa fa-times pull-right"></i></a>
                             </p>
                             {% elif request.user == user %}
-                            <p class="pull-right"><b><a href="{% url 'django-discord-connector-sso-token-add' %}">Link Discord Account</a></b></p>
+                            <p class="pull-right"><b><a href="{% url 'django-discord-connector-sso-token-add' %}">Link
+                                        Discord Account</a></b></p>
                             {% else %}
                             <p class="pull-right"><i>None</i></p>
                             {% endif %}
@@ -88,10 +92,13 @@ Home
                             {% if user.evetoken_set.all and user.evetoken_set.all.0.get_primary_token %}
                             <p class="pull-right">
                                 {{user.evetoken_set.all.0.get_primary_token.character.name}}
-                                <a class="text-danger" href="{% url 'django-eveonline-connector-sso-token-remove' user.evetoken_set.all.0.get_primary_token.pk %}"><i class="fa fa-times pull-right"></i></a>
+                                <a class="text-danger"
+                                    href="{% url 'django-eveonline-connector-sso-token-remove' user.evetoken_set.all.0.get_primary_token.pk %}"><i
+                                        class="fa fa-times pull-right"></i></a>
                             </p>
                             {% else %}
-                            <p class="pull-right"><b><a href="{% url 'django-eveonline-connector-sso-token-add' %}">Add Main Character</a></b></p>
+                            <p class="pull-right"><b><a href="{% url 'django-eveonline-connector-sso-token-add' %}">Add
+                                        Main Character</a></b></p>
                             {% endif %}
                         </li>
                         <li class="list-group-item">
@@ -102,8 +109,10 @@ Home
                     </ul>
 
                     {% if "django_eveonline_connector" in INSTALLED_APPS %}
-                    <a class="btn btn-success btn-block" href="'{% url 'django-eveonline-connector-sso-token-add' %}">Add Character</a>
-                    <a class="btn btn-info btn-block" href="'{% url 'django-eveonline-connector-sso-token-add' %}">Set Main Character</a>
+                    <a class="btn btn-success btn-block"
+                        href="'{% url 'django-eveonline-connector-sso-token-add' %}">Add Character</a>
+                    <a class="btn btn-info btn-block" href="'{% url 'django-eveonline-connector-sso-token-add' %}">Set
+                        Main Character</a>
                     {% endif %}
                     <a class="btn btn-danger btn-block" data-confirm="Are you sure?" data-method="delete"
                         href="{% url 'accounts-user-delete' user.pk %}" rel="nofollow">Delete Account</a>
@@ -118,15 +127,19 @@ Home
         <div class="col-md-9">
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
-                    <li class=""><a href="#timeline" data-toggle="tab">Character Management</a></li>
+                    {% if "django_eveonline_connector" in INSTALLED_APPS %}
+                    <li><a href="#eve_character_list" data-toggle="tab">Character Management</a></li>
+                    {% endif %}
                     {% if request.user == user %}
                     <li><a href="#settings" data-toggle="tab">Account Settings</a></li>
                     {% endif %}
                 </ul>
                 <div class="tab-content">
-                    <div class="tab-pane" id="timeline">
+                    {% if "django_eveonline_connector" in INSTALLED_APPS %}
+                    <div class="tab-pane" id="eve_character_list">
                         {% include "django_eveonline_connector/adminlte/character_dashboard_snippet.html" %}
                     </div>
+                    {% endif %}
                     <!-- /.tab-pane -->
                     {% if request.user == user %}
                     <div class="tab-pane" id="settings">
@@ -159,7 +172,7 @@ Home
                     <!-- /.tab-pane -->
                 </div>
                 <!-- /.tab-content -->
-            <!-- /.nav-tabs-custom -->
+                <!-- /.nav-tabs-custom -->
             </div>
         </div>
         <!-- /.col -->

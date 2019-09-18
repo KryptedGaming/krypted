@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf import settings
+from django.apps import apps
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
@@ -28,6 +29,19 @@ urlpatterns = [
     path('500/', server_error)
 ]
 
+for application in settings.INSTALLED_APPS:
+    try:
+        app_config = apps.get_app_config(application)
+        try:
+            if app_config.url_slug:
+                urlpatterns += [
+                    path('%s/' % app_config.url_slug, include('%s.urls' % application))
+                ]
+        except AttributeError:
+            pass 
+    except LookupError:
+        pass
+    
 handler500 = views.handler500
 
 # DEVELOPMENT
