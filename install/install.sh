@@ -28,16 +28,39 @@ fi
 # Install python requirements
 echo "Installing Python Requirements"
 pip3 install -r ./install/requirements.txt
+if [ $? -ne 0 ]; then 
+    echo "Failed to install Python requirements"
+    exit 1
+fi 
 if [ $DEV_MODE ]; then
     echo "Installing Python Development Requirements"
     pip3 install -r ./install/requirements_dev.txt
+    if [ $? -ne 0 ]; then 
+        echo "Failed to install Python Development requirements"
+        exit 1
+    fi 
 fi
 
 # Set up the Django project
 echo "Setting up the Django Project"
+echo "Creating migrations for project"
 python3 ./app/manage.py makemigrations
+if [ $? -ne 0 ]; then 
+    echo "Failed to set up the Django project"
+    exit 1
+fi 
+echo "Creating migrations for specific subprojects"
 python3 ./app/manage.py makemigrations accounts
+if [ $? -ne 0 ]; then 
+    echo "Failed to set up the Django project"
+    exit 1
+fi 
+echo "Creating database for project"
 python3 ./app/manage.py migrate 
+if [ $? -ne 0 ]; then 
+    echo "Failed to set up the Django project"
+    exit 1
+fi 
 
 # Create STATIC directory
 mkdir -p ./app/app/static
