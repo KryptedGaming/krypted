@@ -22,6 +22,9 @@ from django.contrib.auth import views as auth_views
 from django.views.defaults import server_error
 from . import views
 
+import logging
+logger = logging.getLogger(__name__)
+
 urlpatterns = [
     path('', views.dashboard, name="app-dashboard"),
     path('admin/', admin.site.urls),
@@ -37,10 +40,10 @@ for application in settings.INSTALLED_APPS:
                 urlpatterns += [
                     path('%s/' % app_config.url_slug, include('%s.urls' % application))
                 ]
-        except AttributeError:
-            pass 
-    except LookupError:
-        pass
+        except AttributeError as exception:
+            print("Skipping %s: %s" % (application, exception))
+    except LookupError as exception:
+        print("Skipping %s: %s" % (application, exception))
     
 handler500 = views.handler500
 

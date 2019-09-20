@@ -110,7 +110,7 @@ Home
 
                     {% if "django_eveonline_connector" in INSTALLED_APPS %}
                     <a class="btn btn-success btn-block"
-                        href="'{% url 'django-eveonline-connector-sso-token-add' %}">Add Character</a>
+                        href="{% url 'django-eveonline-connector-sso-token-add' %}">Add Character</a>
                     <a class="btn btn-info btn-block" href="'{% url 'django-eveonline-connector-sso-token-add' %}">Set
                         Main Character</a>
                     {% endif %}
