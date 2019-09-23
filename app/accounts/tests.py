@@ -402,7 +402,7 @@ class UserViewTestCase(TestCase):
         self.assertTrue(response.status_code == 302)
         self.assertTrue(response.url == "/")
 
-        response = self.client.get("/")
+        response = self.client.get("/", follow=True)
         self.assertTrue(response.context["messages"])
 
     def test_post_user_success_username(self):
