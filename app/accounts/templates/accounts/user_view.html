@@ -33,9 +33,9 @@ Home
             <!-- Profile Image -->
             <div class="box box-primary">
                 <div class="box-body box-profile">
-                    {% if "django_eveonline_connector" in INSTALLED_APPS and user.evetoken_set.all.0.get_primary_token %}
+                    {% if "django_eveonline_connector" in INSTALLED_APPS and user.eve_tokens.all.0.get_primary_token %}
                     <img class="profile-user-img img-responsive img-circle"
-                        src="https://imageserver.eveonline.com/Character/{{user.evetoken_set.all.0.get_primary_token.character.external_id}}_128.jpg"
+                        src="https://imageserver.eveonline.com/Character/{{user.eve_tokens.all.0.get_primary_token.evecharacter.external_id}}_128.jpg"
                         alt="User profile picture">
                     {% else %}
                     <img class="profile-user-img img-responsive img-circle"
@@ -89,11 +89,11 @@ Home
                         {% if "django_eveonline_connector" in INSTALLED_APPS %}
                         <li class="list-group-item">
                             <b>EVE Character</b>
-                            {% if user.evetoken_set.all and user.evetoken_set.all.0.get_primary_token %}
+                            {% if user.eve_tokens.all and user.eve_tokens.all.0.get_primary_token %}
                             <p class="pull-right">
-                                {{user.evetoken_set.all.0.get_primary_token.character.name}}
+                                {{user.eve_tokens.all.0.get_primary_token.evecharacter.name}}
                                 <a class="text-danger"
-                                    href="{% url 'django-eveonline-connector-sso-token-remove' user.evetoken_set.all.0.get_primary_token.pk %}"><i
+                                    href="{% url 'django-eveonline-connector-sso-token-remove' user.eve_tokens.all.0.get_primary_token.pk %}"><i
                                         class="fa fa-times pull-right"></i></a>
                             </p>
                             {% else %}

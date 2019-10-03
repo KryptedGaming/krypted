@@ -98,8 +98,8 @@
                         <!-- User Account: style can be found in dropdown.less -->
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                {% if "django_eveonline_connector" in INSTALLED_APPS and user.evetoken_set.all.0.get_primary_token %}
-                                <img src="https://imageserver.eveonline.com/Character/{{user.evetoken_set.all.0.get_primary_token.character.external_id}}_128.jpg"
+                                {% if "django_eveonline_connector" in INSTALLED_APPS and user.eve_tokens.all.0.get_primary_token %}
+                                <img src="https://imageserver.eveonline.com/Character/{{user.eve_tokens.all.0.get_primary_token.evecharacter.external_id}}_128.jpg"
                                     class="user-image" alt="User Image">
                                 {% else %}
                                 <img src="https://api.adorable.io/avatars/160/{{request.user.username}}.png"
