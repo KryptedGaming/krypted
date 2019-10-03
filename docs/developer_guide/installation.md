@@ -18,3 +18,12 @@ We recommend you use VSCode when developing, because it's awesome.
 1. Install VSCode from [this link](https://code.visualstudio.com/)
 2. Get the `Python` extension for VSCode
 3. Get the `py-coverage-view` extension for VSCode (for code coverage when running `./launcher test`)
+
+## Recommended: Juniper Notebooks
+By default, the developer requirements installs shell plus and notebook. 
+
+1. Enable `django-extensions` in your `INSTALLED_APPS`
+2. Start notebook with `python3 manage.py shell_plus --notebook`
+3. Create a notebook, start developing
+
+By utilizing this tool, you'll be able to refresh your code changes and re-run previous code. It's a lifesaver for Python development, especially when debugging ESI and Django modules. 
