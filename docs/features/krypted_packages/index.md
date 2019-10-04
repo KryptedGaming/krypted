@@ -9,15 +9,15 @@ These are packages contributed and maintained by Krypted Gaming.
 |    django-discord-connector   |   Adds Discord syncing and SSO    |  [GitHub](https://github.com/KryptedGaming/django-discord-connector)   |
 |    django-discourse-connector  |   Adds Discourse syncing and SSO    |  [GitHub](https://github.com/KryptedGaming/django-discourse-connector)   |
 
-# Installing Packages
-## PyPi
+## Installing Packages
+### PyPi
 Typically, our packages are pushed to PyPi whenever we release. 
 
 1. Install the package `pip3 install <package_name>`
 2. Follow the instructions in the package README.md
 3. Add the package to your `settings.py` file (under `KRYPTED_APPS`, replace `-` with `_`)
 
-## Manually
+### Manually
 If you want the latest version of our packages, you should install clone them and install them.
 
 1. Clone the package `git clone <package_url>`
