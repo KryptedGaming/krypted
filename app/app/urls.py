@@ -32,7 +32,7 @@ urlpatterns = [
     path('500/', server_error)
 ]
 
-for application in settings.INSTALLED_APPS:
+for application in settings.KRYPTED_APPS:
     try:
         app_config = apps.get_app_config(application)
         try:

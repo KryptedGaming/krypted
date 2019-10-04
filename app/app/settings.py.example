@@ -33,7 +33,7 @@ SITE_TITLE = "Krypted Gaming"
 
 # Application definition
 
-INSTALLED_APPS = [
+DJANGO_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,8 +43,14 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'django_countries',
     'django_celery_beat',
+    'django_extensions',
+]
+
+KRYPTED_APPS = [
     'accounts',
 ]
+
+INSTALLED_APPS = DJANGO_APPS + KRYPTED_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -85,6 +91,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    },
+    'eve_static': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'eve_static_export.sqlite'),
     }
 }
 
@@ -139,3 +149,43 @@ EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = ''
+
+# Django Caching
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'krypted_cache_table',
+    }
+}
+
+# Django Logging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'console': {
+            'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'console',
+        },
+    },
+    'loggers': {
+        '': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+        },
+        'pyswagger': {
+            'level': 'NOTSET',
+            'propagate': False,
+        },
+        'urllib3': {
+            'level': 'NOTSET',
+            'propagate': False,
+        }
+    },
+}
+
