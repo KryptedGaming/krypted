@@ -5,7 +5,7 @@
     :maxdepth: 4
     :caption: Contents
 
-    core_modules/index
-    core_extensions/index
-    community_extensions/index
+    base_features/index
+    krypted_packages/index
+    community_packages/index
 ```
