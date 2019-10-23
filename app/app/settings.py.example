@@ -76,10 +76,12 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'context_processors.installed_apps',
+                'context_processors.sidebar_extensions',
             ],
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'app.wsgi.application'
 

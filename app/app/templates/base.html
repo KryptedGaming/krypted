@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load cache %}
 <!DOCTYPE html>
 <html>
 
@@ -140,6 +141,8 @@
             </nav>
         </header>
         <!-- Left side column. contains the logo and sidebar -->
+        {% block main_sidebar %}
+        {% cache 60 main_sidebar %}
         <aside class="main-sidebar">
             <!-- sidebar: style can be found in sidebar.less -->
             <section class="sidebar">
@@ -157,39 +160,9 @@
                         </a>
                     </li>
                     <li class="header">EXTENSIONS</li>
-                    <li class="treeview">
-                        <a href="#">
-                            <i class="fa fa-search"></i> <span>EVE Online</span>
-                            <span class="pull-right-container">
-                                <i class="fa fa-angle-left pull-right"></i>
-                            </span>
-                        </a>
-                        <ul class="treeview-menu">
-                            <li><a href="pages/forms/general.html"><i class="fa fa-user"></i>Characters</a>
-                            </li>
-                            <li><a href="pages/forms/advanced.html"><i class="fa fa-briefcase"></i>Corporations</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="treeview">
-                        <a href="#">
-                            <i class="fa fa-crosshairs"></i> <span>Doctrines</span>
-                            <span class="pull-right-container">
-                                <i class="fa fa-angle-left pull-right"></i>
-                            </span>
-                        </a>
-                        <ul class="treeview-menu">
-                            <li><a href="pages/forms/general.html"><i class="fa fa-pencil"></i>Fittings</a>
-                            </li>
-                            <li><a href="pages/forms/advanced.html"><i class="fa fa-rocket"></i>Doctrines</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="treeview">
-                        <a href="{% url 'app-dashboard' %}">
-                            <i class="fa fa-calendar"></i> <span>Calendar</span>
-                        </a>
-                    </li>
+                    {% for sidebar in SIDEBAR_EXTENSIONS %}
+                        {% include sidebar %}
+                    {% endfor %}
 
                     <li class="header">PLATFORM</li>
                     <li><a href="https://kryptedauth.readthedocs.io/en/latest/?"><i class="fa fa-book"></i>
@@ -199,6 +172,8 @@
             </section>
             <!-- /.sidebar -->
         </aside>
+        {% endcache %}
+        {% endblock %}
 
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
