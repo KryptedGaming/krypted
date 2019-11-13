@@ -153,11 +153,20 @@
                             <i class="fa fa-home"></i> <span>Home</span>
                         </a>
                     </li>
-                    <li class="treeview">
-                        <a href="{% url 'app-dashboard' %}">
+                    {% if 'group-requests' in INSTALLED_APPS %}
+                    <li>
+                        <a href="{% url 'my-groups' %}">
                             <i class="fa fa-user"></i> <span>Groups</span>
                         </a>
                     </li>
+                    {% endif %}
+                    {% if 'applications' in INSTALLED_APPS %}
+                    <li>
+                        <a href="{% url 'my-applications' %}">
+                            <i class="fa fa-pencil"></i> <span>Applications</span>
+                        </a>
+                    </li>
+                    {% endif %}
                     <li class="header">EXTENSIONS</li>
                     {% for sidebar in SIDEBAR_EXTENSIONS %}
                         {% include sidebar %}
