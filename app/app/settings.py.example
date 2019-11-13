@@ -48,6 +48,7 @@ DJANGO_APPS = [
 
 KRYPTED_APPS = [
     'accounts',
+    'applications',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + KRYPTED_APPS
