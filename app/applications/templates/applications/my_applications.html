@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block brand %}
+  <h1>
+    Groups
+    <small>Manage authentication group requests</small>
+  </h1>
+{% endblock %}
+
+{% block includes %}
+<link rel="stylesheet" href="{% static 'global/ui/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
+{% endblock %}
+{% block content %}
+<div class="box">
+    <div class=" box-body">
+      <table class="table">
+        <thead>
+          <th scope="col">Application</th>
+          <th scope="col">Description</th>
+          <th scope="col">Action</th>
+        </thead>
+        <tbody>
+            {% for application_template in application_templates %}
+            <tr>
+                <td>{{application_template.template.name}}</td>
+                <td>{{application_template.template.description}}</td>
+                {% if application_template.in_progress %}
+                <td><a href="{% url 'application-modify' application_template.application.pk %}" class="btn btn-block btn-warning">Edit Application</a></td>
+                {% else %}
+                <td><a href="{% url 'application-create' application_template.template.pk %}" class="btn btn-block btn-success">Create Application</a></td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(function () {
+    $('table').DataTable({
+      'paging'      : false,
+      'lengthChange': false,
+      'searching'   : false,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : false
+    })
+ })
+</script>
+<script src="{% static 'global/ui/bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'global/ui/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+{% endblock %}

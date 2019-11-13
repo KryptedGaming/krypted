@@ -3,6 +3,7 @@ from django.contrib.auth.models import User, Group
 
 class ApplicationTemplate(models.Model):
     name = models.CharField(max_length=64) # display name 
+    description = models.TextField()
     questions = models.ManyToManyField("ApplicationQuestion", blank=True)
     groups_to_add = models.ManyToManyField(Group, blank=True, related_name="groups_to_add") # groups to add on APPROVAL
     groups_to_remove = models.ManyToManyField(Group, blank=True, related_name="groups_to_remove") # groups to remove on APPROVE OR DENY

@@ -26,12 +26,27 @@ def view_my_applications(request):
     context = {}
     context['user_applications'] = Application.objects.filter(request_user=request.user)
     # build list of templates based on required groups or existing user applications
-    context['application_templates'] = ApplicationTemplate.objects.filter(
+    application_templates = ApplicationTemplate.objects.filter(
         Q(required_group=None) | Q(required_group__in=request.user.groups.all())
         | 
         Q(pk__in=[application.template.pk for application in context['user_applications']])
     )
-    return render(request, 'applications/view_user_applications.html', context=context)
+    application_template_response = []
+    for application_template in application_templates:
+        if Application.objects.filter(template=application_template).exists():
+            application_template_response.append({
+                "template": application_template,
+                "in_progress": True, 
+                "application": Application.objects.get(template=application_template)
+            })
+        else:
+            application_template_response.append({
+                "template": application_template,
+                "in_progress": False, 
+                "application": None
+            })
+    context['application_templates'] = application_template_response
+    return render(request, 'applications/my_applications.html', context=context)
 
 @login_required
 @permission_required('applications.view_application')
@@ -57,7 +72,7 @@ def create_application(request, template_id):
         # Build responses
         for question in application.template.questions.all():
             response = ApplicationResponse(question=question, application=application)
-            response.response = request.POST.get(str(question.pk), "Response was not provided.")
+            response.response = request.POST.get("question_%s" % question.pk, "Response was not provided.")
             response.save()
 
         return redirect('my-applications')
@@ -65,6 +80,30 @@ def create_application(request, template_id):
     template = ApplicationTemplate.objects.get(pk=template_id)
     context['template'] = template
     return render(request, 'applications/create_application.html', context)
+
+@login_required
+def modify_application(request, application_id):
+    context = {}
+    application = Application.objects.get(pk=application_id)
+
+    if request.POST:
+        # Build responses
+        print(request.POST)
+        for response in ApplicationResponse.objects.filter(application=application):
+            print(request.POST.get("question_%s" % response.question.pk))
+            response.response = request.POST.get("question_%s" % response.question.pk, "Response was not provided.")
+            response.save()
+
+        return redirect('my-applications')
+
+    context['template'] = application.template
+    context['questions'] = []
+    for response in ApplicationResponse.objects.filter(application=application):
+        context['questions'].append({
+            "question": response.question,
+            "response": response, 
+        })
+    return render(request, 'applications/modify_application.html', context)
 
 @login_required
 @permission_required('applications.change_application')
