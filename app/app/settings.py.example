@@ -44,12 +44,12 @@ DJANGO_APPS = [
     'django_countries',
     'django_celery_beat',
     'django_extensions',
-    'accounts',
-    'applications',
 ]
 
 KRYPTED_APPS = [
-    
+    'accounts',
+    'applications',
+    'group_requests',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + KRYPTED_APPS

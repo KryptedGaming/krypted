@@ -15,7 +15,8 @@ def view_groups(request):
     for group in valid_groups:
         groups.append({
             "group": group,
-            "open": OpenGroup.objects.filter(group=group).exists()
+            "open": OpenGroup.objects.filter(group=group).exists(),
+            "requested": GroupRequest.objects.filter(request_user=request.user, request_group=group).first()
         })
 
     return render(request, 'group_requests/view_groups.html', context={
@@ -54,6 +55,7 @@ def view_group_requests(request, group_id):
     if request.user.has_perm('group_requests.bypass_group_requirement') or group in request.user.groups.all():
         return render(request, 'group_requests/view_group_requests.html', context={
             "group_requests": GroupRequest.objects.filter(request_group__pk=group_id, response_action="PENDING"),
+            "group": group
         })
     else:
         messages.add_message(request, messages.ERROR, "You must be a member of that Group to view Group Requests, or must have bypass permission.")
@@ -95,6 +97,9 @@ def deny_group_request(request, group_id, group_request_id):
 
 # helper methods
 def get_valid_groups(request):
+    if request.user.has_perm('group_request.bypass_group_requirement'):
+        return Group.objects.all()
+        
     if apps.is_installed('django_eveonline_group_states'):
         groups = Group.objects.filter(closedgroup__isnull=True, pk__in=request.user.state.get_all_enabling_groups())
     else:

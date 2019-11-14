@@ -153,9 +153,9 @@
                             <i class="fa fa-home"></i> <span>Home</span>
                         </a>
                     </li>
-                    {% if 'group-requests' in INSTALLED_APPS %}
+                    {% if 'group_requests' in INSTALLED_APPS %}
                     <li>
-                        <a href="{% url 'my-groups' %}">
+                        <a href="{% url 'group-list' %}">
                             <i class="fa fa-user"></i> <span>Groups</span>
                         </a>
                     </li>

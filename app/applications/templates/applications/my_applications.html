@@ -1,18 +1,18 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 
-{% block brand %}
-  <h1>
-    Groups
-    <small>Manage authentication group requests</small>
-  </h1>
+{% block header %}
+Applications
+{% endblock %}
+{% block description %}
+Edit and Submit applications
 {% endblock %}
 
 {% block includes %}
 <link rel="stylesheet" href="{% static 'global/ui/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
 {% endblock %}
 {% block content %}
-<div class="box box-primary">
+<div class="box box-primary box-solid">
     <div class="box-header">
     <h3>
     My Applications

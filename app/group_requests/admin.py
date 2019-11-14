@@ -1,3 +1,5 @@
 from django.contrib import admin
+from .models import ClosedGroup, OpenGroup
 
-# Register your models here.
+admin.site.register(ClosedGroup)
+admin.site.register(OpenGroup)

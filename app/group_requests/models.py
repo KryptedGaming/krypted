@@ -24,10 +24,14 @@ class GroupRequest(models.Model):
     response_action = models.CharField(max_length=32, choices=response_action_fields, default="PENDING")
     response_date = models.DateField(blank=True, null=True)
 
+    def __str__(self):
+        return "%s's request to %s" % (self.request_user, self.request_group)
+
     class Meta:
         permissions = [
             ('bypass_group_requirement', "Can approve, reject, and view groups despite not being in them."),
         ]
+        unique_together = ('request_user', 'request_group')
 
 class OpenGroup(models.Model):
     group = models.OneToOneField(Group, on_delete=models.CASCADE)
@@ -37,6 +41,9 @@ class OpenGroup(models.Model):
             messages.add_message(request, messages.ERROR, 'Open Group was not saved. Group already exists as closed group.')
             return
         super(OpenGroup, self).save(*args, **kwargs)
+    
+    def __str__(self):
+        return self.group
 
 class ClosedGroup(models.Model):
     group = models.OneToOneField(Group, on_delete=models.CASCADE)
@@ -46,3 +53,6 @@ class ClosedGroup(models.Model):
             messages.add_message(request, messages.ERROR, 'Closed Group was not saved. Group already exists as open group.')
             return
         super(ClosedGroup, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.group
