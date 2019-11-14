@@ -43,7 +43,6 @@ DJANGO_APPS = [
     'django.contrib.humanize',
     'django_countries',
     'django_celery_beat',
-    'django_extensions',
 ]
 
 EXTENSIONS = [os.environ.get("EXTENSIONS")] # e.g 'accounts', 'applications'
