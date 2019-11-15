@@ -8,8 +8,8 @@ def installed_apps(request):
 
 def sidebar_extensions(request):
     templates = []
-    for KRYPTED_APP in settings.KRYPTED_APPS:
-        template_name = "%s/sidebar.html" % KRYPTED_APP.lower()
+    for EXTENSION in settings.EXTENSIONS:
+        template_name = "%s/sidebar.html" % EXTENSION.lower()
         try: 
             django.template.loader.get_template(template_name) 
             templates.append(template_name)

@@ -111,15 +111,6 @@ app/static/
 app/app/static/adminlte/
 app/accounts/static/accounts/
 
-# hide conf
-app/app/conf/
-**/apps.py
-*apps.py
-
-# hide migrations
-**/migrations/**
-*migrations
-
 # hide celery
 **/celery.py
 app/celerybeat.pid

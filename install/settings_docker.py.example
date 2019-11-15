@@ -28,8 +28,8 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 # SITE INFORMATION
-SITE_DOMAIN = "http://127.0.0.1:8000"
-SITE_TITLE = "Krypted Gaming"
+SITE_DOMAIN = os.environ.get("SITE_DOMAIN") # e.g http://10.0.0.1
+SITE_TITLE = os.environ.get("SITE_TITLE") # e.g Krypted Gaming 
 
 # Application definition
 
@@ -43,16 +43,11 @@ DJANGO_APPS = [
     'django.contrib.humanize',
     'django_countries',
     'django_celery_beat',
-    'django_extensions',
 ]
 
-KRYPTED_APPS = [
-    'accounts',
-    'applications',
-    'group_requests',
-]
+EXTENSIONS = [ EXT_REPLACE ]
 
-INSTALLED_APPS = DJANGO_APPS + KRYPTED_APPS
+INSTALLED_APPS = DJANGO_APPS + EXTENSIONS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -93,12 +88,16 @@ WSGI_APPLICATION = 'app.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.environ.get('MYSQL_DATABASE', 'krypted'),
+        'USER': os.environ.get('MYSQL_USER', 'krypted'),
+        'PASSWORD': os.environ.get('MYSQL_PASSWORD', 'somepassword'),
+        'HOST': os.environ.get('MYSQL_HOST', '127.0.0.1'),
+        'PORT': os.environ.get('MYSQL_PORT', '3306'),
     },
     'eve_static': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'eve_static_export.sqlite'),
+        'NAME': os.environ.get('EVE_STATIC_DB', '/opt/eveonline/static/sqlite-latest.sqlite'),
     }
 }
 
@@ -147,12 +146,12 @@ STATICFILES_DIRS = [
 ]
 
 # SMTP
-EMAIL_HOST = ''
-EMAIL_PORT = 587
-EMAIL_HOST_USER = ''
-EMAIL_HOST_PASSWORD = ''
+EMAIL_HOST = os.environ.get('EMAIL_HOST', '')
+EMAIL_PORT = os.environ.get('EMAIL_PORT', '587')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = ''
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', '')
 
 # Django Caching
 CACHES = {
