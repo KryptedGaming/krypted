@@ -14,11 +14,9 @@ before_install:
 install:
 - pip3 install -r install/requirements.txt
 - pip3 install -r install/requirements_dev.txt
-- cp app/app/settings.py.example app/app/settings.py
+- cp install/settings_developer.py.example app/app/settings.py
 - cd app/
 - python3 manage.py collectstatic
-- python3 manage.py makemigrations
-- python3 manage.py makemigrations accounts
 - python3 manage.py migrate
 
 script:
