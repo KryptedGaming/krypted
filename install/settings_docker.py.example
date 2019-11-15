@@ -97,7 +97,7 @@ DATABASES = {
     },
     'eve_static': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.environ.get('EVE_STATIC_DB', '%' % os.path.join(BASE_DIR, 'sqlite-latest.sqlite')),
+        'NAME': os.environ.get('EVE_STATIC_DB', '/opt/eveonline/static/sqlite-latest.sqlite'),
     }
 }
 
