@@ -74,5 +74,8 @@ tar -xvf install/AdminLTE-2.4.15.tar.gz -C ./app/app/static/
 echo "Installing Accounts Styling in app/static/accounts"
 tar -xvf install/Accounts_v12.tar.gz -C ./app/accounts/static/
 
+# Install Developer Settings
+cp ./install/developer_settings.example ./app/app/settings.py
+
 # Collect static
 python3 ./app/manage.py collectstatic
