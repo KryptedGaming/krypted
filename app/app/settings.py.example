@@ -45,7 +45,7 @@ DJANGO_APPS = [
     'django_celery_beat',
 ]
 
-EXTENSIONS = [] # e.g 'accounts', 'applications'
+EXTENSIONS = ['EXT_REPLACE']
 
 INSTALLED_APPS = DJANGO_APPS + EXTENSIONS
 
