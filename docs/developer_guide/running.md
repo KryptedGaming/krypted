@@ -5,4 +5,4 @@ During development, we typically just use the provided development tools by Djan
 2. Run the webserver `python3 manage.py runserver`
 3. Navigate to `http://127.0.0.1:8000`
 
-That's it!
+That's it! For production deployment, refer to the User Guide. 

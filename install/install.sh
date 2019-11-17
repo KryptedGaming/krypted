@@ -41,6 +41,9 @@ if [ $DEV_MODE ]; then
     fi 
 fi
 
+# Install Developer Settings
+cp ./install/settings_developer.py.example ./app/app/settings.py
+
 # Set up the Django project
 echo "Setting up the Django Project"
 echo "Creating migrations for project"
@@ -74,8 +77,7 @@ tar -xvf install/AdminLTE-2.4.15.tar.gz -C ./app/app/static/
 echo "Installing Accounts Styling in app/static/accounts"
 tar -xvf install/Accounts_v12.tar.gz -C ./app/accounts/static/
 
-# Install Developer Settings
-cp ./install/developer_settings.example ./app/app/settings.py
+
 
 # Collect static
 python3 ./app/manage.py collectstatic

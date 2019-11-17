@@ -9,6 +9,7 @@ Clone the GitHub repository to your local file system.
 1. Navigate to the directory `cd krypted`
 2. Ensure permissions are correct `chmod +x ./install/install.sh launcher`
 3. Create a virtual environment `./launcher env`
+4. Enter your virtual environment `source ./myenv/bin/activate`
 4. Run the installation script `./launcher install`
 5. Verify your installation `./launcher test`
 
@@ -26,4 +27,4 @@ By default, the developer requirements installs shell plus and notebook.
 2. Start notebook with `python3 manage.py shell_plus --notebook`
 3. Create a notebook, start developing
 
-By utilizing this tool, you'll be able to refresh your code changes and re-run previous code. It's a lifesaver for Python development, especially when debugging ESI and Django modules. 
+By utilizing this tool, you'll be able to refresh your code changes and re-run previous code. It's a lifesaver for Python development, especially when debugging.
