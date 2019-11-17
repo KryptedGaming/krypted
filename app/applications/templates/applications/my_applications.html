@@ -14,9 +14,10 @@ Edit and Submit applications
 {% block content %}
 <div class="box box-primary box-solid">
     <div class="box-header">
-    <h3>
-    My Applications
-    </h3>
+      <h3 class="pull-left">
+      My Applications
+      </h3>
+      
     </div>
     <div class=" box-body">
       <table class="table">
@@ -39,9 +40,11 @@ Edit and Submit applications
             {% endfor %}
         </tbody>
       </table>
-
+    {% if perms.applications.view_application %}
+    <a href="{% url 'application-list' %}" class="btn btn-danger btn-block">Manage Applications</a>
+    {% endif %}
     </div>
-
+    
 </div>
 {% endblock %}
 
@@ -53,11 +56,9 @@ $(function () {
       'lengthChange': false,
       'searching'   : false,
       'ordering'    : true,
-      'info'        : true,
+      'info'        : false,
       'autoWidth'   : false
     })
  })
 </script>
-<script src="{% static 'global/ui/bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'global/ui/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
 {% endblock %}
