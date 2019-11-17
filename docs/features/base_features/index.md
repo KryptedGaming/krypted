@@ -5,8 +5,7 @@
     :maxdepth: 2
     :caption: Contents
 
-    notifications
     accounts
-    states
     applications
+    group_requests
 ```

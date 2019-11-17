@@ -10,6 +10,12 @@ These are packages contributed and maintained by Krypted Gaming.
 |    django-discourse-connector  |   Adds Discourse syncing and SSO    |  [GitHub](https://github.com/KryptedGaming/django-discourse-connector)   |
 
 ## Installing Packages
+### Docker 
+If you're using Docker, you'll simply specify packages in the `.env` file. 
+
+1. Under the `REQUIREMENTS`, add KryptedGaming/<package_name> (e.g django-discord-connector).
+2. Under the `EXTENSIONS`, add the extension name. This is what the package says to add into `INSTALLED_APPS`, e.g django_discord_connector). 
+
 ### PyPi
 Typically, our packages are pushed to PyPi whenever we release. 
 

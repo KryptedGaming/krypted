@@ -6,6 +6,12 @@ These are packages contributed by the community.
 |       |       |       |
 
 ## Installing Packages
+### Docker 
+If you're using Docker, you'll simply specify packages in the `.env` file. 
+
+1. Under the `REQUIREMENTS`, add KryptedGaming/<package_name> (e.g django-discord-connector).
+2. Under the `EXTENSIONS`, add the extension name. This is what the package says to add into `INSTALLED_APPS`, e.g django_discord_connector). 
+
 ### PyPi
 Typically, our packages are pushed to PyPi when they are released. 
 
