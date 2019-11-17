@@ -5,4 +5,7 @@
     :caption: Contents
 
     installation
+    administration
+    help
+
 ```
