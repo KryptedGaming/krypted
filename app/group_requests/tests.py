@@ -40,12 +40,14 @@ class GroupRequestDefaultTestCase(TestCase):
         expected_result = {
             "group": Group.objects.get(name="GROUP A"),
             "open": False,
+            "requested": None,
         }
         self.assertTrue(expected_result in response.context['groups'])
 
         expected_result = {
             "group": Group.objects.get(name="OPEN GROUP"),
             "open": True,
+            "requested": None,
         }
         self.assertTrue(expected_result in response.context['groups'])
     
