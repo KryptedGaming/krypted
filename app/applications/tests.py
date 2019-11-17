@@ -4,17 +4,55 @@ from django.urls import reverse_lazy, reverse
 from django.contrib.auth.models import User, Group, Permission
 from django.core.exceptions import PermissionDenied
 from .models import ApplicationTemplate, ApplicationQuestion, Application, ApplicationResponse
+import uuid
 
 class ApplicationClientTestCase(TestCase):
     @staticmethod
-    def get_user():
-        return User.objects.get(username="TestUser")
+    def create_user():
+        return User.objects.create_user(username=str(uuid.uuid4()), password="password")
+
+    @staticmethod
+    def create_template(template_name):
+        template = ApplicationTemplate.objects.create(name=template_name, required_group=None)
+        for question in ApplicationQuestion.objects.all():
+            template.questions.add(question)
+        return template 
+
+    @staticmethod
+    def create_application(template, user):
+        application = Application.objects.create(
+            template=template,
+            request_user=user, 
+        )
+        for question in application.template.questions.all():
+            ApplicationResponse(
+                response="LOREM IPSUM",
+                question=question,
+                application=application
+            ).save()
+        return application
+    
+    def verify_login_redirect(self, url):
+        response = self.client.get(url)
+        self.assertTrue(response.status_code == 302)
+    
+    def verify_permission_required_and_return_success(self, url, user, permission, code=200):
+        self.client.login(username=user.username, password="password")
+        response = self.client.get(url)
+        self.assertTrue(response.status_code == 302)
+        Permission.objects.get(codename=permission).user_set.add(user)
+        response = self.client.get(url)
+        self.assertTrue(response.status_code == code)
+        Permission.objects.get(codename=permission).user_set.clear()
+        return response 
+
+    def get_success(self, url, user):
+        self.client.login(username=user.username, password="password")
+        response = self.client.get(url)
+        self.assertTrue(response.status_code == 200)
+        return response
 
     def setUp(self):
-        User.objects.create_user(username="TestUser", 
-            password="TestPassword",
-            email="test@kryptedgaming.com")
-
         ApplicationQuestion(
             name="Question 1: How old are you?",
             help_text="Provide a number.",
@@ -27,208 +65,130 @@ class ApplicationClientTestCase(TestCase):
             type="RESPONSE"
         ).save()
 
-        template_1 = ApplicationTemplate.objects.create(
-            name="Template 1",
-        )
-
-        template_2 = ApplicationTemplate.objects.create(
-            name="Template 2",
-        )
-
-        template_3 = ApplicationTemplate.objects.create(
-            name="Template 3",
-            required_group=Group.objects.create(name="TEST"),
-        )
-
-        for question in ApplicationQuestion.objects.all():
-            template_1.questions.add(question)
-            template_2.questions.add(question)
-
-        template_1.groups_to_add.add(Group.objects.create(name="GROUP-TO-ADD"))
-        template_1.groups_to_remove.add(Group.objects.create(name="GROUP-TO-REMOVE"))
-
-        application_1 = Application.objects.create(
-            status="PENDING",
-            request_user=self.get_user(),
-            template=template_1,
-        )
-        for question in application_1.template.questions.all():
-            ApplicationResponse(
-                response="LOREM IPSUM",
-                question=question,
-                application=application_1
-            ).save()
-
-        Application(
-            status="PENDING",
-            request_user=self.get_user(),
-            template=template_2,
-        ).save()
-
-        Application(
-            status="PENDING",
-            request_user=User.objects.create_user(username="Test", 
-                password="TestUser", 
-                email="test@test.com"),
-            template=template_2
-        ).save()
-
     def test_unique_together(self):
+        template = self.create_template("test_unique_together")
+        user = self.create_user()
+        self.create_application(template=template, user=user)
+        # attempt to duplicate
         application = Application(
             status="PENDING",
-            request_user=self.get_user(),
-            template=ApplicationTemplate.objects.all()[0],
+            request_user=user,
+            template=template,
         )
         with self.assertRaises(Exception) as raised:
             application.save()
         self.assertEqual(django.db.utils.IntegrityError, type(raised.exception)) 
 
     def test_view_applications(self):
-        # test login redirect
         url = reverse_lazy('application-list')
-        response = self.client.get(url)
-        self.assertTrue(response.status_code == 302)
-        # test login - permission denied
-        self.client.login(username="TestUser", password="TestPassword")
-        response = self.client.get(url)
-        self.assertTrue(response.status_code == 302)
-        # test successful access
-        Permission.objects.get(codename="view_application").user_set.add(self.get_user())
-        response = self.client.get(url)
-        self.assertTrue(response.status_code == 200)
-        Permission.objects.get(codename="view_application").user_set.clear()
-        # verify context
-        self.assertTrue(response.context['applications'].count() == 3)
+        user = self.create_user()
+        template = self.create_template('test_view_applications')
+        self.create_application(template, user)
+        self.verify_login_redirect(url)
+        response = self.verify_permission_required_and_return_success(url, user, 'view_application')
+        
+        self.assertTrue(response.context['applications'].count() >= 1)
 
     def test_my_applications(self):
-        # test login redirect
         url = reverse_lazy('my-applications')
-        response = self.client.get(url)
-        self.assertTrue(response.status_code == 302)
-        # test succesful access
-        self.client.login(username="TestUser", password="TestPassword")
-        response = self.client.get(url)
-        self.assertTrue(response.status_code == 200)
+        user = self.create_user()
+        template_a = self.create_template('test_my_applications_a')
+        # template w/ app
+        template_b = self.create_template('test_my_applications_b')
+        application_b = self.create_application(template=template_b, user=user)
+        # hidden template
+        template_c = self.create_template('test_my_applications_b')
+        group_c = Group.objects.create(name="test_my_applications_c")
+        template_c.required_group = group_c 
+        template_c.save() 
+        # grandfathered template (existing application)
+        template_d = self.create_template('test_my_applications_d')
+        application_d = self.create_application(template=template_d, user=user)
+        
+        self.verify_login_redirect(url)
+        response = self.get_success(url, user)
+
         # test context
-        self.assertTrue(response.context['user_applications'].count() == 2)
-        self.assertTrue(response.context['application_templates'].count() == 2)
-        # test with new group as hidden template discovery
-        self.get_user().groups.add(Group.objects.get(name="TEST"))
-        response = self.client.get(url)
-        self.assertTrue(response.context['application_templates'].count() == 3)
-        self.get_user().groups.remove(Group.objects.get(name="TEST"))
-        self.assertTrue(response.context['application_templates'].count() == 2)
-        # test with existing application as hidden template discovery
-        Application.objects.create(
-            status="PENDING",
-            template=ApplicationTemplate.objects.get(name="Template 3"),
-            request_user=self.get_user(),
-        )
-        response = self.client.get(url)
-        self.assertTrue(response.context['application_templates'].count() == 3)
+        self.assertTrue([application_b, application_d] == list(response.context['user_applications']))
+        expected_result = [
+            {"template": template_a, "in_progress": False, "application": None},
+            {"template": template_b, "in_progress": True, "application": application_b},
+            {"template": template_d, "in_progress": True, "application": application_d}
+        ]
+        self.assertTrue(expected_result == response.context['application_templates'])
 
     def test_view_application(self):
-        url = reverse('application-detail', args=(1,))
-        # test login redirect
-        response = self.client.get(url)
-        self.assertTrue(response.status_code == 302)
-        # test login - permission denied
-        self.client.login(username="TestUser", password="TestPassword")
-        response = self.client.get(url)
-        self.assertTrue(response.status_code == 302)
-        # test success
-        Permission.objects.get(codename="view_application").user_set.add(self.get_user())
-        response = self.client.get(url)
-        self.assertTrue(response.status_code == 200)
-        Permission.objects.get(codename="view_application").user_set.clear()
+        Application.objects.all().delete()
+        ApplicationTemplate.objects.all().delete()
+        user = self.create_user()
+        template = self.create_template('test_view_application')
+        application = self.create_application(template=template, user=user)
+
+        url = reverse('application-detail', args=(application.pk,))
+        
+        self.verify_login_redirect(url)
+        response = self.verify_permission_required_and_return_success(url, user, 'view_application')
+        
         # verify context
-        self.assertTrue(response.context['application'].pk == 1)
+        self.assertTrue(response.context['application'].pk == application.pk)
         self.assertTrue(response.context['responses'].count() == 2)
 
     def test_create_application(self):
-        url = reverse('application-create', args=(1,))
-        # test login redirect
-        response = self.client.get(url)
-        self.assertTrue(response.status_code == 302)
-        # test get form 
-        self.client.login(username="TestUser", password="TestPassword")
-        response = self.client.get(url)
-        self.assertTrue(response.context['template'].pk == 1)
+        template = self.create_template('test_view_application')
+        user = self.create_user()
+        url = reverse('application-create', args=(template.pk,))
+        self.verify_login_redirect(url)
+        response = self.get_success(url, user)
+        self.assertTrue(response.context['template'] == template)
         # test success
-        Application.objects.get(template__id=1).delete()
         application_form = {
-            response.context['template'].questions.all()[0].pk: "Hello World!",
-            response.context['template'].questions.all()[1].pk: "It's me!",
+            "question_%s" % response.context['template'].questions.all()[0].pk: "Hello World!",
+            "question_%s" % response.context['template'].questions.all()[1].pk: "It's me!",
         }
         response = self.client.post(url, application_form)
-        created_application = Application.objects.get(template__id=1)
+        created_application = Application.objects.get(template=template)
         self.assertTrue(created_application.applicationresponse_set.all()[0].response == "Hello World!")
         self.assertTrue(created_application.applicationresponse_set.all()[1].response == "It's me!")
 
     def test_approve_application(self):
-        application = Application.objects.get(template__name="Template 1")
+        user = self.create_user()
+        template = self.create_template('test_approve_application')
+        application = self.create_application(template=template, user=user)
+        template.groups_to_add.add(Group.objects.create(name="test_approve_application_add"))
+        template.groups_to_remove.add(Group.objects.create(name="test_approve_application_remove"))
+        user.groups.add(Group.objects.get(name="test_approve_application_remove"))
         url = reverse('application-approve', args=(application.pk,))
-        self.get_user().groups.add(application.template.groups_to_remove.all()[0])
-        # test login redirect
-        response = self.client.get(url)
-        self.assertTrue(response.status_code == 302)
-        # test login - permission denied
-        self.client.login(username="TestUser", password="TestPassword")
-        response = self.client.get(url)
-        self.assertTrue(response.status_code == 302)
-        # test success
-        Permission.objects.get(codename="change_application").user_set.add(self.get_user())
-        response = self.client.get(url,follow=True)
-        self.assertTrue(response.status_code == 200)
-        application = Application.objects.get(template__name="Template 1")
+
+        self.verify_login_redirect(url)
+        self.verify_permission_required_and_return_success(url, user, 'change_application', 302)
+
+        application = Application.objects.get(template__name="test_approve_application")
+        user = User.objects.get(pk=user.pk) # refresh 
         self.assertTrue(application.status == "ACCEPTED")
         for group in application.template.groups_to_add.all():
-            self.assertTrue(group in self.get_user().groups.all())
+            self.assertTrue(group in user.groups.all())
         for group in application.template.groups_to_remove.all():
-            self.assertTrue(group not in self.get_user().groups.all())
-        Permission.objects.get(codename="change_application").user_set.clear()
+            self.assertTrue(group not in user.groups.all())
 
     def test_deny_application(self):
-        application = Application.objects.get(template__name="Template 1")
+        user = self.create_user()
+        template = self.create_template('test_deny_application')
+        application = self.create_application(template=template, user=user)
+        template.groups_to_add.add(Group.objects.create(name="test_deny_application_add"))
+        template.groups_to_remove.add(Group.objects.create(name="test_deny_application_remove"))
+        user.groups.add(Group.objects.get(name="test_deny_application_remove"))
         url = reverse('application-deny', args=(application.pk,))
-        self.get_user().groups.add(application.template.groups_to_add.all()[0])
-        self.get_user().groups.add(application.template.groups_to_remove.all()[0])
-        # test login redirect
-        response = self.client.get(url)
-        self.assertTrue(response.status_code == 302)
-        # test login - permission denied
-        self.client.login(username="TestUser", password="TestPassword")
-        response = self.client.get(url)
-        self.assertTrue(response.status_code == 302)
-        # test success
-        Permission.objects.get(codename="change_application").user_set.add(self.get_user())
-        response = self.client.get(url, follow=True)
-        self.assertTrue(response.status_code == 200)
-        application = Application.objects.get(template__name="Template 1")
+
+        self.verify_login_redirect(url)
+        self.verify_permission_required_and_return_success(url, user, 'change_application', 302)
+
+        application = Application.objects.get(template__name="test_deny_application")
+        user = User.objects.get(pk=user.pk) # refresh 
         self.assertTrue(application.status == "REJECTED")
         for group in application.template.groups_to_add.all():
-            self.assertTrue(group not in self.get_user().groups.all())
+            self.assertTrue(group not in user.groups.all())
         for group in application.template.groups_to_remove.all():
-            self.assertTrue(group not in self.get_user().groups.all())
-        Permission.objects.get(codename="change_application").user_set.clear()
-
-    def test_assign_application(self):
-        application = Application.objects.get(template__name="Template 1")
-        url = reverse('application-assign', args=(application.pk,))
-        # test login redirect
-        response = self.client.get(url)
-        self.assertTrue(response.status_code == 302)
-        # test login - permission denied
-        self.client.login(username="TestUser", password="TestPassword")
-        response = self.client.get(url)
-        self.assertTrue(response.status_code == 302)
-        # test success
-        Permission.objects.get(codename="change_application").user_set.add(self.get_user())
-        response = self.client.get(url, follow=True)
-        self.assertTrue(response.status_code == 200)
-        application = Application.objects.get(template__name="Template 1")
-        self.assertTrue(application.response_user == application.request_user)
-
+            self.assertTrue(group not in user.groups.all())
 
 
 

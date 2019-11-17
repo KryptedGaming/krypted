@@ -40,7 +40,7 @@ class Application(models.Model):
         ("REJECTED", "Rejected")
     )
     # BASIC INFORMATION
-    status = models.CharField(max_length=16, choices=application_status_fields)
+    status = models.CharField(max_length=16, choices=application_status_fields, default="PENDING")
 
     # USER
     request_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="applications")

@@ -18,33 +18,31 @@ logger = logging.getLogger(__name__)
 @permission_required('applications.view_application')
 def view_applications(request):
     return render(request, 'applications/view_applications.html', context= {
-        'applications': Application.objects.all()
-    })
+        'applications': Application.objects.all()})
 
 @login_required
 def view_my_applications(request):
     context = {}
     context['user_applications'] = Application.objects.filter(request_user=request.user)
     # build list of templates based on required groups or existing user applications
-    application_templates = ApplicationTemplate.objects.filter(
-        Q(required_group=None) | Q(required_group__in=request.user.groups.all())
-        | 
-        Q(pk__in=[application.template.pk for application in context['user_applications']])
-    )
+    application_templates = ApplicationTemplate.objects.filter(Q(required_group=None) | 
+        Q(required_group__in=request.user.groups.all()) | 
+        Q(pk__in=[application.template.pk for application in context['user_applications']]))
+
     application_template_response = []
     for application_template in application_templates:
-        if Application.objects.filter(template=application_template).exists():
+        if Application.objects.filter(template=application_template, request_user=request.user).exists():
             application_template_response.append({
                 "template": application_template,
                 "in_progress": True, 
-                "application": Application.objects.get(template=application_template)
-            })
+                "application": Application.objects.get(template=application_template, request_user=request.user)})
+
         else:
             application_template_response.append({
                 "template": application_template,
                 "in_progress": False, 
-                "application": None
-            })
+                "application": None})
+
     context['application_templates'] = application_template_response
     return render(request, 'applications/my_applications.html', context=context)
 
@@ -53,8 +51,8 @@ def view_my_applications(request):
 def view_application(request, pk):
     context = {
         'application': Application.objects.get(pk=pk),
-        'responses': ApplicationResponse.objects.filter(application_id=pk),
-    }
+        'responses': ApplicationResponse.objects.filter(application_id=pk)
+        }
     return render(request, 'applications/view_application.html', context)
 
 @login_required
