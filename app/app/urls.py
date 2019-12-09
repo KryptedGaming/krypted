@@ -41,9 +41,9 @@ for application in settings.EXTENSIONS:
                     path('%s/' % app_config.url_slug, include('%s.urls' % application))
                 ]
         except AttributeError as exception:
-            print("Skipping %s: %s" % (application, exception))
+            logger.debug("Skipping %s: %s" % (application, exception))
     except LookupError as exception:
-        print("Skipping %s: %s" % (application, exception))
+        logger.debug("Skipping %s: %s" % (application, exception))
     
 handler500 = views.handler500
 

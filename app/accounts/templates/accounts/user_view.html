@@ -111,8 +111,6 @@ Home
                     {% if "django_eveonline_connector" in INSTALLED_APPS %}
                     <a class="btn btn-success btn-block"
                         href="{% url 'django-eveonline-connector-sso-token-add' %}">Add Character</a>
-                    <a class="btn btn-info btn-block" href="'{% url 'django-eveonline-connector-sso-token-add' %}">Set
-                        Main Character</a>
                     {% endif %}
                     <a class="btn btn-danger btn-block" data-confirm="Are you sure?" data-method="delete"
                         href="{% url 'accounts-user-delete' user.pk %}" rel="nofollow">Delete Account</a>
@@ -128,7 +126,7 @@ Home
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
                     {% if "django_eveonline_connector" in INSTALLED_APPS %}
-                    <li><a href="#eve_character_list" data-toggle="tab">Character Management</a></li>
+                    <li class="active"><a href="#eve_character_list" data-toggle="tab">Character Management</a></li>
                     {% endif %}
                     {% if request.user == user %}
                     <li><a href="#settings" data-toggle="tab">Account Settings</a></li>
@@ -136,7 +134,7 @@ Home
                 </ul>
                 <div class="tab-content">
                     {% if "django_eveonline_connector" in INSTALLED_APPS %}
-                    <div class="tab-pane" id="eve_character_list">
+                    <div class="tab-pane active" id="eve_character_list">
                         {% include "django_eveonline_connector/adminlte/character_dashboard_snippet.html" %}
                     </div>
                     {% endif %}
