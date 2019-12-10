@@ -1,4 +1,4 @@
-# Administration
+# Docker Administration
 This will go over how to administrate your container. 
 
 ## Basic Docker
@@ -15,3 +15,7 @@ Superuser accounts have all Django permissions, and are optimal for your admin a
 
 1. `docker container exec -it <container_name> python3 /opt/krypted/app/manage.py createsuperuser`
 2. Fill out the information as required
+
+## Running Django Commands
+Some packages require you to run setup scripts or other Django commands.
+1. `docker container exec -it <container_name> python3 /opt/krypted/app/manage.py <command>`

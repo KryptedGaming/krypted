@@ -1,9 +1,10 @@
-# User Guide
+# Installation
 ```eval_rst
 .. toctree::
     :maxdepth: 4
     :caption: Contents
 
-    installation/index
-    usage/index
+    installation
+    administration
+
 ```

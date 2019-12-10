@@ -1,9 +1,11 @@
-# User Guide
+# Usage
 ```eval_rst
 .. toctree::
     :maxdepth: 4
     :caption: Contents
 
-    installation/index
-    usage/index
+    administration
+    tasks
+    package_guides/index
+
 ```
