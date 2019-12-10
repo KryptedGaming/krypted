@@ -25,7 +25,8 @@ SECRET_KEY = '&g$n5#3mz^d^34#j#a2313l)svdr40d6k(5r4-r9r7e*wj)f7d'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["%s" % os.environ.get("SITE_DOMAIN")]
+CSRF_TRUSTED_ORIGINS = ["%s" % os.environ.get("SITE_DOMAIN")]
 
 # SITE INFORMATION
 SITE_DOMAIN = os.environ.get("SITE_DOMAIN") # e.g http://10.0.0.1
