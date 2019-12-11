@@ -3,6 +3,9 @@
 
 {% block header %}
 Applications
+    {% if perms.applications.view_application %}
+    <a href="{% url 'application-list' %}" class="pull-right btn btn-warning">Manage Applications</a>
+    {% endif %}
 {% endblock %}
 {% block description %}
 Edit and Submit applications
@@ -40,9 +43,6 @@ Edit and Submit applications
             {% endfor %}
         </tbody>
       </table>
-    {% if perms.applications.view_application %}
-    <a href="{% url 'application-list' %}" class="btn btn-danger btn-block">Manage Applications</a>
-    {% endif %}
     </div>
     
 </div>
