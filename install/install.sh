@@ -81,3 +81,6 @@ tar -xvf install/Accounts_v12.tar.gz -C ./app/accounts/static/
 
 # Collect static
 python3 ./app/manage.py collectstatic
+
+# Create cache table
+python3 ./app/manage.py createcachetable

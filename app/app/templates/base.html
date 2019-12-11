@@ -75,51 +75,20 @@
 
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">
-                        <!-- Notifications: style can be found in dropdown.less -->
-                        <li class="dropdown notifications-menu">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <i class="fa fa-bell-o"></i>
-                                <span class="label label-warning">10</span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li class="header">You have 10 notifications</li>
-                                <li>
-                                    <!-- inner menu: contains the actual data -->
-                                    <ul class="menu">
-                                        <li>
-                                            <a href="#">
-                                                <i class="fa fa-users text-aqua"></i> 5 new members joined today
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="footer"><a href="#">Clear Notifications</a></li>
-                            </ul>
-                        </li>
                         <!-- User Account: style can be found in dropdown.less -->
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                {% if "django_eveonline_connector" in INSTALLED_APPS and user.eve_tokens.all.0.get_primary_token %}
-                                <img src="https://imageserver.eveonline.com/Character/{{user.eve_tokens.all.0.get_primary_token.evecharacter.external_id}}_128.jpg"
+                                <img src="{{request.user.info.display_avatar}}"
                                     class="user-image" alt="User Image">
-                                {% else %}
-                                <img src="https://api.adorable.io/avatars/160/{{request.user.username}}.png"
-                                    class="user-image" alt="User Image">
-                                {% endif %}
-                                <span class="hidden-xs">{{request.user.username | title}}</span>
+                                <span class="hidden-xs">{{request.user.info.display_name}}</span>
                             </a>
                             <ul class="dropdown-menu">
                                 <!-- User image -->
                                 <li class="user-header">
-                                    {% if "django_eveonline_connector" in INSTALLED_APPS and user.eve_tokens.all.0.get_primary_token %}
-                                    <img src="https://imageserver.eveonline.com/Character/{{user.eve_tokens.all.0.get_primary_token.evecharacter.external_id}}_128.jpg"
+                                    <img src="{{request.user.info.display_avatar}}"
                                         class="img-circle" alt="User Image">
-                                    {% else %}
-                                    <img src="https://api.adorable.io/avatars/160/{{request.user.username}}.png"
-                                        class="img-circle" alt="User Image">
-                                    {% endif %}
                                     <p>
-                                        {{request.user.username | title}}
+                                        {{request.user.info.display_name}}
                                         <small>Member since {{user.date_joined |date:"F j, Y"}}</small>
                                     </p>
                                 </li>

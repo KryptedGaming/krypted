@@ -33,16 +33,12 @@ Home
             <!-- Profile Image -->
             <div class="box box-primary">
                 <div class="box-body box-profile">
-                    {% if "django_eveonline_connector" in INSTALLED_APPS and user.eve_tokens.all.0.get_primary_token %}
                     <img class="profile-user-img img-responsive img-circle"
-                        src="https://imageserver.eveonline.com/Character/{{user.eve_tokens.all.0.get_primary_token.evecharacter.external_id}}_128.jpg"
-                        alt="User profile picture">
-                    {% else %}
-                    <img class="profile-user-img img-responsive img-circle"
-                        src="https://api.adorable.io/avatars/160/{{user.username}}.png" alt="User profile picture">
+                        src="{{user.info.display_avatar}}" alt="User profile picture">
+                    <h3 class="profile-username text-center">{{user.info.display_name}}</h3>
+                    {% if user.info.display_name != user.username %}
+                    <p class="text-muted text-center">(also known as {{user.username}})</p>
                     {% endif %}
-                    <h3 class="profile-username text-center">{{user.username | title }}</h3>
-
                     <p class="text-muted text-center">{{user.info.country.name}}</p>
                     <div class="text-center">
                         {% if request.user.groups.all %}
@@ -89,11 +85,11 @@ Home
                         {% if "django_eveonline_connector" in INSTALLED_APPS %}
                         <li class="list-group-item">
                             <b>EVE Character</b>
-                            {% if user.eve_tokens.all and user.eve_tokens.all.0.get_primary_token %}
+                            {% if user.info.get_eveonline_character %}
                             <p class="pull-right">
-                                {{user.eve_tokens.all.0.get_primary_token.evecharacter.name}}
+                                {{user.info.get_eveonline_character.name}}
                                 <a class="text-danger"
-                                    href="{% url 'django-eveonline-connector-sso-token-remove' user.eve_tokens.all.0.get_primary_token.pk %}"><i
+                                    href="{% url 'django-eveonline-connector-sso-token-remove' user.info.get_eveonline_character.token.pk %}"><i
                                         class="fa fa-times pull-right"></i></a>
                             </p>
                             {% else %}
@@ -156,7 +152,7 @@ Home
 
                                 <div class="col-sm-10">
                                     <input type="email" class="form-control" id="inputEmail" placeholder="Email"
-                                        value={{user.email}} name="email">
+                                        value="{{user.email}}" name="email">
                                 </div>
                             </div>
                             <div class="form-group">
