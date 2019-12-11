@@ -36,9 +36,6 @@ Home
                     <img class="profile-user-img img-responsive img-circle"
                         src="{{user.info.display_avatar}}" alt="User profile picture">
                     <h3 class="profile-username text-center">{{user.info.display_name}}</h3>
-                    {% if user.info.display_name != user.username %}
-                    <p class="text-muted text-center">(also known as {{user.username}})</p>
-                    {% endif %}
                     <p class="text-muted text-center">{{user.info.country.name}}</p>
                     <div class="text-center">
                         {% if request.user.groups.all %}
