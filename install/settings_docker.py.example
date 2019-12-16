@@ -90,11 +90,11 @@ WSGI_APPLICATION = 'app.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'MYSQL_DATABASE',
-        'USER': 'MYSQL_USER',
-        'PASSWORD': 'MYSQL_PASSWORD',
-        'HOST': 'MYSQL_HOST',
-        'PORT': 'MYSQL_PORT',
+        'NAME': os.environ.get('MYSQL_DATABASE', ''),
+        'USER': os.environ.get('MYSQL_USER', ''),
+        'PASSWORD': os.environ.get('MYSQL_PASSWORD', ''),
+        'HOST': os.environ.get('MYSQL_HOST', ''),
+        'PORT': os.environ.get('MYSQL_PORT', ''),
     },
     'eve_static': {
         'ENGINE': 'django.db.backends.sqlite3',

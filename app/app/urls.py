@@ -19,6 +19,7 @@ from django.apps import apps
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
+from django.views.generic import RedirectView
 from django.views.defaults import server_error
 from . import views
 
@@ -29,7 +30,8 @@ urlpatterns = [
     path('', views.dashboard, name="app-dashboard"),
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
-    path('500/', server_error)
+    path('500/', server_error),
+    path('favicon.ico',RedirectView.as_view(url='/static/accounts/images/icons/favicon.png')),
 ]
 
 for application in settings.EXTENSIONS:
