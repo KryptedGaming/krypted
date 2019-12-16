@@ -1,0 +1,7 @@
+from django.contrib import admin
+from .models import *
+
+admin.site.register(ApplicationTemplate)
+admin.site.register(Application)
+admin.site.register(ApplicationQuestion)
+admin.site.register(ApplicationResponse)

@@ -1,0 +1,6 @@
+coverage
+python-coveralls
+sphinx-markdown-tables
+django-extensions
+ipython
+notebook

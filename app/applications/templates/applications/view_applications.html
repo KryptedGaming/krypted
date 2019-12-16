@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block header %}
+Applications
+{% endblock %}
+{% block description %}
+View All
+{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'global/ui/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="nav-tabs-custom">
+  <ul class="nav nav-tabs">
+    <li class="active">
+      <a data-toggle="tab" href="#pending">
+        Pending
+      </a>
+    </li>
+    <li>
+      <a data-toggle="tab" href="#complete">
+        Complete
+      </a>
+    </li>
+  </ul>
+</div>
+
+<div class="tab-content box">
+    <div id="pending" class="tab-pane fade in active box-body">
+  		<table class="table">
+  			<thead>
+  				<tr>
+  					<th scope="col">Date Submitted</th>
+            <th scope="col">Application To</th>
+            <th scope="col">Submitted By</th>
+            <th scope="col">Assigned To</th>
+            <th scope="col">Action(s)</th>
+  				</tr>
+  			</thead>
+  			<tbody>
+          {% for application in applications %}
+          {% if application.status == "PENDING" %}
+  				<tr>
+            <td>{{application.request_date | date:"F d, Y"}} </td>
+            <td>{{application.template}}</td>
+            <td>{{application.request_user}}</td>
+            <td>
+              {% if application.response_user %}
+              {{application.response_user}}
+              {% else %}
+              <a href="{% url 'application-assign' application.pk %}">
+                Assign self
+              </a>
+              {% endif %}
+            </td>
+            <td>
+              <a href="{% url 'application-detail' application.pk %}" class="btn btn-primary btn-block">View Application</a>
+            </td>
+  				</tr>
+          {% endif %}
+          {% endfor %}
+  			</tbody>
+  		</table>
+    </div>
+  <div id="complete" class="tab-pane fade box-body">
+		<table class="table">
+			<thead>
+				<tr>
+          <th scope="col">Date Submitted</th>
+					<th scope="col">Action</th>
+          <th scope="col">Application To</th>
+          <th scope="col">Submitted By</th>
+          <th scope="col">Assigned To</th>
+					<th scope="col">Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+        {% for application in applications %}
+        {% if application.status != "PENDING" %}
+				<tr>
+          <td>{{application.request_date}}</td>
+          <td>
+          {% if application.status == "ACCEPTED" %}
+          <span class="label label-success" title="{{application.response_date}}">    ACCEPTED</span>
+          {% else %}
+          <span class="label label-danger" title="{{application.response_date}}">    REJECTED</span>
+          {% endif %}
+          </td>
+          <td>{{application.template}}</td>
+          <td>{{application.request_user}}</td>
+          <td>
+          {% if application.response_user %}
+          {{application.response_user}}
+          {% else %}
+          <i>Nobody</i>
+          {% endif %}
+          </td>
+          
+          <td>
+            <a href="{% url 'application-detail' application.pk %}" class="btn btn-primary btn-block">View Application</a>
+          </td>
+				</tr>
+        {% endif %}
+        {% endfor %}
+			</tbody>
+		</table>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(function () {
+    $('table').DataTable({
+      'paging'      : false,
+      'lengthChange': false,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : false
+    })
+ })
+</script>
+{% endblock %}

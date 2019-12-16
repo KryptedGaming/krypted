@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block header %}
+Applications
+    {% if perms.applications.view_application %}
+    <a href="{% url 'application-list' %}" class="pull-right btn btn-warning">Manage Applications</a>
+    {% endif %}
+{% endblock %}
+{% block description %}
+Edit and Submit applications
+{% endblock %}
+
+{% block includes %}
+<link rel="stylesheet" href="{% static 'global/ui/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
+{% endblock %}
+{% block content %}
+<div class="box box-primary box-solid">
+    <div class="box-header">
+      <h3 class="pull-left">
+      My Applications
+      </h3>
+      
+    </div>
+    <div class=" box-body">
+      <table class="table">
+        <thead>
+          <th scope="col">Application</th>
+          <th scope="col">Description</th>
+          <th scope="col">Action</th>
+        </thead>
+        <tbody>
+            {% for application_template in application_templates %}
+            <tr>
+                <td>{{application_template.template.name}}</td>
+                <td>{{application_template.template.description}}</td>
+                {% if application_template.in_progress %}
+                <td><a href="{% url 'application-modify' application_template.application.pk %}" class="btn btn-block btn-warning">Edit Application</a></td>
+                {% else %}
+                <td><a href="{% url 'application-create' application_template.template.pk %}" class="btn btn-block btn-success">Create Application</a></td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(function () {
+    $('table').DataTable({
+      'paging'      : false,
+      'lengthChange': false,
+      'searching'   : false,
+      'ordering'    : true,
+      'info'        : false,
+      'autoWidth'   : false
+    })
+ })
+</script>
+{% endblock %}
