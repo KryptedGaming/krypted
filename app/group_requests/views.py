@@ -49,7 +49,7 @@ def request_group(request, group_id):
     return redirect('group-list')
 
 @login_required
-@permission_required('group_requests.view_grouprequest')
+@permission_required('group_requests.view_grouprequest', raise_exception=True)
 def view_group_requests(request, group_id):
     group = Group.objects.get(pk=group_id)
     if request.user.has_perm('group_requests.bypass_group_requirement') or group in request.user.groups.all():
@@ -63,7 +63,7 @@ def view_group_requests(request, group_id):
 
 
 @login_required
-@permission_required('group_requests.change_grouprequest')
+@permission_required('group_requests.change_grouprequest', raise_exception=True)
 def approve_group_request(request, group_id, group_request_id):
     group = Group.objects.get(pk=group_id)
     group_request = GroupRequest.objects.get(pk=group_request_id)
@@ -79,7 +79,7 @@ def approve_group_request(request, group_id, group_request_id):
     return redirect('group-request-list', group_id)
 
 @login_required
-@permission_required('group_requests.change_grouprequest')
+@permission_required('group_requests.change_grouprequest', raise_exception=True)
 def deny_group_request(request, group_id, group_request_id):
     group = Group.objects.get(pk=group_id)
     group_request = GroupRequest.objects.get(pk=group_request_id)
@@ -97,8 +97,8 @@ def deny_group_request(request, group_id, group_request_id):
 
 # helper methods
 def get_valid_groups(request):
-    if request.user.has_perm('group_request.bypass_group_requirement'):
-        return Group.objects.all()
+    if request.user.has_perm('group_request.bypass_group_requirement', raise_exception=True):
+        return Group.objects.filter(closedgroup__isnull=True)
         
     if apps.is_installed('django_eveonline_group_states'):
         groups = Group.objects.filter(closedgroup__isnull=True, pk__in=request.user.state.get_all_enabling_groups())

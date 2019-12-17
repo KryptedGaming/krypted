@@ -15,7 +15,7 @@ import logging, datetime
 logger = logging.getLogger(__name__)
 
 @login_required
-@permission_required('applications.view_application')
+@permission_required('applications.view_application', raise_exception=True)
 def view_applications(request):
     return render(request, 'applications/view_applications.html', context= {
         'applications': Application.objects.all()})
@@ -47,7 +47,7 @@ def view_my_applications(request):
     return render(request, 'applications/my_applications.html', context=context)
 
 @login_required
-@permission_required('applications.view_application')
+@permission_required('applications.view_application', raise_exception=True)
 def view_application(request, pk):
     context = {
         'application': Application.objects.get(pk=pk),
@@ -104,7 +104,7 @@ def modify_application(request, application_id):
     return render(request, 'applications/modify_application.html', context)
 
 @login_required
-@permission_required('applications.change_application')
+@permission_required('applications.change_application', raise_exception=True)
 def approve_application(request, application_id):
     application = Application.objects.get(pk=application_id)
     messages.add_message(request, messages.SUCCESS, 'Application accepted.')
@@ -124,7 +124,7 @@ def approve_application(request, application_id):
     return redirect('application-list')
 
 @login_required
-@permission_required('applications.change_application')
+@permission_required('applications.change_application', raise_exception=True)
 def deny_application(request, application_id):
     application = Application.objects.get(pk=application_id)
     messages.add_message(request, messages.ERROR, 'Application rejected.')
@@ -145,7 +145,7 @@ def deny_application(request, application_id):
     return redirect('application-list')
 
 @login_required
-@permission_required('applications.change_application')
+@permission_required('applications.change_application', raise_exception=True)
 def assign_application_to_user(request, application_id):
     application = Application.objects.get(pk=application_id)
     application.response_user = request.user
