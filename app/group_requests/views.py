@@ -97,7 +97,7 @@ def deny_group_request(request, group_id, group_request_id):
 
 # helper methods
 def get_valid_groups(request):
-    if request.user.has_perm('group_request.bypass_group_requirement', raise_exception=True):
+    if request.user.has_perm('group_request.bypass_group_requirement'):
         return Group.objects.filter(closedgroup__isnull=True)
         
     if apps.is_installed('django_eveonline_group_states'):
