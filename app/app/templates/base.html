@@ -146,9 +146,11 @@
                     <li><a href="https://kryptedauth.readthedocs.io/en/latest/?"><i class="fa fa-book"></i>
                             <span>Documentation</span></a>
                     </li>
+                    {% if request.user.is_staff %}
                     <li><a href="/admin/"><i class="fa fa-wrench"></i>
                             <span>Admin Panel</span></a>
                     </li>
+                    {% endif %}
                 </ul>
             </section>
             <!-- /.sidebar -->
