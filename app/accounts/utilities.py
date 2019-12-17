@@ -12,8 +12,8 @@ def username_or_email_resolver(username):
 
 def send_activation_email(user):
     send_mail(
-        'Verify your Krypted Account',
-        'Welcome to %s. \n Please click the following link to verify your account. \n %s/accounts/activate/%s' % (
+        'Verify your Krypted account',
+        'Welcome to %s. \n Please click the following link to verify your account. \n https://%s/accounts/activate/%s' % (
             settings.SITE_TITLE, settings.SITE_DOMAIN, user.info.secret),
         settings.DEFAULT_FROM_EMAIL,
         [user.email],
