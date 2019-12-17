@@ -43,7 +43,7 @@ class OpenGroup(models.Model):
         super(OpenGroup, self).save(*args, **kwargs)
     
     def __str__(self):
-        return self.group
+        return self.group.name
 
 class ClosedGroup(models.Model):
     group = models.OneToOneField(Group, on_delete=models.CASCADE)
@@ -55,4 +55,4 @@ class ClosedGroup(models.Model):
         super(ClosedGroup, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.group
+        return self.group.name
