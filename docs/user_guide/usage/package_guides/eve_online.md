@@ -33,11 +33,10 @@ To set up the `django_eveonline_connector` package:
 ### (Optional) Modifying Scopes
 At any time, if you need to modify scopes, you can navigate to EVE SCOPES in the Admin Panel and create (or delete) scopes. 
 
-## Periodic Tasks
-There are a ton of EVE Online tasks, below are the ones you need to worry about. 
+## Recommened Task Schedule
 
-| Command | Description |
-| --- | --- |
-| `update_all_characters`     | Update character details |
-| `update_all_corporations`     | Update corporation details |
-| `update_all_alliances`     | Update alliance details |
+| Command | Action | Interval |
+| --- | --- | --- | 
+| `django_eveonline_connector.tasks.update_all_characters`     | Update character details | Every 4 hours |
+| `django_eveonline_connector.tasks.update_all_corporations`     | Update corporation details | Every day |
+| `django_eveonline_connector.tasks.update_all_alliances`     | Update alliance details | Every day | 

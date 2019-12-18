@@ -58,10 +58,10 @@ To set up the `django_discord_connector` package:
 8. Input the BOT TOKEN from Step #2
 9. Input the INVITE LINK from Step #5 
 
-## Periodic Tasks
-There are a ton of Discord tasks, below are the ones you need to worry about. 
+## Recommened Task Schedule
 
-| Command | Description |
-| --- | --- |
-| `sync_discord_user_groups`     | Update groups for Discord users (max 1 per second) |
-| `sync_discord_users_accounts`     | Update nicknames and usernames for Discord users (max 1 per second) |
+| Command | Action | Interval |
+| --- | --- | --- | 
+| `django_discord_connector.tasks.verify_all_discord_users_groups`     | Verify groups | Every 5 minutes |
+| `django_discord_connector.tasks.sync_discord_users_accounts`     | Update nicknames | Every week |
+| `django_discord_connector.tasks.remote_sync_all_discord_users_groups`     | Verify groups with remote server | Every week | 
