@@ -8,6 +8,8 @@ These are packages contributed and maintained by Krypted Gaming.
 |    django-eveonline-timerboard   |   Provides timerboard for EVE Online    |  [GitHub](https://github.com/KryptedGaming/django-eveonline-timerboard)   |
 |    django-discord-connector   |   Adds Discord syncing and SSO    |  [GitHub](https://github.com/KryptedGaming/django-discord-connector)   |
 |    django-discourse-connector  |   Adds Discourse syncing and SSO    |  [GitHub](https://github.com/KryptedGaming/django-discourse-connector)   |
+|    django-eveonline-doctrine-manager  |   Adds Doctrines and Fittings    |  [GitHub](https://github.com/KryptedGaming/django-eveonline-doctrine-manager)   |
+|    django-eveonline-group-states  |   State management (corporations, alliances) for EVE Online    |  [GitHub](https://github.com/KryptedGaming/django-eveonline-group-states)   |
 
 ## Installing Packages
 ### Docker 

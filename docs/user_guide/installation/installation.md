@@ -1,10 +1,11 @@
 # Docker Installation
 For production installation, we use Docker. 
 
-1. Grab our provided DevOps repository `git clone https://github.com/KryptedGaming/krypted-docker.git`
-2. Modify the `.env` with your desired settings
-3. Launch your production environment with `docker-compose up -d`
-4. By default, you'll be on port 8000. You'll need to proxypass this on your host webserver. 
+1. Grab our production-ready `docker-compose.yml` file (`wget https://raw.githubusercontent.com/KryptedGaming/krypted-docker/master/production/docker-compose.yml`)
+2. Grab our example `.env` file (`wget https://raw.githubusercontent.com/KryptedGaming/krypted-docker/master/production/.env`)
+3. Modify the `.env` with your desired settings
+4. Launch your production environment with `docker-compose up -d`
+5. By default, you'll be on port 8000. You'll need to proxypass this on your host webserver. 
 
 ## .env variables
 
