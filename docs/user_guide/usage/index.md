@@ -1,4 +1,4 @@
-# Usage
+# Setup
 ```eval_rst
 .. toctree::
     :maxdepth: 4
