@@ -6,6 +6,5 @@
 
     administration
     tasks
-    package_guides/index
 
 ```

@@ -1,5 +1,8 @@
-# Discord Guide
-## Quick Steps
+## Discord Connector
+### Overview
+The Discord Connector allows you to attach Discord roles to Groups on the Krypted Platform. By doing this, users will automatically be assigned Discord roles whenever they are added to a Group on your website. In combination with other packages like EVE Group States and Group Requests, you're able to create a powerful syncing platform that enhances security across your platforms. 
+
+### Quick Setup
 To set up the `django_discord_connector` package:
 1. Install it (varies, Docker vs Development)
 2. (Recommended) Load the default schedule (`python3 manage.py loaddata discord_default_schedule`)
@@ -13,8 +16,8 @@ To set up the `django_discord_connector` package:
 10. Invite your Bot to the Discord server (use the `OAuth2` bot tool)
 11. Select your new client in the Admin Panel and click the dropdown, sync your groups
 
-## Detailed Steps
-### 1. Create a Discord Application
+### Detailed Setup
+#### 1. Create a Discord Application
 1. Navigate to https://discordapp.com/developers/applications
 2. Click "New Application"
 3. Fill out a name, click create.
@@ -22,13 +25,13 @@ To set up the `django_discord_connector` package:
 5. Copy the `CLIENT ID` value, save this for later. 
 6. Copy the `CLIENT SECRET` value, save this for later. 
 
-### 2. Get Bot Token 
+#### 2. Get Bot Token 
 1. Click the **Bot** section
 2. Add a Bot.
 3. Customize your bot, add an icon and username. 
 4. Copy the `TOKEN` value, save this for later.
 
-### 3. Inviting your Bot
+#### 3. Inviting your Bot
 1. Click the *OAuth2** section
 2. Add a Redirect URL, `https://<your_domain>/discord/sso/callback` ((`your_site` is your site domain). Save this value for later.
 3. Under the **Scopes** section, check the *bot* box. 
@@ -36,18 +39,18 @@ To set up the `django_discord_connector` package:
 5. Scroll back up to **Scopes**, copy the URL at the bottom and paste it in your browser.
 6. Use this URL to invite the bot to your server. 
 
-### 4. Get your Server ID 
+#### 4. Get your Server ID 
 1. Open your Discord settings
 2. Navigate to Appearance
 3. Enable Developer Mode
 4. Right click your Server icon in the Discord menu
 5. Copy ID. Save this for later. 
 
-### 5. Create a permanant invite link 
+#### 5. Create a permanant invite link 
 1. Navigate to your server, hover over a channel and create an invite link.
 2. Select no expiry, unlimited uses. Save this link for later. 
 
-### 4. Creating the Discord Client
+#### 4. Creating the Discord Client
 1. Navigate to your Admin Panel on the Krypted platform
 2. Select Discord Clients
 3. Create a new Discord client
@@ -58,7 +61,13 @@ To set up the `django_discord_connector` package:
 8. Input the BOT TOKEN from Step #2
 9. Input the INVITE LINK from Step #5 
 
-## Recommened Task Schedule
+### Tasks 
+There are a few tasks that you need to know about. 
+* `django_discord_connector.tasks.verify_all_discord_users_groups` is used to check that users have the groups they're supposed to, and updates their groups based on what's in the database. With the `DISCORD_REMOTE_PRIORITY` setting set to `True`, it will favor Discord groups over Krypted groups. 
+* `django_discord_connector.tasks.sync_discord_users_accounts` This will update usernames and nicknames of all users. 
+* `django_discord_connector.tasks.remote_sync_all_discord_users_groups` Sometimes, groups get out of sync. This is most common when someone adds a group to a user on the Discord server, instead of letting authentication handle it. By running this task, we do a hard sync on all users. **This is an expensive task, don't overuse it.**
+
+### Recommended Task Schedule
 
 | Command | Action | Interval |
 | --- | --- | --- | 

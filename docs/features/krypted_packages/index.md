@@ -1,4 +1,4 @@
-# Krypted Packages
+## Krypted Packages
 These are packages contributed and maintained by Krypted Gaming.
 
 |   Package Name    |   Description    |   Link    |
@@ -11,21 +11,21 @@ These are packages contributed and maintained by Krypted Gaming.
 |    django-eveonline-doctrine-manager  |   Adds Doctrines and Fittings    |  [GitHub](https://github.com/KryptedGaming/django-eveonline-doctrine-manager)   |
 |    django-eveonline-group-states  |   State management (corporations, alliances) for EVE Online    |  [GitHub](https://github.com/KryptedGaming/django-eveonline-group-states)   |
 
-## Installing Packages
-### Docker 
+### Installing Packages
+#### Docker 
 If you're using Docker, you'll simply specify packages in the `.env` file. 
 
 1. Under the `REQUIREMENTS`, add KryptedGaming/<package_name> (e.g django-discord-connector).
 2. Under the `EXTENSIONS`, add the extension name. This is what the package says to add into `INSTALLED_APPS`, e.g django_discord_connector). 
 
-### PyPi
+#### PyPi
 Typically, our packages are pushed to PyPi whenever we release. 
 
 1. Install the package `pip3 install <package_name>`
 2. Follow the instructions in the package README.md
 3. Add the package to your `settings.py` file (under `EXTENSIONS`, replace `-` with `_`)
 
-### Manually
+#### Manually
 If you want the latest version of our packages, you should install clone them and install them.
 
 1. Clone the package `git clone <package_url>`

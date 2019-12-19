@@ -1,12 +1,12 @@
-# Understanding Tasks
+## Understanding Tasks
 Most actions in the Krypted platform are Celery tasks, which allows us to perform backend actions without interrupting the end-user. There are two forms of tasks that we utilize: **Periodic Tasks** and **Signal Tasks**. 
 
-## Signal Tasks
+### Signal Tasks
 Signal tasks are tasks triggered by events in the web application. For example, if someone adds a new EVE Online character, we might want to re-verify their groups to make sure they are still eligible. 
 
 These are implemented by developers. 
 
-## Periodic Tasks
+### Periodic Tasks
 These are tasks set by **YOU** to run in the background. For example, you might want to check every 5 minutes that everyones' Discord roles are up to date. 
 
 To create a Periodic Task:

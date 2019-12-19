@@ -1,4 +1,4 @@
-# Running
+## Running
 During development, we typically just use the provided development tools by Django.
 
 1. Ensure you're in the `app` directory `cd krypted/app`

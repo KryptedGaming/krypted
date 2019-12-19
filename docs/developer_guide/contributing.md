@@ -1,4 +1,4 @@
-# Contributing
+## Contributing
 Krypted accepts contributions in the form of **packages**, which are simply [reusable Django Applications](https://docs.djangoproject.com/en/2.2/intro/reusable-apps/). All of our community packages can be found [here](../features/community_packages/index).
 
 Alternatively, you can contribute to our [Krypted Packages](../features/krypted_packages/index) in the form of pull requests. 

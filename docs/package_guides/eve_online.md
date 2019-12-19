@@ -1,5 +1,8 @@
-# EVE Online Connector Guide
-## Quick Steps
+## EVE Connector
+### Overview
+The EVE Online Connector is our base module for ESI. This adds characters, corporations, and alliance objects and the tasks to update them. *It's required by nearly other EVE Online package.*
+
+### Quick Steps
 To set up the `django_eveonline_connector` package:
 1. Install it (varies, Docker vs Development)
 2. (Recommended) Load the default schedule (`python3 manage.py loaddata eveonline_default_schedule`)
@@ -9,8 +12,8 @@ To set up the `django_eveonline_connector` package:
 5. Input the `CLIENT ID` from your application 
 6. Input the `CLIENT_SECRET` from your application
 
-## Detailed Steps 
-### 1. Create an EVE Online application
+### Detailed Steps 
+#### 1. Create an EVE Online application
 1. Navigate to https://developers.eveonline.com/applications
 2. Log in, create a new application
 3. Fill out a name. Recommended: [TICKER] - Krypted Platform
@@ -22,7 +25,7 @@ To set up the `django_eveonline_connector` package:
 9. Copy the CLIENT ID. Save this for later.
 10. Copy the CLIENT SECRET. Save this for later. 
 
-### 2. Create an EVE Online client 
+#### 2. Create an EVE Online client 
 1. Navigate to your Admin Panel on the Krypted platform
 2. Click EVE Clients
 3. Create an EVE Client 
@@ -30,10 +33,22 @@ To set up the `django_eveonline_connector` package:
 5. Fill out the CLIENT ID from Step #1 
 6. Fill out the CLIENT SECRET from Step #1 
 
-### (Optional) Modifying Scopes
+#### (Optional) Modifying Scopes
 At any time, if you need to modify scopes, you can navigate to EVE SCOPES in the Admin Panel and create (or delete) scopes. 
 
-## Recommened Task Schedule
+### Tasks
+* `django_eveonline_connector.tasks.update_all_characters` This will update all character tokens and their affiliations.
+* `django_eveonline_connector.tasks.update_all_corporations` This will update all corporations and their affiliations.
+* `django_eveonline_connector.tasks.update_all_alliances` This will update all alliances and their affiliations. 
+
+### Permissions
+
+|    Permission   |   Action    |
+|  ---  |  ---  |
+| Can view eve charcter  |   Ability to view eve character list  |
+| Can view eve corporation   |  Ability to view eve corporation list   |
+
+### Recommened Task Schedule
 
 | Command | Action | Interval |
 | --- | --- | --- | 

@@ -1,4 +1,4 @@
-# Core Modules
+## Core Features
 
 ```eval_rst
 .. toctree::
