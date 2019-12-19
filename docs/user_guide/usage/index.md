@@ -1,4 +1,4 @@
-# Usage
+# Setup
 ```eval_rst
 .. toctree::
     :maxdepth: 4
@@ -6,6 +6,5 @@
 
     administration
     tasks
-    package_guides/index
 
 ```

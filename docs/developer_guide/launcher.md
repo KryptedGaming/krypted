@@ -1,8 +1,8 @@
-# Launcher
-## What is the launcher?
+## Launcher
+### What is the launcher?
 The launcher is our developer tool that handles a lot of the common commands that you'll be running. It's made to run in the root project directory, and helps you handle things like running Django, celery, and coverage. Understanding the launcher will save you a *ton* of time, and we highly recommend you use it when developing extensions.
 
-## Launcher Commands
+### Launcher Commands
 
 | Command | Description |
 | --- | --- |
@@ -13,5 +13,5 @@ The launcher is our developer tool that handles a lot of the common commands tha
 | launcher celery   | Starts the Celery worker and Celery beat |
 | launcher flower   | Launches Celery flower on `127.0.0.1:5555` | 
 
-## Extending the Launcher
+### Extending the Launcher
 The launcher is written in Shell, so simply add a function and case statement for it, and you're good to go!

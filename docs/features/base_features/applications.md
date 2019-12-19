@@ -1,11 +1,11 @@
-# Applications
+### Applications
 Applications enables our application system, allowing users to submit applications for approval.
 
-## Enabling Applications
+#### Enabling Applications
 1. Docker: Add `applications` to the list of `EXTENSIONS` in the `.env` file
 2. Other: Add `applications` to the `EXTENSIONS` in the `settings.py` file
 
-## Creating Templates
+#### Creating Templates
 Templates are what users will fill out for submission, and will be created in your administration panel.
 
 1. Navigate to your administration panel (https://DOMAIN/admin/)
@@ -16,7 +16,7 @@ Templates are what users will fill out for submission, and will be created in yo
 6. "Groups to remove" are groups that are removed on applcation approval or rejection. 
 7. "Required group" is a required group for a user to view this application template. 
 
-## Applications
+#### Applications
 Under the sidebar menu, you'll see a new `Applications` tab. This is where you'll create and manage applications. 
 
 * The permission `View Application` is required to manage applications. 
