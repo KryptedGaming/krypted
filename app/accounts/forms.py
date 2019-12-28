@@ -37,7 +37,7 @@ class UserRegisterForm(forms.Form):
             self.add_error('password', 'Passwords do not match')
         # Display errors for underage users
         if self.cleaned_data.get('age') < 18:
-            self.add_error('age', 'Sorry, this community is 18+ only.')
+            self.add_error('age', 'Sorry, you must be 18 or older to sign in.')
 
         return self.cleaned_data
 
