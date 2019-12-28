@@ -2,59 +2,85 @@
 {% load staticfiles %}
 
 {% block header %}
-Groups 
+Groups
 {% endblock %}
 {% block description %}
-Request Groups 
+Request Groups
 {% endblock %}
 
 {% block includes %}
-<link rel="stylesheet" href="{% static 'global/ui/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
+<link rel="stylesheet"
+    href="{% static 'global/ui/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
 {% endblock %}
 {% block content %}
 <div class="box box-primary box-solid">
     <div class="box-header">
-    <h3>
-    Requestable Groups
-    </h3>
+        <h3>
+            Requestable Groups
+        </h3>
     </div>
-    <div class=" box-body">
-      <table class="table">
-        <thead>
-          <th scope="col">Group</th>
-          <th scope="col">Action</th>
-        </thead>
-        <tbody>
-            {% for group in groups %}
-            <tr>
-
-                <td>
-                <h4 class="pull-left">{{group.group.name}}</h4>
+    <div class="box-body">
+        <table class="datatable table table-bordered table-hover">
+            <thead>
+                <th class="col-lg-4 col-md-4 col-xs-4" scope="col">Group</th>
                 {% if perms.group_requests.view_grouprequest %}
-                <a class="pull-right btn btn-primary" href="{% url 'group-request-list' group.group.pk %}"><i class="fa fa-lg fa-legal"></i></a>
+                <th class="col-lg-4 col-md-4 col-xs-4" scope="col">Requests</th>
                 {% endif %}
-                </td>
-                <td>
-                {% if group.group in request.user.groups.all %}
-                <a class="btn btn-block btn-success" href="#" disabled>Already Joined</a>
-                {% elif group.requested %}
-                  {% if group.requested.response_action == "PENDING" %}
-                  <a class="btn btn-block btn-default" href="#" disabled>Pending</a>
-                  {% elif group.requested.response_action == "ACCEPTED" %}
-                  <a class="btn btn-block btn-success" href="#" disabled>Accepted</a>
-                  {% else %}
-                  <a class="btn btn-block btn-danger" href="#" disabled>Rejected</a>
-                  {% endif %}
-                {% elif group.open %}
-                <a class="btn btn-block btn-success" href="{% url 'group-request' group.group.pk %}">Join</a>
-                {% else %}
-                <a class="btn btn-block btn-warning" href="{% url 'group-request' group.group.pk %}">Request</a>
-                {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-      </table>
+                <th class="col-lg-4 col-md-4 col-xs-4" scope="col">Action</th>
+            </thead>
+            <tbody>
+                {% for group in groups %}
+                <tr>
+
+                    <td>
+                        <h4 class="pull-left">{{group.group.name}}</h4>
+                    </td>
+                    {% if perms.group_requests.view_grouprequest %}
+                    <td>
+                        <a class="btn btn-primary btn-block" href="{% url 'group-request-list' group.group.pk %}">
+                            Manage
+                            Requests
+                            {% if group.group.group_requests.all.count > 5 %}
+                            <sup>
+                                <span
+                                    class="label label-danger text-center">{{group.group.group_requests.all.count}}</span>
+                            </sup>
+                            {% elif group.group.group_requests.all.count > 0 %}
+                            <sup>
+                                <span
+                                    class="label label-warning text-center">{{group.group.group_requests.all.count}}</span>
+                            </sup>
+                            {% else %}
+                            <sup>
+                                <span
+                                    class="label label-info text-center">{{group.group.group_requests.all.count}}</span>
+                            </sup>
+                            {% endif %}
+                        </a>
+
+                    </td>
+                    {% endif %}
+                    <td>
+                        {% if group.group in request.user.groups.all %}
+                        <a class="btn btn-block btn-success" href="#" disabled>Already Joined</a>
+                        {% elif group.requested %}
+                        {% if group.requested.response_action == "PENDING" %}
+                        <a class="btn btn-block btn-default" href="#" disabled>Pending</a>
+                        {% elif group.requested.response_action == "ACCEPTED" %}
+                        <a class="btn btn-block btn-success" href="#" disabled>Accepted</a>
+                        {% else %}
+                        <a class="btn btn-block btn-danger" href="#" disabled>Rejected</a>
+                        {% endif %}
+                        {% elif group.open %}
+                        <a class="btn btn-block btn-success" href="{% url 'group-request' group.group.pk %}">Join</a>
+                        {% else %}
+                        <a class="btn btn-block btn-warning" href="{% url 'group-request' group.group.pk %}">Request</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
     </div>
 
@@ -63,17 +89,15 @@ Request Groups
 
 {% block scripts %}
 <script>
-$(function () {
-    $('table').DataTable({
-      'paging'      : false,
-      'lengthChange': false,
-      'searching'   : false,
-      'ordering'    : true,
-      'info'        : false,
-      'autoWidth'   : false
+    $(function () {
+        $('table').DataTable({
+            'paging': false,
+            'lengthChange': false,
+            'searching': false,
+            'ordering': true,
+            'info': false,
+            'autoWidth': false
+        })
     })
- })
 </script>
-<script src="{% static 'global/ui/bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'global/ui/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
 {% endblock %}
