@@ -189,6 +189,10 @@ LOGGING = {
         'urllib3': {
             'level': 'NOTSET',
             'propagate': False,
+        },
+        'django.request': {
+            'level': 'ERROR',
+            'propogate': False,
         }
     },
 }
