@@ -6,6 +6,7 @@ from django_countries.fields import CountryField
 from accounts.utilities import send_activation_email, username_or_email_resolver
 from accounts.models import UserInfo
 import logging
+import re
 logger = logging.getLogger(__name__)
 
 
@@ -29,9 +30,10 @@ class UserRegisterForm(forms.Form):
             self.add_error('username',
                            "Usernames cannot contain spaces")
         # Display errors for usernames that are emails
-        if "@" in str(self.cleaned_data.get('username')):
+        regex = re.compile('[@_!#$%^&*()<>?/\|}{~:]')
+        if regex.search(str(self.cleaned_data.get('username'))):
             self.add_error('username',
-                           "Usernames cannot contain @ symbols")
+                           "Usernames cannot contain special characters")
         # Display errors for mismatched passwords
         if self.cleaned_data.get('password') != self.cleaned_data.get('v_password'):
             self.add_error('password', 'Passwords do not match')
