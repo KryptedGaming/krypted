@@ -19,3 +19,8 @@ def sidebar_extensions(request):
     return {
         'SIDEBAR_EXTENSIONS': templates
     }
+
+def site_name(request):
+    return {
+        'SITE_NAME': settings.SITE_TITLE
+    }

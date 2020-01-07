@@ -101,8 +101,7 @@ def modify_application(request, application_id):
     if request.POST:
         # Build responses
         for response in ApplicationResponse.objects.filter(application=application):
-            response.response = request.POST.get(
-                "question_%s" % response.question.pk, "Response was not provided.")
+            response.response = request.POST.get("question_%s" % response.question.pk, "Response was not provided.")
             response.save()
 
         return redirect('my-applications')
