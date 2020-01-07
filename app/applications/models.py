@@ -7,10 +7,16 @@ class ApplicationTemplate(models.Model):
     questions = models.ManyToManyField("ApplicationQuestion", blank=True)
     groups_to_add = models.ManyToManyField(Group, blank=True, related_name="groups_to_add") # groups to add on APPROVAL
     groups_to_remove = models.ManyToManyField(Group, blank=True, related_name="groups_to_remove") # groups to remove on APPROVE OR DENY
-    required_group = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True, blank=True) # optional required group
+    required_group_to_apply = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True, blank=True) # optional required group
+    required_group_to_manage = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True, blank=True, related_name="manager_group") # optional required manager group
 
     def __str__(self):
         return self.name 
+
+    class Meta:
+        permissions = [
+            ('bypass_required_group_to_manage', "Can approve, reject, and view applications despite their required manager groups"),
+        ]
 
 class ApplicationQuestion(models.Model):
     question_type_fields = (

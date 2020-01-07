@@ -79,6 +79,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'context_processors.installed_apps',
                 'context_processors.sidebar_extensions',
+                'context_processors.site_name',
             ],
         },
     },
