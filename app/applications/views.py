@@ -6,9 +6,9 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.apps import apps
 from django.db.models import Q
-# LOCAL IMPORTS
 from .models import *
-# EXTERNAL IMPORTS
+from .helpers import get_manageable_application_templates
+from .decorators import user_can_manage_application
 # MISC
 import logging
 import datetime
@@ -19,8 +19,9 @@ logger = logging.getLogger(__name__)
 @login_required
 @permission_required('applications.view_application', raise_exception=True)
 def view_applications(request):
-    return render(request, 'applications/view_applications.html', context={
-        'applications': Application.objects.all()})
+    context = {}
+    context['applications'] = Application.objects.filter(template__in=get_manageable_application_templates(request.user))
+    return render(request, 'applications/view_applications.html', context=context)
 
 
 @login_required
@@ -29,8 +30,8 @@ def view_my_applications(request):
     context['user_applications'] = Application.objects.filter(
         request_user=request.user)
     # build list of templates based on required groups or existing user applications
-    application_templates = ApplicationTemplate.objects.filter(Q(required_group=None) |
-                                                               Q(required_group__in=request.user.groups.all()) |
+    application_templates = ApplicationTemplate.objects.filter(Q(required_group_to_apply=None) |
+                                                               Q(required_group_to_apply__in=request.user.groups.all()) |
                                                                Q(pk__in=[application.template.pk for application in context['user_applications']]))
 
     application_template_response = []
@@ -53,6 +54,7 @@ def view_my_applications(request):
 
 @login_required
 @permission_required('applications.view_application', raise_exception=True)
+@user_can_manage_application
 def view_application(request, pk):
     context = {
         'application': Application.objects.get(pk=pk),
@@ -89,6 +91,7 @@ def create_application(request, template_id):
 
 
 @login_required
+@user_can_manage_application
 def modify_application(request, application_id):
     context = {}
     application = Application.objects.get(pk=application_id)
@@ -118,6 +121,7 @@ def modify_application(request, application_id):
 
 @login_required
 @permission_required('applications.change_application', raise_exception=True)
+@user_can_manage_application
 def approve_application(request, application_id):
     application = Application.objects.get(pk=application_id)
     messages.add_message(request, messages.SUCCESS, 'Application accepted.')
@@ -139,6 +143,7 @@ def approve_application(request, application_id):
 
 @login_required
 @permission_required('applications.change_application', raise_exception=True)
+@user_can_manage_application
 def deny_application(request, application_id):
     application = Application.objects.get(pk=application_id)
     messages.add_message(request, messages.ERROR, 'Application rejected.')

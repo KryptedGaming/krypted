@@ -15,7 +15,7 @@ class ApplicationClientTestCase(TestCase):
     @staticmethod
     def create_template(template_name):
         template = ApplicationTemplate.objects.create(
-            name=template_name, required_group=None)
+            name=template_name, required_group_to_apply=None)
         for question in ApplicationQuestion.objects.all():
             template.questions.add(question)
         return template
@@ -102,7 +102,7 @@ class ApplicationClientTestCase(TestCase):
         # hidden template
         template_c = self.create_template('test_my_applications_b')
         group_c = Group.objects.create(name="test_my_applications_c")
-        template_c.required_group = group_c
+        template_c.required_group_to_apply = group_c
         template_c.save()
         # grandfathered template (existing application)
         template_d = self.create_template('test_my_applications_d')
