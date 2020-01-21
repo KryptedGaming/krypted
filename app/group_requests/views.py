@@ -16,7 +16,8 @@ def view_groups(request):
         groups.append({
             "group": group,
             "open": OpenGroup.objects.filter(group=group).exists(),
-            "requested": GroupRequest.objects.filter(request_user=request.user, request_group=group).first()
+            "requested": GroupRequest.objects.filter(request_user=request.user, request_group=group).first(),
+            "request_count": GroupRequest.objects.filter(request_group=group, response_action="PENDING").count()
         })
 
     return render(request, 'group_requests/view_groups.html', context={
