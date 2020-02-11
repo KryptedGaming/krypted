@@ -66,6 +66,7 @@ There are a few tasks that you need to know about.
 * `django_discord_connector.tasks.verify_all_discord_users_groups` is used to check that users have the groups they're supposed to, and updates their groups based on what's in the database. With the `DISCORD_REMOTE_PRIORITY` setting set to `True`, it will favor Discord groups over Krypted groups. 
 * `django_discord_connector.tasks.sync_discord_users_accounts` This will update usernames and nicknames of all users. 
 * `django_discord_connector.tasks.remote_sync_all_discord_users_groups` Sometimes, groups get out of sync. This is most common when someone adds a group to a user on the Discord server, instead of letting authentication handle it. By running this task, we do a hard sync on all users. **This is an expensive task, don't overuse it.**
+* 'django_discord_connector.tasks.enforce_discord_nicknames` This task takes an ARGUMENT `enforce_strategy`, which can be on of the following: `EVE_ONLINE`. This will enforce Discord nicknames (e.g in the case of `EVE_ONLINE`, primary character name). You must disable users' ability to change their nickname for this to work cleanly. 
 
 ### Recommended Task Schedule
 
