@@ -19,7 +19,7 @@ RUN git clone --branch $VERSION https://github.com/KryptedGaming/krypted.git /op
     cp /opt/krypted/conf/settings.py.example /opt/krypted/app/app/settings.py && \
     pip3 install -r /opt/krypted/requirements.txt && \
     pip3 install mysqlclient==1.4.2.post1 && \ 
-    pip3 install uwsgi 
+    pip3 install uwsgi==2.0.18
 
 # COPY ENTRYPOINT
 COPY entrypoint.sh /usr/local/bin/
