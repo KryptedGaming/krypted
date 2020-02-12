@@ -1,21 +1,21 @@
-import os
+import os, re
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '&g$n5#3mz^d^34#j#a2313l)svdr40d6k(5r4-r9r7e*wj)f7d'
+SECRET_KEY = os.environ.get('SECRET_KEY', '&g$n5#3mz^d^34#j#a2313l)svdr40d6k(5r4-r9r7e*wj)f7d')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', True)
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [ "%s" % os.environ.get('SITE_DOMAIN', '*')]
 
 # SITE INFORMATION
 SITE_PROTOCOL = "http://"
-SITE_DOMAIN = "127.0.0.1:8000"
+SITE_DOMAIN = os.environ.get('SITE_TITLE', '127.0.0.1:8000')
 SITE_URL = "%s%s" % (SITE_PROTOCOL, SITE_DOMAIN)
-SITE_TITLE = "Krypted Gaming"
+SITE_TITLE = os.environ.get('SITE_TITLE', 'Krypted Platform')
 
 # Application definition
 
@@ -32,6 +32,9 @@ DJANGO_APPS = [
 ]
 
 EXTENSIONS = [ 'accounts', 'applications', 'group_requests' ]
+if os.environ.get('INSTALLED_APPS'):
+    for APP in os.environ.get('INSTALLED_APPS'):
+        EXTENSIONS.append(str(re.sub(r'[^\w\s]','', APP)))
 
 INSTALLED_APPS = DJANGO_APPS + EXTENSIONS
 
@@ -74,15 +77,26 @@ WSGI_APPLICATION = 'app.wsgi.application'
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    },
     'eve_static': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'eve_static_export.sqlite'),
     }
 }
+
+if os.environ.get('DATABASE', 'SQLLITE') == "MYSQL":
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.environ.get('MYSQL_DATABASE', 'krypted'),
+        'USER': os.environ.get('MYSQL_USER', 'krypted'),
+        'PASSWORD': os.environ.get('MYSQL_PASSWORD', 'somepassword'),
+        'HOST': os.environ.get('MYSQL_HOST', 'db'),
+        'PORT': os.environ.get('MYSQL_PORT', '3306'),
+    }
+else:
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
 
 
 # Password validation
@@ -129,12 +143,12 @@ STATICFILES_DIRS = [
 ]
 
 # SMTP
-EMAIL_HOST = ''
-EMAIL_PORT = 587
-EMAIL_HOST_USER = ''
-EMAIL_HOST_PASSWORD = ''
-EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = ''
+EMAIL_HOST = os.environ.get('EMAIL_HOST', '')
+EMAIL_PORT = os.environ.get('EMAIL_PORT', '587')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', True)
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', '')
 
 # Django Caching
 CACHES = {
