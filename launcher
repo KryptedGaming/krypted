@@ -27,8 +27,8 @@ run_env() {
 }
 
 run_build() {
-    docker build -t kryptedgaming/krypted --build-arg VERSION=$(git rev-parse --abbrev-ref HEAD) ./docker/app/
-    docker build -t kryptedgaming/krypted_celery --build-arg VERSION=$(git rev-parse --abbrev-ref HEAD) ./docker/celery/
+    docker build -t kryptedgaming/krypted --build-arg VERSION=$(git rev-parse --abbrev-ref HEAD) ./docker/app/ --no-cache
+    docker build -t kryptedgaming/krypted_celery --build-arg VERSION=$(git rev-parse --abbrev-ref HEAD) ./docker/celery/ --no-cache
 }
 run_install() {
     echo "Installing the Krypted Platform developer environment"

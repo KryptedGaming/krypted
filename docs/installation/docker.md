@@ -7,19 +7,40 @@ For production installation, we use Docker.
 4. Launch your production environment with `docker-compose up -d`
 5. By default, you'll be on port 8000. You'll need to proxypass this on your host webserver. 
 
-## .env variables
+## Environment Variables
+Krypted supports numerous environment variables, which are set in your `.env` file.
 
-|   Variable    |    Meaning   |
-|  ---  |  ---  |
-|   `DJANGO_SECRET`    |   Django secret used for hashing. Keep safe. `https://miniwebtool.com/django-secret-key-generator/`  |
-|   `VERSION`    |   Git branch to checkout. e.g `master`   |
-|   `SITE_DOMAIN`    |   Site domain, e.g `https://localhost:8000`   |
-|   `SITE_NAME`    |   Site name, e.g My Corporation   |
-|   `MYSQL_DATABASE`    |   MYSQL Database name    |
-|   `MYSQL_USER`    |   MYSQL Database user   |
-|   `MYSQL_PASSWORD`    |   MYSQL Database password   |
-|   `REQUIREMENTS`    |   Packages to install. Obtain GitHub repositories in the format: <Username>/<Repository>    |
-|   `EXTENSIONS`    |   Packages to enable.   |
+
+### Required Environment Variables
+
+|   Variable    |    Description   | Example | 
+|  -  |  ---  | -- | 
+| `DJANGO_SECRET`    |   [Django Secret](https://miniwebtool.com django-secret-key-generator/) used for hashing.  | `aosdfiajsdufihi234h9fasd` | 
+| `VERSION`    |   Git branch to checkout. | `master` | 
+| `DEBUG` | Enable Django debugging. | `True` or `False` | 
+| `SITE_DOMAIN` | The domain of your site. | `auth.site.com` | 
+| `SITE_TITLE` | The title of your site. | `My Site` | 
+| `DATABASE` | Your database preference. | `SQLLITE` or `MYSQL` | 
+
+### Optional Environment Variables
+
+|   Variable    |    Description   | Example | 
+|  -  |  ---  | -- | 
+| `MYSQL_DATABASE`    |   MYSQL Database name    | `db` | 
+| `MYSQL_USER`    |   MYSQL Database user   | `krypted` | 
+| `MYSQL_PORT`    |   MYSQL Database port   | `3306` | 
+| `MYSQL_PASSWORD`    |   MYSQL Database password   | `mypassword` | 
+| `EMAIL_HOST` | Host for your SMTP server. **Enables email verification**. | `myemailserver.com` | 
+| `EMAIL_PORT` | Port for your SMTP server. | `123` | 
+| `EMAIL_HOST_USER` | User for your SMTP server. | `mail@krypted.com` | 
+| `EMAIL_HOST_PASSWORD` | Password for your SMTP server. | `password` | 
+| `EMAIL_USE_TLS` | You'll know if you need it. | `True` or `False` | 
+| `DEFAULT_FROM_EMAIL` | You'll know if you need it. | None |
+| `SITE_PROTOCOL` | Your transfer protocol. | `http://` or `https://`. 
+| `INSTALLED_APPS` | Comma separated applications to add to `INSTALLED_APPS` | `django_discord_connector, django_eveonline_connector` | 
+| `PIP_INSTALLS` | List of `pip` packages, comma separated. | `package1,package2,package3` | 
+| `GIT_INSTALLS`| List of `pip` packages to install from GitHub, comma separated. <User>/<Repository>| `KryptedGaming/django-eveonline-connector,KryptedGaming/django-discord-connector` | 
+
 
 
 ## Example .env file

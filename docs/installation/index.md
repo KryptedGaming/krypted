@@ -4,7 +4,8 @@
     :maxdepth: 4
     :caption: Contents
 
-    installation
+    docker
+    local
     administration
 
 ```
