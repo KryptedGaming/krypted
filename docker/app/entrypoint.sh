@@ -35,9 +35,8 @@ mkdir -p /opt/krypted/app/app/static
 mkdir -p /opt/krypted/app/accounts/static
 
 echo "Unpacking UI files"
-tar -xvf /opt/krypted/install/AdminLTE-2.4.15.tar.gz -C /opt/krypted/app/app/static/ > /dev/null
-tar -xvf /opt/krypted/install/Accounts_v12.tar.gz -C /opt/krypted/app/accounts/static/ > /dev/null
-echo "UI files successfully unpacked"
+tar -xvf AdminLTE-2.4.15.tar.gz -C /opt/krypted/app/app/static/ > /dev/null
+tar -xvf Accounts_v12.tar.gz -C /opt/krypted/app/accounts/static/ > /dev/null
 
 # finalize project
 python3 /opt/krypted/app/manage.py makemigrations
@@ -56,4 +55,4 @@ for directory in /opt/*/; do
     fi 
 done 
 
-uwsgi --ini /opt/uwsgi.ini --uid krypted 
+uwsgi --check-static /var/html/krypted --check-static /opt/krypted/app --ini /opt/uwsgi.ini --uid krypted 

@@ -12,6 +12,7 @@ usage () {
   echo "    celery:    Runs celery worker and beat"
   echo "    flower:    Runs celery flower"
   echo "    shell:     Runs the django shell"
+  echo "    build:     Builds the Docker images"
 }
 
 command=$1
@@ -25,6 +26,10 @@ run_env() {
     python3 -m venv myvenv
 }
 
+run_build() {
+    docker build -t kryptedgaming/krypted --build-arg VERSION=master ./docker/app/
+    docker build -t kryptedgaming/krypted_celery --build-arg VERSION=master ./docker/celery/
+}
 run_install() {
     echo "Installing the Krypted Platform developer environment"
     if [ ! -d "./app" ]; then
@@ -151,6 +156,10 @@ case "$command" in
     
     install)
         run_install
+        exit 0
+        ;;
+    build)
+        run_build 
         exit 0
         ;;
     test)

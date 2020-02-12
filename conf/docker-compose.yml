@@ -1,0 +1,40 @@
+version: '2.0'
+
+services:
+    db:
+        image: mysql:5.7
+        volumes:
+            - database:/var/lib/mysql
+        restart: always
+        command: --max_allowed_packet=256M
+        environment:
+            MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+            MYSQL_DATABASE: "${MYSQL_DATABASE}"
+            MYSQL_USER: "${MYSQL_USER}"
+            MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+
+    rabbitmq:
+        image: rabbitmq:3.8.2-alpine
+        volumes:
+            - "rabbitmq:/var/lib/rabbitmq"
+
+    app:
+        image: kryptedgaming/krypted:latest
+        env_file: .env
+        ports:
+            - "80:8000"
+            - "8050:8050"
+        depends_on:
+            - db
+    
+    celery:
+        image: kryptedgaming/krypted_celery:latest
+        restart: always
+        env_file: .env
+        depends_on:
+            - db
+            - app 
+
+volumes:
+    database: {}
+    rabbitmq: {}

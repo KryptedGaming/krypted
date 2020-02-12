@@ -46,11 +46,7 @@ DJANGO_APPS = [
     'django_extensions',
 ]
 
-EXTENSIONS = [
-    'accounts',
-    'applications',
-    'group_requests',
-]
+EXTENSIONS = [ 'accounts', 'applications', 'group_requests' ]
 
 INSTALLED_APPS = DJANGO_APPS + EXTENSIONS
 
