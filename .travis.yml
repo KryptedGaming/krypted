@@ -4,17 +4,13 @@ language: python
 python:
 - "3.5.2"
 
-env: 
-  global: 
-    - DJANGO_VERSION=2.2.3
-
 before_install:
 - export DJANGO_SETTINGS_MODULE=app.settings
 
 install:
-- pip3 install -r install/requirements.txt
-- pip3 install -r install/requirements_dev.txt
-- cp install/settings_developer.py.example app/app/settings.py
+- pip3 install -r requirements.txt
+- pip3 install coverage python-coveralls sphinx-markdown-tables django-extensions ipython notebook
+- cp conf/settings.py.example app/app/settings.py
 - cd app/
 - python3 manage.py collectstatic
 - python3 manage.py migrate

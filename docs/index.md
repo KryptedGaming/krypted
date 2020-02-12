@@ -6,7 +6,7 @@
 
     overview/index
     features/index
-    package_guides/index
+    installation/index
     user_guide/index
     developer_guide/index
 ```
