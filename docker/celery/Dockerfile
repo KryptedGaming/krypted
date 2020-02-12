@@ -3,11 +3,13 @@
 FROM python:3.6
 ARG VERSION
 
-RUN apt-get update && \
-    apt-get install -y \
-    git \
-    bzip2 \ 
-    wget 
+RUN apt-get update --no-install-recommends && \
+    apt-get install --no-install-recommends -y \
+    git=1:2.20.1-2+deb10u1 \
+    bzip2=1.0.6-9.2~deb10u1 \ 
+    wget=1.20.1-1.1 && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN wget https://www.fuzzwork.co.uk/dump/sqlite-latest.sqlite.bz2
 

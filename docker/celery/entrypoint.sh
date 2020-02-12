@@ -26,9 +26,9 @@ echo "app.conf.broker_url = 'amqp://rabbitmq:5672'" >> /opt/krypted/app/app/cele
 for directory in /opt/*/; do 
     if [ -f "$directory/install.sh" ]; then 
         echo "Running conditional script: $directory/install.sh"
-        $directory/install.sh
+        exec "$directory/install.sh"
     fi 
 done 
 
 cd /opt/krypted/app
-celery -A app worker --beat --uid=krypted --scheduler django_celery_beat.schedulers:DatabaseScheduler --loglevel=info --autoscale=$MAX_WORKERS,1
+celery -A app worker --beat --uid=krypted --scheduler django_celery_beat.schedulers:DatabaseScheduler --loglevel=info --autoscale="$MAX_WORKERS",1

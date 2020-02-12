@@ -5,12 +5,15 @@ Krypted is a community management platform by [Krypted Gaming](https://kryptedga
 
 It is written in Python utilizing the Django framework, making it easily accessible to developers who would like to extend and contribute to the platform. 
 
-# Features
+## Features
 Krypted is a web platform **enhanced** by packages. This makes the platform extremely easy to extend, giving you endless control over your community. 
 
-* Packages for group syncing across common community tools (Discord, Discourse, etc)
-* User management, group management, and community security functions 
-* Crucial tools for gaming organizations (applications, group requests, EVE timers)
+  * Packages for group syncing across common community tools (Discord, Discourse, etc)
+  * User management, group management, and community security functions 
+  * Crucial tools for gaming organizations (applications, group requests, EVE timers)
 
-# Installation
+## Installation
 As a developer, simply clone our repository and run `./launcher install`. For production installation, you'll want to visit our [documentation](https://readthedocs.org/projects/kryptedauth/badge/?version=latest). 
+
+## Contributing 
+If you'd like to contribute, please join our [Discord](https://discord.gg/YAmSMPx) and have a chat. 
