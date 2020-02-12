@@ -14,7 +14,6 @@ for GIT_INSTALL in ${GIT_INSTALLS[@]}; do
 done 
 echo "Successfully installed Python requirements"
 
-tail -f /dev/null/
 function replace_setting() {
     sed -i -E "s/$1/$2/g" /opt/krypted/app/app/settings.py
 }

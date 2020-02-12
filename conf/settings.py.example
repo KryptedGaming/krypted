@@ -33,7 +33,7 @@ DJANGO_APPS = [
 
 EXTENSIONS = [ 'accounts', 'applications', 'group_requests' ]
 if os.environ.get('INSTALLED_APPS'):
-    for APP in os.environ.get('INSTALLED_APPS'):
+    for APP in os.environ.get('INSTALLED_APPS').split(","):
         EXTENSIONS.append(str(re.sub(r'[^\w\s]','', APP)))
 
 INSTALLED_APPS = DJANGO_APPS + EXTENSIONS
