@@ -29,7 +29,6 @@ DJANGO_APPS = [
     'django.contrib.humanize',
     'django_countries',
     'django_celery_beat',
-    'django_extensions',
 ]
 
 EXTENSIONS = [ 'accounts', 'applications', 'group_requests' ]
