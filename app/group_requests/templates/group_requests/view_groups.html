@@ -40,20 +40,20 @@ Request Groups
                         <a class="btn btn-primary btn-block" href="{% url 'group-request-list' group.group.pk %}">
                             Manage
                             Requests
-                            {% if group.group.group_requests.all.count > 5 %}
+                            {% if group.request_count > 5 %}
                             <sup>
                                 <span
-                                    class="label label-danger text-center">{{group.group.group_requests.all.count}}</span>
+                                    class="label label-danger text-center">{{group.request_count}}</span>
                             </sup>
-                            {% elif group.group.group_requests.all.count > 0 %}
+                            {% elif group.request_count > 0 %}
                             <sup>
                                 <span
-                                    class="label label-warning text-center">{{group.group.group_requests.all.count}}</span>
+                                    class="label label-warning text-center">{{group.request_count}}</span>
                             </sup>
                             {% else %}
                             <sup>
                                 <span
-                                    class="label label-info text-center">{{group.group.group_requests.all.count}}</span>
+                                    class="label label-info text-center">{{group.request_count}}</span>
                             </sup>
                             {% endif %}
                         </a>
