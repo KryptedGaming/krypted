@@ -43,7 +43,7 @@ echo "Static files successfully collected"
 for directory in /opt/*/; do 
     if [ -f "$directory/install.sh" ]; then 
         echo "Running conditional script: $directory/install.sh"
-        exec "$directory/install.sh"
+        "$directory/install.sh"
     fi 
 done 
 
