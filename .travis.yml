@@ -6,6 +6,7 @@ python:
 
 before_install:
 - export DJANGO_SETTINGS_MODULE=app.settings
+- export INSTALLED_APPS=group_requests,applications
 
 install:
 - pip3 install -r requirements.txt
