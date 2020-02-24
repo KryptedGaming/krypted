@@ -4,6 +4,8 @@ language: python
 python:
 - "3.5.2"
 
+
+
 before_install:
 - export DJANGO_SETTINGS_MODULE=app.settings
 - export INSTALLED_APPS=accounts,group_requests,applications
@@ -16,8 +18,16 @@ install:
 - python3 manage.py collectstatic
 - python3 manage.py migrate
 
-script:
-- coverage run --omit=**/tests.py,./install/*,./launcher,**/wsgi.py,**/manage.py --source=. ./manage.py test --noinput --settings=app.settings 
+
+jobs:
+  include:
+    - stage: test
+      script:
+        - coverage run --omit=**/tests.py,./install/*,./launcher,**/wsgi.py,**/manage.py --source=. ./manage.py test --noinput --settings=app.settings
+    - stage: deploy
+      script:
+        - echo "hi"
+        - echo "mom"
 
 after_success:
 - coveralls
