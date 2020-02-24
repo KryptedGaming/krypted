@@ -27,3 +27,5 @@ for package in $packages; do
         fi
     fi 
 done 
+
+exit 0 

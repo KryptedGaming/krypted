@@ -8,3 +8,5 @@ if echo $CHANGED_FILES | grep -q "app/app/__init__.py"; then
     echo "docker push kryptedgaming/krypted:$VERSION"
     echo "docker push kryptedgaming/krypted_celery:$VERSION"
 fi
+
+exit 0 
