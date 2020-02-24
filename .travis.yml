@@ -39,7 +39,9 @@ jobs:
       script: scripts/travis_deploy_latest.sh
 
     - stage: update docker image
+      if: branch = master
       script: scripts/travis_deploy_version.sh
+      
 
 
 after_success:

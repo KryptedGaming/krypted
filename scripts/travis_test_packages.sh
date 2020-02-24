@@ -14,6 +14,7 @@ for package in $packages; do
     export INSTALLED_APPS=$app,$INSTALLED_APPS
 done 
 echo $INSTALLED_APPS
+pip freeze 
 
 # test packages 
 for package in $packages; do 
