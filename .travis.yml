@@ -18,6 +18,7 @@ install:
 - cd app/
 - python3 manage.py collectstatic
 - python3 manage.py migrate
+- cd ../
 
 
 jobs:
