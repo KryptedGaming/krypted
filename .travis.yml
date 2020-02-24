@@ -4,7 +4,8 @@ language: python
 python:
 - "3.5.2"
 
-
+services:
+  - docker 
 
 before_install:
 - export DJANGO_SETTINGS_MODULE=app.settings
