@@ -21,10 +21,19 @@ install:
 
 jobs:
   include:
-    - stage: test
+    - stage: test local
       script:
         - coverage run --omit=**/tests.py,./install/*,./launcher,**/wsgi.py,**/manage.py --source=. ./manage.py test --noinput --settings=app.settings
-    - stage: deploy
+    - stage: test docker 
+      script:
+        - ./launcher build
+        - cd conf
+        - docker-compose up -d 
+        - docker-compose exec app python3 /opt/krypted/app/manage.py test 
+    - stage: deploy docker
+      script:
+        - echo "update version"
+    - stage: deploy release
       script:
         - echo "hi"
         - echo "mom"
