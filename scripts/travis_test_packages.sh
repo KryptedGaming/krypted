@@ -20,6 +20,7 @@ pip freeze
 # test packages 
 for package in $packages; do 
     app=$(basename "$(dirname $package)")
+    echo "running tests for '$app'"
     if [ ! -z "$app" ]; then 
         python3 ./app/manage.py test $app --noinput --settings=app.settings
         if [ $? -ne 0 ]; then 
