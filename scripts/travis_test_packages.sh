@@ -1,5 +1,6 @@
 #!/bin/bash
 export INSTALLED_APPS=accounts,group_requests,applications
+pip install --upgrade pip
 # install packages 
 packages=`ls -l app/packages/ | awk '{ print $9 }'`
 for package in $packages; do 
