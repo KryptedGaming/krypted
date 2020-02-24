@@ -1,0 +1,9 @@
+[submodule "app/packages/django-eveonline-connector"]
+	path = app/packages/django-eveonline-connector
+	url = https://github.com/KryptedGaming/django-eveonline-connector
+[submodule "app/packages/django-discord-connector"]
+	path = app/packages/django-discord-connector
+	url = https://github.com/KryptedGaming/django-discord-connector.git
+[submodule "app/packages/django-discourse-connector"]
+	path = app/packages/django-discourse-connector
+	url = https://github.com/KryptedGaming/django-discourse-connector
