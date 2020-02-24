@@ -23,22 +23,24 @@ install:
 
 jobs:
   include:
-    - stage: test local
+    - stage: test
       script:
         - cd app/
         - coverage run --omit=**/tests.py,./install/*,./launcher,**/wsgi.py,**/manage.py --source=. ./manage.py test --noinput --settings=app.settings
-    - stage: deploy docker 
-      script:
-        - ./launcher build
-        - cd conf
-        - docker-compose up -d 
-        - docker-compose exec app python3 /opt/krypted/app/manage.py test 
-    - stage: deploy docker
-      script: scripts/travis_deploy.sh
-    - stage: deploy release
-      script:
-        - echo "hi"
-        - echo "mom"
+
+    - stage: test packages
+      script: scripts/travis_test_packages.sh
+
+    - stage: update 'experimental' docker image
+      script: scripts/travis_deploy_experimental.sh
+
+    - stage: update 'latest' docker image
+      if: branch = development 
+      script: scripts/travis_deploy_latest.sh
+
+    - stage: update docker image
+      script: scripts/travis_deploy_version.sh
+
 
 after_success:
 - coveralls
