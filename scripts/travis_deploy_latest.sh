@@ -1,7 +1,20 @@
 #!/bin/bash
-echo "docker build -t kryptedgaming/krypted:latest --build-arg VERSION=$(git rev-parse --abbrev-ref HEAD) ./docker/app/ --no-cache"
-echo "docker build -t kryptedgaming/krypted_celery:latest --build-arg VERSION=$(git rev-parse --abbrev-ref HEAD) ./docker/celery/ --no-cache"
-echo "docker push kryptedgaming/krypted:latest"
-echo "docker push kryptedgaming/krypted_celery:latest"
+echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+docker build -t kryptedgaming/krypted:latest --build-arg VERSION=$TRAVIS_BRANCH ./docker/app/ --no-cache
+if [ $? -ne 0 ]; then 
+    exit 1
+fi 
+docker build -t kryptedgaming/krypted_celery:latest --build-arg VERSION=$TRAVIS_BRANCH ./docker/celery/ --no-cache
+if [ $? -ne 0 ]; then 
+    exit 1
+fi 
+docker push kryptedgaming/krypted:latest
+if [ $? -ne 0 ]; then 
+    exit 1
+fi 
+docker push kryptedgaming/krypted_celery:latest
+if [ $? -ne 0 ]; then 
+    exit 1
+fi 
 
 exit 0 
