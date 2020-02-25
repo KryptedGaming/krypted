@@ -7,9 +7,3 @@
 [submodule "app/packages/django-discourse-connector"]
 	path = app/packages/django-discourse-connector
 	url = https://github.com/KryptedGaming/django-discourse-connector
-[submodule "app/packages/django-eveonline-group-states"]
-	path = app/packages/django-eveonline-group-states
-	url = https://github.com/KryptedGaming/django-eveonline-group-states
-[submodule "app/packages/django-eveonline-entity-extensions"]
-	path = app/packages/django-eveonline-entity-extensions
-	url = https://github.com/KryptedGaming/django-eveonline-entity-extensions
