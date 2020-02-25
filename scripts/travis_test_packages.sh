@@ -10,7 +10,7 @@ done
 # add to installed_apps
 packages=$(find ./app/packages -name apps.py)
 for package in $packages; do
-    app=$(basename "$(dirname $package)")
+    app=$(basename "$(dirname "$package")")
     export INSTALLED_APPS=$app,$INSTALLED_APPS
 done 
 
