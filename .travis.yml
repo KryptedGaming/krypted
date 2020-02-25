@@ -2,11 +2,14 @@ dist: xenial
 language: python
 
 python:
-- "3.5.2"
+- "3.6"
+
+services:
+  - docker 
 
 before_install:
 - export DJANGO_SETTINGS_MODULE=app.settings
-- export INSTALLED_APPS=group_requests,applications
+- export INSTALLED_APPS=accounts,group_requests,applications
 
 install:
 - pip3 install -r requirements.txt
@@ -15,9 +18,27 @@ install:
 - cd app/
 - python3 manage.py collectstatic
 - python3 manage.py migrate
+- cd ../
 
-script:
-- coverage run --omit=**/tests.py,./install/*,./launcher,**/wsgi.py,**/manage.py --source=. ./manage.py test --noinput --settings=app.settings 
 
-after_success:
-- coveralls
+jobs:
+  include:
+    - stage: test
+      script:
+        - cd app/
+        - coverage run --omit=**/tests.py,./install/*,./launcher,**/wsgi.py,**/manage.py --source=. ./manage.py test --noinput --settings=app.settings
+
+    - stage: test packages
+      script: scripts/travis_test_packages.sh
+
+    - stage: update 'experimental' docker image
+      script: scripts/travis_deploy_experimental.sh
+
+    - stage: update 'latest' docker image
+      if: branch = development 
+      script: scripts/travis_deploy_latest.sh
+
+    - stage: update docker image
+      if: branch = master
+      script: scripts/travis_deploy_version.sh
+      

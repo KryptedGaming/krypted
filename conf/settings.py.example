@@ -31,7 +31,7 @@ DJANGO_APPS = [
     'django_celery_beat',
 ]
 
-EXTENSIONS = [ 'accounts' ]
+EXTENSIONS = [ ]
 if os.environ.get('INSTALLED_APPS'):
     for APP in os.environ.get('INSTALLED_APPS').split(","):
         EXTENSIONS.append(str(re.sub(r'[^\w\s]','', APP)))
