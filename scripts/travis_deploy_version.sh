@@ -1,4 +1,8 @@
 #!/bin/bash
+if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then 
+ exit 0
+fi 
+
 CHANGED_FILES=($(git diff --name-only "$TRAVIS_COMMIT_RANGE"))
 if echo "$CHANGED_FILES" | grep -q "app/app/__init__.py"; then 
     VERSION=$(grep "__version__ = " app/app/__init__.py | awk '{ print $3}'| tr -d \')
