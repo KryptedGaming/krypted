@@ -14,7 +14,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi 
 echo "docker push kryptedgaming/krypted:$VERSION"
-exec docker push "kryptedgaming/krypted:$VERSION"
+docker push "kryptedgaming/krypted:$VERSION"
 if [ $? -ne 0 ]; then 
     exit 1
 fi 
