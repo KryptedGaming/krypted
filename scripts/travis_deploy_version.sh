@@ -12,11 +12,13 @@ docker build -t kryptedgaming/krypted_celery:"$VERSION" --build-arg VERSION="$TR
 if [ $? -ne 0 ]; then 
     exit 1
 fi 
-docker push kryptedgaming/krypted:"$VERSION"
+echo "docker push kryptedgaming/krypted:$VERSION"
+"docker push kryptedgaming/krypted:$VERSION"
 if [ $? -ne 0 ]; then 
     exit 1
 fi 
-docker push kryptedgaming/krypted_celery:"$VERSION"
+echo "docker push kryptedgaming/krypted_celery:$VERSION"
+"docker push kryptedgaming/krypted_celery:$VERSION"
 if [ $? -ne 0 ]; then 
     exit 1
 fi 
