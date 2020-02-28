@@ -31,7 +31,7 @@ DJANGO_APPS = [
     'django_celery_beat',
 ]
 
-EXTENSIONS = [ 'accounts' ]
+EXTENSIONS = [ ]
 if os.environ.get('INSTALLED_APPS'):
     for APP in os.environ.get('INSTALLED_APPS').split(","):
         EXTENSIONS.append(str(re.sub(r'[^\w\s]','', APP)))
@@ -79,7 +79,7 @@ WSGI_APPLICATION = 'app.wsgi.application'
 DATABASES = {
     'eve_static': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'eve_static_export.sqlite'),
+        'NAME': os.environ.get('EVE_STATIC_DATABASE', '/opt/eveonline/static/sqlite-latest.sqlite'),
     }
 }
 
