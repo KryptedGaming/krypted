@@ -81,16 +81,16 @@ Home
                         {% endif %}
                         {% if "django_eveonline_connector" in INSTALLED_APPS %}
                         <li class="list-group-item">
-                            <b>EVE Character</b>
-                            {% if user.info.get_eveonline_character %}
+                            <b>Primary EVE Character</b>
+                            {% if user.primary_evecharacter %}
                             <p class="pull-right">
-                                {{user.info.get_eveonline_character.name}}
-                                <a class="text-danger"
-                                    href="{% url 'django-eveonline-connector-sso-token-remove' user.info.get_eveonline_character.token.pk %}"><i
-                                        class="fa fa-times pull-right"></i></a>
+                                {{user.primary_evecharacter.character.name}}
+                                <a class="text-info"
+                                    href="{% url 'django-eveonline-connector-character-select-primary' %}"><i
+                                        class="fa fa-retweet pull-right"></i></a>
                             </p>
                             {% else %}
-                            <p class="pull-right"><b><a href="{% url 'django-eveonline-connector-sso-token-add' %}">Add
+                            <p class="pull-right"><b><a href="{% url 'django-eveonline-connector-character-select-primary' %}">Select
                                         Main Character</a></b></p>
                             {% endif %}
                         </li>
@@ -103,7 +103,7 @@ Home
 
                     {% if "django_eveonline_connector" in INSTALLED_APPS %}
                     <a class="btn btn-success btn-block"
-                        href="{% url 'django-eveonline-connector-sso-token-add' %}">Add Character</a>
+                        href="{% url 'django-eveonline-connector-sso-token-type-select' %}">Add Character</a>
                     {% endif %}
                     <a class="btn btn-danger btn-block" data-confirm="Are you sure?" data-method="delete"
                         href="{% url 'accounts-user-delete' user.pk %}" rel="nofollow">Delete Account</a>
