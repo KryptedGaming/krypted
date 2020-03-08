@@ -45,13 +45,13 @@ class UserRegisterForm(forms.Form):
 
 
 class UserLoginForm(forms.Form):
-    username = forms.CharField(min_length=3, max_length=32, required=True)
-    password = forms.CharField(min_length=8, max_length=32, required=True)
+    username = forms.CharField(max_length=32, required=True)
+    password = forms.CharField(max_length=32, required=True)
 
     def clean(self):
-        username = self.cleaned_data['username']
+        username = self.cleaned_data.get('username')
         username = username_or_email_resolver(username)
-        password = self.cleaned_data['password']
+        password = self.cleaned_data.get('password')
 
         # checks
         user_exists = User.objects.filter(username=username).exists()
@@ -67,6 +67,7 @@ class UserLoginForm(forms.Form):
             return self.cleaned_data
         if not user_authenticated:
             self.add_error('password', 'Invalid credentials.')
+            return self.cleaned_data
         if user_exists and not user_active:
             send_activation_email(User.objects.get(username=username))
             self.add_error(
