@@ -11,6 +11,9 @@ class UserInfo(models.Model):
     age = models.IntegerField(default=18)
     secret = models.UUIDField(default=uuid.uuid4)
 
+    def __str__(self):
+        return self.user
+
     def display_name(self):
         try:
             settings.DISPLAY_NAME
