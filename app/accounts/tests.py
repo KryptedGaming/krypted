@@ -180,7 +180,9 @@ class UserLoginFormTestCase(TestCase):
         }
         form = UserLoginForm(data=form_data)
         self.assertFalse(form.is_valid())
-        self.assertTrue("password" in form.errors)
+        self.assertTrue('username' in form.errors)
+        self.assertTrue(
+            "Login failed: Invalid username or password" in form.errors['username'])
 
     def test_invalid_login_form_user_does_not_exist(self):
         """
@@ -192,7 +194,8 @@ class UserLoginFormTestCase(TestCase):
         }
         form = UserLoginForm(data=form_data)
         self.assertFalse(form.is_valid())
-        self.assertTrue("username" in form.errors)
+        self.assertTrue('username' in form.errors)
+        self.assertTrue("Login failed: Invalid username or password" in form.errors['username'])
 
     def test_valid_login_form_inactive_user(self):
         """
@@ -209,7 +212,8 @@ class UserLoginFormTestCase(TestCase):
         }
         form = UserLoginForm(data=form_data)
         self.assertFalse(form.is_valid())
-        self.assertTrue("username" in form.errors)
+        self.assertTrue('username' in form.errors)
+        self.assertTrue("Account not active, please check your email or reset password" in form.errors['username'])
 
 
 class UserUpdateFormTestCase(TestCase):
