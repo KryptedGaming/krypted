@@ -5,7 +5,7 @@ ARG VERSION
 
 RUN apt-get update --no-install-recommends && \
     apt-get install --no-install-recommends -y \
-    git=1:2.20.1-2+deb10u1 \
+    git \
     bzip2=1.0.6-9.2~deb10u1 \ 
     wget=1.20.1-1.1 && \
     apt-get clean && \

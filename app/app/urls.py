@@ -29,7 +29,6 @@ logger = logging.getLogger(__name__)
 urlpatterns = [
     path('', views.dashboard, name="app-dashboard"),
     path('admin/', admin.site.urls),
-    path('accounts/', include('accounts.urls')),
     path('500/', server_error),
     path('favicon.ico',RedirectView.as_view(url='/static/accounts/images/icons/favicon.png')),
 ]

@@ -45,32 +45,30 @@ class UserRegisterForm(forms.Form):
 
 
 class UserLoginForm(forms.Form):
-    username = forms.CharField(min_length=3, max_length=32, required=True)
-    password = forms.CharField(min_length=8, max_length=32, required=True)
+    username = forms.CharField(max_length=32, required=True)
+    password = forms.CharField(max_length=32, required=True)
 
     def clean(self):
-        username = self.cleaned_data['username']
+        username = self.cleaned_data.get('username')
         username = username_or_email_resolver(username)
-        password = self.cleaned_data['password']
+        password = self.cleaned_data.get('password')
 
         # checks
-        user_exists = User.objects.filter(username=username).exists()
         user_authenticated = authenticate(username=username, password=password)
+        user_exists = User.objects.filter(username=username).exists()
         if user_exists:
             user = User.objects.get(username=username)
             user_info = UserInfo.objects.get_or_create(user=user)
             user_active = user.is_active
 
         # authenticate check
-        if not user_exists:
-            self.add_error('username', 'User does not exist.')
-            return self.cleaned_data
         if not user_authenticated:
-            self.add_error('password', 'Invalid credentials.')
-        if user_exists and not user_active:
-            send_activation_email(User.objects.get(username=username))
-            self.add_error(
-                'username', 'Account not active, please check your email or reset password')
+            if user_exists and not user_active:
+                self.add_error(
+                    'username', 'Account not active, please check your email or reset password')
+                send_activation_email(User.objects.get(username=username))
+            else:
+                self.add_error('username', 'Login failed: Invalid username or password')
 
         return self.cleaned_data
 

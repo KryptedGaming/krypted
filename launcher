@@ -31,6 +31,7 @@ run_build() {
     docker build -t kryptedgaming/krypted_celery --build-arg VERSION=$(git rev-parse --abbrev-ref HEAD) ./docker/celery/ --no-cache
 }
 run_install() {
+    export INSTALLED_APPS=accounts,group_requests,applications
     echo "Installing the Krypted Platform developer environment"
     if [ ! -d "./app" ]; then
         echo "Please run in the root project directory"
@@ -60,7 +61,7 @@ run_install() {
     fi 
     if [ $DEV_MODE ]; then
         echo "Installing Python Development Requirements"
-        pip3 install coverage python-coveralls sphinx-markdown-tables django-extensions ipython notebook
+        pip3 install coverage pytest pytest-cov python-coveralls sphinx-markdown-tables django-extensions ipython notebook
         if [ $? -ne 0 ]; then 
             echo "Failed to install Python Development requirements"
             exit 1
@@ -68,7 +69,7 @@ run_install() {
     fi
 
     # Install Developer Settings
-    cp ./install/settings_developer.py.example ./app/app/settings.py
+    cp ./conf/settings.py.example ./app/app/settings.py
 
     # Set up the Django project
     echo "Setting up the Django Project"
@@ -97,29 +98,29 @@ run_install() {
 
     # Install AdminLTE UI
     echo "Installing AdminLTE in app/static/adminlte/"
-    wget https://github.com/KryptedGaming/krypted/releases/download/v4.0.0/AdminLTE-2.4.15.tar.gz
-    tar -xvf AdminLTE-2.4.15.tar.gz -C ./app/app/static/
+    wget https://github.com/KryptedGaming/krypted/releases/download/v4.0.0/AdminLTE-2.4.15.tar.gz > /dev/null
+    tar -xvf AdminLTE-2.4.15.tar.gz -C ./app/app/static/ > /dev/null
     rm AdminLTE-2.4.15.tar.gz*
 
     # Install AccountStylingV2
     echo "Installing Accounts Styling in app/static/accounts"
-    wget https://github.com/KryptedGaming/krypted/releases/download/v4.0.0/Accounts_v12.tar.gz
-    tar -xvf Accounts_v12.tar.gz -C ./app/accounts/static/
+    wget https://github.com/KryptedGaming/krypted/releases/download/v4.0.0/Accounts_v12.tar.gz > /dev/null
+    tar -xvf Accounts_v12.tar.gz -C ./app/accounts/static/ > /dev/null
     rm Accounts_v12.tar.gz*
 
     # Collect static
-    python3 ./app/manage.py collectstatic
+    python3 ./app/manage.py collectstatic > /dev/null
 
     # Create cache table
-    python3 ./app/manage.py createcachetable
+    python3 ./app/manage.py createcachetable > /dev/null
 
     echo "INSTALL COMPLETE. Add django_extensions to your DJANGO_APPS in settings.py"
 }
 
 run_test() {
-    cd ./app
-    coverage run --omit=**/tests/**.py,**/tests.py,./install/*,./launcher,**/wsgi.py,**/manage.py --source=. ./manage.py test $1 --noinput --settings=app.settings
-    cd ../
+    coverage run --omit=**/tests/**.py,**/tests.py,./install/*,./launcher,**/wsgi.py,**/manage.py --source=./app/. ./app/manage.py test $1 --noinput --settings=app.settings
+    coverage xml
+    coverage html
 }
 
 run_server() {
