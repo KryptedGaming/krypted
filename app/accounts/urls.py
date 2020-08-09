@@ -20,7 +20,7 @@ urlpatterns = [
          name='password_reset_complete'),
     re_path(r'^activate/(?P<token>[0-9A-Za-z_\-]+)/$',
             views.activate_account, name='accounts-activate'),
-    re_path(r'^user/(?P<username>[0-9A-Za-z_\-]+)/$',
+    re_path(r'^user/(?P<username>[0-9A-Za-z_\-\.]+)/$',
             views.UserView.as_view(), name='accounts-user'),
     path('user/delete/<int:pk>/', views.UserDelete.as_view(),
          name='accounts-user-delete'),
