@@ -33,8 +33,8 @@ Home
             <!-- Profile Image -->
             <div class="box box-primary">
                 <div class="box-body box-profile">
-                    <img class="profile-user-img img-responsive img-circle"
-                        src="{{user.info.display_avatar}}" alt="User profile picture">
+                    <img class="profile-user-img img-responsive img-circle" src="{{user.info.display_avatar}}"
+                        alt="User profile picture">
                     <h3 class="profile-username text-center">{{user.info.display_name}}</h3>
                     <p class="text-muted text-center">{{user.info.country.name}}</p>
                     <div class="text-center">
@@ -81,16 +81,16 @@ Home
                         {% endif %}
                         {% if "django_eveonline_connector" in INSTALLED_APPS %}
                         <li class="list-group-item">
-                            <b>Primary EVE Character</b>
-                            {% if user.primary_evecharacter %}
+                            <b>EVE Character</b>
+                            {% if user.info.get_eveonline_character %}
                             <p class="pull-right">
-                                {{user.primary_evecharacter.character.name}}
-                                <a class="text-info"
-                                    href="{% url 'django-eveonline-connector-character-select-primary' %}"><i
-                                        class="fa fa-retweet pull-right"></i></a>
+                                {{user.info.get_eveonline_character.name}}
+                                <a class="text-danger"
+                                    href="{% url 'django-eveonline-connector-sso-token-remove' user.info.get_eveonline_character.token.pk %}"><i
+                                        class="fa fa-times pull-right"></i></a>
                             </p>
                             {% else %}
-                            <p class="pull-right"><b><a href="{% url 'django-eveonline-connector-character-select-primary' %}">Select
+                            <p class="pull-right"><b><a href="{% url 'django-eveonline-connector-sso-token-add' %}">Add
                                         Main Character</a></b></p>
                             {% endif %}
                         </li>
@@ -102,8 +102,8 @@ Home
                     </ul>
 
                     {% if "django_eveonline_connector" in INSTALLED_APPS %}
-                    <a class="btn btn-success btn-block"
-                        href="{% url 'django-eveonline-connector-sso-token-type-select' %}">Add Character</a>
+                    <a class="btn btn-success btn-block" href="{% url 'django-eveonline-connector-sso-token-add' %}">Add
+                        Character</a>
                     {% endif %}
                     <a class="btn btn-danger btn-block" data-confirm="Are you sure?" data-method="delete"
                         href="{% url 'accounts-user-delete' user.pk %}" rel="nofollow">Delete Account</a>
