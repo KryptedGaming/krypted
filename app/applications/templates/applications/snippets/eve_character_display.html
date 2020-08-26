@@ -13,7 +13,7 @@
           <img style="width: 50px;" src="https://imageserver.eveonline.com/Character/{{token.evecharacter.external_id}}_128.jpg"/>
       </td>
       <td>
-          <a href="{% url 'django-eveonline-connector-view-character' token.evecharacter.external_id %}">{{token.evecharacter.name}}</a>
+          <a href="{% url 'django-eveonline-entity-extensions-view-character' token.evecharacter.external_id %}">{{token.evecharacter.name}}</a>
       </td>
       <td>
       {% if token.evecharacter.corporation.alliance %}
