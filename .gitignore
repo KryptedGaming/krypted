@@ -125,4 +125,6 @@ old/
 .vscode/
 
 # ignore packages 
-app/packages/
+app/packages/*
+!app/packages/.gitkeep
+
