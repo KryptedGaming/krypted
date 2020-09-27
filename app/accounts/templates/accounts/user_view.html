@@ -82,15 +82,15 @@ Home
                         {% if "django_eveonline_connector" in INSTALLED_APPS %}
                         <li class="list-group-item">
                             <b>EVE Character</b>
-                            {% if user.info.get_eveonline_character %}
+                            {% if user.info.get_primary_character %}
                             <p class="pull-right">
-                                {{user.info.get_eveonline_character.name}}
-                                <a class="text-danger"
-                                    href="{% url 'django-eveonline-connector-sso-token-remove' user.info.get_eveonline_character.token.pk %}"><i
-                                        class="fa fa-times pull-right"></i></a>
+                                {{user.info.get_primary_character.name}}
+                                <a class="text-success"
+                                    href="{% url 'django-eveonline-connector-character-select-primary' %}"><i
+                                        class="fa fa-refresh pull-right"></i></a>
                             </p>
                             {% else %}
-                            <p class="pull-right"><b><a href="{% url 'django-eveonline-connector-sso-token-add' %}">Add
+                            <p class="pull-right"><b><a href="{% url 'django-eveonline-connector-character-select-primary' %}">Select
                                         Main Character</a></b></p>
                             {% endif %}
                         </li>

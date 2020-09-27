@@ -123,3 +123,6 @@ old/
 
 # vscode
 .vscode/
+
+# ignore packages 
+app/packages/
