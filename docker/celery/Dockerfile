@@ -11,7 +11,10 @@ RUN apt-get update --no-install-recommends && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-RUN wget https://www.fuzzwork.co.uk/dump/sqlite-latest.sqlite.bz2
+RUN wget https://www.fuzzwork.co.uk/dump/sqlite-latest.sqlite.bz2 && \
+    bunzip2 sqlite-latest.sqlite.bz2 && \ 
+    mkdir -p /opt/eveonline/static && \
+    mv sqlite-latest.sqlite /opt/eveonline/static
 
 RUN adduser --disabled-password --gecos '' krypted
 

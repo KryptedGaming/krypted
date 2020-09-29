@@ -22,16 +22,7 @@ function replace_setting() {
 echo "Replacing settings"
 echo "app.conf.broker_url = 'amqp://rabbitmq:5672'" >> /opt/krypted/app/app/celery.py
 
-# install static files
-mkdir -p /opt/krypted/app/app/static 
-mkdir -p /opt/krypted/app/accounts/static
-
-echo "Unpacking UI files"
-tar -xvf AdminLTE-2.4.15.tar.gz -C /opt/krypted/app/app/static/ > /dev/null
-tar -xvf Accounts_v12.tar.gz -C /opt/krypted/app/accounts/static/ > /dev/null
-
 # finalize project
-python3 /opt/krypted/app/manage.py makemigrations
 python3 /opt/krypted/app/manage.py migrate
 python3 /opt/krypted/app/manage.py createcachetable
 python3 /opt/krypted/app/manage.py loaddata celery_interval_schedule

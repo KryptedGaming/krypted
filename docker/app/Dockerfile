@@ -23,6 +23,11 @@ RUN git clone --branch $VERSION https://github.com/KryptedGaming/krypted.git /op
     pip3 install mysqlclient==1.4.2.post1 && \ 
     pip3 install uwsgi==2.0.18
 
+RUN mkdir -p /opt/krypted/app/app/static && \ 
+    mkdir -p /opt/krypted/app/accounts/static && \
+    tar -xvf AdminLTE-2.4.15.tar.gz -C /opt/krypted/app/app/static/ > /dev/null && \
+    tar -xvf Accounts_v12.tar.gz -C /opt/krypted/app/accounts/static/ > /dev/null
+
 # COPY ENTRYPOINT
 COPY uwsgi.ini /opt/uwsgi.ini
 COPY entrypoint.sh /usr/local/bin/
