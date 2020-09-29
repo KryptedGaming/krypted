@@ -25,8 +25,12 @@ RUN git clone --branch $VERSION https://github.com/KryptedGaming/krypted.git /op
 
 RUN mkdir -p /opt/krypted/app/app/static && \ 
     mkdir -p /opt/krypted/app/accounts/static && \
+    mkdir -p /opt/eveonline/static/ && \
     tar -xvf AdminLTE-2.4.15.tar.gz -C /opt/krypted/app/app/static/ > /dev/null && \
-    tar -xvf Accounts_v12.tar.gz -C /opt/krypted/app/accounts/static/ > /dev/null
+    tar -xvf Accounts_v12.tar.gz -C /opt/krypted/app/accounts/static/ > /dev/null && \
+    cp /sqlite-latest.sqlite.bz2 /opt/eveonline/static/ && \
+    bunzip2 /opt/eveonline/static/sqlite-latest.sqlite.bz2 && \ 
+    rm sqlite-latest.sqlite.bz2
 
 # COPY ENTRYPOINT
 COPY uwsgi.ini /opt/uwsgi.ini
