@@ -103,6 +103,7 @@ ENV/
 # settings
 settings.py
 db.sqlite3
+*.sqlite
 *.db
 .DS_Store
 
