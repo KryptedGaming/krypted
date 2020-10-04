@@ -30,5 +30,10 @@ for directory in /opt/*/; do
     fi 
 done 
 
+if [ -z $LOG_LEVEL ]; then 
+    export LOG_LEVEL=warning
+    echo "Setting default log level ${LOG_LEVEL}"
+fi 
+
 cd /opt/krypted/app
-celery -A app worker --beat --uid=krypted --scheduler django_celery_beat.schedulers:DatabaseScheduler --loglevel=info --autoscale="$MAX_WORKERS",1
+celery -A app worker --beat --uid=krypted --scheduler django_celery_beat.schedulers:DatabaseScheduler --loglevel=${LOG_LEVEL} --autoscale="$MAX_WORKERS",1

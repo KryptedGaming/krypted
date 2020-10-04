@@ -1,7 +1,8 @@
-celery==4.3.0
+celery==4.3.1
 Django==2.2.13
 django-crispy-forms==1.7.2
 django-shell-plus==1.1.7
 django-countries==5.5 # for country fields in UserInfo()
 django-celery-beat==1.6.0
 flower==0.9.3
+django_singleton_admin_2==1.1.0

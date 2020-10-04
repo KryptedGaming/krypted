@@ -103,6 +103,7 @@ ENV/
 # settings
 settings.py
 db.sqlite3
+*.sqlite
 *.db
 .DS_Store
 
@@ -123,3 +124,8 @@ old/
 
 # vscode
 .vscode/
+
+# ignore packages 
+app/packages/*
+!app/packages/.gitkeep
+

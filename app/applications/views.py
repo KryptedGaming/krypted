@@ -56,8 +56,14 @@ def view_my_applications(request):
 @permission_required('applications.view_application', raise_exception=True)
 @user_can_manage_application
 def view_application(request, pk):
+    try:
+        application = Application.objects.get(pk=pk)
+    except Application.DoesNotExist as e:
+        messages.warning(request, "That application no longer exists.")
+        return redirect('application-list')
+        
     context = {
-        'application': Application.objects.get(pk=pk),
+        'application': application,
         'responses': ApplicationResponse.objects.filter(application_id=pk)
     }
     return render(request, 'applications/view_application.html', context)

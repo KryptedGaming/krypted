@@ -25,14 +25,16 @@ class UserInfo(models.Model):
 
     def display_avatar(self):
         if "django_eveonline_connector" in settings.INSTALLED_APPS:
-            if self.get_eveonline_character():
-                return "https://imageserver.eveonline.com/Character/%s_128.jpg" % self.get_eveonline_character().external_id
+            from django_eveonline_connector.models import EveCharacter
+            character = EveCharacter.get_primary_character(self.user)
+            if character:
+                return "https://imageserver.eveonline.com/Character/%s_128.jpg" % character.external_id
         return "https://api.adorable.io/avatars/160/%s.png" % self.user.username
 
-    def get_eveonline_character(self):
-        if "django_eveonline_connector" not in settings.INSTALLED_APPS:
-            return None
-        if self.user.eve_tokens.all().count() > 0:
-            return self.user.eve_tokens.all()[0].get_primary_character()
+    def get_primary_character(self):
+        if "django_eveonline_connector" in settings.INSTALLED_APPS:
+            from django_eveonline_connector.models import EveCharacter
+            character = EveCharacter.get_primary_character(self.user)
+            return character 
         else:
-            return None
+            return None 

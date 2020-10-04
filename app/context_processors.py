@@ -20,6 +20,7 @@ def sidebar_extensions(request):
         'SIDEBAR_EXTENSIONS': templates
     }
 
+
 def site_name(request):
     return {
         'SITE_NAME': settings.SITE_TITLE
