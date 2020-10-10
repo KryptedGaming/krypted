@@ -9,11 +9,14 @@ logger = logging.getLogger(__name__)
 
 @receiver(post_save, sender=Application)
 def notify_discord_channel(sender, **kwargs):
+    if 'created' not in kwargs or not kwargs.get('created'):
+        return
     try:
         from django_discord_connector.request import DiscordRequest
         channel = apps.get_app_config(
             'applications').APPLICATIONS_NOTIFICATION_CHANNEL
         application = kwargs.get('instance')
+        
         application_url = reverse('application-detail', kwargs={'pk': application.pk})
         url = f"{settings.SITE_PROTOCOL}{settings.SITE_DOMAIN}{application_url}"
 

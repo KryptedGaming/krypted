@@ -19,3 +19,8 @@ Superuser accounts have all Django permissions, and are optimal for your admin a
 ## Running Django Commands
 Some packages require you to run setup scripts or other Django commands.
 1. `docker container exec -it <container_name> python3 /opt/krypted/app/manage.py <command>`
+
+## Database Backups
+Backups are important, you should do them frequently and every time before you updgrade. 
+1. Create a backup with `sudo docker-compose exec db sh -c 'exec mysqldump "$MYSQL_DATABASE" -u"$MYSQL_USER" -p"$MYSQL_PASSWORD"' | gzip > "`date +"%Y_%m_%d"`_krypted.sql.gz"`
+2. Restore a backup with `zcat *krypted.tar.gz | docker-compose exec -T db sh -c 'exec mysql "$MYSQL_DATABASE" -u"$MYSQL_USER" -p"$MYSQL_PASSWORD"'`
