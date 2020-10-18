@@ -22,5 +22,11 @@ Some packages require you to run setup scripts or other Django commands.
 
 ## Database Backups
 Backups are important, you should do them frequently and every time before you updgrade. 
-1. Create a backup with `sudo docker-compose exec db sh -c 'exec mysqldump "$MYSQL_DATABASE" -u"$MYSQL_USER" -p"$MYSQL_PASSWORD"' | gzip > "`date +"%Y_%m_%d"`_krypted.sql.gz"`
-2. Restore a backup with `zcat *krypted.tar.gz | docker-compose exec -T db sh -c 'exec mysql "$MYSQL_DATABASE" -u"$MYSQL_USER" -p"$MYSQL_PASSWORD"'`
+1. Create a backup with 
+```
+sudo docker-compose exec db sh -c 'exec mysqldump "$MYSQL_DATABASE" -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" 2>/dev/null' | gzip > "`date +"%Y_%m_%d"`_krypted.sql.gz"
+```
+2. Restore a backup with 
+```
+zcat *krypted.tar.gz | docker-compose exec -T db sh -c 'exec mysql "$MYSQL_DATABASE" -u"$MYSQL_USER" -p"$MYSQL_PASSWORD"'
+```

@@ -4,9 +4,10 @@
     :maxdepth: 4
     :caption: Contents
 
-    overview/index
-    features/index
-    installation/index
-    user_guide/index
-    developer_guide/index
+    src/overview/index
+    src/features/index
+    src/installation/index
+    src/user_guide/index
+    src/developer_guide/index
+    src/upgrading/index
 ```
