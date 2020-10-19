@@ -31,15 +31,15 @@ DJANGO_APPS = [
     'django_celery_beat',
     'django_singleton_admin',
     'crispy_forms',
-    'packagebinder',
 ]
-
-EXTENSIONS = [ ]
+EXTENSIONS = [ 'packagebinder', ]
 if os.environ.get('INSTALLED_APPS'):
     for APP in os.environ.get('INSTALLED_APPS').split(","):
         EXTENSIONS.append(str(re.sub(r'[^\w\s]','', APP)))
 
 INSTALLED_APPS = DJANGO_APPS + EXTENSIONS
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
