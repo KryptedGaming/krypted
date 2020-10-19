@@ -29,6 +29,9 @@ DJANGO_APPS = [
     'django.contrib.humanize',
     'django_countries',
     'django_celery_beat',
+    'django_singleton_admin',
+    'crispy_forms',
+    'packagebinder',
 ]
 
 EXTENSIONS = [ ]
@@ -91,6 +94,10 @@ if os.environ.get('DATABASE', 'SQLLITE') == "MYSQL":
         'PASSWORD': os.environ.get('MYSQL_PASSWORD', 'somepassword'),
         'HOST': os.environ.get('MYSQL_HOST', 'db'),
         'PORT': os.environ.get('MYSQL_PORT', '3306'),
+	'OPTIONS': {
+            'charset': 'utf8mb4',
+            'use_unicode': True, 
+        }
     }
 else:
     DATABASES['default'] = {

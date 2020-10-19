@@ -142,7 +142,7 @@ run_migrate() {
 
 run_celery() {
     cd ./app/
-    celery -A app worker --beat --scheduler django_celery_beat.schedulers:DatabaseScheduler --loglevel=debug
+    celery -A app worker --beat --scheduler django_celery_beat.schedulers:DatabaseScheduler --loglevel=warning
 }
 
 run_celery_flower() {

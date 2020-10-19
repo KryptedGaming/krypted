@@ -9,13 +9,13 @@ View Application
 
 {% block content %}
 <!-- Game Specific -->
-{% if application.request_user.eve_tokens.all %}
+{% if "django_eveonline_connector" in INSTALLED_APPS and application.request_user.eve_tokens.all %}
 <div class="box box-primary">
     <div class="box-header">
     <h3>Characters</h3>
     </div>
   <div class="box-body">
-    {% include 'applications/snippets/eve_character_display.html' %}
+    {% include 'django_eveonline_connector/adminlte/eve_character_display.html' %}
   </div>
 </div>
 {% endif %}
