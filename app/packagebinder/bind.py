@@ -7,15 +7,15 @@ class BindObject():
         self.version = version 
         self.required_tasks = []
         self.optional_tasks = [] 
+    
+    def __str__(self):
+        return self.package_name
 
     def refresh(self):
         for task in self.required_tasks:
             task.refresh_from_db()
         for task in self.optional_tasks:
             task.refresh_from_db()
-
-    def __str__(self):
-        return self.package_name
 
     def save(self):
         binder_config = apps.get_app_config('packagebinder')
