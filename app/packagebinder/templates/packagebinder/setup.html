@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% block title %}
+Setup
+{% endblock %}
+
+{% block header %}
+Setup
+{% endblock %}
+
+{% block description %}
+Platform Setup
+{% endblock %}
+
+{% block content %}
+<div class="box box-primary box-solid">
+    <div class="box-header">
+        <h3>Bound Packages</h3>
+    </div>
+    <div class="box-body">
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>Package</th>
+                    <th>Current Version</th>
+                    <th>Available Version</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for package in bindings %}
+                <tr>
+                    <td><b>{{package.package_name}}</b></td>
+                    <td id="{{package.package_name}}_current">{{package.version}}</td>
+                    <td class="expected_version" id="{{package.package_name}}"><i class="fa fa-spinner fa-spin"></i></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="box box-success box-solid">
+    <div class="box-header">
+        <h3>Required Tasks</h3>
+    </div>
+    <div class="box-body">
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>Task</th>
+                    <th>Package</th>
+                    <th>Interval</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for package in bindings %}
+                {% for task in package.required_tasks %}
+                <tr>
+                    <td><b>{{task.name}}</b></td>
+                    <td>{{package.package_name}}</td>
+                    <td>{{task.interval.every}} {{task.interval.period}}</td>
+                    <td>
+                        {% if task.enabled %}
+                        <button id="{{task.pk}}" class="btn btn-default btn-block" disabled>Enabled</button>
+                        {% else %}
+                        <button id="{{task.pk}}" class="btn btn-success btn-block">Enable</button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="box box-info box-solid">
+<div class="box-header">
+    <h3>Optional Tasks</h3>
+</div>
+<div class="box-body">
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Task</th>
+                <th>Package</th>
+                <th>Interval</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for package in bindings %}
+            {% for task in package.optional_tasks %}
+            <tr>
+                <td><b>{{task.name}}</b></td>
+                <td>{{package.package_name}}</td>
+                <td>{{task.interval.every}} {{task.interval.period}}</td>
+                <td>
+                    {% if task.enabled %}
+                    <button id="{{task.pk}}" onclick="disableTask(this)" class="btn btn-danger btn-block">Disable</button>
+                    {% else %}
+                    <button id="{{task.pk}}" onclick="enableTask(this)"  class="btn btn-success btn-block">Enable</button>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function enableTask (button) {
+    button.innerHTML = '<i class="fa fa-1x fa-spinner fa-spin" aria-hidden="true"></i>'
+    const res = await fetch('/setup/api/tasks/enable?task_id=' + button.id)
+    if (res.status !== 200) {
+        button.className = "btn btn-warning btn-block"
+        button.innerHTML='Failed'
+    }
+    else {
+        button.className = "btn btn-default btn-block"
+        button.disabled = true 
+        button.innerHTML = 'Enabled'
+    }
+}
+
+async function disableTask(button) {
+    button.innerHTML = '<i class="fa fa-1x fa-spinner fa-spin" aria-hidden="true"></i>'
+    const res = await fetch('/setup/api/tasks/disable?task_id=' + button.id)
+    if (res.status !== 200) {
+        button.className = "btn btn-warning btn-block"
+        button.innerHTML = 'Failed'
+    }
+    else {
+        button.className = "btn btn-default btn-block"
+        button.disabled = true
+        button.innerHTML = 'Disabled'
+    }
+}
+
+document.addEventListener("DOMContentLoaded", async function () {
+    var versionsToUpdate = document.querySelectorAll('.expected_version');
+    for (var i = 0; i < versionsToUpdate.length; i++) {
+        const res = await fetch('https://pypi.org/pypi/' + versionsToUpdate[i].id + '/json')
+        const resJSON = await res.json()
+        versionsToUpdate[i].innerHTML = resJSON.info.version
+    }
+})
+</script>
+{% endblock %}
