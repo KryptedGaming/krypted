@@ -30,7 +30,7 @@ class BindObject():
         except OperationalError:
             raise BindException("Failed to add required task, likely in database migration")
         except Exception as e:
-            interval = IntervalSchedule.objects.filter(every=interval, period=interval_period).first()
+            raise BindException(f"Failed to add required task: {e}")
 
         if not PeriodicTask.objects.filter(name=name).exists():
             periodic_task = PeriodicTask.objects.create(name=name, 
@@ -49,7 +49,7 @@ class BindObject():
         except OperationalError:
             raise BindException("Failed to add required task, likely in database migration")
         except Exception as e:
-            interval = IntervalSchedule.objects.filter(every=interval, period=interval_period).first()
+            raise BindException(f"Failed to add required task: {e}")
 
 
         if not PeriodicTask.objects.filter(name=name).exists():
