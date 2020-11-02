@@ -24,6 +24,8 @@ RUN git clone --branch $VERSION https://github.com/KryptedGaming/krypted.git /op
     pip3 install mysqlclient==1.4.2.post1 && \ 
     pip3 install uwsgi==2.0.18
 
+RUN chown -R krypted:krypted /opt/krypted
+
 # COPY ENTRYPOINT
 COPY entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/entrypoint.sh

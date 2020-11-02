@@ -32,6 +32,8 @@ RUN mkdir -p /opt/krypted/app/app/static && \
     bunzip2 /opt/eveonline/static/sqlite-latest.sqlite.bz2 && \ 
     rm sqlite-latest.sqlite.bz2
 
+RUN chown -R krypted:krypted /opt/krypted
+
 # COPY ENTRYPOINT
 COPY uwsgi.ini /opt/uwsgi.ini
 COPY entrypoint.sh /usr/local/bin/
