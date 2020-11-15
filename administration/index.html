@@ -271,6 +271,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#using-versions" class="md-nav__link">
+    Using Versions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#creating-superuser-accounts" class="md-nav__link">
     Creating Superuser Accounts
   </a>
@@ -440,6 +447,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#using-versions" class="md-nav__link">
+    Using Versions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#creating-superuser-accounts" class="md-nav__link">
     Creating Superuser Accounts
   </a>
@@ -500,6 +514,13 @@
 <li><code>docker-compose build</code> If you're using our <code>Dockerfile</code>, this will rebuild the image.</li>
 <li><code>docker-compose pull</code> If you're using our image, this will update your images to the latest. </li>
 </ul>
+<h2 id="using-versions">Using Versions</h2>
+<p>To ensure that your application will work as you'd expect, we recommend always specifying versions for:</p>
+<ol>
+<li>Containers (e.g instead of <code>kryptedgaming/krypted:latest</code> use <code>kryptedgaming/krypted:X.Y.Z</code>)</li>
+<li>Extensions (e.g instead of <code>django-eveonline-connector</code> use <code>django-eveonline-connector==X.Y.Z</code>)</li>
+</ol>
+<p>This will save you a ton of grief later!</p>
 <h2 id="creating-superuser-accounts">Creating Superuser Accounts</h2>
 <p>Superuser accounts have all Django permissions, and are optimal for your admin accounts. </p>
 <ul>
