@@ -8,6 +8,15 @@ These commands will assist you in administrating your Docker environment.
 * `docker-compose build` If you're using our `Dockerfile`, this will rebuild the image.
 * `docker-compose pull` If you're using our image, this will update your images to the latest. 
 
+## Using Versions 
+To ensure that your application will work as you'd expect, we recommend always specifying versions for:
+
+1. Containers (e.g instead of `kryptedgaming/krypted:latest` use `kryptedgaming/krypted:X.Y.Z`)
+2. Extensions (e.g instead of `django-eveonline-connector` use `django-eveonline-connector==X.Y.Z`)
+
+This will save you a ton of grief later!
+
+
 ## Creating Superuser Accounts
 Superuser accounts have all Django permissions, and are optimal for your admin accounts. 
 
