@@ -18,17 +18,7 @@ function replace_setting() {
     sed -i -E "s/$1/$2/g" /opt/krypted/app/app/settings.py
 }
 
-# set mysql settings 
-echo "Replacing settings"
-echo "app.conf.broker_url = 'amqp://rabbitmq:5672'" >> /opt/krypted/app/app/celery.py
-
-# finalize project
-python3 /opt/krypted/app/manage.py migrate
-python3 /opt/krypted/app/manage.py createcachetable
-python3 /opt/krypted/app/manage.py loaddata celery_interval_schedule
-echo "Collecting static files"
-cat <(echo "yes") - | python3 /opt/krypted/app/manage.py collectstatic > /dev/null
-echo "Static files successfully collected"
+sed -i -E "s,redis://localhost:6379/0,redis://redis:6379/0,g" /opt/krypted/app/app/celery.py
 
 # run conditional scripts 
 for directory in /opt/*/; do 
@@ -38,4 +28,10 @@ for directory in /opt/*/; do
     fi 
 done 
 
-uwsgi --check-static /var/html/krypted --check-static /opt/krypted/app --ini /opt/uwsgi.ini --uid krypted 
+if [ -z $LOG_LEVEL ]; then 
+    export LOG_LEVEL=warning
+    echo "Setting default log level ${LOG_LEVEL}"
+fi 
+
+cd /opt/krypted/app
+celery -A app worker --beat --uid=krypted --scheduler django_celery_beat.schedulers:DatabaseScheduler --loglevel=${LOG_LEVEL} --autoscale="$MAX_WORKERS",1

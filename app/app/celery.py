@@ -9,8 +9,8 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 
 # CONFIGURATION
-# app.conf.broker_url = 'redis://localhost:6379/0'
-# app.conf.accept_content = ['application/json']
-# app.conf.result_serializer = 'json'
-# app.conf.task_serializer = 'json'
-# app.conf.timezone = 'UTC'
+app.conf.broker_url = 'redis://localhost:6379/0'
+app.conf.accept_content = ['application/json']
+app.conf.result_serializer = 'json'
+app.conf.task_serializer = 'json'
+app.conf.timezone = 'UTC'

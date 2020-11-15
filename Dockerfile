@@ -1,7 +1,6 @@
 # Docker file for building Django application of Krypted 
 # Usage: docker build --build-arg VERSION=master ./docker/app/ 
 FROM python:3.6
-ARG VERSION
 
 RUN apt-get update --no-install-recommends && \
     apt-get install --no-install-recommends -y \
@@ -17,9 +16,12 @@ RUN wget https://www.fuzzwork.co.uk/dump/sqlite-latest.sqlite.bz2 && \
 
 RUN adduser --disabled-password --gecos '' krypted
 
-RUN git clone --branch $VERSION https://github.com/KryptedGaming/krypted.git /opt/krypted/ && \
-    cp /opt/krypted/conf/settings.py.example /opt/krypted/app/app/settings.py && \
-    pip3 install -r /opt/krypted/requirements.txt && \
+RUN mkdir -p /opt/krypted/app
+COPY --chown=krypted:krypted app/ /opt/krypted/app/
+COPY --chown=krypted:krypted conf/settings.py.example /opt/krypted/app/app/settings.py 
+COPY --chown=krypted:krypted requirements.txt /opt/krypted/
+
+RUN pip3 install -r /opt/krypted/requirements.txt && \
     pip3 install mysqlclient==1.4.2.post1 && \ 
     pip3 install uwsgi==2.0.18
 
@@ -32,12 +34,13 @@ RUN mkdir -p /opt/krypted/app/app/static && \
     bunzip2 /opt/eveonline/static/sqlite-latest.sqlite.bz2 && \ 
     rm sqlite-latest.sqlite.bz2
 
-RUN chown -R krypted:krypted /opt/krypted
-
 # COPY ENTRYPOINT
-COPY uwsgi.ini /opt/uwsgi.ini
-COPY app_entrypoint.sh /usr/local/bin/
-COPY celery_entrypoint.sh /usr/local/bin/
+COPY --chown=krypted:krypted conf/uwsgi.ini /opt/uwsgi.ini
+COPY --chown=krypted:krypted scripts/app_entrypoint.sh /usr/local/bin/
+COPY --chown=krypted:krypted scripts/celery_entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/*.sh
+
+# CLEAN UP
+RUN rm /*.tar.gz
 
 ENTRYPOINT ["app_entrypoint.sh"]

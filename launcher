@@ -27,7 +27,7 @@ run_env() {
 }
 
 run_build() {
-    docker build -t kryptedgaming/krypted --build-arg VERSION=$(git rev-parse --abbrev-ref HEAD) ./docker/ --no-cache
+    docker build -t kryptedgaming/krypted --build-arg VERSION=$(git rev-parse --abbrev-ref HEAD) .
 }
 run_install() {
     red=`tput setaf 1`
