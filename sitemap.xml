@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url>
+     <loc>https://eveseat.github.io/docs/</loc>
+     <lastmod>2020-11-15</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://eveseat.github.io/docs/features/</loc>
+     <lastmod>2020-11-15</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://eveseat.github.io/docs/installation/</loc>
+     <lastmod>2020-11-15</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://eveseat.github.io/docs/administration/</loc>
+     <lastmod>2020-11-15</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://eveseat.github.io/docs/upgrading/4.2.x/</loc>
+     <lastmod>2020-11-15</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://eveseat.github.io/docs/user_guide/group_requests/</loc>
+     <lastmod>2020-11-15</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://eveseat.github.io/docs/user_guide/applications/</loc>
+     <lastmod>2020-11-15</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://eveseat.github.io/docs/contributing/</loc>
+     <lastmod>2020-11-15</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+</urlset>
