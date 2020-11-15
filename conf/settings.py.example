@@ -69,6 +69,7 @@ TEMPLATES = [
                 'context_processors.installed_apps',
                 'context_processors.sidebar_extensions',
                 'context_processors.site_name',
+                'context_processors.version',
             ],
         },
     },

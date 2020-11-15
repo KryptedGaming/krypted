@@ -13,10 +13,10 @@ services:
             MYSQL_USER: "${MYSQL_USER}"
             MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
 
-    rabbitmq:
-        image: rabbitmq:3.8.2-alpine
+    redis:
+        image: redis:6.0.9-alpine
         volumes:
-            - "rabbitmq:/var/lib/rabbitmq"
+            - "redis:/var/lib/redis"
 
     app:
         image: kryptedgaming/krypted:latest
@@ -38,4 +38,4 @@ services:
 
 volumes:
     database: {}
-    rabbitmq: {}
+    redis: {}
