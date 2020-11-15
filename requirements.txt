@@ -6,3 +6,6 @@ django-shell-plus==1.1.7
 django-countries==5.5 # for country fields in UserInfo()
 django-celery-beat==1.6.0
 flower==0.9.3
+mkdocs==1.1.2
+mkdocs-material==6.1.5
+mkdocs-material-extensions==1.0.1

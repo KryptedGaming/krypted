@@ -21,15 +21,17 @@ services:
     app:
         image: kryptedgaming/krypted:latest
         env_file: .env
+        entrypoint: app_entrypoint.sh
         ports:
             - "80:8000"
         depends_on:
             - db
     
     celery:
-        image: kryptedgaming/krypted_celery:latest
+        image: kryptedgaming/krypted:latest
         restart: always
         env_file: .env
+        entrypoint: celery_entrypoint.sh
         depends_on:
             - db
             - app 

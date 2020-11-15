@@ -36,7 +36,8 @@ RUN chown -R krypted:krypted /opt/krypted
 
 # COPY ENTRYPOINT
 COPY uwsgi.ini /opt/uwsgi.ini
-COPY entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/entrypoint.sh
+COPY app_entrypoint.sh /usr/local/bin/
+COPY celery_entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/*.sh
 
-ENTRYPOINT ["entrypoint.sh"]
+ENTRYPOINT ["app_entrypoint.sh"]
