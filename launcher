@@ -31,6 +31,9 @@ run_build() {
     docker build -t kryptedgaming/krypted_celery --build-arg VERSION=$(git rev-parse --abbrev-ref HEAD) ./docker/celery/ --no-cache
 }
 run_install() {
+    red=`tput setaf 1`
+    green=`tput setaf 2`
+    reset=`tput sgr0`
     export INSTALLED_APPS=accounts,group_requests,applications
     echo "Installing the Krypted Platform developer environment"
     if [ ! -d "./app" ]; then
@@ -42,9 +45,6 @@ run_install() {
 
     if [ -n "$command" ]; then
         case "$command" in 
-            dev)
-            DEV_MODE=true
-            ;;
             *)
             usage
             exit 1
@@ -54,19 +54,17 @@ run_install() {
 
     # Install python requirements
     echo "Installing Python Requirements"
-    pip3 install -r requirements.txt
+    pip3 install -r requirements.txt > /dev/null
     if [ $? -ne 0 ]; then 
         echo "Failed to install Python requirements"
         exit 1
     fi 
-    if [ $DEV_MODE ]; then
-        echo "Installing Python Development Requirements"
-        pip3 install coverage pytest pytest-cov python-coveralls sphinx-markdown-tables django-extensions ipython notebook
-        if [ $? -ne 0 ]; then 
-            echo "Failed to install Python Development requirements"
-            exit 1
-        fi 
-    fi
+    echo "Installing Python Development Requirements"
+    pip3 install coverage pytest pytest-cov python-coveralls sphinx-markdown-tables django-extensions ipython notebook > /dev/null
+    if [ $? -ne 0 ]; then 
+        echo "Failed to install Python Development requirements"
+        exit 1
+    fi 
 
     # Install Developer Settings
     cp ./conf/settings.py.example ./app/app/settings.py
@@ -74,19 +72,19 @@ run_install() {
     # Set up the Django project
     echo "Setting up the Django Project"
     echo "Creating migrations for project"
-    python3 ./app/manage.py makemigrations
+    python3 ./app/manage.py makemigrations > /dev/null
     if [ $? -ne 0 ]; then 
         echo "Failed to set up the Django project"
         exit 1
     fi 
     echo "Creating migrations for specific subprojects"
-    python3 ./app/manage.py makemigrations accounts
+    python3 ./app/manage.py makemigrations accounts > /dev/null
     if [ $? -ne 0 ]; then 
         echo "Failed to set up the Django project"
         exit 1
     fi 
     echo "Creating database for project"
-    python3 ./app/manage.py migrate 
+    python3 ./app/manage.py migrate > /dev/null
     if [ $? -ne 0 ]; then 
         echo "Failed to set up the Django project"
         exit 1
@@ -98,13 +96,13 @@ run_install() {
 
     # Install AdminLTE UI
     echo "Installing AdminLTE in app/static/adminlte/"
-    wget https://github.com/KryptedGaming/krypted/releases/download/v4.0.0/AdminLTE-2.4.15.tar.gz > /dev/null
+    wget -q https://github.com/KryptedGaming/krypted/releases/download/v4.0.0/AdminLTE-2.4.15.tar.gz
     tar -xvf AdminLTE-2.4.15.tar.gz -C ./app/app/static/ > /dev/null
     rm AdminLTE-2.4.15.tar.gz*
 
     # Install AccountStylingV2
     echo "Installing Accounts Styling in app/static/accounts"
-    wget https://github.com/KryptedGaming/krypted/releases/download/v4.0.0/Accounts_v12.tar.gz > /dev/null
+    wget -q https://github.com/KryptedGaming/krypted/releases/download/v4.0.0/Accounts_v12.tar.gz
     tar -xvf Accounts_v12.tar.gz -C ./app/accounts/static/ > /dev/null
     rm Accounts_v12.tar.gz*
 
@@ -114,7 +112,7 @@ run_install() {
     # Create cache table
     python3 ./app/manage.py createcachetable > /dev/null
 
-    echo "INSTALL COMPLETE. Add django_extensions to your DJANGO_APPS in settings.py"
+    echo "${green}INSTALL COMPLETE. Add django_extensions to your DJANGO_APPS in settings.py${reset}"
 }
 
 run_test() {
