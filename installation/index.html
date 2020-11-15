@@ -319,6 +319,87 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#serving-containers" class="md-nav__link">
+    Serving Containers
+  </a>
+  
+    <nav class="md-nav" aria-label="Serving Containers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#nginx" class="md-nav__link">
+    NGINX
+  </a>
+  
+    <nav class="md-nav" aria-label="NGINX">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-configuration" class="md-nav__link">
+    Example Configuration
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#securing-nginx" class="md-nav__link">
+    Securing NGINX
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#apache" class="md-nav__link">
+    Apache
+  </a>
+  
+    <nav class="md-nav" aria-label="Apache">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-configuration_1" class="md-nav__link">
+    Example Configuration
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#securing-apache" class="md-nav__link">
+    Securing Apache
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#traefik" class="md-nav__link">
+    Traefik
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paid-installation-service" class="md-nav__link">
+    Paid Installation Service
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -527,6 +608,87 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#serving-containers" class="md-nav__link">
+    Serving Containers
+  </a>
+  
+    <nav class="md-nav" aria-label="Serving Containers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#nginx" class="md-nav__link">
+    NGINX
+  </a>
+  
+    <nav class="md-nav" aria-label="NGINX">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-configuration" class="md-nav__link">
+    Example Configuration
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#securing-nginx" class="md-nav__link">
+    Securing NGINX
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#apache" class="md-nav__link">
+    Apache
+  </a>
+  
+    <nav class="md-nav" aria-label="Apache">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-configuration_1" class="md-nav__link">
+    Example Configuration
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#securing-apache" class="md-nav__link">
+    Securing Apache
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#traefik" class="md-nav__link">
+    Traefik
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paid-installation-service" class="md-nav__link">
+    Paid Installation Service
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -726,6 +888,48 @@
 
 <h3 id="launching">Launching</h3>
 <p>Use <code>./launcher</code> for a list of launch options.</p>
+<h2 id="serving-containers">Serving Containers</h2>
+<p>Everybody likes to serve containers differently these days, so you'll likely see people doing different things in our Discord. </p>
+<h3 id="nginx">NGINX</h3>
+<p><a href="https://www.nginx.com/">NGINX</a> is our recommended way of doing things. </p>
+<h4 id="example-configuration">Example Configuration</h4>
+<pre><code>server { 
+  listen 80;
+  server_name  my.domain;
+
+  location / {
+      proxy_pass      http://0.0.0.0:8000;
+      proxy_set_header X-Forwarded-Host $server_name;
+      proxy_set_header Host $host;
+      proxy_set_header X-Real-IP $remote_addr;
+  }
+}
+</code></pre>
+
+<h4 id="securing-nginx">Securing NGINX</h4>
+<p>Letsencrypt is free and easy. <a href="https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-20-04">Ubuntu Example</a></p>
+<h3 id="apache">Apache</h3>
+<p>If you're already on Apache for some reason, feel free to serve in a similar manner. </p>
+<h4 id="example-configuration_1">Example Configuration</h4>
+<pre><code>&lt;VirtualHost *:80&gt;
+    ServerAdmin my@email
+    ServerName my.domain
+
+    ProxyPreserveHost On
+    ProxyRequests Off
+    ProxyPass / http://0.0.0.0:8000/
+    ProxyPassReverse / http://0.0.0.0:8000/
+
+&lt;/VirtualHost&gt;
+</code></pre>
+
+<h4 id="securing-apache">Securing Apache</h4>
+<p>Same thing, Letsencrypt. If it aint broke, <a href="https://www.digitalocean.com/community/tutorials/how-to-secure-apache-with-let-s-encrypt-on-ubuntu-20-04">don't fix it</a>.</p>
+<h3 id="traefik">Traefik</h3>
+<p>A lot of people are using Traefik these days, if you're familiar with it you'll just need to make some modifications to the Docker Compose file. </p>
+<p><a href="https://doc.traefik.io/traefik/getting-started/quick-start/">More on Traefik</a></p>
+<h2 id="paid-installation-service">Paid Installation Service</h2>
+<p>If you've got ISK and want us to install it for you, <a href="https://forums.eveonline.com/t/corporation-websites-pathfinder-hosting-and-more/173365?u=bearthatcares">check out this thread.</a></p>
                 
               
               
