@@ -75,3 +75,57 @@ cd ./krypted
 
 ### Launching
 Use `./launcher` for a list of launch options.
+
+
+## Serving Containers
+Everybody likes to serve containers differently these days, so you'll likely see people doing different things in our Discord. 
+
+### NGINX 
+[NGINX](https://www.nginx.com/) is our recommended way of doing things. 
+
+#### Example Configuration 
+```
+server { 
+  listen 80;
+  server_name  my.domain;
+
+  location / {
+      proxy_pass      http://0.0.0.0:8000;
+      proxy_set_header X-Forwarded-Host $server_name;
+      proxy_set_header Host $host;
+      proxy_set_header X-Real-IP $remote_addr;
+  }
+}
+```
+
+#### Securing NGINX 
+Letsencrypt is free and easy. [Ubuntu Example](https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-20-04)
+
+### Apache
+If you're already on Apache for some reason, feel free to serve in a similar manner. 
+
+#### Example Configuration 
+```
+<VirtualHost *:80>
+    ServerAdmin my@email
+    ServerName my.domain
+
+    ProxyPreserveHost On
+    ProxyRequests Off
+    ProxyPass / http://0.0.0.0:8000/
+    ProxyPassReverse / http://0.0.0.0:8000/
+
+</VirtualHost>
+```
+
+#### Securing Apache
+Same thing, Letsencrypt. If it aint broke, [don't fix it](https://www.digitalocean.com/community/tutorials/how-to-secure-apache-with-let-s-encrypt-on-ubuntu-20-04).
+
+### Traefik 
+A lot of people are using Traefik these days, if you're familiar with it you'll just need to make some modifications to the Docker Compose file. 
+
+[More on Traefik](https://doc.traefik.io/traefik/getting-started/quick-start/)
+
+
+## Paid Installation Service
+If you've got ISK and want us to install it for you, [check out this thread.](https://forums.eveonline.com/t/corporation-websites-pathfinder-hosting-and-more/173365?u=bearthatcares)

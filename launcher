@@ -13,6 +13,7 @@ usage () {
   echo "    flower:    Runs celery flower"
   echo "    shell:     Runs the django shell"
   echo "    build:     Builds the Docker images"
+  echo "    docs:      Builds and serves docs"
 }
 
 command=$1
