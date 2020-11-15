@@ -1,7 +1,7 @@
 # Information
 site_name: 'Krypted Platform'
-site_description: 'Simple EVE Api Tool Documentation'
-site_url: 'https://eveseat.github.io/docs'
+site_description: 'Online gaming community platform for EVE Online and other MMOs.'
+site_url: 'https://kryptedgaming.github.io/krypted/'
 
 # Repository
 repo_name: 'KryptedGaming/krypted'
