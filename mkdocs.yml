@@ -1,0 +1,32 @@
+# Information
+site_name: 'Krypted Platform'
+site_description: 'Online gaming community platform for EVE Online and other MMOs.'
+site_url: 'https://kryptedgaming.github.io/krypted/'
+
+# Repository
+repo_name: 'KryptedGaming/krypted'
+repo_url: 'https://github.com/KryptedGaming/krypted'
+
+# Theme Configuration
+theme:
+    name: 'material'
+    palette:
+        primary: 'blue'
+        accent: 'white'
+
+# Navigation 
+nav:
+    - Overview: index.md
+    - Features: features/index.md
+    - Installation: installation/index.md
+    - Administration: administration/index.md
+    - Upgrading:
+      - Upgrading to 4.2.x: upgrading/4.2.x.md
+    - User Guide:
+      - Group Requests: user_guide/group_requests.md
+      - Applications: user_guide/applications.md
+    - Contributing: contributing/index.md
+
+# Styling
+extra_css:
+    - css/krypted.css

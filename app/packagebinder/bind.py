@@ -1,4 +1,6 @@
 from django_celery_beat.models import PeriodicTask, IntervalSchedule
+from django.db.utils import OperationalError
+from .exceptions import BindException
 from django.apps import apps 
 
 class BindObject():
@@ -25,8 +27,10 @@ class BindObject():
         try:
             interval = IntervalSchedule.objects.get_or_create(
                 every=interval, period=interval_period)[0]
+        except OperationalError:
+            raise BindException("Failed to add required task, likely in database migration")
         except Exception as e:
-            interval = IntervalSchedule.objects.filter(every=interval, period=interval_period).first()
+            raise BindException(f"Failed to add required task: {e}")
 
         if not PeriodicTask.objects.filter(name=name).exists():
             periodic_task = PeriodicTask.objects.create(name=name, 
@@ -42,9 +46,11 @@ class BindObject():
         try:
             interval = IntervalSchedule.objects.get_or_create(
                 every=interval, period=interval_period)[0]
+        except OperationalError:
+            raise BindException("Failed to add required task, likely in database migration")
         except Exception as e:
-            interval = IntervalSchedule.objects.filter(
-                every=interval, period=interval_period).first()
+            raise BindException(f"Failed to add required task: {e}")
+
 
         if not PeriodicTask.objects.filter(name=name).exists():
             periodic_task = PeriodicTask.objects.create(name=name,

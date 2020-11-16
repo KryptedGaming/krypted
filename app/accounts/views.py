@@ -89,7 +89,8 @@ class UserView(View):
     def get(self, request, username):
         context = {}
         try:
-            context['user'] = User.objects.get(username=username)
+            context['user'] = User.objects.select_related('info').get(
+                username=username)
         except User.DoesNotExist:
             messages.add_message(
                 self.request, messages.ERROR, "User does not exist.")

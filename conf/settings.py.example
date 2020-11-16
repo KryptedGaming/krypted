@@ -16,6 +16,7 @@ SITE_PROTOCOL = "http://"
 SITE_DOMAIN = os.environ.get('SITE_DOMAIN', '127.0.0.1:8000')
 SITE_URL = "%s%s" % (SITE_PROTOCOL, SITE_DOMAIN)
 SITE_TITLE = os.environ.get('SITE_TITLE', 'Krypted Platform')
+MEDIA_ROOT = os.environ.get('MEDIA_ROOT', '/tmp/')
 
 # Application definition
 
@@ -35,7 +36,8 @@ DJANGO_APPS = [
 EXTENSIONS = [ 'packagebinder', ]
 if os.environ.get('INSTALLED_APPS'):
     for APP in os.environ.get('INSTALLED_APPS').split(","):
-        EXTENSIONS.append(str(re.sub(r'[^\w\s]','', APP)))
+        if APP and APP != '': 
+            EXTENSIONS.append(str(re.sub(r'[^\w\s]','', APP)))
 
 INSTALLED_APPS = DJANGO_APPS + EXTENSIONS
 
@@ -67,6 +69,7 @@ TEMPLATES = [
                 'context_processors.installed_apps',
                 'context_processors.sidebar_extensions',
                 'context_processors.site_name',
+                'context_processors.version',
             ],
         },
     },
@@ -82,7 +85,7 @@ WSGI_APPLICATION = 'app.wsgi.application'
 DATABASES = {
     'eve_static': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.environ.get('EVE_STATIC_DATABASE', '/opt/eveonline/static/sqlite-latest.sqlite'),
+        'NAME': os.path.join(BASE_DIR, 'eveonline.sqlite')
     }
 }
 

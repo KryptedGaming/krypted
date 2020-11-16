@@ -27,7 +27,7 @@ jobs:
       script:
         - cd app/
         - coverage run --omit=**/tests.py,./install/*,./launcher,**/wsgi.py,**/manage.py --source=. ./manage.py test --noinput --settings=app.settings
-
+        
     - stage: test packages
       script: scripts/travis_test_packages.sh
 
