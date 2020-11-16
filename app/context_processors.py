@@ -25,3 +25,8 @@ def site_name(request):
     return {
         'SITE_NAME': settings.SITE_TITLE
     }
+
+def version(request):
+    return {
+        'VERSION': __import__("app").__version__
+    }

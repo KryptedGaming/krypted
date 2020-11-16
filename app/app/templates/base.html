@@ -143,9 +143,14 @@
                     {% endfor %}
 
                     <li class="header">PLATFORM</li>
-                    <li><a href="https://kryptedauth.readthedocs.io/en/latest/?"><i class="fa fa-book"></i>
+                    <li><a href="https://kryptedgaming.github.io/krypted/"><i class="fa fa-book"></i>
                             <span>Documentation</span></a>
                     </li>
+                    {% if request.user.is_superuser %}
+                    <li><a href="/setup/"><i class="fa fa-cog"></i>
+                            <span>Setup</span></a>
+                    </li>
+                    {% endif %}
                     {% if request.user.is_staff %}
                     <li><a href="/admin/"><i class="fa fa-wrench"></i>
                             <span>Admin Panel</span></a>
@@ -197,7 +202,7 @@
         <!-- /.content-wrapper -->
         <footer class="main-footer">
             <div class="pull-right hidden-xs">
-                <b>Version</b> 4.0.0
+                <b>Version</b> {{VERSION}}
             </div>
             <strong>Copyright &copy; 2017-2020 <a href="https://kryptedgaming.com">Krypted Gaming</a>.</strong> All
             rights

@@ -44,7 +44,9 @@ View All
           {% for application in applications %}
           {% if application.status == "PENDING" %}
   				<tr>
-            <td>{{application.request_date | date:"F d, Y"}} </td>
+            <td>
+                <p hidden>{{application.request_date | date:"Y-m-d"}}</p>{{application.request_date | date:"F d, Y"}}
+            </td>
             <td>{{application.template}}</td>
             <td>{{application.request_user}}</td>
             <td>
@@ -81,7 +83,9 @@ View All
         {% for application in applications %}
         {% if application.status != "PENDING" %}
 				<tr>
-          <td>{{application.request_date}}</td>
+        <td>
+            <p hidden>{{application.request_date | date:"Y-m-d"}}</p>{{application.request_date | date:"F d, Y"}}
+        </td>
           <td>
           {% if application.status == "ACCEPTED" %}
           <span class="label label-success" title="{{application.response_date}}">    ACCEPTED</span>
@@ -120,6 +124,7 @@ $(function () {
       'searching'   : true,
       'ordering'    : true,
       'info'        : true,
+      'order': [[0, 'desc']],
       'autoWidth'   : false
     })
  })
