@@ -18,8 +18,6 @@ function replace_setting() {
     sed -i -E "s/$1/$2/g" /opt/krypted/app/app/settings.py
 }
 
-sed -i -E "s,redis://localhost:6379/0,redis://redis:6379/0,g" /opt/krypted/app/app/celery.py
-
 # run conditional scripts 
 for directory in /opt/*/; do 
     if [ -f "$directory/install.sh" ]; then 

@@ -30,10 +30,9 @@ RUN mkdir -p /opt/krypted/app/app/static && \
     mkdir -p /opt/eveonline/static/ && \
     tar -xvf AdminLTE-2.4.15.tar.gz -C /opt/krypted/app/app/static/ > /dev/null && \
     tar -xvf Accounts_v12.tar.gz -C /opt/krypted/app/accounts/static/ > /dev/null && \
-    cp /sqlite-latest.sqlite.bz2 /opt/eveonline/static/ && \
-    bunzip2 /opt/eveonline/static/sqlite-latest.sqlite.bz2 && \ 
-    rm sqlite-latest.sqlite.bz2
-
+    bunzip2 /sqlite-latest.sqlite.bz2 && \ 
+    cp /sqlite-latest.sqlite /opt/krypted/app/eveonline.sqlite
+    
 # COPY ENTRYPOINT
 COPY --chown=krypted:krypted conf/uwsgi.ini /opt/uwsgi.ini
 COPY --chown=krypted:krypted scripts/app_entrypoint.sh /usr/local/bin/

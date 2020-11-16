@@ -9,7 +9,7 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 
 # CONFIGURATION
-app.conf.broker_url = 'redis://localhost:6379/0'
+app.conf.broker_url = os.environ.get('REDIS_HOST', 'redis://redis:6379/0') # redis://localhost:6379/0 for development
 app.conf.accept_content = ['application/json']
 app.conf.result_serializer = 'json'
 app.conf.task_serializer = 'json'

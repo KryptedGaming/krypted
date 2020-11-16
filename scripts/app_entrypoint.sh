@@ -18,10 +18,6 @@ function replace_setting() {
     sed -i -E "s/$1/$2/g" /opt/krypted/app/app/settings.py
 }
 
-# set mysql settings 
-echo "Replacing settings"
-echo "app.conf.broker_url = 'amqp://rabbitmq:5672'" >> /opt/krypted/app/app/celery.py
-
 # finalize project
 python3 /opt/krypted/app/manage.py migrate
 python3 /opt/krypted/app/manage.py createcachetable
