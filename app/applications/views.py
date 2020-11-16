@@ -117,11 +117,12 @@ def modify_application(request, application_id):
 
     context['template'] = application.template
     context['questions'] = []
-    for response in ApplicationResponse.objects.filter(application=application):
-        context['questions'].append({
-            "question": response.question,
-            "response": response,
+    for question in application.template.questions.all():
+        context["questions"].append({
+            "question": question,
+            "response": ApplicationResponse.objects.get_or_create(application=application, question=question)[0]
         })
+
     return render(request, 'applications/modify_application.html', context)
 
 
