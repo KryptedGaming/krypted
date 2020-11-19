@@ -1,175 +1,176 @@
 {% extends "base.html" %}
 
 {% block title %}
-Home
+My Profile
 {% endblock %}
 
-<!-- Content Wrapper. Contains page content -->
-<div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    {% block header %}
-    View User
-    {% endblock %}
+{% block breadcrumb %}
+My Profile
+{% endblock %}
 
-    {% block description %}
-    {{user | title}}
-    {% endblock %}
 
-    <!-- Main content -->
-    {% block content %}
-    {% if form.errors %}
-    {% for field in form %}
-    {% for error in field.errors %}
-    <div class="wrap-input100 alert alert-danger m-b-10">
-        <span class="badge badge-secondary">{{field.label}}</span>
-        <strong>{{ error|escape }}</strong>
-    </div>
-    {% endfor %}
-    {% endfor %}
-    {% endif %}
-    <div class="row">
-        <div class="col-md-3">
+<!-- Content Header (Page header) -->
+{% block header %}
+View User
+{% endblock %}
 
-            <!-- Profile Image -->
-            <div class="box box-primary">
-                <div class="box-body box-profile">
-                    <img class="profile-user-img img-responsive img-circle" src="{{user.info.display_avatar}}"
-                        alt="User profile picture">
-                    <h3 class="profile-username text-center">{{user.info.display_name}}</h3>
-                    <p class="text-muted text-center">{{user.info.country.name}}</p>
-                    <div class="text-center">
-                        {% if request.user.groups.all %}
-                        {% for group in request.user.groups.all %}
-                        <span class="label label-info">{{group.name}}</span>
-                        {% endfor %}
-                        {% else %}
-                        <span class="label label-default">None</span>
-                        {% endif %}
-                    </div>
-                    <br>
+{% block description %}
+{{user | title}}
+{% endblock %}
 
-                    <ul class="list-group list-group-unbordered">
-                        {% if "django_discord_connector" in INSTALLED_APPS %}
-                        <li class="list-group-item">
-                            <b>Discord</b>
-                            {% if user.discord_token %}
-                            <p class="pull-right">
-                                {{user.discord_token.discord_user.nickname}}
-                                <a class="text-danger"
-                                    href="{% url 'django-discord-connector-sso-token-remove' user.discord_token.pk %}"><i
-                                        class="fa fa-times pull-right"></i></a>
-                            </p>
-                            {% elif request.user == user %}
-                            <p class="pull-right"><b><a href="{% url 'django-discord-connector-sso-token-add' %}">Link
-                                        Discord Account</a></b></p>
-                            {% else %}
-                            <p class="pull-right"><i>None</i></p>
-                            {% endif %}
-                        </li>
-                        {% endif %}
-                        {% if "django_discourse_connector" in INSTALLED_APPS %}
-                        <li class="list-group-item">
-                            <b>Forum</b>
-                            {% if user.discourse_token %}
-                            <p class="pull-right">{{user.discourse_token.discourse_user.username}}</p>
-                            {% elif request.user == user %}
-                            <p class="pull-right"><b><a href="#">Create Forum Account</a></b></p>
-                            {% else %}
-                            <p class="pull-right"><i>None</i></p>
-                            {% endif %}
-                        </li>
-                        {% endif %}
-                        {% if "django_eveonline_connector" in INSTALLED_APPS %}
-                        <li class="list-group-item">
-                            <b>EVE Character</b>
-                            {% if user.info.get_primary_character %}
-                            <p class="pull-right">
-                                {{user.info.get_primary_character.name}}
-                                <a class="text-success"
-                                    href="{% url 'django-eveonline-connector-character-select-primary' %}"><i
-                                        class="fa fa-refresh pull-right"></i></a>
-                            </p>
-                            {% else %}
-                            <p class="pull-right"><b><a href="{% url 'django-eveonline-connector-character-select-primary' %}">Select
-                                        Main Character</a></b></p>
-                            {% endif %}
-                        </li>
-                        <li class="list-group-item">
-                            <b>Joined</b>
-                            <p class="pull-right">{{user.date_joined |date:"F j, Y"}}</p>
-                        </li>
-                        {% endif %}
-                    </ul>
+<!-- Main content -->
+{% block content %}
+{% if form.errors %}
+{% for field in form %}
+{% for error in field.errors %}
+<div class="wrap-input100 alert alert-danger m-b-10">
+    <span class="badge badge-secondary">{{field.label}}</span>
+    <strong>{{ error|escape }}</strong>
+</div>
+{% endfor %}
+{% endfor %}
+{% endif %}
+<div class="row">
+    <div class="col-md-3">
 
-                    {% if "django_eveonline_connector" in INSTALLED_APPS %}
-                    <a class="btn btn-success btn-block" href="{% url 'django-eveonline-connector-sso-token-add' %}">Add
-                        Character</a>
+        <!-- Profile Image -->
+        <div class="card card-primary">
+            <div class="card-body card-profile">
+                <img class="profile-user-img img-responsive img-circle" src="{{user.info.display_avatar}}"
+                    alt="User profile picture">
+                <h3 class="profile-username text-center">{{user.info.display_name}}</h3>
+                <p class="text-muted text-center">{{user.info.country.name}}</p>
+                <div class="text-center">
+                    {% if request.user.groups.all %}
+                    {% for group in request.user.groups.all %}
+                    <span class="label label-info">{{group.name}}</span>
+                    {% endfor %}
+                    {% else %}
+                    <span class="label label-default">None</span>
                     {% endif %}
-                    <a class="btn btn-danger btn-block" data-confirm="Are you sure?" data-method="delete"
-                        href="{% url 'accounts-user-delete' user.pk %}" rel="nofollow">Delete Account</a>
                 </div>
-                <!-- /.box-body -->
-            </div>
-            <!-- /.box -->
+                <br>
 
-        </div>
-
-        <!-- /.col -->
-        <div class="col-md-9">
-            <div class="nav-tabs-custom">
-                <ul class="nav nav-tabs">
-                    {% if "django_eveonline_connector" in INSTALLED_APPS %}
-                    <li class="active"><a href="#eve_character_list" data-toggle="tab">Character Management</a></li>
+                <ul class="list-group list-group-unbordered">
+                    {% if "django_discord_connector" in INSTALLED_APPS %}
+                    <li class="list-group-item">
+                        <b>Discord</b>
+                        {% if user.discord_token %}
+                        <p class="pull-right">
+                            {{user.discord_token.discord_user.nickname}}
+                            <a class="text-danger"
+                                href="{% url 'django-discord-connector-sso-token-remove' user.discord_token.pk %}"><i
+                                    class="fa fa-times pull-right"></i></a>
+                        </p>
+                        {% elif request.user == user %}
+                        <p class="pull-right"><b><a href="{% url 'django-discord-connector-sso-token-add' %}">Link
+                                    Discord Account</a></b></p>
+                        {% else %}
+                        <p class="pull-right"><i>None</i></p>
+                        {% endif %}
+                    </li>
                     {% endif %}
-                    {% if request.user == user %}
-                    <li><a href="#settings" data-toggle="tab">Account Settings</a></li>
+                    {% if "django_discourse_connector" in INSTALLED_APPS %}
+                    <li class="list-group-item">
+                        <b>Forum</b>
+                        {% if user.discourse_token %}
+                        <p class="pull-right">{{user.discourse_token.discourse_user.username}}</p>
+                        {% elif request.user == user %}
+                        <p class="pull-right"><b><a href="#">Create Forum Account</a></b></p>
+                        {% else %}
+                        <p class="pull-right"><i>None</i></p>
+                        {% endif %}
+                    </li>
+                    {% endif %}
+                    {% if "django_eveonline_connector" in INSTALLED_APPS %}
+                    <li class="list-group-item">
+                        <b>EVE Character</b>
+                        {% if user.info.get_primary_character %}
+                        <p class="pull-right">
+                            {{user.info.get_primary_character.name}}
+                            <a class="text-success"
+                                href="{% url 'django-eveonline-connector-character-select-primary' %}"><i
+                                    class="fa fa-refresh pull-right"></i></a>
+                        </p>
+                        {% else %}
+                        <p class="pull-right"><b><a href="{% url 'django-eveonline-connector-character-select-primary' %}">Select
+                                    Main Character</a></b></p>
+                        {% endif %}
+                    </li>
+                    <li class="list-group-item">
+                        <b>Joined</b>
+                        <p class="pull-right">{{user.date_joined |date:"F j, Y"}}</p>
+                    </li>
                     {% endif %}
                 </ul>
-                <div class="tab-content">
-                    {% if "django_eveonline_connector" in INSTALLED_APPS %}
-                    <div class="tab-pane active" id="eve_character_list">
-                        {% include "django_eveonline_connector/adminlte/character_dashboard_snippet.html" %}
-                    </div>
-                    {% endif %}
-                    <!-- /.tab-pane -->
-                    {% if request.user == user %}
-                    <div class="tab-pane" id="settings">
-                        <form class="form-horizontal" method="POST" action="{% url 'accounts-user' user.username %}">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <label for="inputName" class="col-sm-2 control-label">Username</label>
 
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="inputName" placeholder="Name"
-                                        name="username" value="{{user.username}}">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="inputEmail" class="col-sm-2 control-label">Email</label>
-
-                                <div class="col-sm-10">
-                                    <input type="email" class="form-control" id="inputEmail" placeholder="Email"
-                                        value="{{user.email}}" name="email">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-sm-offset-2 col-sm-10">
-                                    <button type="submit" class="btn btn-warning">Submit</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    {% endif %}
-                    <!-- /.tab-pane -->
-                </div>
-                <!-- /.tab-content -->
-                <!-- /.nav-tabs-custom -->
+                {% if "django_eveonline_connector" in INSTALLED_APPS %}
+                <a class="btn btn-success btn-block" href="{% url 'django-eveonline-connector-sso-token-add' %}">Add
+                    Character</a>
+                {% endif %}
+                <a class="btn btn-danger btn-block" data-confirm="Are you sure?" data-method="delete"
+                    href="{% url 'accounts-user-delete' user.pk %}" rel="nofollow">Delete Account</a>
             </div>
+            <!-- /.card-body -->
         </div>
-        <!-- /.col -->
-    </div>
-    <!-- /.row -->
+        <!-- /.card -->
 
-    {% endblock %}
-    <!-- /.content -->
+    </div>
+
+    <!-- /.col -->
+    <div class="col-md-9">
+        <div class="nav-pills-custom">
+            <ul class="nav nav-pills">
+                {% if "django_eveonline_connector" in INSTALLED_APPS %}
+                <li class="active"><a href="#eve_character_list" data-toggle="tab">Character Management</a></li>
+                {% endif %}
+                {% if request.user == user %}
+                <li><a href="#settings" data-toggle="tab">Account Settings</a></li>
+                {% endif %}
+            </ul>
+            <div class="tab-content">
+                {% if "django_eveonline_connector" in INSTALLED_APPS %}
+                <div class="tab-pane active" id="eve_character_list">
+                    {% include "django_eveonline_connector/adminlte/character_dashboard_snippet.html" %}
+                </div>
+                {% endif %}
+                <!-- /.tab-pane -->
+                {% if request.user == user %}
+                <div class="tab-pane" id="settings">
+                    <form class="form-horizontal" method="POST" action="{% url 'accounts-user' user.username %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="inputName" class="col-sm-2 control-label">Username</label>
+
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="inputName" placeholder="Name"
+                                    name="username" value="{{user.username}}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputEmail" class="col-sm-2 control-label">Email</label>
+
+                            <div class="col-sm-10">
+                                <input type="email" class="form-control" id="inputEmail" placeholder="Email"
+                                    value="{{user.email}}" name="email">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-warning">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                {% endif %}
+                <!-- /.tab-pane -->
+            </div>
+            <!-- /.tab-content -->
+            <!-- /.nav-pills-custom -->
+        </div>
+    </div>
+    <!-- /.col -->
 </div>
+<!-- /.row -->
+
+{% endblock %}

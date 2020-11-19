@@ -1,0 +1,156 @@
+
+{% load staticfiles %}
+<div class="wrapper">
+
+    <header class="main-header">
+        <!-- Logo -->
+        <a href="{% url 'app-dashboard' %}" class="logo">
+            <!-- mini logo for sidebar mini 50x50 pixels -->
+            <span class="logo-mini"><img src="{% static 'app/images/logo_16x16.png' %}"></span>
+            <!-- logo for regular state and mobile devices -->
+            <span class="logo-lg">KRYPTED
+        </a>
+        <!-- Header Navbar: style can be found in header.less -->
+        <nav class="navbar navbar-static-top">
+            <!-- Sidebar toggle button-->
+            <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                <span class="sr-only">Toggle navigation</span>
+            </a>
+
+            <div class="navbar-custom-menu">
+                <ul class="nav navbar-nav">
+                    <!-- User Account: style can be found in dropdown.less -->
+                    <li class="dropdown user user-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <img src="{{request.user.info.display_avatar}}"
+                                class="user-image" alt="User Image">
+                            <span class="hidden-xs">{{request.user.info.display_name}}</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <!-- User image -->
+                            <li class="user-header">
+                                <img src="{{request.user.info.display_avatar}}"
+                                    class="img-circle" alt="User Image">
+                                <p>
+                                    {{request.user.info.display_name}}
+                                    <small>Member since {{user.date_joined |date:"F j, Y"}}</small>
+                                </p>
+                            </li>
+                            <!-- Menu Footer-->
+                            <li class="user-footer">
+                                <div class="pull-left">
+                                    <a href="{% url 'accounts-user' request.user.username %}"
+                                        class="btn btn-default btn-flat">Profile</a>
+                                </div>
+                                <div class="pull-right">
+                                    <a href="{% url 'accounts-logout' %}" class="btn btn-default btn-flat">Sign
+                                        out</a>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <!-- Left side column. contains the logo and sidebar -->
+    {% block main_sidebar %}
+    <aside class="main-sidebar">
+        <!-- sidebar: style can be found in sidebar.less -->
+        <section class="sidebar">
+            <!-- sidebar menu: : style can be found in sidebar.less -->
+            <ul class="sidebar-menu" data-widget="tree">
+                <li class="header">MAIN NAVIGATION</li>
+                <li>
+                    <a href="{% url 'app-dashboard' %}">
+                        <i class="fa fa-home"></i> <span>Home</span>
+                    </a>
+                </li>
+                {% if 'group_requests' in INSTALLED_APPS %}
+                <li>
+                    <a href="{% url 'group-list' %}">
+                        <i class="fa fa-user"></i> <span>Groups</span>
+                    </a>
+                </li>
+                {% endif %}
+                {% if 'applications' in INSTALLED_APPS %}
+                <li>
+                    <a href="{% url 'my-applications' %}">
+                        <i class="fa fa-pencil"></i> <span>Applications</span>
+                    </a>
+                </li>
+                {% endif %}
+                <li class="header">EXTENSIONS</li>
+                {% for sidebar in SIDEBAR_EXTENSIONS %}
+                    {% include sidebar %}
+                {% endfor %}
+
+                <li class="header">PLATFORM</li>
+                <li><a href="https://kryptedgaming.github.io/krypted/"><i class="fa fa-book"></i>
+                        <span>Documentation</span></a>
+                </li>
+                {% if request.user.is_superuser %}
+                <li><a href="/setup/"><i class="fa fa-cog"></i>
+                        <span>Setup</span></a>
+                </li>
+                {% endif %}
+                {% if request.user.is_staff %}
+                <li><a href="/admin/"><i class="fa fa-wrench"></i>
+                        <span>Admin Panel</span></a>
+                </li>
+                {% endif %}
+            </ul>
+        </section>
+        <!-- /.sidebar -->
+    </aside>
+    {% endblock %}
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                {% block header %}
+                Dashboard
+                {% endblock %}
+                <small>
+                    {% block description %}
+                    Control panel
+                    {% endblock %}
+                </small>
+            </h1>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert
+                    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %} alert-danger {% endif %}
+                    {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %} alert-success {% endif %}
+                    {% if message.level == DEFAULT_MESSAGE_LEVELS.WARNING %} alert-warning {% endif %}
+                    {% if message.level == DEFAULT_MESSAGE_LEVELS.INFO %} alert-info {% endif %}
+                    alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                {{message}}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% block content %}
+
+            {% endblock %}
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+    <footer class="main-footer">
+        <div class="pull-right hidden-xs">
+            <b>Version</b> {{VERSION}}
+        </div>
+        <strong>Copyright &copy; 2017-2020 <a href="https://kryptedgaming.com">Krypted Gaming</a>.</strong> All
+        rights
+        reserved.
+    </footer>
+
+</div>
+<!-- ./wrapper -->
