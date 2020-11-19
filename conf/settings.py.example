@@ -17,6 +17,7 @@ SITE_DOMAIN = os.environ.get('SITE_DOMAIN', '127.0.0.1:8000')
 SITE_URL = "%s%s" % (SITE_PROTOCOL, SITE_DOMAIN)
 SITE_TITLE = os.environ.get('SITE_TITLE', 'Krypted Platform')
 MEDIA_ROOT = os.environ.get('MEDIA_ROOT', '/tmp/')
+GOOGLE_ANALYTICS = os.environ.get('GOOGLE_ANALYTICS', True) # For https://www.eveonline.com/partners qualification
 
 # Application definition
 
