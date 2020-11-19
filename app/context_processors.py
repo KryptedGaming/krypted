@@ -20,6 +20,10 @@ def sidebar_extensions(request):
         'SIDEBAR_EXTENSIONS': templates
     }
 
+def google_analytics(request):
+    return {
+        'GOOGLE_ANALYTICS': settings.GOOGLE_ANALYTICS
+    }
 
 def site_name(request):
     return {

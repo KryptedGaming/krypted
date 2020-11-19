@@ -101,16 +101,18 @@
     <!--===============================================================================================-->
     <script src="{% static 'accounts/js/main.js' %}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ujs/1.2.2/rails.js"></script>
+    {% if GOOGLE_ANALYTICS == 'True' %}
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-62231299-6"></script>
     <script>
+    console.log('Google analytics enabled')
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
 
     gtag('config', 'UA-62231299-6');
     </script>
-
+    {% endif %}
 </body>
 
 </html>
