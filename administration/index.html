@@ -311,6 +311,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#privacy" class="md-nav__link">
+    Privacy
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -487,6 +494,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#privacy" class="md-nav__link">
+    Privacy
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -528,7 +542,6 @@
 </ul>
 <pre><code>docker-compose exec app python3 /opt/krypted/app/manage.py createsuperuser
 </code></pre>
-
 <ul>
 <li>Fill out the information as required</li>
 </ul>
@@ -537,10 +550,12 @@
 <h3 id="creating-backups">Creating Backups</h3>
 <pre><code>sudo docker-compose exec db sh -c 'exec mysqldump &quot;$MYSQL_DATABASE&quot; -u&quot;$MYSQL_USER&quot; -p&quot;$MYSQL_PASSWORD&quot; 2&gt;/dev/null' | gzip &gt; &quot;`date +&quot;%Y_%m_%d&quot;`_krypted.sql.gz&quot;
 </code></pre>
-
 <h3 id="restoring-backups">Restoring Backups</h3>
 <pre><code>zcat *krypted.sql.gz | docker-compose exec -T db sh -c 'exec mysql &quot;$MYSQL_DATABASE&quot; -u&quot;$MYSQL_USER&quot; -p&quot;$MYSQL_PASSWORD&quot;'
 </code></pre>
+<h2 id="privacy">Privacy</h2>
+<p>To be eligible for the <a href="https://www.eveonline.com/partners">EVE Online Parter Program</a>, Krypted Platform uses <a href="https://developers.google.com/analytics/devguides/collection/protocol/v1/">Google Analytics</a>.</p>
+<p>This data is anonymous, and used for usage and user demographics only. To disable Google Analytics, add <code>GOOGLE_ANALYTICS=False</code> to your environment file.</p>
                 
               
               

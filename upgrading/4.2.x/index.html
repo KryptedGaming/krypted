@@ -472,7 +472,6 @@
 <p>Always back up your database before you mess around. </p>
 <pre><code>sudo docker-compose exec db sh -c 'exec mysqldump &quot;$MYSQL_DATABASE&quot; -u&quot;$MYSQL_USER&quot; -p&quot;$MYSQL_PASSWORD&quot; 2&gt;/dev/null' | gzip &gt; &quot;`date +&quot;%Y_%m_%d&quot;`_krypted.sql.gz&quot;
 </code></pre>
-
 <h2 id="update-docker-image">Update Docker Image</h2>
 <p>To update, just updated your Docker image to <code>4.2.0</code> or <code>docker pull</code> the <code>latest</code> image. </p>
 <h2 id="package-updates">Package Updates</h2>
@@ -507,16 +506,13 @@ django-eveonline-doctrine-manager==1.2.4
 django-eveonline-connector==1.1.2
 django-eveonline-buyback==0.0.1
 </code></pre>
-
 <p>These will obviously be upgraded over time, we recommend checking the <a href="../../features/">latest versions</a>.</p>
 <h2 id="database-updates">Database Updates</h2>
 <p>In 4.2.x, we will be storing unicode data in the database. This means that you'll need to upgrade your MySQL tables (and database) to prevent errors.</p>
 <pre><code>https://gist.githubusercontent.com/porowns/d07e4e877cdf670e550e0fafb45fb6d6/raw/52b6b618962335f28d019df413050262fc3858a2/4.2.x_migrate.sql
 </code></pre>
-
 <pre><code>cat 4.2.x_migrate.sql | sudo docker-compose exec -T db sh -c 'exec mysql &quot;$MYSQL_DATABASE&quot; -u&quot;$MYSQL_USER&quot; -p&quot;$MYSQL_PASSWORD&quot;'
 </code></pre>
-
 <p><strong>Warning: This will delete all <code>django_eveonline_entity_extensions</code> data due to its deprecation.</strong></p>
                 
               
