@@ -1,4 +1,5 @@
-    <!-- Navbar -->
+{% load notifications_tags %}
+<!-- Navbar -->
     <nav class="main-header navbar navbar-expand navbar-dark navbar-primary">
         <!-- Left navbar links -->
         <ul class="navbar-nav">
@@ -11,29 +12,29 @@
         <ul class="navbar-nav ml-auto">
           <!-- Notifications Dropdown Menu -->
           <li class="nav-item dropdown">
+            
             <a class="nav-link" data-toggle="dropdown" href="#">
               <i class="far fa-bell"></i>
-              <span class="badge badge-warning navbar-badge">15</span>
+              {% if request.user.notifications.unread.count > 0 %}
+              <span class="badge badge-warning navbar-badge">{% notifications_unread %}</span>
+              {% endif %}
+              
             </a>
+            
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-              <span class="dropdown-item dropdown-header">15 Notifications</span>
+              
+              <span class="dropdown-item dropdown-header">
+                {% notifications_unread %} Unread Notifications
+              </span>
               <div class="dropdown-divider"></div>
-              <a href="#" class="dropdown-item">
-                <i class="fas fa-envelope mr-2"></i> 4 new messages
-                <span class="float-right text-muted text-sm">3 mins</span>
+              {% for notification in request.user.notifications.unread|slice:":5" %}
+              <a href="#" class="dropdown-item" title="{{notification.verb}}">
+                <i class="fas fa-bell mr-2"></i> {{notification.verb|truncatechars:20}}
+                <span class="float-right text-muted text-sm">{{notification.timesince}}</span>
               </a>
+              {% endfor %}
               <div class="dropdown-divider"></div>
-              <a href="#" class="dropdown-item">
-                <i class="fas fa-users mr-2"></i> 8 friend requests
-                <span class="float-right text-muted text-sm">12 hours</span>
-              </a>
-              <div class="dropdown-divider"></div>
-              <a href="#" class="dropdown-item">
-                <i class="fas fa-file mr-2"></i> 3 new reports
-                <span class="float-right text-muted text-sm">2 days</span>
-              </a>
-              <div class="dropdown-divider"></div>
-              <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+              <a href="{% url 'notifications:unread' %}" class="dropdown-item dropdown-footer">See All Notifications</a>
             </div>
           </li>
 
