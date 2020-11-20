@@ -15,16 +15,15 @@
 {% endif %}
 
 {% block scripts %}
+
+{% for message in messages %}
 <script>
-    const Toast = Swal.mixin({
+const Toast = Swal.mixin({
     toast: true,
     position: 'top-end',
     showConfirmButton: true,
     timer: 8000
 });
-</script>
-{% for message in messages %}
-<script>
 Toast.fire({
         {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
         icon: 'error',
