@@ -4,6 +4,8 @@ from django.contrib import messages
 from django_celery_beat.models import PeriodicTask
 from django.http import HttpResponse
 from django.apps import apps
+import logging 
+logger = logging.getLogger(__name__)
 
 def setup(request):
     if not request.user.is_superuser:
@@ -57,12 +59,13 @@ def update_package_settings(request, package_name):
         raise PermissionDenied()
     try:
         request_data = request.POST.copy()
-        form = binding.settings_form(request_data)
+        form = settings_binding.settings_form(request_data)
         if form.is_valid():
             messages.info(request, "Package settings were updated.")
             form.save()
         else:
-            messages.error(request, "Failed to update package settings, some values supplied were invalid.")
+            messages.error(request, "Failed to update package settings, some values supplied were invalid")
+            logger.error(form.errors)
     except Exception as e:
         messages.error(request, "Failed to update package settings.")
     
