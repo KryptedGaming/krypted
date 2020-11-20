@@ -9,6 +9,8 @@ logger = logging.getLogger(__name__)
 
 @receiver(post_save, sender=Application)
 def notify_discord_channel(sender, **kwargs):
+    if 'django_discord_connector' not in settings.INSTALLED_APPS:
+        return
     if 'created' not in kwargs or not kwargs.get('created'):
         return
     try:
