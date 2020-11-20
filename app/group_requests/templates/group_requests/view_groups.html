@@ -1,25 +1,23 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 
-{% block header %}
+{% block title %}
 Groups
 {% endblock %}
-{% block description %}
-Request Groups
+
+{% block breadcrumb %}
+Groups
 {% endblock %}
 
-{% block includes %}
-<link rel="stylesheet"
-    href="{% static 'global/ui/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
-{% endblock %}
 {% block content %}
-<div class="box box-primary box-solid">
-    <div class="box-header">
+<div class="card">
+    <div class="card-header">
         <h3>
             Requestable Groups
         </h3>
     </div>
-    <div class="box-body">
+    <div class="card-body">
+        {% if groups %}
         <table class="datatable table table-bordered table-hover">
             <thead>
                 <th class="col-lg-4 col-md-4 col-xs-4" scope="col">Group</th>
@@ -33,7 +31,7 @@ Request Groups
                 <tr>
 
                     <td>
-                        <h4 class="pull-left">{{group.group.name}}</h4>
+                        <p>{{group.group.name}}</p>
                     </td>
                     {% if perms.group_requests.view_grouprequest %}
                     <td>
@@ -62,7 +60,7 @@ Request Groups
                     {% endif %}
                     <td>
                         {% if group.group in request.user.groups.all %}
-                        <a class="btn btn-block btn-success" href="#" disabled>Already Joined</a>
+                        <a class="btn btn-block btn-success" href="#" disabled>Already Member</a>
                         {% elif group.requested %}
                         {% if group.requested.response_action == "PENDING" %}
                         <a class="btn btn-block btn-default" href="#" disabled>Pending</a>
@@ -74,14 +72,16 @@ Request Groups
                         {% elif group.open %}
                         <a class="btn btn-block btn-success" href="{% url 'group-request' group.group.pk %}">Join</a>
                         {% else %}
-                        <a class="btn btn-block btn-warning" href="{% url 'group-request' group.group.pk %}">Request</a>
+                        <a class="btn btn-block btn-warning text-white" href="{% url 'group-request' group.group.pk %}">Request</a>
                         {% endif %}
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-
+        {% else %}
+        <p>No groups available.</p>
+        {% endif %}
     </div>
 
 </div>
