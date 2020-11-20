@@ -32,3 +32,12 @@ def extension_versions(request):
     }
 
 
+def sidebar_bindings(request):
+    sidebar_bindings = apps.get_app_config('packagebinder').sidebar_bindings
+    parsed_sidebar_bindings = []
+    for sidebar_binding in sidebar_bindings.keys():
+        parsed_sidebar_bindings.append(sidebar_bindings[sidebar_binding])
+
+    return {
+        'SIDEBAR_BINDINGS': parsed_sidebar_bindings
+    }

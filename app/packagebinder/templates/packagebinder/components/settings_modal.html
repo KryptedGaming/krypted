@@ -1,0 +1,26 @@
+
+{% load crispy_forms_tags %}
+<form action="{% url 'app-update-package-settings' binding.package_name %}" method="post">
+{% csrf_token %}
+<div class="modal fade" id="modal-manage-settings-{{binding.package_name}}" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Manage Settings</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            {{ binding.settings_form_instance|crispy }}
+        </div>
+        <div class="modal-footer justify-content-between">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+</form>
