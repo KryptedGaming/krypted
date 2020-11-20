@@ -25,6 +25,7 @@ nav:
     - User Guide:
       - Group Requests: user_guide/group_requests.md
       - Applications: user_guide/applications.md
+      - Privacy: user_guide/privacy.md
     - Contributing: contributing/index.md
 
 # Styling
