@@ -1,66 +1,65 @@
 {% extends "base.html" %}
-{% block header %}
+{% block title %}
 View Application
 {% endblock %}
 
-{% block description %}
-{{application.request_user | title}}'s Application to {{application.template}}
+{% block breadcrumbs %}
+<li class="breadcrumb-item"><a href="{% url 'application-list' %}">Manage Applications</a></li>
+{% endblock %}
+
+{% block breadcrumb %}
+View Application
 {% endblock %}
 
 {% block content %}
 <!-- Game Specific -->
 {% if "django_eveonline_connector" in INSTALLED_APPS and application.request_user.eve_tokens.all %}
-<div class="box box-primary">
-    <div class="box-header">
+<div class="card card-info card-outline">
+    <div class="card-header">
     <h3>Characters</h3>
     </div>
-  <div class="box-body">
+  <div class="card-body">
     {% include 'django_eveonline_connector/adminlte/eve_character_display.html' %}
   </div>
 </div>
 {% endif %}
 
 <!-- Application Body -->
-<div class="box box-primary">
-<div class="box-header">
-<h3>Responses</h3>
-</div>
-<div class="box-body">
-{% for response in responses %}
-<div class="panel panel-default">
-  <div class="panel-heading">{{response.question.name}}</div>
-  <div class="panel-body">
-  {% autoescape off %}
-    {{response.response}}
-  {% endautoescape %}
+<div class="card card-primary card-outline">
+  <div class="card-header">
+  <h3>Responses</h3>
+  </div>
+
+  <div class="card-body">
+  {% for response in responses %}
+
+    <div id="accordion">
+      {% include 'applications/components/response_accordion.html' %}
+    </div>
+
+  {% endfor %}
   </div>
 </div>
-{% endfor %}
-</div>
-</div>
 
-<div class="box box-warning">
-<div class="box-header">
+<div class="card card-warning card-outline">
+<div class="card-header">
 <h3>Actions</h3>
 </div>
-<div class="box-body pad">
-  <button
-    onclick="location.href='{% url 'application-approve' application_id=application.pk %}'"
-    class="col-xs-2 col-xs-offset-2 btn btn-success btn-fill"
-    {% if not perms.applications.change_application %}disabled{% endif %}>
-    Approve
-  </button>
-  <button
-    onclick="location.href={% url 'application-list' %}"
-    class="col-xs-2 col-xs-offset-1 btn btn-primary btn-fill">
-    Go Back
-  </button>
-  <button
-    onclick="location.href='{% url 'application-deny' application_id=application.pk %}'"
-    class="col-xs-2 col-xs-offset-1 btn btn-danger btn-fill"
-    {% if not perms.applications.change_application %}disabled{% endif %}>
-    Reject
-  </button>
+<div class="card-body pad">
+  <div class="btn-group btn-block">
+      <button
+      onclick="location.href='{% url 'application-approve' application_id=application.pk %}'"
+      class="btn btn-success"
+      {% if not perms.applications.change_application %}disabled{% endif %}>
+      Approve
+    </button>
+    <button
+      onclick="location.href='{% url 'application-deny' application_id=application.pk %}'"
+      class="btn btn-danger"
+      {% if not perms.applications.change_application %}disabled{% endif %}>
+      Reject
+    </button>
+  </div>
 </div>
 </div>
 </div>
