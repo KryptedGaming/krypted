@@ -68,9 +68,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'context_processors.installed_apps',
-                'context_processors.sidebar_extensions',
                 'context_processors.site_name',
                 'context_processors.version',
+                'packagebinder.context_processors.sidebar_bindings',
             ],
         },
     },
@@ -183,11 +183,16 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'console',
         },
+        'interface': {
+            'level': 'WARNING',
+            'class': 'app.logging.NotificationHandler',
+            'formatter': 'console',
+        },
     },
     'loggers': {
         '': {
-            'level': 'DEBUG',
-            'handlers': ['console'],
+            'level': 'WARNING',
+            'handlers': ['console', 'interface'],
         },
         'pyswagger': {
             'level': 'NOTSET',
