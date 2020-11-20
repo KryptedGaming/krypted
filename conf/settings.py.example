@@ -32,7 +32,9 @@ DJANGO_APPS = [
     'django_countries',
     'django_celery_beat',
     'django_singleton_admin',
+    'cookielaw',
     'crispy_forms',
+    'notifications',
 ]
 EXTENSIONS = [ 'packagebinder', ]
 if os.environ.get('INSTALLED_APPS'):
