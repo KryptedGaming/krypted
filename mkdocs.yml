@@ -26,7 +26,10 @@ nav:
       - Group Requests: user_guide/group_requests.md
       - Applications: user_guide/applications.md
       - Privacy: user_guide/privacy.md
-    - Contributing: contributing/index.md
+    - Contributing: 
+      - Environment: contributing/environment.md
+      - Special Sauce: contributing/special_sauce.md
+      - Mentorship: contributing/mentorship.md
 
 # Styling
 extra_css:
