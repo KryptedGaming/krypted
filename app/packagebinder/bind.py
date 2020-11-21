@@ -80,3 +80,6 @@ class SidebarBinding():
 
     def save(self):
         package_config.sidebar_bindings[self.package_name] = self 
+
+    def add_child_menu_item(self, item):
+        self.children_menu_items.append(item)
