@@ -14,10 +14,10 @@
         <div class="text-center">
             {% if request.user.groups.all %}
             {% for group in request.user.groups.all %}
-            <span class="label label-info">{{group.name}}</span>
+            <span class="badge badge-info">{{group.name}}</span>
             {% endfor %}
             {% else %}
-            <span class="label label-default"><b>No Groups Assigned</b></span>
+            <span><b>No Groups Assigned</b></span>
             {% endif %}
         </div>
         <br>
@@ -57,12 +57,13 @@
             <li class="list-group-item">
                 <b>EVE Character</b>
                 {% if user.info.get_primary_character %}
-                <p class="float-right">
+                <div class="float-right">
                     {{user.info.get_primary_character.name}}
-                    <a class="text-success"
-                        href="{% url 'django-eveonline-connector-character-select-primary' %}"><i
-                            class="fa fa-refresh float-right"></i></a>
-                </p>
+                    <a class="text-primary"
+                        href="{% url 'django-eveonline-connector-character-select-primary' %}">
+                        <i class="fa fa-exchange-alt float-right px-1"></i>
+                    </a>
+                </div>
                 {% else %}
                 <p class="float-right"><b><a href="{% url 'django-eveonline-connector-character-select-primary' %}">Select
                             Main Character</a></b></p>

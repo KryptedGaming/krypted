@@ -36,3 +36,9 @@ sudo docker-compose exec db sh -c 'exec mysqldump "$MYSQL_DATABASE" -u"$MYSQL_US
 ```
 zcat *krypted.sql.gz | docker-compose exec -T db sh -c 'exec mysql "$MYSQL_DATABASE" -u"$MYSQL_USER" -p"$MYSQL_PASSWORD"'
 ```
+
+### Accessing Database
+Sometimes, you'll want to access the database directly. 
+```
+sudo docker-compose exec db sh -c 'mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD"'
+```

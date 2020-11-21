@@ -36,6 +36,7 @@ RUN mkdir -p /opt/krypted/app/app/static && \
 # COPY ENTRYPOINT
 COPY --chown=krypted:krypted conf/uwsgi.ini /opt/uwsgi.ini
 COPY --chown=krypted:krypted scripts/app_entrypoint.sh /usr/local/bin/
+COPY --chown=krypted:krypted scripts/dev_entrypoint.sh /usr/local/bin/
 COPY --chown=krypted:krypted scripts/celery_entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/*.sh
 

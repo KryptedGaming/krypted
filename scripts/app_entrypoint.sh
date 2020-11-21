@@ -9,8 +9,11 @@ done
 IFS=',' read -ra GIT_INSTALLS <<< "$GIT_INSTALLS"
 for GIT_INSTALL in ${GIT_INSTALLS[@]}; do
     IFS='/' read -ra GIT_INSTALL <<< "$GIT_INSTALL"
-    eval "git clone https://github.com/${GIT_INSTALL[0]}/${GIT_INSTALL[1]} /opt/${GIT_INSTALL[1]} > /dev/null"
+    eval "git clone https://github.com/${GIT_INSTALL[0]}/${GIT_INSTALL[1]} /opt/krypted/app/${GIT_INSTALL[1]} > /dev/null"
     eval "pip3 install -e /opt/${GIT_INSTALL[1]}"
+done 
+for LOCAL_PACKAGE in /opt/krypted/app/packages/* ; do 
+    eval "pip3 install -e ${LOCAL_PACKAGE}"
 done 
 echo "Successfully installed Python requirements"
 
@@ -20,8 +23,7 @@ function replace_setting() {
 
 # finalize project
 python3 /opt/krypted/app/manage.py migrate
-python3 /opt/krypted/app/manage.py createcachetable
-python3 /opt/krypted/app/manage.py loaddata celery_interval_schedule
+python3 /opt/krypted/app/manage.py createcachetable > /dev/null
 echo "Collecting static files"
 cat <(echo "yes") - | python3 /opt/krypted/app/manage.py collectstatic > /dev/null
 echo "Static files successfully collected"
