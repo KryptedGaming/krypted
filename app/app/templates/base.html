@@ -20,8 +20,13 @@
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
             <a href="/" class="brand-link navbar-primary">
-            <img src="https://images.evetech.net/corporations/98479678/logo?size=128"  class="brand-image"
+            {% if SITE_LOGO %}
+            <img src="{{SITE_LOGO}}"  class="brand-image"
                 style="opacity: .8">
+            {% else %}
+            <img src="{% static 'app/images/logo.png' %}"  class="brand-image img-circle"
+                style="opacity: .8">
+            {% endif %}
             <span class="brand-text font-weight-light">Krypted Platform</span>
             </a>
         
