@@ -4,7 +4,7 @@
     <div class="card-body box-profile">
         <div class="text-center">
             {% if user.info.display_avatar %}
-            <img class="profile-user-img img-fluid img-circle" src="https://images.evetech.net/characters/634915984/portrait?size=128">
+            <img class="profile-user-img img-fluid img-circle" src="{{user.info.display_avatar}}">
             {% else %}
             <img class="profile-user-img img-fluid img-circle" src="{% static 'app/images/default_user_profile.jpg' %}">
             {% endif %}
