@@ -31,7 +31,8 @@ RUN mkdir -p /opt/krypted/app/app/static && \
     tar -xvf v3.0.5.tar.gz -C /opt/krypted/app/app/static/ > /dev/null && \
     tar -xvf Accounts_v12.tar.gz -C /opt/krypted/app/accounts/static/ > /dev/null && \
     bunzip2 /sqlite-latest.sqlite.bz2 && \ 
-    cp /sqlite-latest.sqlite /opt/krypted/app/eveonline.sqlite
+    cp /sqlite-latest.sqlite /opt/krypted/app/eveonline.sqlite && \
+    mv /opt/krypted/app/app/static/AdminLTE-3.0.5 /opt/krypted/app/app/static/adminlte
     
 # COPY ENTRYPOINT
 COPY --chown=krypted:krypted conf/uwsgi.ini /opt/uwsgi.ini

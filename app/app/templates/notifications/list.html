@@ -19,7 +19,7 @@ Notifications
     
         "ajax": {
             "type": "GET",
-            "url": "http://localhost:8000/api/notifications/unread/",
+            "url": "/api/notifications/unread/",
             "dataType": "json",
             "headers": {
                 "Accept": "application/json;odata=verbose"
@@ -41,7 +41,7 @@ Notifications
     $('#systemTable').DataTable({
       "ajax": {
           "type": "GET",
-          "url": "http://localhost:8000/api/notifications/unread/system/",
+          "url": "/api/notifications/unread/system/",
           "dataType": "json",
           "headers": {
               "Accept": "application/json;odata=verbose"
