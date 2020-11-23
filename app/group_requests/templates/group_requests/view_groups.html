@@ -12,19 +12,16 @@ Groups
 {% block content %}
 <div class="card">
     <div class="card-header">
-        <h3>
-            Requestable Groups
+        <h3 class="card-title">
+            Available Groups
         </h3>
     </div>
     <div class="card-body">
         {% if groups %}
         <table class="datatable table table-bordered table-hover">
             <thead>
-                <th class="col-lg-4 col-md-4 col-xs-4" scope="col">Group</th>
-                {% if perms.group_requests.view_grouprequest %}
-                <th class="col-lg-4 col-md-4 col-xs-4" scope="col">Requests</th>
-                {% endif %}
-                <th class="col-lg-4 col-md-4 col-xs-4" scope="col">Action</th>
+                <th scope="col">Group</th>
+                <th scope="col">Actions</th>
             </thead>
             <tbody>
                 {% for group in groups %}
@@ -33,47 +30,47 @@ Groups
                     <td>
                         <p>{{group.group.name}}</p>
                     </td>
-                    {% if perms.group_requests.view_grouprequest %}
-                    <td>
-                        <a class="btn btn-primary btn-block" href="{% url 'group-request-list' group.group.pk %}">
-                            Manage
-                            Requests
-                            {% if group.request_count > 5 %}
-                            <sup>
-                                <span
-                                    class="label label-danger text-center">{{group.request_count}}</span>
-                            </sup>
-                            {% elif group.request_count > 0 %}
-                            <sup>
-                                <span
-                                    class="label label-warning text-center">{{group.request_count}}</span>
-                            </sup>
-                            {% else %}
-                            <sup>
-                                <span
-                                    class="label label-info text-center">{{group.request_count}}</span>
-                            </sup>
-                            {% endif %}
-                        </a>
 
-                    </td>
-                    {% endif %}
                     <td>
-                        {% if group.group in request.user.groups.all %}
-                        <a class="btn btn-block btn-success" href="#" disabled>Already Member</a>
-                        {% elif group.requested %}
-                        {% if group.requested.response_action == "PENDING" %}
-                        <a class="btn btn-block btn-default" href="#" disabled>Pending</a>
-                        {% elif group.requested.response_action == "ACCEPTED" %}
-                        <a class="btn btn-block btn-success" href="#" disabled>Accepted</a>
-                        {% else %}
-                        <a class="btn btn-block btn-danger" href="#" disabled>Rejected</a>
-                        {% endif %}
-                        {% elif group.open %}
-                        <a class="btn btn-block btn-success" href="{% url 'group-request' group.group.pk %}">Join</a>
-                        {% else %}
-                        <a class="btn btn-block btn-warning text-white" href="{% url 'group-request' group.group.pk %}">Request</a>
-                        {% endif %}
+                        <div class="btn-group btn-block ">
+                            {% if perms.group_requests.view_grouprequest %}
+                            <a class="btn btn-primary" href="{% url 'group-request-list' group.group.pk %}">
+                                Manage
+                                {% if group.request_count > 5 %}
+                                <sup>
+                                    <span
+                                        class="label label-danger text-center">{{group.request_count}}</span>
+                                </sup>
+                                {% elif group.request_count > 0 %}
+                                <sup>
+                                    <span
+                                        class="label label-warning text-center">{{group.request_count}}</span>
+                                </sup>
+                                {% else %}
+                                <sup>
+                                    <span
+                                        class="label label-info text-center">{{group.request_count}}</span>
+                                </sup>
+                                {% endif %}
+                            </a>
+                            {% endif %}
+                            {% if group.group in request.user.groups.all %}
+                            <a class="btn btn-success disabled" href="#" disabled>Accepted</a>
+                            {% elif group.requested %}
+                            {% if group.requested.response_action == "PENDING" %}
+                            <a class="btn btn-default disabled" href="#" disabled>Pending</a>
+                            {% elif group.requested.response_action == "ACCEPTED" %}
+                            <a class="btn btn-success disabled" href="#" disabled>Accepted</a>
+                            {% else %}
+                            <a class="btn btn-danger disabled" href="#">Rejected</a>
+                            {% endif %}
+                            {% elif group.open %}
+                            <a class="btn btn-success" href="{% url 'group-request' group.group.pk %}">Join</a>
+                            {% else %}
+                            <a class="btn btn-warning text-white" href="{% url 'group-request' group.group.pk %}">Request</a>
+                            {% endif %}
+                        </div>
+                        
                     </td>
                 </tr>
                 {% endfor %}

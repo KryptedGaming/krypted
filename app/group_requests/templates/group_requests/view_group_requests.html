@@ -15,13 +15,13 @@ Group Requests
 {% block content %}
 <div class="card">
     <div class="card-header with-border">
-        <h3>
+        <h3 class="card-title">
             Outstanding Requests
         </h3>
     </div>
     <div class=" card-body">
         {% if group_requests %}
-        <table class="table">
+        <table class="datatable table table-bordered table-hover">
             <thead>
                 <th scope="col">Group</th>
                 <th scope="col">Requested By</th>
@@ -39,9 +39,9 @@ Group Requests
                     <td>
                         <div style="display: flex;" class="btn-group btn-block">
                             <a href="{% url 'group-request-approve' group_request.request_group.pk group_request.pk%}"
-                                style="flex: 1" class="btn btn-success"><i class="fa fa-lg fa-check"></i></a>
+                                style="flex: 1" class="btn btn-success btn-sm"><i class="fa fa-check"></i></a>
                             <a href="{% url 'group-request-deny' group_request.request_group.pk group_request.pk%}"
-                                style="flex: 1" class="btn btn-danger"><i class="fa fa-lg fa-times"></i></a>
+                                style="flex: 1" class="btn btn-danger btn-sm"><i class="fa fa-times"></i></a>
                         </div>
                     </td>
                 </tr>
@@ -60,9 +60,9 @@ Group Requests
 <script>
     $(function () {
         $('table').DataTable({
-            'paging': false,
-            'lengthChange': false,
-            'searching': false,
+            'paging': true,
+            'lengthChange': true,
+            'searching': true,
             'ordering': true,
             'info': false,
             'autoWidth': false
