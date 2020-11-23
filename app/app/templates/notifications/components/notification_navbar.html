@@ -1,0 +1,32 @@
+<div class="card card-primary card-outline">
+    <div class="card-header">
+        <h4 class="float-left">Unread Notifications</h4>
+        <a href="{% url 'notifications:mark_all_as_read' %}" class="float-right btn btn-success">Mark All as Read</a>
+    </div>
+    <div class="card-body">
+     
+      <div class="row">
+        <div class="col-5 col-sm-3">
+          <div class="nav flex-column nav-tabs h-100" id="vert-tabs-tab" role="tablist" aria-orientation="vertical">
+            <a class="nav-link active" id="vert-tabs-unread-tab" data-toggle="pill" href="#vert-tabs-unread" role="tab" aria-controls="vert-tabs-unread" aria-selected="false">Unread</a>
+            <a class="nav-link" id="vert-tabs-messages-tab" data-toggle="pill" href="#vert-tabs-system" role="tab" aria-controls="vert-tabs-messages" aria-selected="false">
+              System
+            </a>
+          </div>
+        </div>
+        <div class="col-7 col-sm-9">
+          <div class="tab-content" id="vert-tabs-tabContent">
+            <div class="tab-pane active" id="vert-tabs-unread" role="tabpanel" aria-labelledby="vert-tabs-unread-tab" aria-selected="true">
+              {% include 'notifications/components/notification_table.html' with table_id="unreadTable" %}
+            </div>
+            <div class="tab-pane" id="vert-tabs-system" role="tabpanel" aria-labelledby="vert-tabs-system-tab">
+              {% include 'notifications/components/notification_table.html' with table_id="systemTable" %}
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!-- /.card -->
+  </div>

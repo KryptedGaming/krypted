@@ -19,8 +19,8 @@ class UserInfo(models.Model):
             return self.user.username
         if settings.DISPLAY_NAME and settings.DISPLAY_NAME == "DISCORD" and "django_discord_connector" in settings.INSTALLED_APPS and self.user.discord_token:
             return self.user.discord_token.discord_user.nickname
-        elif settings.DISPLAY_NAME and settings.DISPLAY_NAME == "EVEONLINE" and "django_eveonline_connector" in settings.INSTALLED_APPS and self.get_eveonline_character():
-            return self.get_eveonline_character().name
+        elif settings.DISPLAY_NAME and settings.DISPLAY_NAME == "EVEONLINE" and "django_eveonline_connector" in settings.INSTALLED_APPS and self.get_primary_character():
+            return self.get_primary_character().name
         return self.user.username
 
     def display_avatar(self):
@@ -29,8 +29,8 @@ class UserInfo(models.Model):
             character = EveCharacter.get_primary_character(self.user)
             if character:
                 return "https://imageserver.eveonline.com/Character/%s_128.jpg" % character.external_id
-        return "https://api.adorable.io/avatars/160/%s.png" % self.user.username
-
+        return None
+        
     def get_primary_character(self):
         if "django_eveonline_connector" in settings.INSTALLED_APPS:
             from django_eveonline_connector.models import EveCharacter

@@ -27,6 +27,26 @@
     <link rel="stylesheet" type="text/css" href="{% static 'accounts/css/main.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'app/css/accounts.css' %}">
     <!--===============================================================================================-->
+    <style>
+    .container {
+        padding: 2rem 0rem;
+    }
+    
+    .modal-dialog {
+        margin-top: 0rem;
+        max-width: 100%;
+        
+        .modal-content {
+        border-radius: 0rem;
+        }
+        
+        .buttons {
+        .btn {
+            margin: 0.2rem;
+        }
+        }
+    }
+    </style>
 </head>
 
 <body>
@@ -90,7 +110,22 @@
 
 
 
-
+    <script src="{% static 'cookielaw/js/cookielaw.js' %}"></script>
+      <div class="modal fade" id="cookieModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-body">
+              <div class="notice d-flex justify-content-between align-items-center">
+                <div class="cookie-text">This website uses cookies to personalize content and analyse traffic in order to offer you a better experience.</div>
+                <div class="buttons d-flex flex-column flex-lg-row">
+                  <a onclick="Cookielaw.createCookielawCookie();" class="btn btn-success btn-sm" data-dismiss="modal">I accept</a>
+                  <a href="https://kryptedgaming.github.io/krypted/user_guide/privacy/" class="btn btn-secondary btn-sm" data-dismiss="modal">Learn More</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     <!--===============================================================================================-->
     <script src="{% static 'accounts/vendor/jquery/jquery-3.2.1.min.js' %}"></script>
     <!--===============================================================================================-->
@@ -101,6 +136,14 @@
     <!--===============================================================================================-->
     <script src="{% static 'accounts/js/main.js' %}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ujs/1.2.2/rails.js"></script>
+    <script>
+      $(document).ready(function() {  
+          if (!document.cookie.includes("cookielaw_accepted=1")) {
+            $('#cookieModal').modal('show');
+          }
+        
+      });
+    </script>
     {% if GOOGLE_ANALYTICS == 'True' %}
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-62231299-6"></script>

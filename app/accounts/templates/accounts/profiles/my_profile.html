@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}
+My Profile
+{% endblock %}
+
+{% block breadcrumb %}
+My Profile
+{% endblock %}
+
+
+{% block content %}
+{% include 'components/errors.html' %}
+<div class="row">
+    <div class="col-md-3">
+        {% include 'accounts/components/profile_card.html' %}
+    </div>
+    <div class="col-md-9">
+        {% include 'accounts/components/profile_navigation.html' %}
+    </div>
+</div>
+
+{% endblock %}

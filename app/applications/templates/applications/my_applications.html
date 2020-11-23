@@ -1,29 +1,30 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 
-{% block header %}
+{% block title %}
 Applications
-    {% if perms.applications.view_application %}
-    <a href="{% url 'application-list' %}" class="pull-right btn btn-warning">Manage Applications</a>
-    {% endif %}
-{% endblock %}
-{% block description %}
-Edit and Submit applications
 {% endblock %}
 
-{% block includes %}
-<link rel="stylesheet" href="{% static 'global/ui/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
+{% block breadcrumb %}
+Applications
 {% endblock %}
+
+
+
 {% block content %}
-<div class="box box-primary box-solid">
-    <div class="box-header">
+<div class="card">
+    <div class="card-header">
+      {% if perms.applications.view_application %}
+      <a href="{% url 'application-list' %}" class="float-right btn btn-info">Manage Applications</a>
+      {% endif %}
       <h3 class="pull-left">
       My Applications
       </h3>
       
     </div>
-    <div class=" box-body">
-      <table class="table">
+    <div class="card-body">
+      {% if application_templates %}
+      <table class="table table-bordered">
         <thead>
           <th scope="col">Application</th>
           <th scope="col">Description</th>
@@ -35,7 +36,7 @@ Edit and Submit applications
                 <td>{{application_template.template.name}}</td>
                 <td>{{application_template.template.description}}</td>
                 {% if application_template.in_progress %}
-                <td><a href="{% url 'application-modify' application_template.application.pk %}" class="btn btn-block btn-warning">Edit Application</a></td>
+                <td><a href="{% url 'application-modify' application_template.application.pk %}" class="btn btn-block btn-warning text-white">Edit Application</a></td>
                 {% else %}
                 <td><a href="{% url 'application-create' application_template.template.pk %}" class="btn btn-block btn-success">Create Application</a></td>
                 {% endif %}
@@ -43,22 +44,10 @@ Edit and Submit applications
             {% endfor %}
         </tbody>
       </table>
+      {% else %}
+      <p>No applications available for submission.</p>
+      {% endif %}
     </div>
     
 </div>
-{% endblock %}
-
-{% block scripts %}
-<script>
-$(function () {
-    $('table').DataTable({
-      'paging'      : false,
-      'lengthChange': false,
-      'searching'   : false,
-      'ordering'    : true,
-      'info'        : false,
-      'autoWidth'   : false
-    })
- })
-</script>
 {% endblock %}

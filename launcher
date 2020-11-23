@@ -96,9 +96,10 @@ run_install() {
 
     # Install AdminLTE UI
     echo "Installing AdminLTE in app/static/adminlte/"
-    wget -q https://github.com/KryptedGaming/krypted/releases/download/v4.0.0/AdminLTE-2.4.15.tar.gz
-    tar -xvf AdminLTE-2.4.15.tar.gz -C ./app/app/static/ > /dev/null
-    rm AdminLTE-2.4.15.tar.gz*
+    wget -q https://github.com/ColorlibHQ/AdminLTE/archive/v3.0.5.tar.gz
+    tar -xvf v3.0.5.tar.gz -C ./app/app/static/ > /dev/null
+    mv ./app/app/static/AdminLTE-3.0.5 ./app/app/static/adminlte
+    rm v3.0.5.tar.gz*
 
     # Install AccountStylingV2
     echo "Installing Accounts Styling in app/static/accounts"

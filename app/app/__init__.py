@@ -8,7 +8,7 @@ from .celery import app
 #         \/        \/ \/                                    \/         \/   #
 
 __title__ = 'Krypted'
-__version__ = '4.2.2'
+__version__ = '4.3.0'
 __author__ = 'Krypted Gaming'
 __license__ = 'MIT License'
 __copyright__ = 'Copyright © 2017-2020 Krypted Gaming. All rights reserved.'

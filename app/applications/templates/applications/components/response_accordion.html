@@ -1,0 +1,16 @@
+<div class="card card-info">
+    <div class="card-header">
+      <h4 class="card-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapse_{{response.pk}}" class="collapsed" aria-expanded="false">
+          {{response.question}}
+        </a>
+      </h4>
+    </div>
+    <div id="collapse_{{response.pk}}" class="panel-collapse in collapse">
+      <div class="card-body">
+        {% autoescape off %}
+        {{response.response}}
+        {% endautoescape %}
+      </div>
+    </div>
+  </div>

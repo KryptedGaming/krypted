@@ -10,38 +10,35 @@ Create Application
 {{template.name}}
 {% endblock %}
 
-{% block head %}
- <link rel="stylesheet" href="{% static 'adminlte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css' %}">
-{% endblock %}
 
 {% block content %}
     <form class="form" method="POST">
         {% csrf_token %}
         {% for question in template.questions.all %}
           {% if question.type == "RESPONSE" %}
-          <div class="box box-primary">
-            <div class="box-header">
-              <h3 class="box-title">{{question.name}}<br>
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">{{question.name}}<br>
                 <small>{{question.help_text}}</small>
               </h3>
-              <!-- tools box -->
-              <div class="pull-right box-tools">
+              <!-- tools card -->
+              <div class="pull-right card-tools">
               </div>
               <!-- /. tools -->
             </div>
-            <!-- /.box-header -->
-            <div class="box-body pad">
+            <!-- /.card-header -->
+            <div class="card-body pad">
                 <textarea class="textarea" id="question_{{question.pk}}" name="question_{{question.pk}}" style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
             </div>
           </div>
           {% else %}
-          <div class="box box-primary">
-            <div class="box-header">
-                <h3 class="box-title">{{question.name}}<br>
+          <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">{{question.name}}<br>
                 <small>{{question.help_text}}</small>
                 </h3>
             </div>
-            <div class="box-body pad">
+            <div class="card-body pad">
               <select class="form-control" id="question_{{question.id}}" name="question_{{question.pk}}" required>
                 <option value="" disabled selected>Select an answer</option>
                 {% for choice in question.choices|choiceBuilder %}
@@ -57,22 +54,9 @@ Create Application
 {% endblock %}
 
 {% block scripts %}
-<script src="{% static 'adminlte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js' %}"></script>
 <script>
   $(function () {
-    // Summernote
-    $('.textarea').wysihtml5({
-      toolbar: {
-        "font-styles": true, // Font styling, e.g. h1, h2, etc.
-        "emphasis": true, // Italics, bold, etc.
-        "lists": true, // (Un)ordered lists, e.g. Bullets, Numbers.
-        "html": false, // Button which allows you to edit the generated HTML.
-        "link": true, // Button to insert a link.
-        "image": false, // Button to insert an image.
-        "color": false, // Button to change color of font
-        "blockquote": true, // Blockquote
-      }
-    });
+    $('.textarea').summernote();
   })
 </script>
 {% endblock %}

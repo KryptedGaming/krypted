@@ -20,7 +20,8 @@ logger = logging.getLogger(__name__)
 @permission_required('applications.view_application', raise_exception=True)
 def view_applications(request):
     context = {}
-    context['applications'] = Application.objects.filter(template__in=get_manageable_application_templates(request.user))
+    context['pending_applications'] = Application.objects.filter(template__in=get_manageable_application_templates(request.user), status="PENDING")
+    context['completed_applications'] = Application.objects.filter(template__in=get_manageable_application_templates(request.user), status__in=["ACCEPTED", "REJECTED"])
     return render(request, 'applications/view_applications.html', context=context)
 
 

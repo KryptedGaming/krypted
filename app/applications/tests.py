@@ -90,7 +90,7 @@ class ApplicationClientTestCase(TestCase):
         response = self.verify_permission_required_and_return_success(
             url, user, 'view_application')
 
-        self.assertTrue(response.context['applications'].count() >= 1)
+        self.assertTrue(response.context['pending_applications'].count() >= 1)
 
     def test_my_applications(self):
         url = reverse_lazy('my-applications')
