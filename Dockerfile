@@ -11,7 +11,7 @@ RUN apt-get update --no-install-recommends && \
     rm -rf /var/lib/apt/lists/*
 
 RUN wget https://www.fuzzwork.co.uk/dump/sqlite-latest.sqlite.bz2 && \ 
-    wget https://github.com/KryptedGaming/krypted/releases/download/v4.0.0/AdminLTE-2.4.15.tar.gz && \
+    wget https://github.com/ColorlibHQ/AdminLTE/archive/v3.0.5.tar.gz && \
     wget https://github.com/KryptedGaming/krypted/releases/download/v4.0.0/Accounts_v12.tar.gz
 
 RUN adduser --disabled-password --gecos '' krypted
@@ -28,7 +28,7 @@ RUN pip3 install -r /opt/krypted/requirements.txt && \
 RUN mkdir -p /opt/krypted/app/app/static && \ 
     mkdir -p /opt/krypted/app/accounts/static && \
     mkdir -p /opt/eveonline/static/ && \
-    tar -xvf AdminLTE-2.4.15.tar.gz -C /opt/krypted/app/app/static/ > /dev/null && \
+    tar -xvf v3.0.5.tar.gz -C /opt/krypted/app/app/static/ > /dev/null && \
     tar -xvf Accounts_v12.tar.gz -C /opt/krypted/app/accounts/static/ > /dev/null && \
     bunzip2 /sqlite-latest.sqlite.bz2 && \ 
     cp /sqlite-latest.sqlite /opt/krypted/app/eveonline.sqlite
