@@ -133,6 +133,7 @@
                             </p>
                         </a>
                     </li>
+                    {% if request.user.is_superuser %}
                     <li class="nav-item">
                         <a href="/setup" class="nav-link">
                             <i class="nav-icon far fas fa-cog"></i>
@@ -149,6 +150,7 @@
                             </p>
                         </a>
                     </li>
+                    {% endif %}
                 </ul>
             </nav>
             <!-- /.sidebar-menu -->
