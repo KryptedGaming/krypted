@@ -36,7 +36,7 @@
             <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                 <div class="image">
                 {% if user.info.display_avatar %}
-                <img src="https://images.evetech.net/characters/634915984/portrait?size=128" class="img-circle elevation-2">
+                <img src="{{user.info.display_avatar}}" class="img-circle elevation-2">
                 {% else %}
                 <img src="{% static 'app/images/default_user_profile.jpg' %} " class="img-circle elevation-2" alt="User Image">
                 {% endif %}
