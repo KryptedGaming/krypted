@@ -22,6 +22,7 @@ nav:
     - Administration: administration/index.md
     - Upgrading:
       - Upgrading to 4.2.x: upgrading/4.2.x.md
+      - Upgrading to 4.3.x: upgrading/4.3.x.md
     - User Guide:
       - Group Requests: user_guide/group_requests.md
       - Applications: user_guide/applications.md
