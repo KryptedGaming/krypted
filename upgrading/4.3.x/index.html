@@ -10,7 +10,7 @@
       
       
       
-        <link rel="canonical" href="https://kryptedgaming.github.io/krypted/contributing/environment/">
+        <link rel="canonical" href="https://kryptedgaming.github.io/krypted/upgrading/4.3.x/">
       
       
       <link rel="shortcut icon" href="../../assets/images/favicon.png">
@@ -18,7 +18,7 @@
     
     
       
-        <title>Environment - Krypted Platform</title>
+        <title>Upgrading to 4.3.x - Krypted Platform</title>
       
     
     
@@ -67,7 +67,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#development-environment" class="md-skip">
+        <a href="#upgrading-to-43x" class="md-skip">
           Skip to content
         </a>
       
@@ -97,7 +97,7 @@
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
-              Environment
+              Upgrading to 4.3.x
             
           </span>
         </div>
@@ -243,10 +243,12 @@
       
       
 
+  
 
-  <li class="md-nav__item md-nav__item--nested">
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5" >
+    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5" checked>
     <label class="md-nav__link" for="nav-5">
       Upgrading
       <span class="md-nav__icon md-icon"></span>
@@ -265,7 +267,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../upgrading/4.2.x/" class="md-nav__link">
+    <a href="../4.2.x/" class="md-nav__link">
       Upgrading to 4.2.x
     </a>
   </li>
@@ -275,11 +277,138 @@
           
           
 
+  
 
-  <li class="md-nav__item">
-    <a href="../../upgrading/4.3.x/" class="md-nav__link">
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Upgrading to 4.3.x
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+    
+    <a href="./" class="md-nav__link md-nav__link--active">
       Upgrading to 4.3.x
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#important-changes" class="md-nav__link">
+    Important Changes
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#minimum-package-versions" class="md-nav__link">
+    Minimum Package Versions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#upgrading" class="md-nav__link">
+    Upgrading
+  </a>
+  
+    <nav class="md-nav" aria-label="Upgrading">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#backup-database" class="md-nav__link">
+    Backup Database
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#docker-composeyml" class="md-nav__link">
+    docker-compose.yml
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#google-analytics" class="md-nav__link">
+    Google Analytics
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#must-try-features" class="md-nav__link">
+    Must-try Features
+  </a>
+  
+    <nav class="md-nav" aria-label="Must-try Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#notifications" class="md-nav__link">
+    Notifications
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#new-settings-page" class="md-nav__link">
+    New "Settings" Page
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#doctrine-filtering" class="md-nav__link">
+    Doctrine Filtering
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#characters-page" class="md-nav__link">
+    Characters Page
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bug-fixes" class="md-nav__link">
+    Bug Fixes
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
   </li>
 
         
@@ -353,12 +482,10 @@
       
       
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+  <li class="md-nav__item md-nav__item--nested">
     
-    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7" checked>
+    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7" >
     <label class="md-nav__link" for="nav-7">
       Contributing
       <span class="md-nav__icon md-icon"></span>
@@ -375,83 +502,11 @@
           
           
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-      <label class="md-nav__link md-nav__link--active" for="__toc">
-        Environment
-        <span class="md-nav__icon md-icon"></span>
-      </label>
-    
-    <a href="./" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../../contributing/environment/" class="md-nav__link">
       Environment
     </a>
-    
-      
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#local-installation" class="md-nav__link">
-    Local Installation
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#docker-installation" class="md-nav__link">
-    Docker Installation
-  </a>
-  
-    <nav class="md-nav" aria-label="Docker Installation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
-    Overview
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#dockercomposeyml" class="md-nav__link">
-    docker.compose.yml
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#running" class="md-nav__link">
-    Running
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-    
   </li>
 
         
@@ -461,7 +516,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../special_sauce/" class="md-nav__link">
+    <a href="../../contributing/special_sauce/" class="md-nav__link">
       Special Sauce
     </a>
   </li>
@@ -473,7 +528,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../mentorship/" class="md-nav__link">
+    <a href="../../contributing/mentorship/" class="md-nav__link">
       Mentorship
     </a>
   </li>
@@ -508,37 +563,92 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#local-installation" class="md-nav__link">
-    Local Installation
+  <a href="#important-changes" class="md-nav__link">
+    Important Changes
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-installation" class="md-nav__link">
-    Docker Installation
+  <a href="#minimum-package-versions" class="md-nav__link">
+    Minimum Package Versions
   </a>
   
-    <nav class="md-nav" aria-label="Docker Installation">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#upgrading" class="md-nav__link">
+    Upgrading
+  </a>
+  
+    <nav class="md-nav" aria-label="Upgrading">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
-    Overview
+  <a href="#backup-database" class="md-nav__link">
+    Backup Database
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#dockercomposeyml" class="md-nav__link">
-    docker.compose.yml
+  <a href="#docker-composeyml" class="md-nav__link">
+    docker-compose.yml
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#running" class="md-nav__link">
-    Running
+  <a href="#google-analytics" class="md-nav__link">
+    Google Analytics
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#must-try-features" class="md-nav__link">
+    Must-try Features
+  </a>
+  
+    <nav class="md-nav" aria-label="Must-try Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#notifications" class="md-nav__link">
+    Notifications
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#new-settings-page" class="md-nav__link">
+    New "Settings" Page
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#doctrine-filtering" class="md-nav__link">
+    Doctrine Filtering
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#characters-page" class="md-nav__link">
+    Characters Page
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bug-fixes" class="md-nav__link">
+    Bug Fixes
   </a>
   
 </li>
@@ -560,84 +670,86 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/KryptedGaming/krypted/edit/master/docs/contributing/environment.md" title="Edit this page" class="md-content__button md-icon">
+                  <a href="https://github.com/KryptedGaming/krypted/edit/master/docs/upgrading/4.3.x.md" title="Edit this page" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
                 
                 
-                <h1 id="development-environment">Development Environment</h1>
+                <h1 id="upgrading-to-43x">Upgrading to 4.3.x</h1>
+<p>Version 4.3.0 overhauls the UI, improves quality of life for administrators, and adds functionality that helps us build a better tool. System notifications will allow you to report bugs to us faster, and analytics helps us see which parts of the platform we should spend more time on. </p>
+<h2 id="important-changes">Important Changes</h2>
 <ul>
-<li><a href="https://code.visualstudio.com/">VSCode</a> is our recommended IDE. We recommend the <code>Python</code> extension and <code>py-coverage-view</code>.</li>
-<li>Juniper Notebooks is highly recommended. Follow instructions from the <code>./launcher install</code> and use <code>python3 manage.py shell_plus --notebook</code>.</li>
-<li>Windows users are highly recommended to use <a href="https://docs.microsoft.com/en-us/windows/wsl/install-win10">WSL2</a>.</li>
+<li>Celery container (<code>krypted_celery</code>) has been merged into the <code>krypted</code> container, with multiple entrypoints. </li>
+<li>Google analytics and GDPR cookie consent have been added. </li>
+<li>User interface (AdminLTE) has been updated from 2.4.5 to 3.0.4, resulting in a <strong>huge UI overhaul</strong>. </li>
+<li>User notifications have been added.</li>
 </ul>
-<h2 id="local-installation">Local Installation</h2>
-<p>Local installation is a safe bet for installation if you're unable to run Docker locally. Follow instructions <a href="../../installation/#local-installation">here</a>.</p>
-<h2 id="docker-installation">Docker Installation</h2>
-<p>Docker is the preferred way to develop, as it will ensure that the entire stack is running. </p>
-<pre><code>git clone https://github.com/KryptedGaming/krypted/
-cd krypted/
-cp conf/docker-compose.yml .
-cp conf/.env . 
+<h2 id="minimum-package-versions">Minimum Package Versions</h2>
+<table>
+<thead>
+<tr>
+<th>Package Name</th>
+<th>Minimum Required Version</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>django-eveonline-connector</code></td>
+<td><code>django-eveonline-connector==1.2.0</code></td>
+</tr>
+<tr>
+<td><code>django-eveonline-timerboard</code></td>
+<td><code>django-eveonline-timerboard==1.1.0</code></td>
+</tr>
+<tr>
+<td><code>django-discord-connector</code></td>
+<td><code>django-discord-connector==1.2.0</code></td>
+</tr>
+<tr>
+<td><code>django-eveonline-doctrine-manager</code></td>
+<td><code>django-eveonline-doctrine-manager==1.3.0</code></td>
+</tr>
+<tr>
+<td><code>django-eveonline-group-states</code></td>
+<td><code>django-eveonline-group-states=1.2.0</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="upgrading">Upgrading</h2>
+<h3 id="backup-database">Backup Database</h3>
+<p>Always back up your database before you mess around. </p>
+<pre><code>sudo docker-compose exec db sh -c 'exec mysqldump &quot;$MYSQL_DATABASE&quot; -u&quot;$MYSQL_USER&quot; -p&quot;$MYSQL_PASSWORD&quot; 2&gt;/dev/null' | gzip &gt; &quot;`date +&quot;%Y_%m_%d&quot;`_krypted.sql.gz&quot;
 </code></pre>
-<h3 id="overview">Overview</h3>
-<p>For Docker Development, we'll be mounting local folders on the Docker image using <code>docker-compose.yml</code>. This will allow us to develop packages and immediately see their changes. </p>
-<h3 id="dockercomposeyml">docker.compose.yml</h3>
-<p>Some changes are needed to your<code>docker-compose.yml</code> file, since we aren't interested in running production!</p>
-<pre><code>version: '2.0'
-
-services:
-    db:
-        image: mysql:5.7
-        volumes:
-            - database:/var/lib/mysql
-        restart: always
-        command: --max_allowed_packet=256M
-        environment:
-            MYSQL_RANDOM_ROOT_PASSWORD: &quot;yes&quot;
-            MYSQL_DATABASE: &quot;${MYSQL_DATABASE}&quot;
-            MYSQL_USER: &quot;${MYSQL_USER}&quot;
-            MYSQL_PASSWORD: &quot;${MYSQL_PASSWORD}&quot;
-
-    redis:
-        image: redis:6.0.9-alpine
-        volumes:
-            - &quot;redis:/var/lib/redis&quot;
-
-    app:
-        image: kryptedgaming/krypted:latest
-        build: .
+<h3 id="docker-composeyml">docker-compose.yml</h3>
+<p>From 4.2.x, you'll need to change your celery image from <code>krypted_celery</code> to <code>krypted</code> for versions <code>4.3.0</code>, <code>latest</code>, <code>experimental</code>, and beyond. This image will be fully deprecated in 2-3 months. </p>
+<p>Furthermore, you must specify the <code>entrypoint</code> for each application in the stack now.</p>
+<pre><code>    app:
+        image: kryptedgaming/krypted:experimental
         env_file: .env
         entrypoint: dev_entrypoint.sh
-        volumes:
-            - &quot;./app/packages/:/opt/krypted/app/packages&quot;
-        ports:
-            - &quot;8000:8000&quot;
-        depends_on:
-            - db
-
-    celery:
-        image: kryptedgaming/krypted:latest
-        restart: always
-        build: .
+</code></pre>
+<pre><code>    celery:
+        image: kryptedgaming/krypted:experimental
         env_file: .env
         entrypoint: celery_entrypoint.sh
-        volumes:
-            - &quot;./app/packages/:/opt/krypted/app/packages&quot;
-        depends_on:
-            - db
-            - app 
-
-volumes:
-    database: {}
-    redis: {}
 </code></pre>
-<h3 id="running">Running</h3>
-<p>Edit <code>.env</code> and run the stack with the following commands.</p>
-<pre><code>sudo docker-compose build 
-sudo docker-compose up -d 
+<h3 id="google-analytics">Google Analytics</h3>
+<p>CCP Games released their <a href="https://www.eveonline.com/partners">EVE Partner Program</a> recently, which requires some form of analytics reporting in order to qualify. Qualifying would help us spend less time ratting, and more time developing cool features. </p>
+<p>However, we get it if you want to disable it. Just add this line in your environment.</p>
+<pre><code>GOOGLE_ANALYTICS=False
 </code></pre>
-<p>If you change <code>.env</code>, you'll need to restart the stack. Otherwise, everything will dynamically reload. </p>
+<h2 id="must-try-features">Must-try Features</h2>
+<h3 id="notifications">Notifications</h3>
+<p>Anytime something breaks, you'll get a System Warning or System Error now. We're planning to flesh this out a <strong>ton</strong> so that we can fix bugs much faster. </p>
+<h3 id="new-settings-page">New "Settings" Page</h3>
+<p>Administrators now have access to <strong>Settings</strong> in the sidebar, which will allow you to manage your packages and settings all from one page. We're planning to expand this out further, which should allow package developers to create rich configuration menus. </p>
+<h3 id="doctrine-filtering">Doctrine Filtering</h3>
+<p>We've added new filters to the Fittings and Doctrines tables, they're pretty neat. </p>
+<h3 id="characters-page">Characters Page</h3>
+<p>The Characters page in the EVE Online Connector has been completely rebuilt, and it won't be ridiculously slow anymore!</p>
+<h3 id="bug-fixes">Bug Fixes</h3>
+<p>We fixed pretty much every bug that was user reported in this release, meaning you'll want to check out minor packages like applications, etc.</p>
+<p>However, with system notifications we've been finding tons of new issues and enhancement areas, so our backlog is filled right back up again. Please make sure you report anything that breaks in our Discord, or open a GitHub issue!</p>
                 
               
               
@@ -656,7 +768,7 @@ sudo docker-compose up -d
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
         
-          <a href="../../user_guide/privacy/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../4.2.x/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-footer-nav__button md-icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
             </div>
@@ -665,19 +777,19 @@ sudo docker-compose up -d
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Privacy
+                Upgrading to 4.2.x
               </div>
             </div>
           </a>
         
         
-          <a href="../special_sauce/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../../user_guide/group_requests/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-footer-nav__title">
               <div class="md-ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Special Sauce
+                Group Requests
               </div>
             </div>
             <div class="md-footer-nav__button md-icon">
