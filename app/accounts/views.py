@@ -31,7 +31,7 @@ def activate_account(request, token):
 
 
 class UserRegister(FormView):
-    template_name = 'accounts/user_register.html'
+    template_name = 'accounts/authentication/user_register.html'
     form_class = UserRegisterForm
     success_url = reverse_lazy('accounts-login')
 
@@ -56,7 +56,7 @@ class UserRegister(FormView):
 
 
 class UserLogin(FormView):
-    template_name = 'accounts/user_login.html'
+    template_name = 'accounts/authentication/user_login.html'
     form_class = UserLoginForm
     success_url = reverse_lazy('accounts-login')
 
@@ -95,7 +95,7 @@ class UserView(View):
             messages.add_message(
                 self.request, messages.ERROR, "User does not exist.")
             return redirect("/")
-        return render(request, context=context, template_name='accounts/user_view.html')
+        return render(request, context=context, template_name='accounts/profiles/my_profile.html')
 
     def post(self, request, username):
         request_data = request.POST.copy()
@@ -129,13 +129,13 @@ class UserView(View):
         context = {}
         context['form'] = form
 
-        return render(request, context=context, template_name='accounts/user_view.html')
+        return render(request, context=context, template_name='accounts/profiles/my_profile.html')
 
 
 class UserDelete(DeleteView):
     model = User
     success_url = reverse_lazy('accounts-login')
-    template_name = 'accounts/user_confirm_delete.html'
+    template_name = 'accounts/authentication/user_confirm_delete.html'
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()

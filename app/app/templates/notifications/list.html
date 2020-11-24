@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}
+Notifications
+{% endblock %}
+
+{% block breadcrumb %}
+Notifications
+{% endblock %}
+
+{% block content %}
+{% include 'notifications/components/notification_navbar.html' %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+  $(function () {
+    $('#unreadTable').DataTable({
+    
+        "ajax": {
+            "type": "GET",
+            "url": "/api/notifications/unread/",
+            "dataType": "json",
+            "headers": {
+                "Accept": "application/json;odata=verbose"
+            },
+        },
+        "columns": [
+            { "data": "timestamp"},
+            { "data": "verb"},
+            { "data": "action"},
+        ],
+        "paging": true,
+        "lengthChange": true,
+        "searching": true,
+        "ordering": true,
+        "info": true,
+        "autoWidth": false,
+        "responsive": true,
+    });
+    $('#systemTable').DataTable({
+      "ajax": {
+          "type": "GET",
+          "url": "/api/notifications/unread/system/",
+          "dataType": "json",
+          "headers": {
+              "Accept": "application/json;odata=verbose"
+          },
+      },
+      "columns": [
+          { "data": "timestamp"},
+          { "data": "verb"},
+          { "data": "action"},
+      ],
+      "paging": true,
+      "lengthChange": true,
+      "searching": true,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+</script>
+{% endblock %}

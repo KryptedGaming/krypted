@@ -1,0 +1,45 @@
+{% load staticfiles %}
+{% if messages %}
+{% for message in messages %}
+<div class="alert
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %} alert-danger {% endif %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %} alert-success {% endif %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.WARNING %} alert-warning {% endif %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.INFO %} alert-info {% endif %}
+        alert-dismissible
+        text-default">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    {{message}}
+</div>
+{% endfor %}
+{% endif %}
+
+{% block scripts %}
+
+{% for message in messages %}
+<script>
+const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: true,
+    timer: 8000
+});
+Toast.fire({
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+        icon: 'error',
+        {% endif %}
+        
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+        icon: 'success',
+        {% endif %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
+        icon: 'warning',
+        {% endif %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.INFO %}
+        icon: 'info',
+        {% endif %}
+        title: '{{message}}'
+      })
+</script>
+{% endfor %}
+{% endblock %}

@@ -6,20 +6,15 @@ def installed_apps(request):
         'INSTALLED_APPS': settings.INSTALLED_APPS
     }
 
-def sidebar_extensions(request):
-    templates = []
-    for EXTENSION in settings.EXTENSIONS:
-        template_name = "%s/sidebar.html" % EXTENSION.lower()
-        try: 
-            django.template.loader.get_template(template_name) 
-            templates.append(template_name)
-        except Exception as e:
-            pass 
-
+def site_logo(request):
     return {
-        'SIDEBAR_EXTENSIONS': templates
+        'SITE_LOGO': settings.SITE_LOGO
     }
 
+def google_analytics(request):
+    return {
+        'GOOGLE_ANALYTICS': settings.GOOGLE_ANALYTICS
+    }
 
 def site_name(request):
     return {

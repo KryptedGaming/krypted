@@ -16,7 +16,10 @@ SITE_PROTOCOL = "http://"
 SITE_DOMAIN = os.environ.get('SITE_DOMAIN', '127.0.0.1:8000')
 SITE_URL = "%s%s" % (SITE_PROTOCOL, SITE_DOMAIN)
 SITE_TITLE = os.environ.get('SITE_TITLE', 'Krypted Platform')
+SITE_LOGO = os.environ.get('SITE_LOGO', '')
 MEDIA_ROOT = os.environ.get('MEDIA_ROOT', '/tmp/')
+GOOGLE_ANALYTICS = os.environ.get('GOOGLE_ANALYTICS', True) # For https://www.eveonline.com/partners qualification
+DISPLAY_NAME = os.environ.get('DISPLAY_NAME_POLICY', None)
 
 # Application definition
 
@@ -31,7 +34,9 @@ DJANGO_APPS = [
     'django_countries',
     'django_celery_beat',
     'django_singleton_admin',
+    'cookielaw',
     'crispy_forms',
+    'notifications',
 ]
 EXTENSIONS = [ 'packagebinder', ]
 if os.environ.get('INSTALLED_APPS'):
@@ -67,9 +72,11 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'context_processors.installed_apps',
-                'context_processors.sidebar_extensions',
                 'context_processors.site_name',
+                'context_processors.site_logo',
+                'context_processors.google_analytics',
                 'context_processors.version',
+                'packagebinder.context_processors.sidebar_bindings',
             ],
         },
     },
@@ -182,11 +189,16 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'console',
         },
+        'interface': {
+            'level': 'WARNING',
+            'class': 'app.logging.NotificationHandler',
+            'formatter': 'console',
+        },
     },
     'loggers': {
         '': {
-            'level': 'DEBUG',
-            'handlers': ['console'],
+            'level': 'WARNING',
+            'handlers': ['console', 'interface'],
         },
         'pyswagger': {
             'level': 'NOTSET',

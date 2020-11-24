@@ -31,6 +31,15 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('500/', server_error),
     path('favicon.ico',RedirectView.as_view(url='/static/accounts/images/icons/favicon.png')),
+    path('api/notifications/unread/', views.unread_notifications, name="unread-notifications"),
+    path('api/notifications/unread/system/', views.unread_system_notifications, name="unread-system-notifications"),
+    path('api/notifications/<int:notification_pk>/mark-as-read', views.mark_as_read, name="mark-as-read")
+]
+
+import notifications.urls
+
+urlpatterns += [
+    path('notifications/', include(notifications.urls, namespace='notifications')),
 ]
 
 for application in settings.EXTENSIONS:

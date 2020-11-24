@@ -1,0 +1,39 @@
+{% if pending_applications %}
+<table class="table table-bordered">
+  <thead>
+     <tr>
+        <th scope="col">Date Submitted</th>
+        <th scope="col">Application To</th>
+        <th scope="col">Submitted By</th>
+        <th scope="col">Assigned To</th>
+        <th scope="col">Action(s)</th>
+     </tr>
+  </thead>
+  <tbody>
+     {% for application in pending_applications %}
+     <tr>
+        <td>
+           <p hidden>{{application.request_date | date:"Y-m-d"}}</p>
+           {{application.request_date | date:"F d, Y"}}
+        </td>
+        <td>{{application.template}}</td>
+        <td>{{application.request_user}}</td>
+        <td>
+           {% if application.response_user %}
+           {{application.response_user}}
+           {% else %}
+           <a href="{% url 'application-assign' application.pk %}">
+           Assign self
+           </a>
+           {% endif %}
+        </td>
+        <td>
+           <a href="{% url 'application-detail' application.pk %}" class="btn btn-primary btn-block">View Application</a>
+        </td>
+     </tr>
+     {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>No applications found.</p>
+{% endif %}

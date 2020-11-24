@@ -1,0 +1,48 @@
+<div class="card">
+    <div class="card-header p-2">
+        <ul class="nav nav-pills">
+            <li class="nav-item">
+                <a class="nav-link active" href="#settings" data-toggle="tab">Account Settings</a>
+            </li>
+            {% if "django_eveonline_connector" in INSTALLED_APPS %}
+            <li class="nav-item">
+                <a class="nav-link" href="#eve_character_list" data-toggle="tab">Character Management</a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+    
+    <div class="card-body">
+        <div class="tab-content">
+            {% if "django_eveonline_connector" in INSTALLED_APPS %}
+            <div class="tab-pane" id="eve_character_list">
+                {% include "django_eveonline_connector/adminlte/character_dashboard_snippet.html" %}
+            </div>
+            {% endif %}
+            <!-- /.tab-pane -->
+            {% if request.user == user %}
+            <div class="tab-pane active" id="settings">
+                <form class="form-horizontal" method="POST" action="{% url 'accounts-user' user.username %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="inputName">Username</label>
+
+                        <input type="text" class="form-control" id="inputName" placeholder="New Username"
+                            name="username" value="{{user.username}}">
+                    </div>
+                    <!-- Verify Email Form -->
+                    <div class="form-group">
+                        <label for="inputEmail">Email</label>
+                        <input type="email" class="form-control" id="inputEmail" placeholder="New Email Address"
+                            value="{{user.email}}" name="email">
+                    </div>
+                    <button type="submit" class="btn btn-success btn-block">Submit</button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+        <!-- /.tab-pane -->
+    </div>
+    <!-- /.tab-content -->
+    <!-- /.nav-pills-custom -->
+</div>

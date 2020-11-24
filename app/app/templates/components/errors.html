@@ -1,0 +1,10 @@
+{% if form.errors %}
+{% for field in form %}
+{% for error in field.errors %}
+<div class="wrap-input100 alert alert-danger m-b-10">
+    <span class="badge badge-secondary">{{field.label}}</span>
+    <strong>{{ error|escape }}</strong>
+</div>
+{% endfor %}
+{% endfor %}
+{% endif %}
