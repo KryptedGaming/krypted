@@ -74,6 +74,7 @@ TEMPLATES = [
                 'context_processors.installed_apps',
                 'context_processors.site_name',
                 'context_processors.site_logo',
+                'context_processors.google_analytics',
                 'context_processors.version',
                 'packagebinder.context_processors.sidebar_bindings',
             ],
