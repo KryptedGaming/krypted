@@ -17,6 +17,7 @@ services:
         image: redis:6.0.9-alpine
         volumes:
             - "redis:/var/lib/redis"
+            - "redis:/data"
 
     app:
         image: kryptedgaming/krypted:latest
