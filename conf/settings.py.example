@@ -180,19 +180,19 @@ LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
-        'console': {
-            'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+        'default': {
+            'format': '%(asctime)s %(levelname)-8s [%(name)s] %(message)s',
         },
     },
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
-            'formatter': 'console',
+            'formatter': 'default',
         },
         'interface': {
             'level': 'WARNING',
             'class': 'app.logging.NotificationHandler',
-            'formatter': 'console',
+            'formatter': 'default',
         },
     },
     'loggers': {
@@ -200,8 +200,14 @@ LOGGING = {
             'level': 'WARNING',
             'handlers': ['console', 'interface'],
         },
+        'celery': {
+            'level': 'ERROR',
+            'handlers': ['console', 'interface'],
+            'propagate': False,
+        },
         'pyswagger': {
-            'level': 'NOTSET',
+            'level': 'WARNING',
+            'handlers': ['console', 'interface'],
             'propagate': False,
         },
         'urllib3': {
@@ -209,9 +215,8 @@ LOGGING = {
             'propagate': False,
         },
         'django.request': {
-            'level': 'ERROR',
+            'level': 'NOTSET',
             'propogate': False,
         }
     },
 }
-

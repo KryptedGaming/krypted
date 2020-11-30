@@ -1,4 +1,5 @@
 import os
+import celery
 from celery import Celery
 from django.conf import settings
 
@@ -14,3 +15,7 @@ app.conf.accept_content = ['application/json']
 app.conf.result_serializer = 'json'
 app.conf.task_serializer = 'json'
 app.conf.timezone = 'UTC'
+
+@celery.signals.setup_logging.connect
+def on_setup_logging(**kwargs):
+    pass

@@ -8,7 +8,6 @@ class NotificationHandler(logging.Handler):
         from django.contrib.auth.models import User
         from notifications import notify
         from notifications.models import Notification
-
         message = record.getMessage()
         if record.exc_text:
             message += "\n\n"
@@ -23,7 +22,7 @@ class NotificationHandler(logging.Handler):
                     user,
                     recipient=user,
                     level=record.levelname,
-                    verb=f"System {notification_title_level}",
+                    verb=f"{record.name}",
                     description=f"{message}",
                     public=False,
                 )

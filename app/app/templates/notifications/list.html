@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load staticfiles %}
 {% block title %}
 Notifications
 {% endblock %}
@@ -27,6 +27,7 @@ Notifications
         },
         "columns": [
             { "data": "timestamp"},
+            { "data": "level"},
             { "data": "verb"},
             { "data": "action"},
         ],
@@ -49,6 +50,7 @@ Notifications
       },
       "columns": [
           { "data": "timestamp"},
+          { "data": "level"},
           { "data": "verb"},
           { "data": "action"},
       ],

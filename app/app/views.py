@@ -33,6 +33,7 @@ def unread_notifications(request):
         {
             "timestamp": f"{notification.timesince()} ago",
             "verb": notification.verb,
+            "level": notification.level,
             "action": """
             <div class="btn-group btn-block">
                 <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modal-%s">
@@ -73,6 +74,7 @@ def unread_system_notifications(request):
         {
             "timestamp": f"{notification.timesince()} ago",
             "verb": notification.verb,
+            "level": notification.level,
             "action": """
             <div class="btn-group btn-block">
                 <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modal-%s">
@@ -90,7 +92,15 @@ def unread_system_notifications(request):
                     </button>
                     </div>
                     <div class="modal-body">
-                    <pre>%s</pre>
+                        <div class="row">
+                            <h3>System Messages</h3>
+                            <p>These are warnings or errors that the platform has caught, and forwarded to you. Please forward all potential issues to us in Discord, or open a GitHub issue.</p>
+                        </div>
+
+                        <div class="row">
+                            <h3>Message Content</h3>
+                            <pre id="message_%s" >%s</pre>
+                        </div>
                     </div>
                     <div class="modal-footer justify-content-between">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -100,7 +110,7 @@ def unread_system_notifications(request):
                 </div>
                 <!-- /.modal-dialog -->
             </div>
-            """ % (notification.pk, notification.pk, notification.description)
+            """ % (notification.pk, notification.pk, notification.pk, notification.description)
         }
         for notification
         in request.user.notifications.unread().exclude(public=True)
