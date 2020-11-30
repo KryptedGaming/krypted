@@ -307,6 +307,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#accessing-application" class="md-nav__link">
+    Accessing Application
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#accessing-database" class="md-nav__link">
     Accessing Database
   </a>
@@ -563,6 +570,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#accessing-application" class="md-nav__link">
+    Accessing Application
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#accessing-database" class="md-nav__link">
     Accessing Database
   </a>
@@ -625,6 +639,10 @@
 </code></pre>
 <h3 id="restoring-backups">Restoring Backups</h3>
 <pre><code>zcat *krypted.sql.gz | docker-compose exec -T db sh -c 'exec mysql &quot;$MYSQL_DATABASE&quot; -u&quot;$MYSQL_USER&quot; -p&quot;$MYSQL_PASSWORD&quot;'
+</code></pre>
+<h3 id="accessing-application">Accessing Application</h3>
+<p>There will be times where you want a specific bit of information that we might not provide, or the ability to run your own Python code with your Krypted Platform database. The best way to do this is through the <strong>Django Shell</strong>. </p>
+<pre><code>sudo docker-compose exec app python3 /opt/krypted/app/manage.py shell_plus
 </code></pre>
 <h3 id="accessing-database">Accessing Database</h3>
 <p>Sometimes, you'll want to access the database directly. </p>
