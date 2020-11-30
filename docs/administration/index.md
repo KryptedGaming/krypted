@@ -37,6 +37,12 @@ sudo docker-compose exec db sh -c 'exec mysqldump "$MYSQL_DATABASE" -u"$MYSQL_US
 zcat *krypted.sql.gz | docker-compose exec -T db sh -c 'exec mysql "$MYSQL_DATABASE" -u"$MYSQL_USER" -p"$MYSQL_PASSWORD"'
 ```
 
+### Accessing Application
+There will be times where you want a specific bit of information that we might not provide, or the ability to run your own Python code with your Krypted Platform database. The best way to do this is through the **Django Shell**. 
+```
+sudo docker-compose exec app python3 /opt/krypted/app/manage.py shell_plus
+```
+
 ### Accessing Database
 Sometimes, you'll want to access the database directly. 
 ```
