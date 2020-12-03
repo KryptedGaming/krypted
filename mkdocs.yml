@@ -24,8 +24,12 @@ nav:
       - Upgrading to 4.2.x: upgrading/4.2.x.md
       - Upgrading to 4.3.x: upgrading/4.3.x.md
     - User Guide:
+      - Groups: user_guide/groups.md
       - Group Requests: user_guide/group_requests.md
       - Applications: user_guide/applications.md
+      - Extensions: 
+        - EVE Online Connector: user_guide/extensions/django_eveonline_connector.md
+        - Discord Connector: user_guide/extensions/django_discord_connector.md
       - Privacy: user_guide/privacy.md
     - Contributing: 
       - Environment: contributing/environment.md
