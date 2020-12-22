@@ -1,7 +1,9 @@
 from django_celery_beat.models import PeriodicTask, IntervalSchedule
-from django.db.utils import OperationalError
+from django.db.utils import OperationalError, ProgrammingError
 from .exceptions import BindException
 from django.apps import apps 
+import logging 
+logger = logging.getLogger(__name__)
 
 package_config = apps.get_app_config('packagebinder')
 class PackageBinding():
@@ -39,10 +41,12 @@ class TaskBinding():
         self.optional_tasks = []
         for task in required_tasks:
             task_object = self.add_task(task['name'], task['task_name'], task['interval'], task['interval_period'])
-            self.required_tasks.append(task_object)
+            if task_object:
+                self.required_tasks.append(task_object)
         for task in optional_tasks:
             task_object = self.add_task(task['name'], task['task_name'], task['interval'], task['interval_period'], True)
-            self.optional_tasks.append(task_object)
+            if task_object:
+                self.optional_tasks.append(task_object)
 
     def refresh(self):
         for task in self.required_tasks:
@@ -54,10 +58,15 @@ class TaskBinding():
         try:
             interval = IntervalSchedule.objects.get_or_create(
                 every=interval, period=interval_period)[0]
+        except ProgrammingError:
+            logger.warning(f"{name}: Failed to add task binding ({task}), likely during database migration.")
+            return None 
         except OperationalError:
-            raise BindException("Failed to add required task, likely in database migration")
+            logger.warning(f"{name}: Failed to add task binding ({task}), likely during database migration.")
+            return None 
         except Exception as e:
-            raise BindException(f"Failed to add required task: {e}")
+            raise BindException(f"Failed to add task binding: {e}")
+            return None 
 
         if not PeriodicTask.objects.filter(name=name).exists():
             periodic_task = PeriodicTask.objects.create(name=name, 
