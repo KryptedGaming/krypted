@@ -39,3 +39,7 @@ nav:
 # Styling
 extra_css:
     - css/krypted.css
+
+# Extensions
+markdown_extensions:
+    - admonition

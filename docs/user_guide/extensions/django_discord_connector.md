@@ -29,7 +29,7 @@
 1. Navigate to your server, hover over a channel and create an invite link.
 2. Select no expiry, unlimited uses. Save this link for later.
 
-## Usage
+## Assigning Groups
 Typically, you'll just be mapping Discord Groups to standard Groups. 
 
 ### Pulling Discord Groups
@@ -49,3 +49,32 @@ Now, you'll be able to select that task and (from the Action dropdown) **Run sel
 Once you've pulled your discord groups, you can attach them to standard Groups by going to **Discord Groups**, selecting the Discord Group you want to map, and selecting the standard Group. 
 
 By default, Discord groups are applied every 5 minutes. You can edit this under **Periodic Tasks**, or manually run it. 
+
+## Enforcing Nicknames
+For versions `>=1.2.2rc2`, nickname enforcement is available. 
+
+### Prerequisites
+#### Clean up Dangling Objects
+In previous versions of the package, dangling objects were allowed. Since 1.2.0, this is no longer the case.
+```
+sudo docker-compose exec app python3 /opt/krypted/app/manage.py shell
+from django_discord_connector.models import DiscordToken, DiscordUser
+DiscordToken.objects.filter(discord_user=None).delete()
+DiscordUser.objects.filter(discord_token=None).delete()
+```
+
+#### Packages
+If you plan to use naming enforcement that involves other packages (e.g Django EVE Online Connector), ensure these are installed.
+
+### Usage
+1. Enable the nickname enforcement task in your settings 
+2. Go to Discord Settings in the Admin Panel (or Settings panel) and add a `name enforcement schema`
+
+| Formatter      | Description | Requirements |
+| ----------- | ----------- | ----------- |
+| `%username` | The Krypted Platform username        | `None`                       |
+| `%character`| Primary character full name | `django-eveonline-connector` |
+| `%corporation`| Primary character corporation ticker | `django-eveonline-connector` |
+| `%allaince`| Primary character alliance ticker | `django-eveonline-connector` |
+
+Example: `[%corporation] %character` would result in something like `[KRYPD] BearThatCares`
