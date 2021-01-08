@@ -458,11 +458,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
-    Usage
+  <a href="#assigning-groups" class="md-nav__link">
+    Assigning Groups
   </a>
   
-    <nav class="md-nav" aria-label="Usage">
+    <nav class="md-nav" aria-label="Assigning Groups">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -475,6 +475,53 @@
           <li class="md-nav__item">
   <a href="#mapping-discord-groups" class="md-nav__link">
     Mapping Discord Groups
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#enforcing-nicknames" class="md-nav__link">
+    Enforcing Nicknames
+  </a>
+  
+    <nav class="md-nav" aria-label="Enforcing Nicknames">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    Prerequisites
+  </a>
+  
+    <nav class="md-nav" aria-label="Prerequisites">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#clean-up-dangling-objects" class="md-nav__link">
+    Clean up Dangling Objects
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#packages" class="md-nav__link">
+    Packages
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
   </a>
   
 </li>
@@ -639,11 +686,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
-    Usage
+  <a href="#assigning-groups" class="md-nav__link">
+    Assigning Groups
   </a>
   
-    <nav class="md-nav" aria-label="Usage">
+    <nav class="md-nav" aria-label="Assigning Groups">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -656,6 +703,53 @@
           <li class="md-nav__item">
   <a href="#mapping-discord-groups" class="md-nav__link">
     Mapping Discord Groups
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#enforcing-nicknames" class="md-nav__link">
+    Enforcing Nicknames
+  </a>
+  
+    <nav class="md-nav" aria-label="Enforcing Nicknames">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    Prerequisites
+  </a>
+  
+    <nav class="md-nav" aria-label="Prerequisites">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#clean-up-dangling-objects" class="md-nav__link">
+    Clean up Dangling Objects
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#packages" class="md-nav__link">
+    Packages
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
   </a>
   
 </li>
@@ -718,7 +812,7 @@
 <li>Navigate to your server, hover over a channel and create an invite link.</li>
 <li>Select no expiry, unlimited uses. Save this link for later.</li>
 </ol>
-<h2 id="usage">Usage</h2>
+<h2 id="assigning-groups">Assigning Groups</h2>
 <p>Typically, you'll just be mapping Discord Groups to standard Groups. </p>
 <h3 id="pulling-discord-groups">Pulling Discord Groups</h3>
 <p>Currently this is a bit clunky, a better interface is coming soon. </p>
@@ -735,6 +829,55 @@
 <h3 id="mapping-discord-groups">Mapping Discord Groups</h3>
 <p>Once you've pulled your discord groups, you can attach them to standard Groups by going to <strong>Discord Groups</strong>, selecting the Discord Group you want to map, and selecting the standard Group. </p>
 <p>By default, Discord groups are applied every 5 minutes. You can edit this under <strong>Periodic Tasks</strong>, or manually run it. </p>
+<h2 id="enforcing-nicknames">Enforcing Nicknames</h2>
+<p>For versions <code>&gt;=1.2.2rc2</code>, nickname enforcement is available. </p>
+<h3 id="prerequisites">Prerequisites</h3>
+<h4 id="clean-up-dangling-objects">Clean up Dangling Objects</h4>
+<p>In previous versions of the package, dangling objects were allowed. Since 1.2.0, this is no longer the case.</p>
+<pre><code>sudo docker-compose exec app python3 /opt/krypted/app/manage.py shell
+from django_discord_connector.models import DiscordToken, DiscordUser
+DiscordToken.objects.filter(discord_user=None).delete()
+DiscordUser.objects.filter(discord_token=None).delete()
+</code></pre>
+<h4 id="packages">Packages</h4>
+<p>If you plan to use naming enforcement that involves other packages (e.g Django EVE Online Connector), ensure these are installed.</p>
+<h3 id="usage">Usage</h3>
+<ol>
+<li>Enable the nickname enforcement task in your settings </li>
+<li>Go to Discord Settings in the Admin Panel (or Settings panel) and add a <code>name enforcement schema</code></li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Formatter</th>
+<th>Description</th>
+<th>Requirements</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>%username</code></td>
+<td>The Krypted Platform username</td>
+<td><code>None</code></td>
+</tr>
+<tr>
+<td><code>%character</code></td>
+<td>Primary character full name</td>
+<td><code>django-eveonline-connector</code></td>
+</tr>
+<tr>
+<td><code>%corporation</code></td>
+<td>Primary character corporation ticker</td>
+<td><code>django-eveonline-connector</code></td>
+</tr>
+<tr>
+<td><code>%allaince</code></td>
+<td>Primary character alliance ticker</td>
+<td><code>django-eveonline-connector</code></td>
+</tr>
+</tbody>
+</table>
+<p>Example: <code>[%corporation] %character</code> would result in something like <code>[KRYPD] BearThatCares</code></p>
                 
               
               
