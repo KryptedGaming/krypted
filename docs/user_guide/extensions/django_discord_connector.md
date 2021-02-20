@@ -9,8 +9,9 @@
 2. Click “New Application”
 3. Fill out a name, click create.
 4. Add an application icon, description, and customize your application.
-5. Copy the `CLIENT ID` value, save this for later.
-6. Copy the `CLIENT SECRET` value, save this for later.
+5. Under `OAuth2` set a callback URL under **Redirects** (e.g `https://my.domain/discord/sso/callback`)
+6. Copy the `CLIENT ID` value, save this for later.
+7. Copy the `CLIENT SECRET` value, save this for later.
 
 ### Create a Bot
 1. Click the Bot section
