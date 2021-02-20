@@ -1,10 +1,14 @@
-[![Documentation Status](https://readthedocs.org/projects/kryptedauth/badge/?version=latest)](https://kryptedgaming.github.io/krypted/) [![Build Status](https://travis-ci.org/KryptedGaming/krypted.svg?branch=development)](https://travis-ci.org/KryptedGaming/krypted) [![Coverage](https://coveralls.io/repos/github/KryptedGaming/krypted/badge.svg?branch=development)](https://coveralls.io/github/KryptedGaming/krypted?branch=development)
+
+[![Build Status](https://travis-ci.org/KryptedGaming/krypted.svg?branch=development)](https://travis-ci.org/KryptedGaming/krypted) [![Coverage](https://coveralls.io/repos/github/KryptedGaming/krypted/badge.svg?branch=development)](https://coveralls.io/github/KryptedGaming/krypted?branch=development)
 
 # Krypted Platform
 Krypted is a community management platform by [Krypted Gaming](https://kryptedgaming.com/) for guilds, clans, and other gaming organiziations. 
+* Group handling, application handling, and user management
+* Integrations with third-party software: Discord, Discourse, EVE Online
+* Developer tools and APIs to help build awesome extensions
 
-# Screenshots
-View screenshots and more on our [forum thread](https://forums.eveonline.com/t/4-2-0-krypted-corporation-alliance-web-platform/274643?u=bearthatcares).
+# Documentation 
+Click [here](https://kryptedgaming.github.io/krypted/) to view our documentation.
 
-# Discord Server
-Join our development server [here](https://kryptedgaming.github.io/krypted/#discord-server).
+# Discord Chat
+![Discord Banner 2](https://discordapp.com/api/guilds/538495351737548800/widget.png?style=banner2)
