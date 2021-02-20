@@ -190,37 +190,20 @@ LOGGING = {
     },
     'handlers': {
         'console': {
+            'level': 'INFO',
             'class': 'logging.StreamHandler',
             'formatter': 'default',
         },
         'interface': {
-            'level': 'WARNING',
+            'level': 'ERROR',
             'class': 'app.logging.NotificationHandler',
             'formatter': 'default',
         },
     },
     'loggers': {
         '': {
-            'level': 'WARNING',
+            'level': 'INFO',
             'handlers': ['console', 'interface'],
         },
-        'celery': {
-            'level': 'ERROR',
-            'handlers': ['console', 'interface'],
-            'propagate': False,
-        },
-        'pyswagger': {
-            'level': 'WARNING',
-            'handlers': ['console', 'interface'],
-            'propagate': False,
-        },
-        'urllib3': {
-            'level': 'NOTSET',
-            'propagate': False,
-        },
-        'django.request': {
-            'level': 'NOTSET',
-            'propogate': False,
-        }
     },
 }
