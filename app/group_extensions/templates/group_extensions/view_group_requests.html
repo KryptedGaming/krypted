@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block title %}
+Group Requests
+{% endblock %}
+
+{% block breadcrumbs %}
+<li class="breadcrumb-item"><a href="{% url 'group-list' %}">Groups</a></li>
+{% endblock %}
+{% block breadcrumb %}
+Group Requests
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header with-border">
+        <h3 class="card-title">
+            Outstanding Requests
+        </h3>
+    </div>
+    <div class=" card-body">
+        {% if group_requests %}
+        <table class="datatable table table-bordered table-hover">
+            <thead>
+                <th scope="col">Group</th>
+                <th scope="col">Requested By</th>
+                <th scope="col">Action(s)</th>
+            </thead>
+            <tbody>
+                {% for group_request in group_requests %}
+                <tr>
+                    <td>
+                        {{group_request.request_group.name}}
+                    </td>
+                    <td>
+                        {{group_request.request_user}}
+                    </td>
+                    <td>
+                        <div style="display: flex;" class="btn-group btn-block">
+                            <a href="{% url 'group-request-approve' group_request.request_group.pk group_request.pk%}"
+                                style="flex: 1" class="btn btn-success btn-sm"><i class="fa fa-check"></i></a>
+                            <a href="{% url 'group-request-deny' group_request.request_group.pk group_request.pk%}"
+                                style="flex: 1" class="btn btn-danger btn-sm"><i class="fa fa-times"></i></a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No group requests.</p>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(function () {
+        $('table').DataTable({
+            'paging': true,
+            'lengthChange': true,
+            'searching': true,
+            'ordering': true,
+            'info': false,
+            'autoWidth': false
+        })
+    })
+</script>
+{% endblock %}

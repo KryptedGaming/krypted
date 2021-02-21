@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block title %}
+Groups
+{% endblock %}
+
+{% block breadcrumb %}
+Groups
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">
+            Available Groups
+        </h3>
+    </div>
+    <div class="card-body">
+        {% if groups %}
+        <table class="datatable table table-bordered table-hover">
+            <thead>
+                <th scope="col">Group</th>
+                <th scope="col">Actions</th>
+            </thead>
+            <tbody>
+                {% for group in groups %}
+                <tr>
+
+                    <td>
+                        <p>{{group.group.name}}</p>
+                    </td>
+
+                    <td>
+                        <div class="btn-group btn-group-md" style="display: flex;">
+                            {% if perms.group_requests.view_grouprequest %}
+                            <a style="flex: 1;" class="btn btn-primary" href="{% url 'group-request-list' group.group.pk %}">
+                                Manage
+                                {% if group.request_count > 5 %}
+                                <sup>
+                                    <span
+                                        class="label label-danger text-center">{{group.request_count}}</span>
+                                </sup>
+                                {% elif group.request_count > 0 %}
+                                <sup>
+                                    <span
+                                        class="label label-warning text-center">{{group.request_count}}</span>
+                                </sup>
+                                {% else %}
+                                <sup>
+                                    <span
+                                        class="label label-info text-center">{{group.request_count}}</span>
+                                </sup>
+                                {% endif %}
+                            </a>
+                            {% endif %}
+                            {% if group.group in request.user.groups.all %}
+                            <a style="flex: 1;" class="btn btn-success disabled" href="#" disabled>Joined</a>
+                            {% elif group.requested %}
+                            {% if group.requested.response_action == "PENDING" %}
+                            <a style="flex: 1;" class="btn btn-default disabled" href="#" disabled>Pending</a>
+                            {% endif %}
+                            {% elif group.type == "OPEN" %}
+                            <a style="flex: 1;" class="btn btn-success" href="{% url 'group-request' group.group.pk %}">Join</a>
+                            {% else %}
+                            <a style="flex: 1;" class="btn btn-warning text-white" href="{% url 'group-request' group.group.pk %}">Request</a>
+                            {% endif %}
+                        </div>
+                        
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No groups available.</p>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(function () {
+        $('table').DataTable({
+            'paging': false,
+            'lengthChange': false,
+            'searching': false,
+            'ordering': true,
+            'info': false,
+            'autoWidth': false
+        })
+    })
+</script>
+{% endblock %}
