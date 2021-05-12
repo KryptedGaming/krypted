@@ -39,7 +39,6 @@ urlpatterns = [
          views.unread_system_notifications, name="unread-system-notifications"),
     path('api/notifications/<int:notification_pk>/mark-as-read',
          views.mark_as_read, name="mark-as-read"),
-    path('jet/', include('jet.urls', 'jet')),
     path('api/v2', include('rest_framework.urls'))
 ]
 
