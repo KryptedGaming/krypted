@@ -34,6 +34,9 @@ DJANGO_APPS = [
     'django_countries',
     'django_celery_beat',
     'django_singleton_admin',
+    'django_extensions',
+    'rest_framework',
+    'rest_framework.authtoken',
     'cookielaw',
     'crispy_forms',
     'notifications',
@@ -47,6 +50,12 @@ if os.environ.get('INSTALLED_APPS'):
 INSTALLED_APPS = DJANGO_APPS + EXTENSIONS
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',  # <-- And here
+    ],
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

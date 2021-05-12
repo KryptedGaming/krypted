@@ -75,6 +75,16 @@
                         </a>
                     </li>
                     {% endif %}
+                    {% if 'group_extensions' in INSTALLED_APPS %}
+                    <li class="nav-item">
+                        <a href="{% url 'group-list' %}" class="nav-link">
+                            <i class="nav-icon far fas fa-user"></i>
+                            <p>
+                            Groups
+                            </p>
+                        </a>
+                    </li>
+                    {% endif %}
                     {% if 'applications' in INSTALLED_APPS %}
                     <li class="nav-item">
                         <a href="{% url 'my-applications' %}" class="nav-link">

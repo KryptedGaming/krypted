@@ -13,6 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+import notifications.urls
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf import settings
 from django.apps import apps
@@ -30,13 +31,17 @@ urlpatterns = [
     path('', views.dashboard, name="app-dashboard"),
     path('admin/', admin.site.urls),
     path('500/', server_error),
-    path('favicon.ico',RedirectView.as_view(url='/static/accounts/images/icons/favicon.png')),
-    path('api/notifications/unread/', views.unread_notifications, name="unread-notifications"),
-    path('api/notifications/unread/system/', views.unread_system_notifications, name="unread-system-notifications"),
-    path('api/notifications/<int:notification_pk>/mark-as-read', views.mark_as_read, name="mark-as-read")
+    path('favicon.ico', RedirectView.as_view(
+        url='/static/accounts/images/icons/favicon.png')),
+    path('api/notifications/unread/', views.unread_notifications,
+         name="unread-notifications"),
+    path('api/notifications/unread/system/',
+         views.unread_system_notifications, name="unread-system-notifications"),
+    path('api/notifications/<int:notification_pk>/mark-as-read',
+         views.mark_as_read, name="mark-as-read"),
+    path('api/v2', include('rest_framework.urls'))
 ]
 
-import notifications.urls
 
 urlpatterns += [
     path('notifications/', include(notifications.urls, namespace='notifications')),
@@ -48,13 +53,15 @@ for application in settings.EXTENSIONS:
         try:
             if app_config.url_slug:
                 urlpatterns += [
-                    path('%s/' % app_config.url_slug, include('%s.urls' % application))
+                    path('%s/' % app_config.url_slug,
+                         include('%s.urls' % application))
                 ]
+            logger.debug(f"Added URLs for {app_config.url_slug}")
         except AttributeError as exception:
             logger.debug("Skipping %s: %s" % (application, exception))
     except LookupError as exception:
         logger.debug("Skipping %s: %s" % (application, exception))
-    
+
 handler500 = views.handler500
 
 # DEVELOPMENT
