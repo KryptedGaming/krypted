@@ -31,6 +31,8 @@ nav:
         - EVE Online Connector: user_guide/extensions/django_eveonline_connector.md
         - Discord Connector: user_guide/extensions/django_discord_connector.md
       - Privacy: user_guide/privacy.md
+    - API Reference:
+      - REST v2: user_guide/rest.md
     - Contributing: 
       - Environment: contributing/environment.md
       - Special Sauce: contributing/special_sauce.md

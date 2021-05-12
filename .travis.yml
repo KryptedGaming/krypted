@@ -9,7 +9,7 @@ services:
 
 before_install:
 - export DJANGO_SETTINGS_MODULE=app.settings
-- export INSTALLED_APPS=accounts,group_requests,group_extensions,applications
+- export INSTALLED_APPS=accounts,group_requests,applications
 
 install:
 - pip3 install -r requirements.txt
