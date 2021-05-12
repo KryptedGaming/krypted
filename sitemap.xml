@@ -1,63 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url>
      <loc>https://kryptedgaming.github.io/krypted/</loc>
-     <lastmod>2021-01-08</lastmod>
+     <lastmod>2021-05-12</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://kryptedgaming.github.io/krypted/features/</loc>
-     <lastmod>2021-01-08</lastmod>
+     <lastmod>2021-05-12</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://kryptedgaming.github.io/krypted/installation/</loc>
-     <lastmod>2021-01-08</lastmod>
+     <lastmod>2021-05-12</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://kryptedgaming.github.io/krypted/administration/</loc>
-     <lastmod>2021-01-08</lastmod>
+     <lastmod>2021-05-12</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://kryptedgaming.github.io/krypted/upgrading/4.2.x/</loc>
-     <lastmod>2021-01-08</lastmod>
+     <lastmod>2021-05-12</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://kryptedgaming.github.io/krypted/upgrading/4.3.x/</loc>
-     <lastmod>2021-01-08</lastmod>
+     <lastmod>2021-05-12</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://kryptedgaming.github.io/krypted/user_guide/groups/</loc>
-     <lastmod>2021-01-08</lastmod>
+     <lastmod>2021-05-12</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://kryptedgaming.github.io/krypted/user_guide/group_requests/</loc>
-     <lastmod>2021-01-08</lastmod>
+     <lastmod>2021-05-12</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://kryptedgaming.github.io/krypted/user_guide/applications/</loc>
-     <lastmod>2021-01-08</lastmod>
+     <lastmod>2021-05-12</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://kryptedgaming.github.io/krypted/user_guide/extensions/django_eveonline_connector/</loc>
-     <lastmod>2021-01-08</lastmod>
+     <lastmod>2021-05-12</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://kryptedgaming.github.io/krypted/user_guide/extensions/django_discord_connector/</loc>
-     <lastmod>2021-01-08</lastmod>
+     <lastmod>2021-05-12</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://kryptedgaming.github.io/krypted/user_guide/privacy/</loc>
-     <lastmod>2021-01-08</lastmod>
+     <lastmod>2021-05-12</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://kryptedgaming.github.io/krypted/user_guide/rest/</loc>
+     <lastmod>2021-05-12</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://kryptedgaming.github.io/krypted/contributing/environment/</loc>
-     <lastmod>2021-01-08</lastmod>
+     <lastmod>2021-05-12</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://kryptedgaming.github.io/krypted/contributing/special_sauce/</loc>
-     <lastmod>2021-01-08</lastmod>
+     <lastmod>2021-05-12</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://kryptedgaming.github.io/krypted/contributing/mentorship/</loc>
-     <lastmod>2021-01-08</lastmod>
+     <lastmod>2021-05-12</lastmod>
      <changefreq>daily</changefreq>
     </url>
 </urlset>
